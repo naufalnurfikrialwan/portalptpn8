@@ -11,9 +11,9 @@ namespace Ptpn8.PerjanjianKerjasama.Models
     public class UploadSaranKajianOperasional
     {
         public Guid UploadSaranKajianOperasionalId { get; set; }
-        public Guid InputKerjasamaKebunId { get; set; }
-        public Decimal TahunBuku { get; set; }
+        public Guid InputKerjasamaKebun_HDRId { get; set; }
+        public DateTime TanggalUpload { get; set; }
         public String File_SaranKajianOperasional { get; set; }
-        public String Keterangan { get; set; }
+        public String NamaFile_SaranKajianOperasional { get; set; }
     }
 }

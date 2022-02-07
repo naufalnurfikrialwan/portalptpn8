@@ -2752,6 +2752,8 @@
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_InputKerjasamaKebun.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\a.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\ddlPICKerjasama.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_InputPIC.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadSaranKajianOperasional.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

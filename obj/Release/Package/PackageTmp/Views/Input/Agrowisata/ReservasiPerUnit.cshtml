@@ -1,0 +1,527 @@
+﻿@model Ptpn8.Agrowisata.Models.ViewAgrowisata_HDR_ReservasiPerUnit
+@**@
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+<script src="~/Scripts/Agrowisata/ReservasiPerUnit.js"></script>
+
+@*header*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerkopi">
+                @(Html.Kendo().TextBoxFor(m => m.Agrowisata_HDR_ReservasiPerUnitId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.Customer_AgrowisataId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.StatusReservasi).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TanggalCheckOut).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TahunBuku).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.BisaCheckIn).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.KodeBooking).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.strSQL).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserName).Value(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).Email).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Tanggal Reservasi</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().DatePickerFor(m => m.TanggalReservasi).Format("dd/MM/yyyy").Value(DateTime.Now)
+                                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Tanggal", style = "width: 50%;" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Unit Agrowisata</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().DropDownList()
+                                        .AutoBind(true)
+                                        .Name("UnitId")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>()
+                                        {
+                                                        new SelectListItem() {
+                                                            Text = "GUNUNG MAS",
+                                                            Value = "74D6ED37-AA42-4204-91EB-7CBD09C289EF"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "RANCABALI",
+                                                            Value = "194EF392-6E3B-46C1-B8D2-3E4F431F1C2E"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "MALABAR",
+                                                            Value = "45D8ECB0-C44B-4675-9191-E6076C09FAD1"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "CIATER",
+                                                            Value = "0E00D938-1469-4A72-9783-66980FD1543B"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "SUKAWANA",
+                                                            Value = "D2C948B7-E018-4658-9DF7-4A97CBE03FAC"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "PASIR BADAK",
+                                                            Value = "2FB3D6B3-AFA7-469D-A6AC-345227B3AAA4"
+                                                        }
+                                        })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Tanggal Check In</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().DatePickerFor(m => m.TanggalCheckIn).Format("dd/MM/yyyy").Value(DateTime.Now)
+                                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Tanggal", style = "width: 50%;" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Lama Menginap</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().IntegerTextBoxFor(m => m.LamaMenginap)
+                                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Jumlah Malam", style = "width: 50%;" })
+                            ) Malam
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Status Holiday</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().DropDownList()
+                                        .AutoBind(true)
+                                        .Name("StatusHoliday")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>()
+                                        {
+                                                        new SelectListItem() {
+                                                            Text = "Public Holiday",
+                                                            Value = "Public Holiday"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Non Public Holiday",
+                                                            Value = "Non Public Holiday"
+                                                        }
+                                        })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Status Holiday</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().DropDownList()
+                                        .AutoBind(true)
+                                        .Name("StatusLiburNasional")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>()
+                                        {
+                                                        new SelectListItem() {
+                                                            Text = "Non Libur Nasional",
+                                                            Value = "Non Libur Nasional"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Libur Nasional",
+                                                            Value = "Libur Nasional"
+                                                        }
+                                        })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>No Identitas</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().AutoCompleteFor(m => m.NoIdentitas)
+                                        .Placeholder("Cari ID Pelanggan")
+                                        .DataTextField("NoIdentitas")
+                                        .MinLength(2)
+                                        .Filter("contains")
+                                        .Events(e => { e.Change("aucCustomer_AgrowisataOnSelect"); e.DataBound("aucCustomer_AgrowisataOnDataBound"); })
+                                        .HtmlAttributes(new { required = "required", data_required_msg = "Masukkan No Identitas", style = "width: 50%;" })
+                            )
+                            <button type="button" id="btnAddCustomer" class="k-button" style="color: black; background-color: white; font-size: small; height: 25px;"><span class="k-font-icon k-i-pencil"></span>Add Here !</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Nama</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().AutoCompleteFor(m => m.Nama)
+                                                                .HtmlAttributes(new { required = "required", data_required_msg = "Nama Pelanggan", style = "width: 75%" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Telepon</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().AutoCompleteFor(m => m.Telepon)
+                                                                .HtmlAttributes(new { required = "required", data_required_msg = "Telepon", style = "width: 55%" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>E-Mail</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().AutoCompleteFor(m => m.Email)
+                                                                .HtmlAttributes(new { required = "required", data_required_msg = "E-Mail", style = "width: 55%" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Metode Pembayaran</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().DropDownList()
+                                        .Name("MetodePembayaran")
+                                        .AutoBind(true)
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>() {
+                                                        new SelectListItem() {
+                                                            Text = "Cash",
+                                                            Value = "Cash"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Transfer",
+                                                            Value = "Transfer"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Voucher",
+                                                            Value = "Voucher"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Debit",
+                                                            Value = "Debit"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Credit Card",
+                                                            Value = "Credit Card"
+                                                        }
+                                        })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="color:white">
+                            <label>Transfer Bank</label>
+                        </td>
+                        <td width="1%" style="color:white">
+                            <label>:</label>
+                        </td>
+                        <td width="40%">
+                            @(Html.Kendo().DropDownList()
+                                        .Name("BankTransfer")
+                                        .AutoBind(true)
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>() {
+                                                        new SelectListItem() {
+                                                            Text = "Rekening Cab. Asia Afrika",
+                                                            Value = "Rekening Cab. Asia Afrika"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Rekening Cab. Bogor",
+                                                            Value = "Rekening Cab. Bogor"
+                                                        }
+                                        })
+                            )
+                        </td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%" align="center" class="button">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                                <button type="button" id="btnDeleteHeader" onclick="btnDeleteHeaderOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Hapus Permintaan</button>
+                                <button type="button" id="btnPrintHeader" onclick="btnPrintHeaderOnClick()" class="k-button" style="color: white; background-color: gray; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Cetak Permintaan</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+            .Grid<Ptpn8.Agrowisata.Models.ViewAgrowisata_DTL_ReservasiPerUnit>(Guid.Empty.ToString())
+            .Name("grdDetail")
+            .Columns(g =>
+            {
+                g.Bound(i => i.Agrowisata_DTL_ReservasiPerUnitId).Width(50).Hidden();
+                g.Bound(i => i.Agrowisata_HDR_ReservasiPerUnitId).Width(50).Hidden();
+                g.Bound(i => i.TipeKamarId).Width(50).Hidden();
+                g.Bound(i => i.NoBaris).Template(t => { }).Title("No Baris").ClientTemplate("#= renderNumber(data) #").Width(50);
+                g.Bound(i => i.NamaKamar).Width(200).Title("Tipe Penginapan");
+                g.Bound(i => i.JumlahOrang).Width(80).Title("Jml Orang");
+                g.Bound(i => i.Keterangan).Width(300).Title("Catatan Tambahan");
+                g.Bound(i => i.KodeDiscount).Width(200).Title("Kode Discount");
+                g.Bound(i => i.StatusCheckin).Width(100).Title("Status Checkin").Hidden();
+                g.Bound(i => i.StatusCheckout).Width(100).Title("Status Checkout").Hidden();
+                g.Bound(i => i.Harga).Width(120).Title("Harga").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                g.Command(command =>
+                {
+                    command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                }).Width(200);
+
+            })
+            .ToolBar(toolbar =>
+                 {
+                     toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                        "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                        "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                 })
+            .AutoBind(false)
+            .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+            .Navigatable()
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .Sortable()
+            .Groupable()
+            .HtmlAttributes(new { style = "Height: 450px" })
+            .Events(e =>
+            {
+                e.Change("grdOnChange");
+                e.Edit("grdOnEdit");
+                e.DataBound("resetRowNumber");
+            })
+            .DataSource(o => o
+                .Ajax()
+                .ServerOperation(false)
+                .Aggregates(ag =>
+                {
+                    ag.Add(x => x.Harga).Sum();
+                })
+                .Batch(true)
+                    .Model(model =>
+                    {
+                        model.Id(p => p.Agrowisata_DTL_ReservasiPerUnitId);
+                    })
+                .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+                            // Each report viewer must have an id - it will be used by the initialization script
+                            // to find the element and initialize the report viewer.
+                            .Id("reportViewer")
+                            // The URL of the service which will serve reports.
+                            // The URL corresponds to the name of the controller class (ReportsController).
+                            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                            .ServiceUrl(Url.Content("/api/reports/"))
+                            // The URL for custom report vie    wer template. The template can be edited -
+                            // new functionalities can be added and unneeded ones can be removed.
+                            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                            //
+                            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                            .ReportSource(new UriReportSource() { Uri = "../Reports/Agrowisata/VoucherRoomPerUnit.trdx" })
+                            // Specifies whether the viewer is in interactive or print preview mode.
+                            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                            .ViewMode(ViewMode.Interactive)
+                            // Sets the scale mode of the viewer.
+                            // Three modes exist currently:
+                            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                            // Specific - Uses the scale to zoom in and out the report.
+                            .ScaleMode(ScaleMode.Specific)
+                            // Zoom in and out the report using the scale
+                            // 1.0 is equal to 100%, i.e. the original size of the report
+                            .Scale(1.0)
+                            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                            .PersistSession(false)
+                            // Sets the print mode of the viewer.
+                            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Invoice dengan No SI ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+</style>
+
+

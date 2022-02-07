@@ -1,0 +1,20 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Laki-Laki",
+                Value = "Laki-Laki"
+            },
+            new SelectListItem() {
+                Text = "Perempuan",
+                Value = "Perempuan"
+            }
+        })
+        .Events(e => { e.Change("ddlJenisKelaminOnChange"); e.Select("ddlJenisKelaminOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

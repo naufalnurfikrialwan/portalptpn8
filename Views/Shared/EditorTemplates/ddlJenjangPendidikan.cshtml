@@ -1,0 +1,55 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "TIDAK SEKOLAH",
+                Value = "Z0"
+            },
+            new SelectListItem() {
+                Text = "SD DAN SETARA",
+                Value = "Z1"
+            },
+            new SelectListItem() {
+                Text = "SMP DAN SETARA",
+                Value = "Z2"
+            },
+            new SelectListItem() {
+                Text = "SMU DAN SETARA",
+                Value = "Z3"
+            },
+            new SelectListItem() {
+                Text = "DIPLOMA DAN SETARA",
+                Value = "Z4"
+            },
+            new SelectListItem() {
+                Text = "S1/D4",
+                Value = "Z5"
+            },
+            new SelectListItem() {
+                Text = "S2",
+                Value = "Z6"
+            },
+            new SelectListItem() {
+                Text = "S3",
+                Value = "Z7"
+            },
+            new SelectListItem() {
+                Text = "INFORMAL",
+                Value = "Z8"
+            },
+            new SelectListItem() {
+                Text = "KURSUS UMUM",
+                Value = "ZA"
+            },
+            new SelectListItem() {
+                Text = "KURSUS JABATAN",
+                Value = "ZB"
+            }
+        })
+        .Events(e => { e.Change("ddlJenjangPendidikanOnChange"); e.Select("ddlJenjangPendidikanOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

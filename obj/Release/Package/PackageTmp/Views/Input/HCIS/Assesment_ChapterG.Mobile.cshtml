@@ -1,0 +1,139 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe G'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+<table align="center" width="100%">
+    <tr>
+        <td>
+            <div id="_chapterG" style="display: none;">
+                <div id="ContohChapterG">
+                    <label style="font-size: large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER G</label>
+                    <label style="font-size: large; font-weight: 600;">INSTRUKSI:</label>
+                    <label id="instruksiG1" style="font-size: large; font-weight: 600;margin: 5px 5px 5px 5px">@instruksi</label>
+                    <label style="font-size: large;">Contoh Soal 1 :</label>
+                    <table class="multiplechoice">
+                        <tr><td>Semua yang rajin akan sukses. Rudi adalah seorang yang rajin. Jadi…</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterG_a" type="radio" name="ContohSoal1_ChapterG" value="ContohSoal1_ChapterG_a" disabled>(a) Mungkin Rudi sukses</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterG_b" type="radio" name="ContohSoal1_ChapterG" value="ContohSoal1_ChapterG_b" disabled checked="checked">(b) Rudi akan sukses</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterG_c" type="radio" name="ContohSoal1_ChapterG" value="ContohSoal1_ChapterG_c" disabled>(c) Rudi anak yang rajin</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterG_d" type="radio" name="ContohSoal1_ChapterG" value="ContohSoal1_ChapterG_d" disabled>(d) Rudi anak yang tidak rajin</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterG_e" type="radio" name="ContohSoal1_ChapterG" value="ContohSoal1_ChapterG_e" disabled>(e) Tidak dapat ditarik kesimpulan</td></tr>
+                        <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (b). Karena pada kalimat pertama dinyatakan bahwa orang yang rajin akan sukses. Sementara itu Rudi merupakan orang yang rajin. Dengan demikian dapat ditarik kesimpulan bahwa Rudi akan sukses.</label></td></tr>
+                    </table>
+                    <label style="font-size: large;">Contoh Soal 2 :</label>
+                    <table class="multiplechoice">
+                        <tr><td>Semua kepala sekolah mencintai sekolahnya. Sebagian guru mencintai sekolahnya. Jadi…</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterG_a" type="radio" name="ContohSoal2_ChapterG" value="ContohSoal2_ChapterG_a" disabled>(a) Sebagian kepala sekolah mencintai sekolahnya</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterG_b" type="radio" name="ContohSoal2_ChapterG" value="ContohSoal2_ChapterG_b" disabled>(b) Semua guru mencintai sekolahnya</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterG_c" type="radio" name="ContohSoal2_ChapterG" value="ContohSoal2_ChapterG_c" disabled>(c) Semua kepala sekolah adalah guru </td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterG_d" type="radio" name="ContohSoal2_ChapterG" value="ContohSoal2_ChapterG_d" disabled>(d) Semua guru adalah kepala sekolah </td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterG_e" type="radio" name="ContohSoal2_ChapterG" value="ContohSoal2_ChapterG_e" disabled checked="checked">(e) Sebagian guru adalah kepala sekolah </td></tr>
+                        <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (e). Karena pada kalimat pertama dinyatakan bahwa semua kepala sekolah mencintai sekolahnya. Sementara itu sebagian guru mencintai sekolahnya. Dengan demikian dapat ditarik kesimpulan bahwa sebagian guru yang mencintai sekolahnya adalah kepala sekolah, karena sudah dapat dipastikan bahwa semua yang mencintai sekolahnya adalah kepala sekolah (pada kalimat pertama). Sehingga, jawabannya adalah sebagian guru adalah kepala sekolah (e).</label></td></tr>
+                    </table>
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <button type="button" id="btnMulaiTestChapterG" onclick="btnMulaiTestOnClick('Tipe G')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter G</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="TestChapterG" style="display: none;">
+                    @{
+                        Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                        Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                        Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe G").TipeSoalId;
+                        int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe G").JumlahPertanyaan;
+                        Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                        List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                        List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+                        Ptpn8.Models.ModalManusia.View_LoadSoal mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoal)HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name];
+                        if (mdlLoadPerChapter == null)
+                        {
+                            mdlLoadPerChapter = new Ptpn8.Models.ModalManusia.View_LoadSoal();
+                        }
+                        @*<div style="border: 3px solid black; padding: 10px;">*@
+                            <label style="font-size: large; font-weight: 1000; text-align: center;">SOAL CHAPTER G</label>
+                            <label style="font-size: large; font-weight: 600;">INSTRUKSI:</label>
+                            <label id="instruksiG2" style="font-size: large; font-weight: 600;margin: 5px 5px 5px 5px">@instruksi</label>
+                            <label style="font-size: large; margin: 5px 5px 5px 5px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.Anda dapat mengerjakan soal yang menurut anda lebih mudah terlebih dahulu</label>
+                            <label style="font-size: large; margin: 5px 5px 5px 5px">Apabila sudah selesai Click <span style="color: red">"Lanjut ke Chapter H"</span></label>
+                        @*</div>*@
+                            <div id="G">
+                                @{
+                                    mdlLoadPerChapter.JumlahLoadChapterG = 0;
+                                }
+                                @for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                                {
+                                    paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                                    pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                                    pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                                    jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                                    <table class="multiplechoice">
+                                        <tr>
+                                            @foreach (var mp1 in pertanyaanDetail)
+                                            {
+                                                <td width="4%">(@noUrut)</td>
+                                                <td>@mp1.PertanyaanTeks</td>
+                                            }
+                                        </tr>
+
+                                        @foreach (var mp2 in jawaban)
+                                        {
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <table width="100%">
+                                                        <tr>
+                                                            <td width="10%"><label id="G1_@noUrut" style="display: none;">@mp2.PertanyaanId</label><input class="largerRadio" type="radio" name="G_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('G_@noUrut','@(mp2.NoUrut)')" /></td>
+                                                            <td width="10%"><span class="jawaban" onclick="pertanyaanOnClick('G_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut))</span></td>
+                                                            <td><span class="jawaban" onclick="pertanyaanOnClick('G_@noUrut','@(mp2.NoUrut - 1)')">@mp2.JawabanTeks</span></td>
+                                                        </tr>
+                                                    </table>
+
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                    mdlLoadPerChapter.JumlahLoadChapterG = mdlLoadPerChapter.JumlahLoadChapterG + 1;
+                                    HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name] = mdlLoadPerChapter;
+
+                                }
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnG" onclick="btnOnClick('Tipe G')" class="btn-big" style="height: 60px; width: 250px;">Lanjut ke Chapter H</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                    }
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<style>
+    #ContohChapterG {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #TestChapterG {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+</style>

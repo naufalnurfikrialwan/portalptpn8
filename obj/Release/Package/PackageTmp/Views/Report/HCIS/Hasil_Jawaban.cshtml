@@ -1,0 +1,1716 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">Hasil Jawaban Assessment PTPN VIII</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="10%">
+                        <label>Tanggal Assessment:</label>
+                    </td>
+                    <td width="40%">
+                        @(Html.Kendo().DatePicker().Name("TanggalAssessment").Format("dd-MM-yyyy")
+                                    .Value(DateTime.Now)
+                        )
+                    </td>
+                </tr>                
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<div id="_detail">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+        .Items(tabstrip =>
+        {
+            tabstrip.Add().Text("Chapter A").Selected(true)
+            .Content(@<text>
+                @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(false)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+        tabstrip.Add().Text("Chapter B").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20>(Guid.Empty.ToString())
+                .Name("grdDetail2")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport2").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+        tabstrip.Add().Text("Chapter C").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20>(Guid.Empty.ToString())
+                .Name("grdDetail3")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport3").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+        tabstrip.Add().Text("Chapter D").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20>(Guid.Empty.ToString())
+                .Name("grdDetail4")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport4").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter E").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20>(Guid.Empty.ToString())
+                .Name("grdDetail5")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport5").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter F").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20>(Guid.Empty.ToString())
+                .Name("grdDetail6")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport6").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+        tabstrip.Add().Text("Chapter G").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20>(Guid.Empty.ToString())
+                .Name("grdDetail7")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport7").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter H").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban200>(Guid.Empty.ToString())
+                .Name("grdDetail8")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                            c.Bound(j => j.Pertanyaan21).Width(75).Title("21");
+                            c.Bound(j => j.Pertanyaan22).Width(75).Title("22");
+                            c.Bound(j => j.Pertanyaan23).Width(75).Title("23");
+                            c.Bound(j => j.Pertanyaan24).Width(75).Title("24");
+                            c.Bound(j => j.Pertanyaan25).Width(75).Title("25");
+                            c.Bound(j => j.Pertanyaan26).Width(75).Title("26");
+                            c.Bound(j => j.Pertanyaan27).Width(75).Title("27");
+                            c.Bound(j => j.Pertanyaan28).Width(75).Title("28");
+                            c.Bound(j => j.Pertanyaan29).Width(75).Title("29");
+                            c.Bound(j => j.Pertanyaan30).Width(75).Title("30");
+                            c.Bound(j => j.Pertanyaan31).Width(75).Title("31");
+                            c.Bound(j => j.Pertanyaan32).Width(75).Title("32");
+                            c.Bound(j => j.Pertanyaan33).Width(75).Title("33");
+                            c.Bound(j => j.Pertanyaan34).Width(75).Title("34");
+                            c.Bound(j => j.Pertanyaan35).Width(75).Title("35");
+                            c.Bound(j => j.Pertanyaan36).Width(75).Title("36");
+                            c.Bound(j => j.Pertanyaan37).Width(75).Title("37");
+                            c.Bound(j => j.Pertanyaan38).Width(75).Title("38");
+                            c.Bound(j => j.Pertanyaan39).Width(75).Title("39");
+                            c.Bound(j => j.Pertanyaan40).Width(75).Title("40");
+                            c.Bound(j => j.Pertanyaan41).Width(75).Title("41");
+                            c.Bound(j => j.Pertanyaan42).Width(75).Title("42");
+                            c.Bound(j => j.Pertanyaan43).Width(75).Title("43");
+                            c.Bound(j => j.Pertanyaan44).Width(75).Title("44");
+                            c.Bound(j => j.Pertanyaan45).Width(75).Title("45");
+                            c.Bound(j => j.Pertanyaan46).Width(75).Title("46");
+                            c.Bound(j => j.Pertanyaan47).Width(75).Title("47");
+                            c.Bound(j => j.Pertanyaan48).Width(75).Title("48");
+                            c.Bound(j => j.Pertanyaan49).Width(75).Title("49");
+                            c.Bound(j => j.Pertanyaan50).Width(75).Title("50");
+                            c.Bound(j => j.Pertanyaan51).Width(75).Title("51");
+                            c.Bound(j => j.Pertanyaan52).Width(75).Title("52");
+                            c.Bound(j => j.Pertanyaan53).Width(75).Title("53");
+                            c.Bound(j => j.Pertanyaan54).Width(75).Title("54");
+                            c.Bound(j => j.Pertanyaan55).Width(75).Title("55");
+                            c.Bound(j => j.Pertanyaan56).Width(75).Title("56");
+                            c.Bound(j => j.Pertanyaan57).Width(75).Title("57");
+                            c.Bound(j => j.Pertanyaan58).Width(75).Title("58");
+                            c.Bound(j => j.Pertanyaan59).Width(75).Title("59");
+                            c.Bound(j => j.Pertanyaan60).Width(75).Title("60");
+                            c.Bound(j => j.Pertanyaan61).Width(75).Title("61");
+                            c.Bound(j => j.Pertanyaan62).Width(75).Title("62");
+                            c.Bound(j => j.Pertanyaan63).Width(75).Title("63");
+                            c.Bound(j => j.Pertanyaan64).Width(75).Title("64");
+                            c.Bound(j => j.Pertanyaan65).Width(75).Title("65");
+                            c.Bound(j => j.Pertanyaan66).Width(75).Title("66");
+                            c.Bound(j => j.Pertanyaan67).Width(75).Title("67");
+                            c.Bound(j => j.Pertanyaan68).Width(75).Title("68");
+                            c.Bound(j => j.Pertanyaan69).Width(75).Title("69");
+                            c.Bound(j => j.Pertanyaan70).Width(75).Title("70");
+                            c.Bound(j => j.Pertanyaan71).Width(75).Title("71");
+                            c.Bound(j => j.Pertanyaan72).Width(75).Title("72");
+                            c.Bound(j => j.Pertanyaan73).Width(75).Title("73");
+                            c.Bound(j => j.Pertanyaan74).Width(75).Title("74");
+                            c.Bound(j => j.Pertanyaan75).Width(75).Title("75");
+                            c.Bound(j => j.Pertanyaan76).Width(75).Title("76");
+                            c.Bound(j => j.Pertanyaan77).Width(75).Title("77");
+                            c.Bound(j => j.Pertanyaan78).Width(75).Title("78");
+                            c.Bound(j => j.Pertanyaan79).Width(75).Title("79");
+                            c.Bound(j => j.Pertanyaan80).Width(75).Title("80");
+                            c.Bound(j => j.Pertanyaan81).Width(75).Title("81");
+                            c.Bound(j => j.Pertanyaan82).Width(75).Title("82");
+                            c.Bound(j => j.Pertanyaan83).Width(75).Title("83");
+                            c.Bound(j => j.Pertanyaan84).Width(75).Title("84");
+                            c.Bound(j => j.Pertanyaan85).Width(75).Title("85");
+                            c.Bound(j => j.Pertanyaan86).Width(75).Title("86");
+                            c.Bound(j => j.Pertanyaan87).Width(75).Title("87");
+                            c.Bound(j => j.Pertanyaan88).Width(75).Title("88");
+                            c.Bound(j => j.Pertanyaan89).Width(75).Title("89");
+                            c.Bound(j => j.Pertanyaan90).Width(75).Title("90");
+                            c.Bound(j => j.Pertanyaan91).Width(75).Title("91");
+                            c.Bound(j => j.Pertanyaan92).Width(75).Title("92");
+                            c.Bound(j => j.Pertanyaan93).Width(75).Title("93");
+                            c.Bound(j => j.Pertanyaan94).Width(75).Title("94");
+                            c.Bound(j => j.Pertanyaan95).Width(75).Title("95");
+                            c.Bound(j => j.Pertanyaan96).Width(75).Title("96");
+                            c.Bound(j => j.Pertanyaan97).Width(75).Title("97");
+                            c.Bound(j => j.Pertanyaan98).Width(75).Title("98");
+                            c.Bound(j => j.Pertanyaan99).Width(75).Title("99");
+                            c.Bound(j => j.Pertanyaan100).Width(75).Title("100");
+                            c.Bound(j => j.Pertanyaan101).Width(75).Title("101");
+                            c.Bound(j => j.Pertanyaan102).Width(75).Title("102");
+                            c.Bound(j => j.Pertanyaan103).Width(75).Title("103");
+                            c.Bound(j => j.Pertanyaan104).Width(75).Title("104");
+                            c.Bound(j => j.Pertanyaan105).Width(75).Title("105");
+                            c.Bound(j => j.Pertanyaan106).Width(75).Title("106");
+                            c.Bound(j => j.Pertanyaan107).Width(75).Title("107");
+                            c.Bound(j => j.Pertanyaan108).Width(75).Title("108");
+                            c.Bound(j => j.Pertanyaan109).Width(75).Title("109");
+                            c.Bound(j => j.Pertanyaan110).Width(75).Title("110");
+                            c.Bound(j => j.Pertanyaan111).Width(75).Title("111");
+                            c.Bound(j => j.Pertanyaan112).Width(75).Title("112");
+                            c.Bound(j => j.Pertanyaan113).Width(75).Title("113");
+                            c.Bound(j => j.Pertanyaan114).Width(75).Title("114");
+                            c.Bound(j => j.Pertanyaan115).Width(75).Title("115");
+                            c.Bound(j => j.Pertanyaan116).Width(75).Title("116");
+                            c.Bound(j => j.Pertanyaan117).Width(75).Title("117");
+                            c.Bound(j => j.Pertanyaan118).Width(75).Title("118");
+                            c.Bound(j => j.Pertanyaan119).Width(75).Title("119");
+                            c.Bound(j => j.Pertanyaan120).Width(75).Title("120");
+                            c.Bound(j => j.Pertanyaan121).Width(75).Title("121");
+                            c.Bound(j => j.Pertanyaan122).Width(75).Title("122");
+                            c.Bound(j => j.Pertanyaan123).Width(75).Title("123");
+                            c.Bound(j => j.Pertanyaan124).Width(75).Title("124");
+                            c.Bound(j => j.Pertanyaan125).Width(75).Title("125");
+                            c.Bound(j => j.Pertanyaan126).Width(75).Title("126");
+                            c.Bound(j => j.Pertanyaan127).Width(75).Title("127");
+                            c.Bound(j => j.Pertanyaan128).Width(75).Title("128");
+                            c.Bound(j => j.Pertanyaan129).Width(75).Title("129");
+                            c.Bound(j => j.Pertanyaan130).Width(75).Title("130");
+                            c.Bound(j => j.Pertanyaan131).Width(75).Title("131");
+                            c.Bound(j => j.Pertanyaan132).Width(75).Title("132");
+                            c.Bound(j => j.Pertanyaan133).Width(75).Title("133");
+                            c.Bound(j => j.Pertanyaan134).Width(75).Title("134");
+                            c.Bound(j => j.Pertanyaan135).Width(75).Title("135");
+                            c.Bound(j => j.Pertanyaan136).Width(75).Title("136");
+                            c.Bound(j => j.Pertanyaan137).Width(75).Title("137");
+                            c.Bound(j => j.Pertanyaan138).Width(75).Title("138");
+                            c.Bound(j => j.Pertanyaan139).Width(75).Title("139");
+                            c.Bound(j => j.Pertanyaan140).Width(75).Title("140");
+                            c.Bound(j => j.Pertanyaan141).Width(75).Title("141");
+                            c.Bound(j => j.Pertanyaan142).Width(75).Title("142");
+                            c.Bound(j => j.Pertanyaan143).Width(75).Title("143");
+                            c.Bound(j => j.Pertanyaan144).Width(75).Title("144");
+                            c.Bound(j => j.Pertanyaan145).Width(75).Title("145");
+                            c.Bound(j => j.Pertanyaan146).Width(75).Title("146");
+                            c.Bound(j => j.Pertanyaan147).Width(75).Title("147");
+                            c.Bound(j => j.Pertanyaan148).Width(75).Title("148");
+                            c.Bound(j => j.Pertanyaan149).Width(75).Title("149");
+                            c.Bound(j => j.Pertanyaan150).Width(75).Title("150");
+                            c.Bound(j => j.Pertanyaan151).Width(75).Title("151");
+                            c.Bound(j => j.Pertanyaan152).Width(75).Title("152");
+                            c.Bound(j => j.Pertanyaan153).Width(75).Title("153");
+                            c.Bound(j => j.Pertanyaan154).Width(75).Title("154");
+                            c.Bound(j => j.Pertanyaan155).Width(75).Title("155");
+                            c.Bound(j => j.Pertanyaan156).Width(75).Title("156");
+                            c.Bound(j => j.Pertanyaan157).Width(75).Title("157");
+                            c.Bound(j => j.Pertanyaan158).Width(75).Title("158");
+                            c.Bound(j => j.Pertanyaan159).Width(75).Title("159");
+                            c.Bound(j => j.Pertanyaan160).Width(75).Title("160");
+                            c.Bound(j => j.Pertanyaan161).Width(75).Title("161");
+                            c.Bound(j => j.Pertanyaan162).Width(75).Title("162");
+                            c.Bound(j => j.Pertanyaan163).Width(75).Title("163");
+                            c.Bound(j => j.Pertanyaan164).Width(75).Title("164");
+                            c.Bound(j => j.Pertanyaan165).Width(75).Title("165");
+                            c.Bound(j => j.Pertanyaan166).Width(75).Title("166");
+                            c.Bound(j => j.Pertanyaan167).Width(75).Title("167");
+                            c.Bound(j => j.Pertanyaan168).Width(75).Title("168");
+                            c.Bound(j => j.Pertanyaan169).Width(75).Title("169");
+                            c.Bound(j => j.Pertanyaan170).Width(75).Title("170");
+                            c.Bound(j => j.Pertanyaan171).Width(75).Title("171");
+                            c.Bound(j => j.Pertanyaan172).Width(75).Title("172");
+                            c.Bound(j => j.Pertanyaan173).Width(75).Title("173");
+                            c.Bound(j => j.Pertanyaan174).Width(75).Title("174");
+                            c.Bound(j => j.Pertanyaan175).Width(75).Title("175");
+                            c.Bound(j => j.Pertanyaan176).Width(75).Title("176");
+                            c.Bound(j => j.Pertanyaan177).Width(75).Title("177");
+                            c.Bound(j => j.Pertanyaan178).Width(75).Title("178");
+                            c.Bound(j => j.Pertanyaan179).Width(75).Title("179");
+                            c.Bound(j => j.Pertanyaan180).Width(75).Title("180");
+                            c.Bound(j => j.Pertanyaan181).Width(75).Title("181");
+                            c.Bound(j => j.Pertanyaan182).Width(75).Title("182");
+                            c.Bound(j => j.Pertanyaan183).Width(75).Title("183");
+                            c.Bound(j => j.Pertanyaan184).Width(75).Title("184");
+                            c.Bound(j => j.Pertanyaan185).Width(75).Title("185");
+                            c.Bound(j => j.Pertanyaan186).Width(75).Title("186");
+                            c.Bound(j => j.Pertanyaan187).Width(75).Title("187");
+                            c.Bound(j => j.Pertanyaan188).Width(75).Title("188");
+                            c.Bound(j => j.Pertanyaan189).Width(75).Title("189");
+                            c.Bound(j => j.Pertanyaan190).Width(75).Title("190");
+                            c.Bound(j => j.Pertanyaan191).Width(75).Title("191");
+                            c.Bound(j => j.Pertanyaan192).Width(75).Title("192");
+                            c.Bound(j => j.Pertanyaan193).Width(75).Title("193");
+                            c.Bound(j => j.Pertanyaan194).Width(75).Title("194");
+                            c.Bound(j => j.Pertanyaan195).Width(75).Title("195");
+                            c.Bound(j => j.Pertanyaan196).Width(75).Title("196");
+                            c.Bound(j => j.Pertanyaan197).Width(75).Title("197");
+                            c.Bound(j => j.Pertanyaan198).Width(75).Title("198");
+                            c.Bound(j => j.Pertanyaan199).Width(75).Title("199");
+                            c.Bound(j => j.Pertanyaan200).Width(75).Title("200");
+                            c.Bound(j => j.Pertanyaan201).Width(75).Title("201");
+                            c.Bound(j => j.Pertanyaan202).Width(75).Title("202");
+                            c.Bound(j => j.Pertanyaan203).Width(75).Title("203");
+                            c.Bound(j => j.Pertanyaan204).Width(75).Title("204");
+                            c.Bound(j => j.Pertanyaan205).Width(75).Title("205");
+                            c.Bound(j => j.Pertanyaan206).Width(75).Title("206");
+                            c.Bound(j => j.Pertanyaan207).Width(75).Title("207");
+                            c.Bound(j => j.Pertanyaan208).Width(75).Title("208");
+                            c.Bound(j => j.Pertanyaan209).Width(75).Title("209");
+                            c.Bound(j => j.Pertanyaan210).Width(75).Title("210");
+                            c.Bound(j => j.Pertanyaan211).Width(75).Title("211");
+                            c.Bound(j => j.Pertanyaan212).Width(75).Title("212");
+                            c.Bound(j => j.Pertanyaan213).Width(75).Title("213");
+                            c.Bound(j => j.Pertanyaan214).Width(75).Title("214");
+                            c.Bound(j => j.Pertanyaan215).Width(75).Title("215");
+                            c.Bound(j => j.Pertanyaan216).Width(75).Title("216");
+                            c.Bound(j => j.Pertanyaan217).Width(75).Title("217");
+                            c.Bound(j => j.Pertanyaan218).Width(75).Title("218");
+                            c.Bound(j => j.Pertanyaan219).Width(75).Title("219");
+                            c.Bound(j => j.Pertanyaan220).Width(75).Title("220");
+                            c.Bound(j => j.Pertanyaan221).Width(75).Title("221");
+                            c.Bound(j => j.Pertanyaan222).Width(75).Title("222");
+                            c.Bound(j => j.Pertanyaan223).Width(75).Title("223");
+                            c.Bound(j => j.Pertanyaan224).Width(75).Title("224");
+                            c.Bound(j => j.Pertanyaan225).Width(75).Title("225");
+                            c.Bound(j => j.Pertanyaan226).Width(75).Title("226");
+                            c.Bound(j => j.Pertanyaan227).Width(75).Title("227");
+                            c.Bound(j => j.Pertanyaan228).Width(75).Title("228");
+                            c.Bound(j => j.Pertanyaan229).Width(75).Title("229");
+                            c.Bound(j => j.Pertanyaan230).Width(75).Title("230");
+                            c.Bound(j => j.Pertanyaan231).Width(75).Title("231");
+                            c.Bound(j => j.Pertanyaan232).Width(75).Title("232");
+                            c.Bound(j => j.Pertanyaan233).Width(75).Title("233");
+                            c.Bound(j => j.Pertanyaan234).Width(75).Title("234");
+                            c.Bound(j => j.Pertanyaan235).Width(75).Title("235");
+                            c.Bound(j => j.Pertanyaan236).Width(75).Title("236");
+                            c.Bound(j => j.Pertanyaan237).Width(75).Title("237");
+                            c.Bound(j => j.Pertanyaan238).Width(75).Title("238");
+                            c.Bound(j => j.Pertanyaan239).Width(75).Title("239");
+                            c.Bound(j => j.Pertanyaan240).Width(75).Title("240");
+                            c.Bound(j => j.Pertanyaan241).Width(75).Title("241");
+                            c.Bound(j => j.Pertanyaan242).Width(75).Title("242");
+                            c.Bound(j => j.Pertanyaan243).Width(75).Title("243");
+                            c.Bound(j => j.Pertanyaan244).Width(75).Title("244");
+                            c.Bound(j => j.Pertanyaan245).Width(75).Title("245");
+                            c.Bound(j => j.Pertanyaan246).Width(75).Title("246");
+                            c.Bound(j => j.Pertanyaan247).Width(75).Title("247");
+                            c.Bound(j => j.Pertanyaan248).Width(75).Title("248");
+                            c.Bound(j => j.Pertanyaan249).Width(75).Title("249");
+                            c.Bound(j => j.Pertanyaan250).Width(75).Title("250");
+                            c.Bound(j => j.Pertanyaan251).Width(75).Title("251");
+                            c.Bound(j => j.Pertanyaan252).Width(75).Title("252");
+                            c.Bound(j => j.Pertanyaan253).Width(75).Title("253");
+                            c.Bound(j => j.Pertanyaan254).Width(75).Title("254");
+                            c.Bound(j => j.Pertanyaan255).Width(75).Title("255");
+                            c.Bound(j => j.Pertanyaan256).Width(75).Title("256");
+                            c.Bound(j => j.Pertanyaan257).Width(75).Title("257");
+                            c.Bound(j => j.Pertanyaan258).Width(75).Title("258");
+                            c.Bound(j => j.Pertanyaan259).Width(75).Title("259");
+                            c.Bound(j => j.Pertanyaan260).Width(75).Title("260");
+                            c.Bound(j => j.Pertanyaan261).Width(75).Title("261");
+                            c.Bound(j => j.Pertanyaan262).Width(75).Title("262");
+                            c.Bound(j => j.Pertanyaan263).Width(75).Title("263");
+                            c.Bound(j => j.Pertanyaan264).Width(75).Title("264");
+                            c.Bound(j => j.Pertanyaan265).Width(75).Title("265");
+                            c.Bound(j => j.Pertanyaan266).Width(75).Title("266");
+                            c.Bound(j => j.Pertanyaan267).Width(75).Title("267");
+                            c.Bound(j => j.Pertanyaan268).Width(75).Title("268");
+                            c.Bound(j => j.Pertanyaan269).Width(75).Title("269");
+                            c.Bound(j => j.Pertanyaan270).Width(75).Title("270");
+                            c.Bound(j => j.Pertanyaan271).Width(75).Title("271");
+                            c.Bound(j => j.Pertanyaan272).Width(75).Title("272");
+                            c.Bound(j => j.Pertanyaan273).Width(75).Title("273");
+                            c.Bound(j => j.Pertanyaan274).Width(75).Title("274");
+                            c.Bound(j => j.Pertanyaan275).Width(75).Title("275");
+                            c.Bound(j => j.Pertanyaan276).Width(75).Title("276");
+                            c.Bound(j => j.Pertanyaan277).Width(75).Title("277");
+                            c.Bound(j => j.Pertanyaan278).Width(75).Title("278");
+                            c.Bound(j => j.Pertanyaan279).Width(75).Title("279");
+                            c.Bound(j => j.Pertanyaan280).Width(75).Title("280");
+                            c.Bound(j => j.Pertanyaan281).Width(75).Title("281");
+                            c.Bound(j => j.Pertanyaan282).Width(75).Title("282");
+                            c.Bound(j => j.Pertanyaan283).Width(75).Title("283");
+                            c.Bound(j => j.Pertanyaan284).Width(75).Title("284");
+                            c.Bound(j => j.Pertanyaan285).Width(75).Title("285");
+                            c.Bound(j => j.Pertanyaan286).Width(75).Title("286");
+                            c.Bound(j => j.Pertanyaan287).Width(75).Title("287");
+                            c.Bound(j => j.Pertanyaan288).Width(75).Title("288");
+                            c.Bound(j => j.Pertanyaan289).Width(75).Title("289");
+                            c.Bound(j => j.Pertanyaan290).Width(75).Title("290");
+                            c.Bound(j => j.Pertanyaan291).Width(75).Title("291");
+                            c.Bound(j => j.Pertanyaan292).Width(75).Title("292");
+                            c.Bound(j => j.Pertanyaan293).Width(75).Title("293");
+                            c.Bound(j => j.Pertanyaan294).Width(75).Title("294");
+                            c.Bound(j => j.Pertanyaan295).Width(75).Title("295");
+                            c.Bound(j => j.Pertanyaan296).Width(75).Title("296");
+                            c.Bound(j => j.Pertanyaan297).Width(75).Title("297");
+                            c.Bound(j => j.Pertanyaan298).Width(75).Title("298");
+                            c.Bound(j => j.Pertanyaan299).Width(75).Title("299");
+                            c.Bound(j => j.Pertanyaan300).Width(75).Title("300");
+                            c.Bound(j => j.Pertanyaan301).Width(75).Title("301");
+                            c.Bound(j => j.Pertanyaan302).Width(75).Title("302");
+                            c.Bound(j => j.Pertanyaan303).Width(75).Title("303");
+                            c.Bound(j => j.Pertanyaan304).Width(75).Title("304");
+                            c.Bound(j => j.Pertanyaan305).Width(75).Title("305");
+                            c.Bound(j => j.Pertanyaan306).Width(75).Title("306");
+                            c.Bound(j => j.Pertanyaan307).Width(75).Title("307");
+                            c.Bound(j => j.Pertanyaan308).Width(75).Title("308");
+                            c.Bound(j => j.Pertanyaan309).Width(75).Title("309");
+                            c.Bound(j => j.Pertanyaan310).Width(75).Title("310");
+                            c.Bound(j => j.Pertanyaan311).Width(75).Title("311");
+                            c.Bound(j => j.Pertanyaan312).Width(75).Title("312");
+                            c.Bound(j => j.Pertanyaan313).Width(75).Title("313");
+                            c.Bound(j => j.Pertanyaan314).Width(75).Title("314");
+                            c.Bound(j => j.Pertanyaan315).Width(75).Title("315");
+                            c.Bound(j => j.Pertanyaan316).Width(75).Title("316");
+                            c.Bound(j => j.Pertanyaan317).Width(75).Title("317");
+                            c.Bound(j => j.Pertanyaan318).Width(75).Title("318");
+                            c.Bound(j => j.Pertanyaan319).Width(75).Title("319");
+                            c.Bound(j => j.Pertanyaan320).Width(75).Title("320");
+                            c.Bound(j => j.Pertanyaan321).Width(75).Title("321");
+                            c.Bound(j => j.Pertanyaan322).Width(75).Title("322");
+                            c.Bound(j => j.Pertanyaan323).Width(75).Title("323");
+                            c.Bound(j => j.Pertanyaan324).Width(75).Title("324");
+                            c.Bound(j => j.Pertanyaan325).Width(75).Title("325");
+                            c.Bound(j => j.Pertanyaan326).Width(75).Title("326");
+                            c.Bound(j => j.Pertanyaan327).Width(75).Title("327");
+                            c.Bound(j => j.Pertanyaan328).Width(75).Title("328");
+                            c.Bound(j => j.Pertanyaan329).Width(75).Title("329");
+                            c.Bound(j => j.Pertanyaan330).Width(75).Title("330");
+                            c.Bound(j => j.Pertanyaan331).Width(75).Title("331");
+                            c.Bound(j => j.Pertanyaan332).Width(75).Title("332");
+                            c.Bound(j => j.Pertanyaan333).Width(75).Title("333");
+                            c.Bound(j => j.Pertanyaan334).Width(75).Title("334");
+                            c.Bound(j => j.Pertanyaan335).Width(75).Title("335");
+                            c.Bound(j => j.Pertanyaan336).Width(75).Title("336");
+                            c.Bound(j => j.Pertanyaan337).Width(75).Title("337");
+                            c.Bound(j => j.Pertanyaan338).Width(75).Title("338");
+                            c.Bound(j => j.Pertanyaan339).Width(75).Title("339");
+                            c.Bound(j => j.Pertanyaan340).Width(75).Title("340");
+                            c.Bound(j => j.Pertanyaan341).Width(75).Title("341");
+                            c.Bound(j => j.Pertanyaan342).Width(75).Title("342");
+                            c.Bound(j => j.Pertanyaan343).Width(75).Title("343");
+                            c.Bound(j => j.Pertanyaan344).Width(75).Title("344");
+                            c.Bound(j => j.Pertanyaan345).Width(75).Title("345");
+                            c.Bound(j => j.Pertanyaan346).Width(75).Title("346");
+                            c.Bound(j => j.Pertanyaan347).Width(75).Title("347");
+                            c.Bound(j => j.Pertanyaan348).Width(75).Title("348");
+                            c.Bound(j => j.Pertanyaan349).Width(75).Title("349");
+                            c.Bound(j => j.Pertanyaan350).Width(75).Title("350");
+                            c.Bound(j => j.Pertanyaan351).Width(75).Title("351");
+                            c.Bound(j => j.Pertanyaan352).Width(75).Title("352");
+                            c.Bound(j => j.Pertanyaan353).Width(75).Title("353");
+                            c.Bound(j => j.Pertanyaan354).Width(75).Title("354");
+                            c.Bound(j => j.Pertanyaan355).Width(75).Title("355");
+                            c.Bound(j => j.Pertanyaan356).Width(75).Title("356");
+                            c.Bound(j => j.Pertanyaan357).Width(75).Title("357");
+                            c.Bound(j => j.Pertanyaan358).Width(75).Title("358");
+                            c.Bound(j => j.Pertanyaan359).Width(75).Title("359");
+                            c.Bound(j => j.Pertanyaan360).Width(75).Title("360");
+                            c.Bound(j => j.Pertanyaan361).Width(75).Title("361");
+                            c.Bound(j => j.Pertanyaan362).Width(75).Title("362");
+                            c.Bound(j => j.Pertanyaan363).Width(75).Title("363");
+                            c.Bound(j => j.Pertanyaan364).Width(75).Title("364");
+                            c.Bound(j => j.Pertanyaan365).Width(75).Title("365");
+                            c.Bound(j => j.Pertanyaan366).Width(75).Title("366");
+                            c.Bound(j => j.Pertanyaan367).Width(75).Title("367");
+                            c.Bound(j => j.Pertanyaan368).Width(75).Title("368");
+                            c.Bound(j => j.Pertanyaan369).Width(75).Title("369");
+                            c.Bound(j => j.Pertanyaan370).Width(75).Title("370");
+                            c.Bound(j => j.Pertanyaan371).Width(75).Title("371");
+                            c.Bound(j => j.Pertanyaan372).Width(75).Title("372");
+                            c.Bound(j => j.Pertanyaan373).Width(75).Title("373");
+                            c.Bound(j => j.Pertanyaan374).Width(75).Title("374");
+                            c.Bound(j => j.Pertanyaan375).Width(75).Title("375");
+                            c.Bound(j => j.Pertanyaan376).Width(75).Title("376");
+                            c.Bound(j => j.Pertanyaan377).Width(75).Title("377");
+                            c.Bound(j => j.Pertanyaan378).Width(75).Title("378");
+                            c.Bound(j => j.Pertanyaan379).Width(75).Title("379");
+                            c.Bound(j => j.Pertanyaan380).Width(75).Title("380");
+                            c.Bound(j => j.Pertanyaan381).Width(75).Title("381");
+                            c.Bound(j => j.Pertanyaan382).Width(75).Title("382");
+                            c.Bound(j => j.Pertanyaan383).Width(75).Title("383");
+                            c.Bound(j => j.Pertanyaan384).Width(75).Title("384");
+                            c.Bound(j => j.Pertanyaan385).Width(75).Title("385");
+                            c.Bound(j => j.Pertanyaan386).Width(75).Title("386");
+                            c.Bound(j => j.Pertanyaan387).Width(75).Title("387");
+                            c.Bound(j => j.Pertanyaan388).Width(75).Title("388");
+                            c.Bound(j => j.Pertanyaan389).Width(75).Title("389");
+                            c.Bound(j => j.Pertanyaan390).Width(75).Title("390");
+                            c.Bound(j => j.Pertanyaan391).Width(75).Title("391");
+                            c.Bound(j => j.Pertanyaan392).Width(75).Title("392");
+                            c.Bound(j => j.Pertanyaan393).Width(75).Title("393");
+                            c.Bound(j => j.Pertanyaan394).Width(75).Title("394");
+                            c.Bound(j => j.Pertanyaan395).Width(75).Title("395");
+                            c.Bound(j => j.Pertanyaan396).Width(75).Title("396");
+                            c.Bound(j => j.Pertanyaan397).Width(75).Title("397");
+                            c.Bound(j => j.Pertanyaan398).Width(75).Title("398");
+                            c.Bound(j => j.Pertanyaan399).Width(75).Title("399");
+                            c.Bound(j => j.Pertanyaan400).Width(75).Title("400");
+                            c.Bound(j => j.Pertanyaan401).Width(75).Title("401");
+                            c.Bound(j => j.Pertanyaan402).Width(75).Title("402");
+                            c.Bound(j => j.Pertanyaan403).Width(75).Title("403");
+                            c.Bound(j => j.Pertanyaan404).Width(75).Title("404");
+                            c.Bound(j => j.Pertanyaan405).Width(75).Title("405");
+                            c.Bound(j => j.Pertanyaan406).Width(75).Title("406");
+                            c.Bound(j => j.Pertanyaan407).Width(75).Title("407");
+                            c.Bound(j => j.Pertanyaan408).Width(75).Title("408");
+                            c.Bound(j => j.Pertanyaan409).Width(75).Title("409");
+                            c.Bound(j => j.Pertanyaan410).Width(75).Title("410");
+                            c.Bound(j => j.Pertanyaan411).Width(75).Title("411");
+                            c.Bound(j => j.Pertanyaan412).Width(75).Title("412");
+                            c.Bound(j => j.Pertanyaan413).Width(75).Title("413");
+                            c.Bound(j => j.Pertanyaan414).Width(75).Title("414");
+                            c.Bound(j => j.Pertanyaan415).Width(75).Title("415");
+                            c.Bound(j => j.Pertanyaan416).Width(75).Title("416");
+                            c.Bound(j => j.Pertanyaan417).Width(75).Title("417");
+                            c.Bound(j => j.Pertanyaan418).Width(75).Title("418");
+                            c.Bound(j => j.Pertanyaan419).Width(75).Title("419");
+                            c.Bound(j => j.Pertanyaan420).Width(75).Title("420");
+                            c.Bound(j => j.Pertanyaan421).Width(75).Title("421");
+                            c.Bound(j => j.Pertanyaan422).Width(75).Title("422");
+                            c.Bound(j => j.Pertanyaan423).Width(75).Title("423");
+                            c.Bound(j => j.Pertanyaan424).Width(75).Title("424");
+                            c.Bound(j => j.Pertanyaan425).Width(75).Title("425");
+                            c.Bound(j => j.Pertanyaan426).Width(75).Title("426");
+                            c.Bound(j => j.Pertanyaan427).Width(75).Title("427");
+                            c.Bound(j => j.Pertanyaan428).Width(75).Title("428");
+                            c.Bound(j => j.Pertanyaan429).Width(75).Title("429");
+                            c.Bound(j => j.Pertanyaan430).Width(75).Title("430");
+                            c.Bound(j => j.Pertanyaan431).Width(75).Title("431");
+                            c.Bound(j => j.Pertanyaan432).Width(75).Title("432");
+                            c.Bound(j => j.Pertanyaan433).Width(75).Title("433");
+                            c.Bound(j => j.Pertanyaan434).Width(75).Title("434");
+                            c.Bound(j => j.Pertanyaan435).Width(75).Title("435");
+                            c.Bound(j => j.Pertanyaan436).Width(75).Title("436");
+                            c.Bound(j => j.Pertanyaan437).Width(75).Title("437");
+                            c.Bound(j => j.Pertanyaan438).Width(75).Title("438");
+                            c.Bound(j => j.Pertanyaan439).Width(75).Title("439");
+                            c.Bound(j => j.Pertanyaan440).Width(75).Title("440");
+                            c.Bound(j => j.Pertanyaan441).Width(75).Title("441");
+                            c.Bound(j => j.Pertanyaan442).Width(75).Title("442");
+                            c.Bound(j => j.Pertanyaan443).Width(75).Title("443");
+                            c.Bound(j => j.Pertanyaan444).Width(75).Title("444");
+                            c.Bound(j => j.Pertanyaan445).Width(75).Title("445");
+                            c.Bound(j => j.Pertanyaan446).Width(75).Title("446");
+                            c.Bound(j => j.Pertanyaan447).Width(75).Title("447");
+                            c.Bound(j => j.Pertanyaan448).Width(75).Title("448");
+                            c.Bound(j => j.Pertanyaan449).Width(75).Title("449");
+                            c.Bound(j => j.Pertanyaan450).Width(75).Title("450");
+                            c.Bound(j => j.Pertanyaan451).Width(75).Title("451");
+                            c.Bound(j => j.Pertanyaan452).Width(75).Title("452");
+                            c.Bound(j => j.Pertanyaan453).Width(75).Title("453");
+                            c.Bound(j => j.Pertanyaan454).Width(75).Title("454");
+                            c.Bound(j => j.Pertanyaan455).Width(75).Title("455");
+                            c.Bound(j => j.Pertanyaan456).Width(75).Title("456");
+                            c.Bound(j => j.Pertanyaan457).Width(75).Title("457");
+                            c.Bound(j => j.Pertanyaan458).Width(75).Title("458");
+                            c.Bound(j => j.Pertanyaan459).Width(75).Title("459");
+                            c.Bound(j => j.Pertanyaan460).Width(75).Title("460");
+                            c.Bound(j => j.Pertanyaan461).Width(75).Title("461");
+                            c.Bound(j => j.Pertanyaan462).Width(75).Title("462");
+                            c.Bound(j => j.Pertanyaan463).Width(75).Title("463");
+                            c.Bound(j => j.Pertanyaan464).Width(75).Title("464");
+                            c.Bound(j => j.Pertanyaan465).Width(75).Title("465");
+                            c.Bound(j => j.Pertanyaan466).Width(75).Title("466");
+                            c.Bound(j => j.Pertanyaan467).Width(75).Title("467");
+                            c.Bound(j => j.Pertanyaan468).Width(75).Title("468");
+                            c.Bound(j => j.Pertanyaan469).Width(75).Title("469");
+                            c.Bound(j => j.Pertanyaan470).Width(75).Title("470");
+                            c.Bound(j => j.Pertanyaan471).Width(75).Title("471");
+                            c.Bound(j => j.Pertanyaan472).Width(75).Title("472");
+                            c.Bound(j => j.Pertanyaan473).Width(75).Title("473");
+                            c.Bound(j => j.Pertanyaan474).Width(75).Title("474");
+                            c.Bound(j => j.Pertanyaan475).Width(75).Title("475");
+                            c.Bound(j => j.Pertanyaan476).Width(75).Title("476");
+                            c.Bound(j => j.Pertanyaan477).Width(75).Title("477");
+                            c.Bound(j => j.Pertanyaan478).Width(75).Title("478");
+                            c.Bound(j => j.Pertanyaan479).Width(75).Title("479");
+                            c.Bound(j => j.Pertanyaan480).Width(75).Title("480");
+                            c.Bound(j => j.Pertanyaan481).Width(75).Title("481");
+                            c.Bound(j => j.Pertanyaan482).Width(75).Title("482");
+                            c.Bound(j => j.Pertanyaan483).Width(75).Title("483");
+                            c.Bound(j => j.Pertanyaan484).Width(75).Title("484");
+                            c.Bound(j => j.Pertanyaan485).Width(75).Title("485");
+                            c.Bound(j => j.Pertanyaan486).Width(75).Title("486");
+                            c.Bound(j => j.Pertanyaan487).Width(75).Title("487");
+                            c.Bound(j => j.Pertanyaan488).Width(75).Title("488");
+                            c.Bound(j => j.Pertanyaan489).Width(75).Title("489");
+                            c.Bound(j => j.Pertanyaan490).Width(75).Title("490");
+                            c.Bound(j => j.Pertanyaan491).Width(75).Title("491");
+                            c.Bound(j => j.Pertanyaan492).Width(75).Title("492");
+                            c.Bound(j => j.Pertanyaan493).Width(75).Title("493");
+                            c.Bound(j => j.Pertanyaan494).Width(75).Title("494");
+                            c.Bound(j => j.Pertanyaan495).Width(75).Title("495");
+                            c.Bound(j => j.Pertanyaan496).Width(75).Title("496");
+                            c.Bound(j => j.Pertanyaan497).Width(75).Title("497");
+                            c.Bound(j => j.Pertanyaan498).Width(75).Title("498");
+                            c.Bound(j => j.Pertanyaan499).Width(75).Title("499");
+                            c.Bound(j => j.Pertanyaan500).Width(75).Title("500");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport8").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter I").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban150>(Guid.Empty.ToString())
+                .Name("grdDetail9")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                            c.Bound(j => j.Pertanyaan21).Width(75).Title("21");
+                            c.Bound(j => j.Pertanyaan22).Width(75).Title("22");
+                            c.Bound(j => j.Pertanyaan23).Width(75).Title("23");
+                            c.Bound(j => j.Pertanyaan24).Width(75).Title("24");
+                            c.Bound(j => j.Pertanyaan25).Width(75).Title("25");
+                            c.Bound(j => j.Pertanyaan26).Width(75).Title("26");
+                            c.Bound(j => j.Pertanyaan27).Width(75).Title("27");
+                            c.Bound(j => j.Pertanyaan28).Width(75).Title("28");
+                            c.Bound(j => j.Pertanyaan29).Width(75).Title("29");
+                            c.Bound(j => j.Pertanyaan30).Width(75).Title("30");
+                            c.Bound(j => j.Pertanyaan31).Width(75).Title("31");
+                            c.Bound(j => j.Pertanyaan32).Width(75).Title("32");
+                            c.Bound(j => j.Pertanyaan33).Width(75).Title("33");
+                            c.Bound(j => j.Pertanyaan34).Width(75).Title("34");
+                            c.Bound(j => j.Pertanyaan35).Width(75).Title("35");
+                            c.Bound(j => j.Pertanyaan36).Width(75).Title("36");
+                            c.Bound(j => j.Pertanyaan37).Width(75).Title("37");
+                            c.Bound(j => j.Pertanyaan38).Width(75).Title("38");
+                            c.Bound(j => j.Pertanyaan39).Width(75).Title("39");
+                            c.Bound(j => j.Pertanyaan40).Width(75).Title("40");
+                            c.Bound(j => j.Pertanyaan41).Width(75).Title("41");
+                            c.Bound(j => j.Pertanyaan42).Width(75).Title("42");
+                            c.Bound(j => j.Pertanyaan43).Width(75).Title("43");
+                            c.Bound(j => j.Pertanyaan44).Width(75).Title("44");
+                            c.Bound(j => j.Pertanyaan45).Width(75).Title("45");
+                            c.Bound(j => j.Pertanyaan46).Width(75).Title("46");
+                            c.Bound(j => j.Pertanyaan47).Width(75).Title("47");
+                            c.Bound(j => j.Pertanyaan48).Width(75).Title("48");
+                            c.Bound(j => j.Pertanyaan49).Width(75).Title("49");
+                            c.Bound(j => j.Pertanyaan50).Width(75).Title("50");
+                            c.Bound(j => j.Pertanyaan51).Width(75).Title("51");
+                            c.Bound(j => j.Pertanyaan52).Width(75).Title("52");
+                            c.Bound(j => j.Pertanyaan53).Width(75).Title("53");
+                            c.Bound(j => j.Pertanyaan54).Width(75).Title("54");
+                            c.Bound(j => j.Pertanyaan55).Width(75).Title("55");
+                            c.Bound(j => j.Pertanyaan56).Width(75).Title("56");
+                            c.Bound(j => j.Pertanyaan57).Width(75).Title("57");
+                            c.Bound(j => j.Pertanyaan58).Width(75).Title("58");
+                            c.Bound(j => j.Pertanyaan59).Width(75).Title("59");
+                            c.Bound(j => j.Pertanyaan60).Width(75).Title("60");
+                            c.Bound(j => j.Pertanyaan61).Width(75).Title("61");
+                            c.Bound(j => j.Pertanyaan62).Width(75).Title("62");
+                            c.Bound(j => j.Pertanyaan63).Width(75).Title("63");
+                            c.Bound(j => j.Pertanyaan64).Width(75).Title("64");
+                            c.Bound(j => j.Pertanyaan65).Width(75).Title("65");
+                            c.Bound(j => j.Pertanyaan66).Width(75).Title("66");
+                            c.Bound(j => j.Pertanyaan67).Width(75).Title("67");
+                            c.Bound(j => j.Pertanyaan68).Width(75).Title("68");
+                            c.Bound(j => j.Pertanyaan69).Width(75).Title("69");
+                            c.Bound(j => j.Pertanyaan70).Width(75).Title("70");
+                            c.Bound(j => j.Pertanyaan71).Width(75).Title("71");
+                            c.Bound(j => j.Pertanyaan72).Width(75).Title("72");
+                            c.Bound(j => j.Pertanyaan73).Width(75).Title("73");
+                            c.Bound(j => j.Pertanyaan74).Width(75).Title("74");
+                            c.Bound(j => j.Pertanyaan75).Width(75).Title("75");
+                            c.Bound(j => j.Pertanyaan76).Width(75).Title("76");
+                            c.Bound(j => j.Pertanyaan77).Width(75).Title("77");
+                            c.Bound(j => j.Pertanyaan78).Width(75).Title("78");
+                            c.Bound(j => j.Pertanyaan79).Width(75).Title("79");
+                            c.Bound(j => j.Pertanyaan80).Width(75).Title("80");
+                            c.Bound(j => j.Pertanyaan81).Width(75).Title("81");
+                            c.Bound(j => j.Pertanyaan82).Width(75).Title("82");
+                            c.Bound(j => j.Pertanyaan83).Width(75).Title("83");
+                            c.Bound(j => j.Pertanyaan84).Width(75).Title("84");
+                            c.Bound(j => j.Pertanyaan85).Width(75).Title("85");
+                            c.Bound(j => j.Pertanyaan86).Width(75).Title("86");
+                            c.Bound(j => j.Pertanyaan87).Width(75).Title("87");
+                            c.Bound(j => j.Pertanyaan88).Width(75).Title("88");
+                            c.Bound(j => j.Pertanyaan89).Width(75).Title("89");
+                            c.Bound(j => j.Pertanyaan90).Width(75).Title("90");
+                            c.Bound(j => j.Pertanyaan91).Width(75).Title("91");
+                            c.Bound(j => j.Pertanyaan92).Width(75).Title("92");
+                            c.Bound(j => j.Pertanyaan93).Width(75).Title("93");
+                            c.Bound(j => j.Pertanyaan94).Width(75).Title("94");
+                            c.Bound(j => j.Pertanyaan95).Width(75).Title("95");
+                            c.Bound(j => j.Pertanyaan96).Width(75).Title("96");
+                            c.Bound(j => j.Pertanyaan97).Width(75).Title("97");
+                            c.Bound(j => j.Pertanyaan98).Width(75).Title("98");
+                            c.Bound(j => j.Pertanyaan99).Width(75).Title("99");
+                            c.Bound(j => j.Pertanyaan100).Width(75).Title("100");
+                            c.Bound(j => j.Pertanyaan101).Width(75).Title("101");
+                            c.Bound(j => j.Pertanyaan102).Width(75).Title("102");
+                            c.Bound(j => j.Pertanyaan103).Width(75).Title("103");
+                            c.Bound(j => j.Pertanyaan104).Width(75).Title("104");
+                            c.Bound(j => j.Pertanyaan105).Width(75).Title("105");
+                            c.Bound(j => j.Pertanyaan106).Width(75).Title("106");
+                            c.Bound(j => j.Pertanyaan107).Width(75).Title("107");
+                            c.Bound(j => j.Pertanyaan108).Width(75).Title("108");
+                            c.Bound(j => j.Pertanyaan109).Width(75).Title("109");
+                            c.Bound(j => j.Pertanyaan110).Width(75).Title("110");
+                            c.Bound(j => j.Pertanyaan111).Width(75).Title("111");
+                            c.Bound(j => j.Pertanyaan112).Width(75).Title("112");
+                            c.Bound(j => j.Pertanyaan113).Width(75).Title("113");
+                            c.Bound(j => j.Pertanyaan114).Width(75).Title("114");
+                            c.Bound(j => j.Pertanyaan115).Width(75).Title("115");
+                            c.Bound(j => j.Pertanyaan116).Width(75).Title("116");
+                            c.Bound(j => j.Pertanyaan117).Width(75).Title("117");
+                            c.Bound(j => j.Pertanyaan118).Width(75).Title("118");
+                            c.Bound(j => j.Pertanyaan119).Width(75).Title("119");
+                            c.Bound(j => j.Pertanyaan120).Width(75).Title("120");
+                            c.Bound(j => j.Pertanyaan121).Width(75).Title("121");
+                            c.Bound(j => j.Pertanyaan122).Width(75).Title("122");
+                            c.Bound(j => j.Pertanyaan123).Width(75).Title("123");
+                            c.Bound(j => j.Pertanyaan124).Width(75).Title("124");
+                            c.Bound(j => j.Pertanyaan125).Width(75).Title("125");
+                            c.Bound(j => j.Pertanyaan126).Width(75).Title("126");
+                            c.Bound(j => j.Pertanyaan127).Width(75).Title("127");
+                            c.Bound(j => j.Pertanyaan128).Width(75).Title("128");
+                            c.Bound(j => j.Pertanyaan129).Width(75).Title("129");
+                            c.Bound(j => j.Pertanyaan130).Width(75).Title("130");
+                            c.Bound(j => j.Pertanyaan131).Width(75).Title("131");
+                            c.Bound(j => j.Pertanyaan132).Width(75).Title("132");
+                            c.Bound(j => j.Pertanyaan133).Width(75).Title("133");
+                            c.Bound(j => j.Pertanyaan134).Width(75).Title("134");
+                            c.Bound(j => j.Pertanyaan135).Width(75).Title("135");
+                            c.Bound(j => j.Pertanyaan136).Width(75).Title("136");
+                            c.Bound(j => j.Pertanyaan137).Width(75).Title("137");
+                            c.Bound(j => j.Pertanyaan138).Width(75).Title("138");
+                            c.Bound(j => j.Pertanyaan139).Width(75).Title("139");
+                            c.Bound(j => j.Pertanyaan140).Width(75).Title("140");
+                            c.Bound(j => j.Pertanyaan141).Width(75).Title("141");
+                            c.Bound(j => j.Pertanyaan142).Width(75).Title("142");
+                            c.Bound(j => j.Pertanyaan143).Width(75).Title("143");
+                            c.Bound(j => j.Pertanyaan144).Width(75).Title("144");
+                            c.Bound(j => j.Pertanyaan145).Width(75).Title("145");
+                            c.Bound(j => j.Pertanyaan146).Width(75).Title("146");
+                            c.Bound(j => j.Pertanyaan147).Width(75).Title("147");
+                            c.Bound(j => j.Pertanyaan148).Width(75).Title("148");
+                            c.Bound(j => j.Pertanyaan149).Width(75).Title("149");
+                            c.Bound(j => j.Pertanyaan150).Width(75).Title("150");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport9").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter J").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban24>(Guid.Empty.ToString())
+                .Name("grdDetail10")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                            c.Bound(j => j.Pertanyaan21).Width(75).Title("21");
+                            c.Bound(j => j.Pertanyaan22).Width(75).Title("22");
+                            c.Bound(j => j.Pertanyaan23).Width(75).Title("23");
+                            c.Bound(j => j.Pertanyaan24).Width(75).Title("24");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport10").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter K").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban90>(Guid.Empty.ToString())
+                .Name("grdDetail11")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                            c.Bound(j => j.Pertanyaan21).Width(75).Title("21");
+                            c.Bound(j => j.Pertanyaan22).Width(75).Title("22");
+                            c.Bound(j => j.Pertanyaan23).Width(75).Title("23");
+                            c.Bound(j => j.Pertanyaan24).Width(75).Title("24");
+                            c.Bound(j => j.Pertanyaan25).Width(75).Title("25");
+                            c.Bound(j => j.Pertanyaan26).Width(75).Title("26");
+                            c.Bound(j => j.Pertanyaan27).Width(75).Title("27");
+                            c.Bound(j => j.Pertanyaan28).Width(75).Title("28");
+                            c.Bound(j => j.Pertanyaan29).Width(75).Title("29");
+                            c.Bound(j => j.Pertanyaan30).Width(75).Title("30");
+                            c.Bound(j => j.Pertanyaan31).Width(75).Title("31");
+                            c.Bound(j => j.Pertanyaan32).Width(75).Title("32");
+                            c.Bound(j => j.Pertanyaan33).Width(75).Title("33");
+                            c.Bound(j => j.Pertanyaan34).Width(75).Title("34");
+                            c.Bound(j => j.Pertanyaan35).Width(75).Title("35");
+                            c.Bound(j => j.Pertanyaan36).Width(75).Title("36");
+                            c.Bound(j => j.Pertanyaan37).Width(75).Title("37");
+                            c.Bound(j => j.Pertanyaan38).Width(75).Title("38");
+                            c.Bound(j => j.Pertanyaan39).Width(75).Title("39");
+                            c.Bound(j => j.Pertanyaan40).Width(75).Title("40");
+                            c.Bound(j => j.Pertanyaan41).Width(75).Title("41");
+                            c.Bound(j => j.Pertanyaan42).Width(75).Title("42");
+                            c.Bound(j => j.Pertanyaan43).Width(75).Title("43");
+                            c.Bound(j => j.Pertanyaan44).Width(75).Title("44");
+                            c.Bound(j => j.Pertanyaan45).Width(75).Title("45");
+                            c.Bound(j => j.Pertanyaan46).Width(75).Title("46");
+                            c.Bound(j => j.Pertanyaan47).Width(75).Title("47");
+                            c.Bound(j => j.Pertanyaan48).Width(75).Title("48");
+                            c.Bound(j => j.Pertanyaan49).Width(75).Title("49");
+                            c.Bound(j => j.Pertanyaan50).Width(75).Title("50");
+                            c.Bound(j => j.Pertanyaan51).Width(75).Title("51");
+                            c.Bound(j => j.Pertanyaan52).Width(75).Title("52");
+                            c.Bound(j => j.Pertanyaan53).Width(75).Title("53");
+                            c.Bound(j => j.Pertanyaan54).Width(75).Title("54");
+                            c.Bound(j => j.Pertanyaan55).Width(75).Title("55");
+                            c.Bound(j => j.Pertanyaan56).Width(75).Title("56");
+                            c.Bound(j => j.Pertanyaan57).Width(75).Title("57");
+                            c.Bound(j => j.Pertanyaan58).Width(75).Title("58");
+                            c.Bound(j => j.Pertanyaan59).Width(75).Title("59");
+                            c.Bound(j => j.Pertanyaan60).Width(75).Title("60");
+                            c.Bound(j => j.Pertanyaan61).Width(75).Title("61");
+                            c.Bound(j => j.Pertanyaan62).Width(75).Title("62");
+                            c.Bound(j => j.Pertanyaan63).Width(75).Title("63");
+                            c.Bound(j => j.Pertanyaan64).Width(75).Title("64");
+                            c.Bound(j => j.Pertanyaan65).Width(75).Title("65");
+                            c.Bound(j => j.Pertanyaan66).Width(75).Title("66");
+                            c.Bound(j => j.Pertanyaan67).Width(75).Title("67");
+                            c.Bound(j => j.Pertanyaan68).Width(75).Title("68");
+                            c.Bound(j => j.Pertanyaan69).Width(75).Title("69");
+                            c.Bound(j => j.Pertanyaan70).Width(75).Title("70");
+                            c.Bound(j => j.Pertanyaan71).Width(75).Title("71");
+                            c.Bound(j => j.Pertanyaan72).Width(75).Title("72");
+                            c.Bound(j => j.Pertanyaan73).Width(75).Title("73");
+                            c.Bound(j => j.Pertanyaan74).Width(75).Title("74");
+                            c.Bound(j => j.Pertanyaan75).Width(75).Title("75");
+                            c.Bound(j => j.Pertanyaan76).Width(75).Title("76");
+                            c.Bound(j => j.Pertanyaan77).Width(75).Title("77");
+                            c.Bound(j => j.Pertanyaan78).Width(75).Title("78");
+                            c.Bound(j => j.Pertanyaan79).Width(75).Title("79");
+                            c.Bound(j => j.Pertanyaan80).Width(75).Title("80");
+                            c.Bound(j => j.Pertanyaan81).Width(75).Title("81");
+                            c.Bound(j => j.Pertanyaan82).Width(75).Title("82");
+                            c.Bound(j => j.Pertanyaan83).Width(75).Title("83");
+                            c.Bound(j => j.Pertanyaan84).Width(75).Title("84");
+                            c.Bound(j => j.Pertanyaan85).Width(75).Title("85");
+                            c.Bound(j => j.Pertanyaan86).Width(75).Title("86");
+                            c.Bound(j => j.Pertanyaan87).Width(75).Title("87");
+                            c.Bound(j => j.Pertanyaan88).Width(75).Title("88");
+                            c.Bound(j => j.Pertanyaan89).Width(75).Title("89");
+                            c.Bound(j => j.Pertanyaan90).Width(75).Title("90");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport11").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter L").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban90>(Guid.Empty.ToString())
+                .Name("grdDetail12")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(75).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(75).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(75).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(75).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(75).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(75).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(75).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(75).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(75).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(75).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(75).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(75).Title("12");
+                            c.Bound(j => j.Pertanyaan13).Width(75).Title("13");
+                            c.Bound(j => j.Pertanyaan14).Width(75).Title("14");
+                            c.Bound(j => j.Pertanyaan15).Width(75).Title("15");
+                            c.Bound(j => j.Pertanyaan16).Width(75).Title("16");
+                            c.Bound(j => j.Pertanyaan17).Width(75).Title("17");
+                            c.Bound(j => j.Pertanyaan18).Width(75).Title("18");
+                            c.Bound(j => j.Pertanyaan19).Width(75).Title("19");
+                            c.Bound(j => j.Pertanyaan20).Width(75).Title("20");
+                            c.Bound(j => j.Pertanyaan21).Width(75).Title("21");
+                            c.Bound(j => j.Pertanyaan22).Width(75).Title("22");
+                            c.Bound(j => j.Pertanyaan23).Width(75).Title("23");
+                            c.Bound(j => j.Pertanyaan24).Width(75).Title("24");
+                            c.Bound(j => j.Pertanyaan25).Width(75).Title("25");
+                            c.Bound(j => j.Pertanyaan26).Width(75).Title("26");
+                            c.Bound(j => j.Pertanyaan27).Width(75).Title("27");
+                            c.Bound(j => j.Pertanyaan28).Width(75).Title("28");
+                            c.Bound(j => j.Pertanyaan29).Width(75).Title("29");
+                            c.Bound(j => j.Pertanyaan30).Width(75).Title("30");
+                            c.Bound(j => j.Pertanyaan31).Width(75).Title("31");
+                            c.Bound(j => j.Pertanyaan32).Width(75).Title("32");
+                            c.Bound(j => j.Pertanyaan33).Width(75).Title("33");
+                            c.Bound(j => j.Pertanyaan34).Width(75).Title("34");
+                            c.Bound(j => j.Pertanyaan35).Width(75).Title("35");
+                            c.Bound(j => j.Pertanyaan36).Width(75).Title("36");
+                            c.Bound(j => j.Pertanyaan37).Width(75).Title("37");
+                            c.Bound(j => j.Pertanyaan38).Width(75).Title("38");
+                            c.Bound(j => j.Pertanyaan39).Width(75).Title("39");
+                            c.Bound(j => j.Pertanyaan40).Width(75).Title("40");
+                            c.Bound(j => j.Pertanyaan41).Width(75).Title("41");
+                            c.Bound(j => j.Pertanyaan42).Width(75).Title("42");
+                            c.Bound(j => j.Pertanyaan43).Width(75).Title("43");
+                            c.Bound(j => j.Pertanyaan44).Width(75).Title("44");
+                            c.Bound(j => j.Pertanyaan45).Width(75).Title("45");
+                            c.Bound(j => j.Pertanyaan46).Width(75).Title("46");
+                            c.Bound(j => j.Pertanyaan47).Width(75).Title("47");
+                            c.Bound(j => j.Pertanyaan48).Width(75).Title("48");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport12").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+            tabstrip.Add().Text("Chapter M").Selected(false)
+            .Content(@<text>
+                    @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_HasilJawaban3>(Guid.Empty.ToString())
+                .Name("grdDetail13")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(150).Title("NIK");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Karyawan");
+                    g.Bound(i => i.Jabatan).Width(200).Title("Jabatan");
+                    g.Bound(i => i.UnitKerja).Width(190).Title("UnitKerja");
+                    g.Bound(i => i.Tgl_Lahir).Width(100).Title("Tgl. Lahir").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.Usia).Width(75).Title("Usia");
+                    g.Bound(i => i.Kelamin).Width(75).Title("Kelamin");
+                    g.Bound(i => i.Pendidikan).Width(100).Title("Pendidikan");
+                    g.Bound(i => i.Durasi).Width(100).Title("Durasi");
+                    g.Group(i =>
+                    {
+                        i.Title("Hasil Jawaban");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Pertanyaan1).Width(150).Title("1");
+                            c.Bound(j => j.Pertanyaan2).Width(150).Title("2");
+                            c.Bound(j => j.Pertanyaan3).Width(150).Title("3");
+                            c.Bound(j => j.Pertanyaan4).Width(150).Title("4");
+                            c.Bound(j => j.Pertanyaan5).Width(150).Title("5");
+                            c.Bound(j => j.Pertanyaan6).Width(150).Title("6");
+                            c.Bound(j => j.Pertanyaan7).Width(150).Title("7");
+                            c.Bound(j => j.Pertanyaan8).Width(150).Title("8");
+                            c.Bound(j => j.Pertanyaan9).Width(150).Title("9");
+                            c.Bound(j => j.Pertanyaan10).Width(250).Title("10");
+                            c.Bound(j => j.Pertanyaan11).Width(250).Title("11");
+                            c.Bound(j => j.Pertanyaan12).Width(450).Title("12");
+                        });
+                    });
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(true)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport13").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);
+        })
+
+    )
+</div>
+
+<script>
+    var tanggalAssessment;
+    @*var usrName = "@HttpContext.Current.User.Identity.Name";
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }*@
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    tanggalAssessment = kendo.toString(($('#TanggalAssessment').data('kendoDatePicker'))._value, "yyyy-MM-dd");
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                    $('#grdDetail2').data('kendoGrid').dataSource.read();
+                    $('#grdDetail3').data('kendoGrid').dataSource.read();
+                    $('#grdDetail4').data('kendoGrid').dataSource.read();
+                    $('#grdDetail5').data('kendoGrid').dataSource.read();
+                    $('#grdDetail6').data('kendoGrid').dataSource.read();
+                    $('#grdDetail7').data('kendoGrid').dataSource.read();
+                    $('#grdDetail8').data('kendoGrid').dataSource.read();
+                    $('#grdDetail9').data('kendoGrid').dataSource.read();
+                    $('#grdDetail10').data('kendoGrid').dataSource.read();
+                    $('#grdDetail11').data('kendoGrid').dataSource.read();
+                    $('#grdDetail12').data('kendoGrid').dataSource.read();
+                    $('#grdDetail13').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterA '" + tanggalAssessment +"'"
+        }
+    }
+
+    function filterReport2(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterB '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport3(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterC '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport4(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterD '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport5(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterE '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport6(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterF '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport7(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban20',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterG '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport8(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban200',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterH '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport9(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban150',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterI '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport10(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban24',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterJ '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport11(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban90',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterK '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport12(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban48',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterL '" + tanggalAssessment + "'"
+        }
+    }
+
+    function filterReport13(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_HasilJawaban3',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_HasilTest_DetailChapterM '" + tanggalAssessment + "'"
+        }
+    }
+
+
+</script>
+
+
+
+
+
+

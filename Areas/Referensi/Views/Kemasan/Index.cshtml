@@ -1,0 +1,87 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model Kemasan
+
+@{
+    ViewBag.Title = "Referensi Kemasan";
+}
+
+<h2>Referensi Kemasan</h2>
+
+<div id="kemasanDetail">
+    <div>
+        @(Html.Kendo()
+            .Grid<Kemasan>()
+            .Name("grdKemasan")
+
+        .Columns(g =>
+        {
+            g.Bound(i => i.KemasanId).Width(200).Hidden();
+            g.Bound(i => i.Nama).Width(200);
+            g.Command(command => { command.Edit(); command.Destroy(); }).Width(180);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+        })
+        .Editable(editable => editable.Mode(GridEditMode.InLine))
+        .Pageable()
+        
+        .Scrollable()
+        .HtmlAttributes(new { style = "height:400px;" })
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); })
+        .DataSource(o => o
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(p => p.KemasanId);
+                model.Field(p => p.KemasanId).Editable(true);
+            })
+
+            .Create(create => create.Action("KemasanCreate", "Kemasan", new { @onclick = "grdCreateOnClick" }).Type(HttpVerbs.Post))
+            .Read(read => read.Action("KemasanRead", "Kemasan").Type(HttpVerbs.Post))
+            .Update(update => update.Action("KemasanUpdate", "Kemasan").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("KemasanDestroy", "Kemasan").Type(HttpVerbs.Post))
+            )
+        )
+    </div>
+</div>
+
+<script>
+
+    var KemasanId;
+    var uid;
+
+    /* Grid Organisasi */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDetailExpand(e) {
+        KemasanId = this.dataItem(e.masterRow).KemasanId;
+    }
+
+    function grdOnDataBound(e) {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=KemasanId]").val(model.id).change(); // trigger change in order to notify the model binding
+        }
+        KemasanId = model.id;
+        uid = model.uid;
+    }
+
+    function grdOnChange(e) {
+    }
+
+</script>
+
+<style>
+    #kemasanDetail {
+    }
+</style>

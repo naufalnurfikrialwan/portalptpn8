@@ -1,0 +1,1208 @@
+﻿@model Ptpn8.Models.ModalManusia.View_DIK
+@*header*@
+
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; display: none; " />
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+<table width="100%;" align="center">
+    <tr>
+        <td width="100%;">
+            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+        </td>
+    </tr>
+</table>
+
+<div id="sisaWaktu" style="display:none;">
+    <label id="msgSisaWaktu" style="text-align:center; color: red; background-color: white; font-size: x-large;"></label>
+</div>
+
+@{
+    string scriptSQL = "set dateformat DMY; select top 1 getdate(),MulaiAssesment,SelesaiAssesment from [dbo].[Assesment_JadwalNIKBOM4dan5] where NIK='" + HttpContext.Current.User.Identity.Name + "' order by MulaiAssesment desc";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    if (tap.Rows.Count > 0)
+    {
+        System.Data.DataRow dr = tap.Rows[0];
+        if ((System.DateTime)dr[0] >= (System.DateTime)dr[1] && (System.DateTime)dr[0] <= (System.DateTime)dr[2])
+        {
+            <table align="center" width="80%">
+                <tr>
+                    <td>
+                        <div id="_header1" class="_hdr" style="display: none;">
+                            <h3 style="text-align: center; text-decoration:underline;  ">P E R N Y A T A A N</h3>
+                            <div class="_isihdr">
+                                <label>Saya yang menjadi peserta digital assessment ini:</label>
+                                <br />
+                                <table width="100%" style="margin-left: 20px;">
+                                    <tr>
+                                        <td width="2%"><label>1.</label></td>
+                                        <td width="20%"><label>Nomor Induk Karyawan:</label></td>
+                                        <td width="50%">
+                                            <label id="NIK" style="color: red;">@HttpContext.Current.User.Identity.Name</label>
+                                        </td>
+                                        <td align="left"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>2.</label></td>
+                                        <td><label>Nama Lengkap:</label></td>
+                                        <td><label id="NamaLengkap" style="color: blue;"></label></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>3.</label></td>
+                                        <td><label>Jabatan:</label></td>
+                                        <td>
+                                            <label id="Jabatan" style="color: blue;"></label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>4.</label></td>
+                                        <td><label>Unit Kerja/Kebun:</label></td>
+                                        <td>
+                                            <label id="Kebun" style="color: blue;"></label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>5.</label></td>
+                                        <td><label>Tanggal Lahir:</label></td>
+                                        <td>
+                                            <label id="TanggalLahir" style="color: blue;"></label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>6.</label></td>
+                                        <td><label>Usia:</label></td>
+                                        <td>
+                                            <label id="Usia" style="color: blue;"></label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>7.</label></td>
+                                        <td><label>Jenis Kelamin:</label></td>
+                                        <td>
+                                            <label id="JenisKelamin" style="color: blue;"></label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>8.</label></td>
+                                        <td><label>Pendidikan Terakhir:</label></td>
+                                        <td>
+                                            <label id="PendidikanTerakhir" style="color: blue;"></label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <label>Menyatakan telah membaca ketentuan-ketentuan sebagai berikut:</label>
+                                <table width="100%" style="margin-left: 20px;">
+                                    <tr>
+                                        <td width="2%"><label>1.</label></td>
+                                        <td><label>Adalah benar bahwa saya sendiri yang mengerjakan soal-soal digital assessment milik saya.</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label>2.</label></td>
+                                        <td><label>Adalah benar bahwa saya tidak meminta bantuan orang lain untuk mengerjakan maupun menjawab digital assessment milik saya.</label></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><label>3.</label></td>
+                                        <td><label>Adalah benar bahwa saya tidak memfoto, menangkap layar (screenshoot) maupun membocorkan soal-soal digital assessment.</label></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><label>4.</label></td>
+                                        <td><label>Adalah benar bahwa saya mengerjakan soal-soal pada digital assessment ini tanpa mencontek maupun melihat contekan lainnya saat mengerjakannya.</label></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><label>5.</label></td>
+                                        <td><label>Apabila saya melanggar salah satu ketentuan diatas, saya bersedia menerima sanksi dan hukuman yang diberikan oleh PT. Perkebunan Nusantara VIII.</label></td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <table width="100%">
+                                    <tr>
+                                        <td width="2%"><input style="cursor: pointer;" type="checkbox" class="largerCheckbox" id="pernyataan" name="pernyataan" onclick="pernyataanOnClick()"></td>
+                                        <td width="40%"><label style="color: blue;">Dengan memberi tanda centang (checklist) pada kotak disamping, maka saya menyetujui dan menyepakati seluruh ketentuan tersebut dan patuh pada peraturan yang berlaku dalam proses digital assessment PT. Perkebunan Nusantara VIII.</label></td>
+                                    </tr>
+                                </table>
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnStart" onclick="btnStartOnClick()" class="btn-big" style="font-size: x-large; width: 300px; height: 60px; text-align: center; ">Setuju dan Mulai Test</button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+            <div id="_detail" class="_detail">
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterA.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterB.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterC.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterD.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterE.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterF.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterG.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterH.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterI.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterJ.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterK.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterL.cshtml")
+                @Html.Partial("~/Views/Input/HCIS/Assesment_ChapterM.cshtml")
+            </div>
+        }
+        else
+        {
+            <div id="belumWaktu" style="font-size: x-large; color: red;">
+                <label>Anda sudah terdaftar sebagai peserta Digital Assesment, tetapi jadwal nya bukan saat ini!</label>
+                <label>Jadwal anda adalah : @((System.DateTime)dr[1]) sd @((System.DateTime)dr[2])</label>
+                <label>Terima kasih.</label>
+            </div>
+        }
+    }
+    else
+    {
+        <div id="belumTerjadwal" style="font-size: x-large; color: red;">
+            <label>Saat ini anda belum terdaftar sebagai peserta Digital Assesment.</label>
+            <label>Hubungi Bagian SDM!</label>
+        </div>
+    }
+}
+
+<script>
+    var menuId = '571eec2c-8954-4669-9096-7405df915a88';
+    var _tipeSoal;
+    var _noUrut;
+    var _pertanyaanId;
+    var _nik;
+    var _jawaban;
+    var _sisaWaktu; // dalam mili second
+    var _myInterval,_myInterval1;
+    var _TipeSoalSaatIni;
+    var dialog, window;
+    var waktuAwal, waktuAkhir;
+    var html,html1;
+    var jadwalNIKId;
+    var _setuju;
+    var a, b, c;
+    var arrJumlahJawabanM;
+    var paketID;
+    var showLoadingEnabled = true;
+    var pengurangWaktu = 30; // 30 detik
+
+    $(document).ajaxStart(function () {
+        if (showLoadingEnabled) { $("#progress").show(); } else { $("#progress").hide();};
+    }).ajaxStop(function () {
+        if (showLoadingEnabled) { $("#progress").hide(); } else { $("#progress").hide(); };
+    });
+
+    $(document).ready(function () {
+        _nik = $('#_username').val();
+        _setuju = null;
+        ambilJadwal(_nik).done(function (dt) {
+            TutupSemuaChapter();
+            if (dt.length > 0) {
+                if (dt[0][0] >= dt[0][1] && dt[0][0] <= dt[0][2]) {
+                    jadwalNIKId = dt[0][3];
+                    paketID = dt[0][5];
+                    EmpIDOnSelect();
+                    htgJmlJawaban().done(function (dta) { arrJumlahJawabanM = dta });
+                    ambilJawabanYangSudahMasuk(dt[0][3]).done(function (dta) {
+                        for (var nI = 0; nI < dta.length; nI++) {
+                            a = dta[nI][0];
+                            b = dta[nI][1];
+                            if (a.substring(0, 1) != "M") {
+                                if (b.indexOf(';') < 0) {
+                                    $("input:radio[name='" + a + "'][value='" + b + "']").prop('checked', true);
+                                }
+                                else {
+                                    $("input:radio[name='" + a.substring(0, 1) + "1" + a.substring(1) + "'][value='" + b.substring(0, b.indexOf(';')) + "']").prop('checked', true);
+                                    $("input:radio[name='" + a.substring(0, 1) + "2" + a.substring(1) + "'][value='" + b.substring((b.indexOf(';')) + 1) + "']").prop('checked', true);
+                                }
+                            }
+                            else {
+                                $('#' + a).val(b);
+                            }
+                        }
+                    });
+
+                    _TipeSoalSaatIni = 'Tipe A';
+                    $('#sisaWaktu').kendoWindow();
+                    dialog = $('#sisaWaktu').data("kendoWindow");
+                    dialog.title("Sisa Waktu");
+                    dialog.setOptions({ width: 300 });
+                    $("#sisaWaktu").kendoWindow({
+                        position: {
+                            top: 20, // or "100px"
+                            left: "80%"
+                        }
+                    });
+                    _setuju = dt[0][4];
+                    if (_setuju == 'SETUJU') {
+                        $('#pernyataan').prop("checked", true);
+                        $('#btnStart').click();
+                    }
+                    else {
+                        $('#_header1').show();
+                        $('#_header2').hide();
+                    }
+                }
+                else {
+                    $('#belumWaktu').show();
+                }
+            }
+            else {
+                $('#belumTerjadwal').show();
+            }
+        });
+    });
+
+    function EmpIDOnSelect(e) {
+        GetEmployee().done(function (data) {
+            if (data) {
+                var dta = data[0];
+                $('#NIK1').text(dta.REG);
+                $('#NIK2').text(dta.REG);
+                $('#NamaLengkap').text(dta.NAMA);
+                $('#NamaLengkap1').text(dta.NAMA);
+                $('#NamaLengkap2').text(dta.NAMA);
+                $('#Kebun').text(dta.KD_KBN);
+                $('#Jabatan').text(dta.NAMA_JAB);
+                $('#Jabatan1').text(dta.NAMA_JAB);
+                //$('#TanggalLahir').data("kendoDateTimePicker").value(new Date(parseInt(dta.TGL_LAHIR.substr(6))));
+                var x = new Date(parseInt(dta.TGL_LAHIR.substr(6)))
+                $('#TanggalLahir').text(
+                    x.getDate().toString() + "/" + (x.getMonth() + 1).toString() + "/" + x.getFullYear().toString()
+                );
+                $('#Usia').text(dta.KANDUNG.toString() + ' tahun');
+                var kelamin;
+                if (dta.KELAMIN == 'L') {
+                    kelamin = 'Laki-Laki';
+                }
+                else {
+                    kelamin = 'Perempuan';
+                }
+                $('#JenisKelamin').text(kelamin);
+                $('#PendidikanTerakhir').text(dta.KD_PEND);
+
+                //$('#JadwalMulai').data("kendoDateTimePicker").value(new Date(parseInt(dta.TGL_NIKAH.substr(6))));
+                //$('#JadwalSelesai').data("kendoDateTimePicker").value(new Date(parseInt(dta.TGL_CERAI.substr(6))));
+            }
+        });
+    }
+
+    function GetEmployee() {
+        var url = '/Input/GetDataFrom';
+        var _NIK = $('#NIK').text();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.ModalManusia.View_DIK',
+                scriptSQL: "SELECT reg as REG,nama as NAMA,TGL_LAHIR, KELAMIN, KD_PEND, " +
+                    "CONVERT(int,ROUND(DATEDIFF(hour,TGL_LAHIR,GETDATE())/8766.0,0)) as KANDUNG," +
+                    "(select top 1 ltrim(substring(NamaUnit, charindex(':', NamaUnit) + 1, 100)) from referensief..unit where orgid=(select top 1 PosisiLokasiKerjaId from [identity]..[AspNetUsers] where username='" + _NIK + "')) as KD_KBN," +
+                    "(select top 1 Jabatan from[identity]..[AspNetUsers] where username = '" + _NIK + "') as NAMA_JAB," +
+                    "(select top 1 MulaiAssesment from [ModalManusiaEF].[dbo].[Assesment_JadwalNIK] where NIK='" + _NIK + "') as TGL_NIKAH, " +
+                    "(select top 1 SelesaiAssesment from [ModalManusiaEF].[dbo].[Assesment_JadwalNIK] where NIK='" + _NIK + "') as TGL_CERAI " +
+                    "FROM [ModalManusiaEF].[dbo].[ref_dik] where reg = '" + _NIK + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function myFuncInterval1() {
+        ambilJadwal(_nik).done(function (dta) {
+            var saatIni = new Date();
+            if (dta) {
+                var tgl = dta[0][2];
+                var tglSelesai = new Date(parseInt(tgl.substr(6, 4)), parseInt(tgl.substr(3, 2)), parseInt(tgl.substr(0, 2)),
+                    parseInt(tgl.substr(11, 2)), parseInt(tgl.substr(14, 2)), parseInt(tgl.substr(17,2)));
+
+                if (saatIni-tglSelesai<0) {
+                    //clearInterval(_myInterval1);
+                    TutupSemuaChapter();
+                    $('#msgInputView').text('');
+                    $('#_tutupChapter').show();
+                    $(window).scrollTop(0);
+                    var _HurufTipeSoalSaatIni = _TipeSoalSaatIni.substr(5, 1);
+                    var _intHurufTipeSoalSaatIni = _HurufTipeSoalSaatIni.charCodeAt(0);
+                    var _intM = 77;
+                    for (var i = _intHurufTipeSoalSaatIni; i <= _intM; i++) {
+                        _HurufTipeSoalSaatIni = String.fromCharCode(i);
+                        simpanSisaWaktu(jadwalNIKId, 'Tipe ' + _HurufTipeSoalSaatIni, -1, -1);
+                        simpanWaktuSelesai(jadwalNIKId, 'Tipe '+_HurufTipeSoalSaatIni).done();
+                    }
+                }
+            }
+        });
+    }
+
+    function myFuncInterval() {
+        var mnt, dtk;
+        var tipeBaru = _TipeSoalSaatIni.substr(5, 1);
+        if (tipeBaru != 'J' && tipeBaru != 'K' && tipeBaru != 'L' && tipeBaru != 'M') {
+            _sisaWaktu = _sisaWaktu - pengurangWaktu*1000; //1000;
+            if (_sisaWaktu <= 0) {
+                clearInterval(_myInterval);
+                _myInterval = null;
+                simpanSisaWaktu(jadwalNIKId, _TipeSoalSaatIni, -1, -1);
+                simpanWaktuSelesai(jadwalNIKId, _TipeSoalSaatIni).done();
+                waktuAkhir = new Date();
+                htgJmlSoal(_TipeSoalSaatIni).done(function (dta) {
+                    for (var nI = 1; nI <= dta; nI++) {
+                        _pertanyaanId = $('#' + tipeBaru + '1_' + nI.toString()).text();
+                        if (typeof ($("input[name='" + tipeBaru + "_" + nI.toString() + "']:checked").val()) != "undefined") {
+                            SimpanData($("input[name='" + tipeBaru + "_" + nI.toString() + "']:checked").val(), nI);
+                        }
+                        else {
+                            SimpanData('0', nI);
+                        }
+                    }
+                    $('#TestChapter' + tipeBaru).css('display', 'none');
+                    TutupSemuaChapter();
+
+                    tipeBaru = String.fromCharCode(((_TipeSoalSaatIni.substr(5, 1)).charCodeAt(0)) + 1);
+                    htgDurasi(tipeBaru).done(function (dta) {
+                        $('#_header1').hide();
+                        $('#_header2').show();
+                        $('#_chapter' + tipeBaru).show();
+                        $('#ContohChapter' + tipeBaru).show();
+                        $('#msgInputView').text('');
+                        $('#Waktu' + tipeBaru).text(dta[0][0].toString() + ' Menit');
+                        //html = $.parseHTML(dta[0][1]);
+                        //html1 = $.parseHTML(dta[0][1]);
+                        //$('#instruksi' + tipeBaru + '1').remove();
+                        //$('#instruksi' + tipeBaru + '2').remove();
+                        //$('#instruksi' + tipeBaru + '1').append(html1);
+                        //$('#instruksi' + tipeBaru + '2').append(html);
+
+                        ambilSisaWaktu(jadwalNIKId, 'Tipe ' + tipeBaru).done(function (dd) {
+                            if (dd.length > 0) {
+                                _sisaWaktu = parseInt(dd[0][0]) * 60 * 1000 + parseInt(dd[0][1]) * 1000
+                                if (_sisaWaktu < 0) {
+                                    btnOnClick('Tipe ' + tipeBaru);
+                                }
+                            }
+                        });
+                    });
+
+                });
+            }
+            else {
+                mnt = Math.floor((_sisaWaktu / 1000) / 60).toString();
+                dtk = Math.floor((_sisaWaktu / 1000) % 60).toString();
+                $('#msgSisaWaktu').text(mnt + ' Menit ' + dtk + ' Detik');
+                simpanSisaWaktu(jadwalNIKId, _TipeSoalSaatIni, mnt, dtk);
+            }
+        }
+
+    }
+
+    function btnStartOnClick() {
+        var x = document.getElementById("pernyataan").checked;
+        var soalID;
+        var posisiTerakhir = "Tipe A";
+        showLoadingEnabled = false;
+        $(window).scrollTop(0);
+        if (x != false) {
+            //_myInterval1 = setInterval(myFuncInterval1, 1000 * 60);
+            htgDurasi('Tipe A').done(function (dta) {
+                ambilSisaWaktu(jadwalNIKId, 'Tipe A').done(function (dd) {
+                    if (dd.length > 0) {
+                        _sisaWaktu = parseInt(dd[0][0]) * 60 * 1000 + parseInt(dd[0][1]) * 1000
+                        if (_sisaWaktu < 0) {
+                            btnOnClick('Tipe A');
+                        }
+                        else {
+                            $('#_header1').hide();
+                            $('#_header2').show();
+                            $('#_chapterA').show();
+                            //$('#ContohChapterA').show();
+                            $('#msgInputView').text('');
+                            $('#WaktuA').text(dta[0][0].toString() + ' Menit');
+                            //html = $.parseHTML(dta[0][1]);
+                            //html1 = $.parseHTML(dta[0][1]);
+                            //$('#instruksi' + tipeBaru + '1').remove();
+                            //$('#instruksi' + tipeBaru + '2').remove();
+                            //$('#instruksi' + tipeBaru + '1').append(html1);
+                            //$('#instruksi' + tipeBaru + '2').append(html);
+                            btnMulaiTestOnClick('Tipe A')
+                        }
+                    }
+                    else {
+                        $('#_header1').hide();
+                        $('#_header2').show();
+                        $('#_chapterA').show();
+                        $('#ContohChapterA').show();
+                        $('#msgInputView').text('');
+                        $('#WaktuA').text(dta[0][0].toString() + ' Menit');
+                        //html = $.parseHTML(dta[0][1]);
+                        //html1 = $.parseHTML(dta[0][1]);
+                        //$('#instruksi' + tipeBaru + '1').remove();
+                        //$('#instruksi' + tipeBaru + '2').remove();
+                        //$('#instruksi' + tipeBaru + '1').append(html1);
+                        //$('#instruksi' + tipeBaru + '2').append(html);
+                    }
+                });
+            });
+        }
+        else {
+            $('#msgInputView').text('Anda belum mencentang pernyataan setuju!');
+        }
+    }
+
+    function SimpanData(jwb, _no) {
+        var url = '/Input/ExecSQL';
+        var diff, mnt, dtk;
+
+        diff = (waktuAkhir - waktuAwal) / 1000; // dalam second
+        mnt = parseInt(diff / 60);
+        dtk = parseInt(diff % 60);
+
+        _nik = $('#NIK').text();
+        _jawaban = jwb;
+        if (typeof (_no) == "undefined") _no = _noUrut;
+
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_SimpanJawaban '" + _pertanyaanId + "', " + _no.toString() + ", '" + _nik + "', '" + _jawaban + "', " + mnt.toString() + ", " + dtk.toString(),
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function TutupSemuaChapter() {
+        $('#_chapterA').css('display', 'none');
+        $('#_chapterB').css('display', 'none');
+        $('#_chapterC').css('display', 'none');
+        $('#_chapterD').css('display', 'none');
+        $('#_chapterE').css('display', 'none');
+        $('#_chapterF').css('display', 'none');
+        $('#_chapterG').css('display', 'none');
+        $('#_chapterH').css('display', 'none');
+        $('#_chapterI').css('display', 'none');
+        $('#_chapterJ').css('display', 'none');
+        $('#_chapterK').css('display', 'none');
+        $('#_chapterL').css('display', 'none');
+        $('#_chapterM').css('display', 'none');
+    }
+
+    function htgDurasi(tipe) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select top 1 Durasi,Instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='" + tipe + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function htgJmlTipeSoal() {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select NamaTipeSoal from [dbo].[Assesment_TipeSoal] order by NamaTipeSoal desc",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function htgJmlSoal(tipe) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select JumlahPertanyaan from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='" + tipe + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ambilJadwal(reg) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select top 1 getdate(),MulaiAssesment,SelesaiAssesment,JadwalNIKId,Setuju,PaketId from [dbo].[Assesment_JadwalNIK] where NIK='" + reg + "' order by MulaiAssesment desc",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function pertanyaanOnClick(namaRadio, nojawaban) {
+        var x = $("input[name='" + namaRadio + "']");
+        x[nojawaban].click();
+    }
+
+    function jawabanOnClick(namaRadio, nojawaban, namaRadio1, nojawaban1) {
+        var x;
+        var y;
+        var _jawaban;
+        var _no;
+        var url = '/Input/ExecSQL';
+        var _nik = $('#NIK').text();
+        var mnt = -1;
+        var dtk = -1;
+        var tipeBaru = _TipeSoalSaatIni.substr(5, 1);
+        var arrJawabanM;
+        var nmBtn;
+
+        if (tipeBaru != 'M') {
+            x = $("input[name='" + namaRadio + "']:checked").val();
+            y = $("input[name='" + namaRadio1 + "']:checked").val();
+
+            if (typeof (y) != 'undefined') {
+                _jawaban = x + ';' + y;
+                _no = namaRadio.substring(3);
+                _pertanyaanId = $('#' + namaRadio.substring(0, 1) + '1A_' + _no).text();
+            }
+            else {
+                _jawaban = nojawaban;
+                _no = namaRadio.substring(2);
+                _pertanyaanId = $('#' + namaRadio.substring(0, 1) + '1_' + _no).text();
+            }
+            nmBtn = "btn" + tipeBaru + "_" + _no;
+            return $.ajax({
+                url: url,
+                success: function () {
+                    if (tipeBaru == 'H' || tipeBaru == 'I') {
+                        $('#' + nmBtn).click();
+                    }
+                },
+                data: {
+                    scriptSQL: "exec Assesment_SimpanJawaban '" + _pertanyaanId + "', " + _no.toString() + ", '" + _nik + "', '" + _jawaban + "', " + mnt.toString() + ", " + dtk.toString(),
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+        }
+    }
+
+    function ambilJawabanYangSudahMasuk(jadwalID) {
+        var url = '/Input/ExecSQL';
+        var _nik = $('#NIK').text();
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_AmbilJawaban '" + jadwalID + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function simpanSisaWaktu(jadwalID, soalID, mnt, dtk) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_SimpanSisaWaktu '" + jadwalID + "', '" + soalID + "', " + mnt.toString() + ", " + dtk.toString(),
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ambilSisaWaktu(jadwalID, soalID) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_AmbilSisaWaktu '" + jadwalID + "', '" + soalID + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function simpanWaktuMulai(jadwalID, soalID) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_SimpanWaktuMulai '" + jadwalID + "', '" + soalID + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function simpanWaktuSelesai(jadwalID, soalID) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_SimpanWaktuSelesai '" + jadwalID + "', '" + soalID + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function btnMulaiTestOnClick(tipe) {
+        showLoadingEnabled = false;
+        _tipeSoal = tipe;
+        _TipeSoalSaatIni = _tipeSoal;
+        waktuAwal = new Date();
+        _noUrut = 1;
+        simpanWaktuMulai(jadwalNIKId, _TipeSoalSaatIni).done();
+        htgDurasi(tipe).done(function (dta) {
+            if (dta[0][0] != 0) {
+                ambilSisaWaktu(jadwalNIKId, _TipeSoalSaatIni).done(function (dd) {
+                    if (dd.length > 0) {
+                        _sisaWaktu = parseInt(dd[0][0]) * 60 * 1000 + parseInt(dd[0][1]) * 1000
+                        $('#msgSisaWaktu').text(dd[0][0].toString() + ' Menit ' + dd[0][1].toString() + ' Detik');
+                        if (_TipeSoalSaatIni == 'Tipe H' || _TipeSoalSaatIni == 'Tipe I') {
+                            ambilSoalTerakhir(_TipeSoalSaatIni).done(function (noAkhir) {
+                                if (noAkhir.length != 0) {
+                                    _noUrut = parseInt(noAkhir[0][0]);
+                                }
+                                if (typeof ($('#' + tipe.substring(5) + '_' + _noUrut.toString()).val()) != 'undefined') {
+                                    $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                                }
+                                else {
+                                    btnOnClick(tipe);
+                                }
+                            });
+                        }
+                        else {
+                            $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                        }
+                    }
+                    else {
+                        $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                        _sisaWaktu = dta[0][0] * 60 * 1000; //mili second
+                        $('#msgSisaWaktu').text(dta[0][0].toString() + ' Menit 0 Detik');
+                    }
+                    $('#ContohChapter' + tipe.substring(5)).css('display', 'none');
+                    $('#TestChapter' + tipe.substring(5)).show();
+                    $(window).scrollTop(0);
+                    //html = $.parseHTML(dta[0][1]);
+                    //html1 = $.parseHTML(dta[0][1]);
+                    //$('#instruksi' + tipeBaru + '1').remove();
+                    //$('#instruksi' + tipeBaru + '2').remove();
+                    //$('#instruksi' + tipeBaru + '1').append(html1);
+                    //$('#instruksi' + tipeBaru + '2').append(html);
+                    _myInterval = setInterval(myFuncInterval,  pengurangWaktu*1000);
+                });
+            }
+            else {
+                if (_TipeSoalSaatIni == 'Tipe J' || _TipeSoalSaatIni == 'Tipe K' || _TipeSoalSaatIni == 'Tipe L' || _TipeSoalSaatIni == 'Tipe M') {
+                    ambilSoalTerakhir(_TipeSoalSaatIni).done(function (noAkhir) {
+                        if (noAkhir.length != 0) {
+                            _noUrut = parseInt(noAkhir[0][0]);
+                        }
+                        $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                        $('#ContohChapter' + tipe.substring(5)).css('display', 'none');
+                        $('#TestChapter' + tipe.substring(5)).show();
+                        $(window).scrollTop(0);
+                        
+                        //html = $.parseHTML(dta[0][1]);
+                        //html1 = $.parseHTML(dta[0][1]);
+                        //$('#instruksi' + tipeBaru + '1').remove();
+                        //$('#instruksi' + tipeBaru + '2').remove();
+                        //$('#instruksi' + tipeBaru + '1').append(html1);
+                        //$('#instruksi' + tipeBaru + '2').append(html);
+                    });
+                }
+                else {
+                    $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                }
+                $('#ContohChapter' + tipe.substring(5)).css('display', 'none');
+                $('#TestChapter' + tipe.substring(5)).show();
+                $(window).scrollTop(0);
+                //html = $.parseHTML(dta[0][1]);
+                //html1 = $.parseHTML(dta[0][1]);
+                //$('#instruksi' + tipeBaru + '1').remove();
+                //$('#instruksi' + tipeBaru + '2').remove();
+                //$('#instruksi' + tipeBaru + '1').append(html1);
+                //$('#instruksi' + tipeBaru + '2').append(html);
+                _sisaWaktu = -1;
+                $('#msgSisaWaktu').text('');
+            }
+        });
+    }
+
+    function btnOnClick(tipe) {
+        var w, x, y, z;
+        var isian;
+        var tipeBaru;
+        var validSemua;
+        var jmlJawaban;
+
+        clearInterval(_myInterval);
+        _myInterval = null;
+        htgJmlSoal(tipe).done(function (dta) {
+            waktuAkhir = new Date();
+            validSemua = true;
+            if (tipe == "Tipe J" || tipe == "Tipe K" || tipe == "Tipe L" || tipe == "Tipe M") {
+                if (tipe == 'Tipe M') {
+                    for (var nI = 1; nI <= dta; nI++) {
+                        w = $("#" + tipe.substring(5) + "_" + nI.toString() + "1").val();
+                        jmlJawaban = parseInt(arrJumlahJawabanM[nI - 1][1]);
+                        for (var nJ = 0; nJ < jmlJawaban; nJ++) {
+                            isian = $("#" + tipe.substring(5) + "_" + nI.toString() + "_" + (nJ + 1).toString()).val();
+                            if (isian == "") {
+                                validSemua = false;
+                            }
+                        }
+                    }
+                    if (validSemua == true) semuaValid(tipe, dta);
+                    else $('#msgInputView').text('aTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+                }
+                else if (tipe == 'Tipe J') {
+                    for (var nI = 1; nI <= dta; nI++) {
+                        y = $("input[name='" + tipe.substring(5) + "1_" + nI.toString() + "']:checked").val();
+                        z = $("input[name='" + tipe.substring(5) + "2_" + nI.toString() + "']:checked").val();
+                        if (typeof (y) == "undefined" || typeof (z) == "undefined") validSemua = false;
+                    }
+                    if (validSemua == true) semuaValid(tipe, dta);
+                    else $('#msgInputView').text('bTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+                }
+                else {
+                    for (var nI = 1; nI <= dta; nI++) {
+                        x = $("input[name='" + tipe.substring(5) + "_" + nI.toString() + "']:checked").val();
+                        if (typeof (x) == "undefined") validSemua = false;
+                    }
+                    if (validSemua == true) semuaValid(tipe, dta);
+                    else $('#msgInputView').text('cTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+                }
+
+            }
+            else {
+                semuaValid(tipe, dta);
+            }
+
+        });
+    }
+
+    function semuaValid(tipe, dta) {
+        var w, x, y, z;
+        var isian;
+        var jmlJawaban;
+        $('#msgInputView').text('');
+        //htgJmlSoal(tipe).done(function (dta) {
+        for (var nI = 1; nI <= dta; nI++) {
+            w = $("#" + tipe.substring(5) + "_" + nI.toString() + "_" + "1").val();
+            x = $("input[name='" + tipe.substring(5) + "_" + nI.toString() + "']:checked").val();
+            y = $("input[name='" + tipe.substring(5) + "1_" + nI.toString() + "']:checked").val();
+            z = $("input[name='" + tipe.substring(5) + "2_" + nI.toString() + "']:checked").val();
+            if (tipe == "Tipe M") {
+                if (typeof (w) != "undefined") {
+                    jmlJawaban = parseInt(arrJumlahJawabanM[nI - 1][1]);
+                    for (var nJ = 0; nJ < jmlJawaban; nJ++) {
+                        isian = $("#" + tipe.substring(5) + "_" + nI.toString() + "_" + (nJ + 1).toString()).val();
+                        _pertanyaanId = $("#" + tipe.substring(5) + "1_" + nI.toString()).text();
+                        SimpanData(isian, nJ + 1);
+                    }
+                }
+            } else {
+                if (typeof (y) != "undefined") {
+                    _pertanyaanId = $('#' + tipe.substring(5) + '1A_' + nI.toString()).text();
+                    SimpanData(y + ";" + z, nI);
+
+                } else if (typeof (x) != "undefined") {
+                    _pertanyaanId = $('#' + tipe.substring(5) + '1_' + nI.toString()).text();
+                    SimpanData(x, nI);
+                }
+                else {
+                    SimpanData('0', nI);
+                }
+            }
+        }
+
+        $('#TestChapter' + tipe.substring(5)).css('display', 'none');
+        TutupSemuaChapter();
+
+        if (tipe == 'Tipe M') {
+            $('#msgInputView').text('');
+            $('#_tutupChapter').show();
+            $(window).scrollTop(0);
+            simpanSisaWaktu(jadwalNIKId, tipe, -1, -1);
+            simpanWaktuSelesai(jadwalNIKId, tipe).done();
+        }
+        else {
+            tipeBaru = 'Tipe ' + String.fromCharCode((tipe.charCodeAt(5)) + 1);
+            simpanSisaWaktu(jadwalNIKId, tipe, -1, -1);
+            simpanWaktuSelesai(jadwalNIKId, tipe).done();
+            htgDurasi(tipeBaru).done(function (dt) {
+
+                //html = $.parseHTML(dt[0][1]);
+                //$('#instruksi' + tipeBaru.substring(5) + '1').append(html);
+                //$('#instruksi' + tipeBaru.substring(5) + '2').append(html);
+
+                ambilSisaWaktu(jadwalNIKId, tipeBaru).done(function (dd) {
+                    if (dd.length > 0) {
+                        _sisaWaktu = parseInt(dd[0][0]) * 60 * 1000 + parseInt(dd[0][1]) * 1000
+                        if (_sisaWaktu < 0) {
+                            btnOnClick(tipeBaru);
+                        }
+                        else {
+                            $('#_chapter' + tipeBaru.substring(5)).show();
+                            btnMulaiTestOnClick(tipeBaru);
+                        }
+                    }
+                    else {
+                        $('#_chapter' + tipeBaru.substring(5)).show();
+                        $('#ContohChapter' + tipeBaru.substring(5)).show();
+                        $('#msgSisaWaktu').text('');
+                        $(window).scrollTop(0);
+                        //html = $.parseHTML(dta[0][1]);
+                        //html1 = $.parseHTML(dta[0][1]);
+                        //$('#instruksi' + tipeBaru + '1').remove();
+                        //$('#instruksi' + tipeBaru + '2').remove();
+                        //$('#instruksi' + tipeBaru + '1').append(html1);
+                        //$('#instruksi' + tipeBaru + '2').append(html);
+                        $('#Waktu' + tipeBaru.substring(5)).text(dt[0][0].toString() + ' Menit');
+                    }
+                });
+            });
+        }
+        //});
+    }
+
+    function btnOnClick1(tipe) {
+        var w, x, y, z;
+        var isian;
+        var validSemua;
+        validSemua = true;
+        var jmlJawaban;
+        w = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "1").val();
+        x = $("input[name='" + tipe.substring(5) + "_" + _noUrut.toString() + "']:checked").val();
+        y = $("input[name='" + tipe.substring(5) + "1_" + _noUrut.toString() + "']:checked").val();
+        z = $("input[name='" + tipe.substring(5) + "2_" + _noUrut.toString() + "']:checked").val();
+
+        if (tipe == "Tipe J" || tipe == "Tipe K" || tipe == "Tipe L" || tipe == "Tipe M") { //validasi utk tipe J - M
+            if (tipe == "Tipe M") {
+                jmlJawaban = parseInt(arrJumlahJawabanM[_noUrut - 1][1]);
+
+                for (var nI = 0; nI < jmlJawaban; nI++) {
+                    isian = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "_" + (nI + 1).toString()).val();
+                    if (isian == "") validSemua = false;
+                }
+                if (validSemua == true) semuaValid1(tipe, 'isian');
+                else $('#msgInputView').text('dTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+
+            }
+            else if (tipe == "Tipe J") {
+                if (typeof (y) == "undefined" || typeof (z) == "undefined") validSemua = false;
+                if (validSemua == true) semuaValid1(tipe, 'radio');
+                else $('#msgInputView').text('eTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+            }
+            else {
+                if (typeof (x) == "undefined") validSemua = false;
+                if (validSemua == true) semuaValid1(tipe, 'radio');
+                else $('#msgInputView').text('fTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+            }
+        }
+        else {
+            semuaValid1(tipe, 'radio');
+        }
+    }
+
+    function semuaValid1(tipe, tipeIsian) {
+        var w, x, y, z;
+        var jmlJawaban;
+
+        $('#msgInputView').text('');
+        waktuAkhir = new Date();
+        $('#' + tipe.substring(5) + '_' + _noUrut.toString()).css('display', 'none');
+        w = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "1").val();
+        x = $("input[name='" + tipe.substring(5) + "_" + _noUrut.toString() + "']:checked").val();
+        y = $("input[name='" + tipe.substring(5) + "1_" + _noUrut.toString() + "']:checked").val();
+        z = $("input[name='" + tipe.substring(5) + "2_" + _noUrut.toString() + "']:checked").val();
+
+        if (tipeIsian == "isian") {//(typeof (w) != 'undefined') {
+            jmlJawaban = parseInt(arrJumlahJawabanM[_noUrut - 1][1]);
+
+            for (var nI = 0; nI < jmlJawaban; nI++) {
+                isian = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "_" + (nI + 1).toString()).val();
+                _pertanyaanId = $("#" + tipe.substring(5) + "1_" + _noUrut.toString()).text();
+                SimpanData(isian, nI + 1);
+            }
+            _noUrut = _noUrut + 1;
+            $('#TestChapter' + tipe.substring(5)).show();
+            $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+        }
+        else {
+            if (typeof (y) != "undefined") {
+                _pertanyaanId = $('#' + tipe.substring(5) + '1A_' + _noUrut.toString()).text();
+                SimpanData(y + ";" + z, _noUrut);
+                _noUrut = _noUrut + 1;
+                $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+            }
+            else {
+                _pertanyaanId = $('#' + tipe.substring(5) + '1_' + _noUrut.toString()).text();
+                if (typeof (x) != "undefined") {
+                    SimpanData(x);
+                }
+                else {
+                    SimpanData('0');
+                }
+                _noUrut = _noUrut + 1;
+                $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+            }
+        }
+    }
+
+    function pernyataanOnClick() {
+        var url = '/Input/ExecSQL';
+        var pernyataan;
+        if ($("#pernyataan").is(":checked") == true) {
+            pernyataan = 'SETUJU';
+        }
+        else {
+            pernyataan = 'TIDAK SETUJU';
+        }
+
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_PernyataanSetuju '" + jadwalNIKId + "', '" + pernyataan + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function htgJmlJawaban() {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select B.NoUrut,count(*) from [dbo].[Assesment_Jawaban] A join [dbo].[Assesment_Pertanyaan] B on A.PertanyaanId=B.PertanyaanId join  [dbo].[Assesment_TipeSoal] C on B.TipeSoalId=C.TipeSoalId where C.NamaTipeSoal='Tipe M' group by B.NoUrut order by B.NoUrut",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ambilSoalTerakhir(tipe) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec [dbo].[Assesment_AmbilJawabanTerakhir_Chapter] '" + jadwalNIKId + "','" + tipe + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+
+    //disable mouse drag select start
+
+    document.onselectstart = new Function('return false');
+
+    //function dMDown(e) { return false; }
+
+    function dOClick() { return true; }
+
+    //document.onmousedown = dMDown;
+
+    document.onclick = dOClick;
+
+    $("#document").attr("unselectable", "on");
+
+    //disable mouse drag select end
+
+    //disable right click - context menu
+
+    document.oncontextmenu = new Function("return false");
+
+
+    //disable CTRL+A/CTRL+C through key board start
+
+    //use this function
+
+
+    function disableSelectCopy(e) {
+
+        // current pressed key
+
+        var pressedKey = String.fromCharCode(e.keyCode).toLowerCase();
+
+        if (e.ctrlKey && (pressedKey == "c" || pressedKey == "x" || pressedKey == "v" || pressedKey == "a")) {
+
+            return false;
+
+        }
+
+    }
+
+    document.onkeydown = disableSelectCopy;
+
+
+    //or use this function
+
+    $(function () {
+
+        $(document).keydown(function (objEvent) {
+
+            if (objEvent.ctrlKey || objEvent.metaKey) {
+
+                if (objEvent.keyCode == 65 || objEvent.keyCode == 97) {
+
+                    return false;
+
+                }
+
+                //}
+
+            }
+
+        });
+
+    });
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    .hdr {
+        font-size: x-large;
+    }
+
+    ._hdr {
+        font-size: large;
+        color: black;
+        background-color: white;
+        border: 1px solid gray;
+        padding: 10px 10px 10px 10px;
+    }
+
+    ._isihdr {
+        font-size: medium;
+    }
+
+    .hiddenCalendarControl .k-select {
+    }
+
+    input.largerCheckbox {
+        width: 40px;
+        height: 40px;
+    }
+
+    input.largerRadio {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .multiplechoice {
+        font-size: x-large;
+        font-weight: 500;
+        color: black;
+        width: 100%;
+        border: 1px solid gray;
+        margin: 10px 10px 10px 10px;
+    }
+
+    div.k-window {
+        position: fixed !important;
+    }
+
+    .jawaban {
+        cursor: pointer;
+    }
+
+    .btn-big {
+        background-color: #474EDD;
+        background-image: -webkit-linear-gradient(283deg, rgba(255, 255, 255, 0.1) 50%, transparent 55%),-webkit-linear-gradient(top, rgba(255, 255, 255, 0.15), transparent);
+        border-radius: 6px;
+        box-shadow: 0 0 0 1px #163772 inset,0 0 0 2px rgba(255, 255, 255, 0.15) inset,0 4px 0 0 #333797,0 4px 0 1px rgba(0, 0, 0, 0.4),0 4px 4px 1px rgba(0, 0, 0, 0.5);
+        color: white !important;
+        display: block;
+        font-family: "Lucida Grande", Arial, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+        height: 61px;
+        letter-spacing: -1px;
+        line-height: 61px;
+        margin: 50px;
+        position: relative;
+        text-align: center;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+        text-decoration: none !important;
+        -webkit-transition: all .2s linear;
+        /*width: 186px;*/
+    }
+
+        .btn-big:active {
+            background-color: #474EDD;
+            top: 4px;
+            box-shadow: 0 0 0 1px #163772 inset,0 0 0 2px rgba(255, 255, 255, 0.15) inset,0 0 0 0 #333797,0 0 0 1px rgba(0, 0, 0, 0.4),0 0px 8px 1px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-big:hover {
+            background-color: #5158E0;
+            poisiton: relative;
+            top: -1px;
+            box-shadow: 0 0 0 1px #163772 inset,0 0 0 2px rgba(255, 255, 255, 0.15) inset,0 5px 0 0 #333797,0 5px 0 1px rgba(0, 0, 0, 0.4),0 5px 8px 1px rgba(0, 0, 0, 0.5);
+        }
+
+    #document, #ctl00_MasterPageBodyTag {
+        user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+</style>
+
+

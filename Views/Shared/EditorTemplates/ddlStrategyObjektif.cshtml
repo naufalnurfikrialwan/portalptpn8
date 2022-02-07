@@ -1,0 +1,18 @@
+﻿@model string
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlStrategyObjektif")
+        .MinLength(2)
+        .Filter("contains")
+        .DataTextField("StrategyObjektif")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterStrategyObjektif").Type(HttpVerbs.Post));
+
+        })
+        .Events(e => { e.Select("ddlStrategyObjektifOnSelect"); e.Change("ddlStrategyObjektifOnSelect"); })
+)
+
+
+
+

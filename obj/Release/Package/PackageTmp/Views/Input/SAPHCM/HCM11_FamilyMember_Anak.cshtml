@@ -1,0 +1,426 @@
+﻿@model Ptpn8.Models.SAPHCM.View_HCM02_ListEmployee
+<script src="~/Scripts/SAPHCM/HCM11_FamilyMember_Anak.js"></script>
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div class="_headersawit">
+    @(Html.Kendo().TextBoxFor(m => m.PersNo).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.Title).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.KodePosition).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.PersonalArea).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.PersonnelSubArea).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.EmployeeGroup).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.EmployeeSubgroup).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.PayrollArea).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.WorkContract).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.StatusPernikahan).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.TanggalPernikahan).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.Nationality).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%;" align="center">
+        <tr>
+            <td width="100%;">
+                <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%;" align="center" style="font-size: small;">
+        <tr>
+            <td width="5%"><label style="text-align: right; font-size: 12px;">NIK:</label></td>
+            <td width="20%">
+                @(Html.Kendo().TextBox().Name("CariNIK").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))
+
+                <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+            </td>
+            <td width="30%" align="left"></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Nama Lengkap:</label></td>
+            <td><label id="FullName" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Kota Kelahiran:</label></td>
+            <td>
+                <label id="TempatLahir" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Negara Kelahiran:</label></td>
+            <td>
+                <label id="NegaraTempatLahir" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Tanggal Lahir:</label></td>
+            <td>
+                <label id="TanggalLahir" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Agama:</label></td>
+            <td>
+                <label id="Agama" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 12px; color: red;">Apabila terdapat ketidakcocokan pada data NAMA, TEMPAT TANGGAL LAHIR dan AGAMA, agar segera menghubungi Divisi SDM</label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 18px; color: darkcyan ;">Lengkapi Isian Di Bawah Ini :</label></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+
+    @(Html.Kendo().Grid<Ptpn8.Models.SAPHCM.View_HCM11_FamilyMember_Anak>()
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Command(command => { command.Custom("Delete").Text("Hapus Baris").Click("hapusSatuBaris").HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" }); }).Width(80);
+                    g.Bound(i => i.IDD).Width(50).Hidden();
+                    g.Bound(i => i.TanggalEdit).Width(50).Hidden();
+                    g.Bound(i => i.EmpID).Width(50).Hidden();
+                    g.Bound(i => i.PersonnelNumber).Title("PersNo").Hidden();
+                    g.Bound(i => i.StartDate).Width(50).Hidden();
+                    g.Bound(i => i.Subtype).Width(150).Title("Kriteria Anak (Isi 2 : Anak Yang Ditanggung, Isi 9000 : Anak Kembar)");
+                    g.Bound(i => i.Number).Title("Anak Ke-?").Width(80).Format("{0:N0}");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Lengkap Sesuai Kartu Keluarga");
+                    g.Bound(i => i.Female).Width(50).Hidden();
+                    g.Bound(i => i.Male).Width(50).Hidden();
+                    g.Bound(i => i.JenisKelamin).Width(100).Title("Pilih Jenis Kelamin");
+                    g.Bound(i => i.Birthplace).Width(150).Title("Kota Tpt Lahir");
+                    g.Bound(i => i.CountryofBirth).Width(150).Title("Negara Tpt Lahir");
+                    g.Bound(i => i.DateofBirth).Width(120).Title("Tgl Lahir (Format DD.MM.YYYY)");
+                    g.Bound(i => i.JobTitle).Width(200).Title("Pekerjaan (Apabila Belum Bekerja Isi : TIDAK BEKERJA)");
+                    g.Bound(i => i.Employer).Width(200).Title("Alamat Tpt Kerja (Apabila Belum Bekerja Isi : -)");
+                    g.Bound(i => i.DependentforTaxPurpose).Width(50).Title("Tanggungan Pajak?").Hidden();
+                    g.Bound(i => i.BPJSHealthInsuranceDependentType).Width(80).Title("No BPJS Kesehatan").Hidden();
+                    g.Bound(i => i.BenefitClassforBPJS).Width(80).Title("Kelas BPJS Kesehatan").Hidden();
+
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                    "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                    "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                })
+                .AutoBind(false)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .HtmlAttributes(new { style = "Height: 400px" })
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+                    e.DataBinding("grdOnDataBinding");
+                })
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    .Sort(s => s.Add(x => x.Number))
+                    .Batch(true)
+                    .Model(model =>
+                    {
+                        model.Id(p => p.IDD);
+                        model.Field(p => p.IDD).DefaultValue(Guid.NewGuid());
+                        model.Field(p => p.TanggalEdit).DefaultValue(DateTime.Now);
+                        model.Field(p => p.StartDate).DefaultValue("01.01.2018");
+                        model.Field(p => p.Subtype).DefaultValue("2");
+                        model.Field(p => p.CountryofBirth).DefaultValue("INA");
+                    })
+                )
+    )
+</div>
+
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+
+    var UID;
+    $(document).ready(function () {
+        
+    });
+
+    function btnProsesOnClick()
+    {
+         EmpIDOnSelect();
+    }
+
+    function grdOnChange(e) { }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+        if (model.isNew()) {
+            model.IDD = model.uid;
+            model.EmpID = $('#EmpID').text().substring(2, 14);
+            model.PersonnelNumber = $('#PersNo').val();
+        }
+        UID = model.uid;
+    }
+
+    function grdOnDataBinding() {
+
+    }
+
+    function sendData() {
+        var grid = $("#grdDetail").data("kendoGrid");
+        var currentData = grid.dataSource.data();
+        var stFail = 0;
+
+        for (var i = 0; i < currentData.length; i++) {
+            if (currentData[i].isNew()) {
+                SimpanData('baru', currentData[i]).done(function (dta) {
+                }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+            } else if (currentData[i].dirty) {
+                SimpanData('edit', currentData[i]).done(function (dta) {
+                }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+            }
+        }
+
+        //this records are deleted
+        var deletedRecords = [];
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            SimpanData('hapus', grid.dataSource._destroyed[i]).done(function (dta) {
+            }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+        }
+
+        if (stFail == 0) {
+            alert("Data Sudah Tersimpan...");
+        }
+    }
+
+    function hapusSeluruh(e) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            var grid = $('#grdDetail').data('kendoGrid');
+            var row = grid.tbody.find("tr:first");
+            do {
+                $('#grdDetail').data('kendoGrid').removeRow(row);
+                row = grid.tbody.find("tr:first");
+            }
+            while (grid.tbody.contents().length > 0)
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+    }
+
+    function hapusSatuBaris(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            $('#grdDetail').data('kendoGrid').removeRow(row);
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+
+    }
+
+    function EmpIDOnSelect(e) {
+        GetEmployee().done(function (data) {
+            if (data) {
+                var dta = data[0];
+                $('#FullName').text(dta.FullName);
+                $('#TempatLahir').text(dta.TempatLahir);
+                $('#NegaraTempatLahir').text(dta.NegaraTempatLahir);
+                $('#TanggalLahir').text(dta.TanggalLahir);
+                $('#Agama').text(dta.Agama);
+                $('#PersNo').val(dta.PersNo);
+                GetAnak(dta.EmpID).done(function (data1) {
+                    if (data1) {
+                        var grd = $('#grdDetail').data('kendoGrid');
+                        grd.dataSource.data(data1);
+                        //grd.refresh();
+                    }
+                });
+            }
+        });
+    }
+
+    function GetEmployee() {
+        var url = '/Input/GetDataFrom';
+        var empID = $('#CariNIK').val();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.SAPHCM.View_HCM02_ListEmployee',
+                scriptSQL: "SELECT [Emp ID] as EmpID,[Full Name] as FullName,[Tempat Lahir] as TempatLahir,[Tanggal Lahir] as TanggalLahir, [Negara Tempat Lahir] as NegaraTempatLahir, [Agama] as Agama, PersNo FROM [SAPHCM].[dbo].[HCM02_ListEmployee] " +
+                    "WHERE [Emp ID]='" + empID.substring(2, 14) + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetAnak() {
+        var url = '/Input/GetDataFrom';
+        var empID = $('#CariNIK').val();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.SAPHCM.View_HCM11_FamilyMember_Anak',
+                scriptSQL: "set dateformat dmy;" +
+                    "SELECT Idd as IDD, SYSDATETIME() as TanggalEdit, [Emp ID] as EmpID, [Personnel Number]as PersonnelNumber, " +
+                    "cast(day([Start Date]) as nvarchar(2)) + '.' + cast(month([Start Date]) as nvarchar(2)) + '.' + cast(year([Start Date]) as nvarchar(4)) as StartDate, " +
+                    "Subtype, Nama, [Number] as Number, Female, Male, Birthplace, cast(day([Date of Birth]) as nvarchar(2)) + '.' + cast(month([Date of Birth]) as nvarchar(2)) + '.' + cast(year([Date of Birth]) as nvarchar(4)) as DateofBirth, " +
+                    "[Country of Birth] as CountryofBirth, [Job Title] as JobTitle, Employer, [Dependent for Tax Purpose]as DependentforTaxPurpose, [BPJS Health Insurance Dependent Type] as BPJSHealthInsuranceDependentType, " +
+                    "[Benefit Class for BPJS] as BenefitClassforBPJS, case when male='X' then 'Pria' else 'Wanita' end as JenisKelamin FROM [SAPHCM].[dbo].[HCM11_FamilyMember_Anak] " +
+                    "WHERE [Emp ID]='" + empID.substring(2, 14) + "' ORDER BY [Number]",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData(status, dta) {
+
+        var url = '/Input/ExecSQL';
+        var IDD = dta.IDD;
+        var tanggalEdit
+        if (typeof (dta.TanggalEdit) == "string") {
+            tanggalEdit = new Date(parseInt(dta.TanggalEdit.substr(6)));
+        } else {
+            tanggalEdit = dta.TanggalEdit;
+        }
+
+        var EmpID = $('#CariNIK').val(); 
+        var PersonnelNumber = dta.PersonnelNumber;
+        var StartDate = "01.01.2018";;
+        var Subtype = dta.Subtype;
+        var Nama = dta.Nama;
+        var Number = dta.Number;
+        var Female = dta.JenisKelamin == 'Pria' ? '' : 'X';
+        var Male = dta.JenisKelamin == 'Pria' ? 'X' : '';
+        var Birthplace = dta.Birthplace;
+        var DateofBirth = dta.DateofBirth;
+        var CountryofBirth = dta.CountryofBirth;
+        var JobTitle = dta.JobTitle;
+        var Employer = dta.Employer;
+        var DependentforTaxPurpose = dta.DependentforTaxPurpose;
+        var BPJSHealthInsuranceDependentType = dta.BPJSHealthInsuranceDependentType;
+        var BenefitClassforBPJS = dta.BenefitClassforBPJS;
+
+        if (status == 'baru') {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec SimpanHCM11_FamilyMember_Anak_ADD '" + IDD.toString() +
+                        "','" + EmpID.substring(2, 14) + "','" + PersonnelNumber + "','" + StartDate + "','" + Subtype + "','" + Nama + "','" + Number + "','" + Female + "','" + Male +
+                        "','" + Birthplace + "','" + DateofBirth + "','" + CountryofBirth + "','" + JobTitle + "','" + Employer + "','" + DependentforTaxPurpose +
+                        "','" + BPJSHealthInsuranceDependentType + "','" + BenefitClassforBPJS + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        } else if (status == 'edit') {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec SimpanHCM11_FamilyMember_Anak_EDIT '" + IDD.toString() +
+                        "','" + EmpID.substring(2, 14) + "','" + PersonnelNumber + "','" + StartDate + "','" + Subtype + "','" + Nama + "','" + Number + "','" + Female + "','" + Male +
+                        "','" + Birthplace + "','" + DateofBirth + "','" + CountryofBirth + "','" + JobTitle + "','" + Employer + "','" + DependentforTaxPurpose +
+                        "','" + BPJSHealthInsuranceDependentType + "','" + BenefitClassforBPJS + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        } else {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec SimpanHCM11_FamilyMember_Anak_DEL '" + IDD.toString() + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        }
+    }
+
+    function ddlJenisKelaminOnChange(e) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var row = grid.tbody.find("tr[data-uid='" + UID + "']");
+        var data = grid.dataItem(row);
+        var ddlJenisKelamin = this.dataItem(e.item);
+        if (ddlJenisKelamin.Value == 'Pria') {
+            data.Male = 'X';
+            data.Female = '';
+        }
+        else {
+            data.Male = '';
+            data.Female = 'X';
+        }
+    }
+
+    function txtDateOnChange(e) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var row = grid.tbody.find("tr[data-uid='" + UID + "']");
+        var data = grid.dataItem(row);
+        var dt = $("#DateofBirth").data("kendoDatePicker");
+        var dtStr = dt._value.getDate().toString() + "." + (dt._value.getMonth()+1).toString() + "." + dt._value.getFullYear().toString()
+        data.DateofBirth = dtStr;
+    }
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+

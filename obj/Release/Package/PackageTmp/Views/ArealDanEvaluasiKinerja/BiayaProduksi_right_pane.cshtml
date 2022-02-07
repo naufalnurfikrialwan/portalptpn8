@@ -1,0 +1,47 @@
+﻿    <div class="pane-content">
+    @if (ViewData["LEGEND"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:darkkhaki; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Legend</span></label>
+                    </div>
+                    <div>
+                        @(Html.Kendo().Grid<Ptpn8.ArealDanEvaluasiKinerja.Models.KegiatanView>()
+                    .Name("grdLegend")
+                    .Columns(g =>
+                    {
+                        g.Bound(i => i.Nama).Width(25).HtmlAttributes(new { @style = "background-color: #=Warna#; color: #=Warna#" }).HeaderHtmlAttributes(new { @style = "display:none;" });
+                        g.Bound(i => i.KeteranganWarna).Width(150).HtmlAttributes(new { @style = "color: white; background-color:darkkhaki" }).HeaderHtmlAttributes(new { @style = "display:none;" });
+                    })
+                .AutoBind(false)
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    //                        .Sort(s => s.Add(x => x.NoUrut))
+                    .Batch(true)
+                .Read(read => read.Action("grdLegend", "ArealDanEvaluasiKinerja").Data("filterGRD").Type(HttpVerbs.Post))
+                ))
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+    @if (ViewData["KETLEGEND"].ToString() == "TRUE")
+    {
+       <table width="100%" style="background-color:darkkhaki; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Keterangan</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        Keterangan
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+

@@ -1,0 +1,173 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Report MPP Kebun Teh</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.CalculatorMPP.Models.CalculatorMPP_RekapHasilKebun>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.Nomor).Width(50).Title("No.");
+            g.Bound(i => i.NamaJabatan).Width(200).Title("Nama Jabatan")
+                .ClientFooterTemplate("JUMLAH")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.GUNUNGMAS).Width(60).Title("GUM").ClientTemplate("#= formatNum(GUNUNGMAS) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.CIANTEN).Width(60).Title("TIN").ClientTemplate("#= formatNum(CIANTEN) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PARAKANSALAK).Width(60).Title("PAR").ClientTemplate("#= formatNum(PARAKANSALAK) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.GOALPARA).Width(60).Title("GOL").ClientTemplate("#= formatNum(GOALPARA) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PAPANDAYAN).Width(60).Title("PAP").ClientTemplate("#= formatNum(PAPANDAYAN) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.CISARUNI).Width(60).Title("CIS").ClientTemplate("#= formatNum(CISARUNI) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.DAYEUHMANGGUNG).Width(60).Title("DAM").ClientTemplate("#= formatNum(DAYEUHMANGGUNG) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.BUKITUNGGUL).Width(60).Title("BUNA").ClientTemplate("#= formatNum(BUKITUNGGUL) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.TAMBAKSARI).Width(60).Title("TAS").ClientTemplate("#= formatNum(TAMBAKSARI) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PANGLEJAR).Width(60).Title("PAL").ClientTemplate("#= formatNum(PANGLEJAR) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.SINUMBRA).Width(60).Title("SIN").ClientTemplate("#= formatNum(SINUMBRA) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.RANCABALI).Width(60).Title("SPE").ClientTemplate("#= formatNum(RANCABALI) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.RANCABOLANG).Width(60).Title("RAB").ClientTemplate("#= formatNum(RANCABOLANG) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PASIRMALANG).Width(60).Title("PAM").ClientTemplate("#= formatNum(PASIRMALANG) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.KERTAMANAH).Width(60).Title("KER").ClientTemplate("#= formatNum(KERTAMANAH) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.MALABAR).Width(60).Title("MAL").ClientTemplate("#= formatNum(MALABAR) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PURBASARI).Width(60).Title("PUR").ClientTemplate("#= formatNum(PURBASARI) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.TALUNSANTOSA).Width(60).Title("TAL").ClientTemplate("#= formatNum(TALUNSANTOSA) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.SEDEP).Width(60).Title("SED").ClientTemplate("#= formatNum(SEDEP) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.GEDEH).Width(60).Title("TAN").ClientTemplate("#= formatNum(GEDEH) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.MONTAYA).Width(60).Title("MON").ClientTemplate("#= formatNum(MONTAYA) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PASIRNANGKA).Width(60).Title("PAN").ClientTemplate("#= formatNum(PASIRNANGKA) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PANYAIRAN).Width(60).Title("DAN").ClientTemplate("#= formatNum(PANYAIRAN) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.CIATER).Width(60).Title("TER").ClientTemplate("#= formatNum(CIATER) #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(true)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.GUNUNGMAS).Sum();
+                ag.Add(x => x.CIANTEN).Sum();
+                ag.Add(x => x.PARAKANSALAK).Sum();
+                ag.Add(x => x.GOALPARA).Sum();
+                ag.Add(x => x.PAPANDAYAN).Sum();
+                ag.Add(x => x.CISARUNI).Sum();
+                ag.Add(x => x.DAYEUHMANGGUNG).Sum();
+                ag.Add(x => x.BUKITUNGGUL).Sum();
+                ag.Add(x => x.TAMBAKSARI).Sum();
+                ag.Add(x => x.PANGLEJAR).Sum();
+                ag.Add(x => x.SINUMBRA).Sum();
+                ag.Add(x => x.RANCABALI).Sum();
+                ag.Add(x => x.RANCABOLANG).Sum();
+                ag.Add(x => x.PASIRMALANG).Sum();
+                ag.Add(x => x.KERTAMANAH).Sum();
+                ag.Add(x => x.MALABAR).Sum();
+                ag.Add(x => x.PURBASARI).Sum();
+                ag.Add(x => x.TALUNSANTOSA).Sum();
+                ag.Add(x => x.SEDEP).Sum();
+                ag.Add(x => x.GEDEH).Sum();
+                ag.Add(x => x.MONTAYA).Sum();
+                ag.Add(x => x.PASIRNANGKA).Sum();
+                ag.Add(x => x.PANYAIRAN).Sum();
+                ag.Add(x => x.CIATER).Sum();
+            })
+        )
+    )
+</div>
+
+<script>
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.CalculatorMPP.Models.CalculatorMPP_RekapHasilKebun',
+            scriptSQL: "EXEC MPP_RekapHasilKebunTeh"
+        }
+    }
+
+    function formatNum(n) {
+        if (n == null || n == 0 || isNaN(n))
+            return " ";
+        else
+            return kendo.toString(n, "n0");
+    }
+</script>
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m=>m)
+        .Placeholder("Role Name")
+        .DataTextField("Name")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetRoleName1", "ddl", new { Area = "Referensi" }).Data("filterRoleName").Type(HttpVerbs.Post)).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucRoleNameOnSelect"); e.DataBound("aucRoleNameOnDataBound"); })
+)
+
+
+
+
+
+
+
+
+

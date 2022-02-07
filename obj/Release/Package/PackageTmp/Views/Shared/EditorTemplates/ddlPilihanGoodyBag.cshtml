@@ -1,0 +1,23 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+            .DataTextField("Text")
+            .DataValueField("Value")
+            .BindTo(new List<SelectListItem>()
+            {
+    new SelectListItem() {
+        Text = "Paket Goody Bag (4 Kotak Teh)",
+        Value = "Paket Goody Bag (4 Kotak)"
+    },
+    new SelectListItem() {
+        Text = "Paket Goody Bag (5 Kotak Teh)",
+        Value = "Paket Goody Bag (5 Kotak)"
+    },
+    new SelectListItem() {
+        Text = "Paket Kotak Box VVIP (10 Kotak Teh)",
+        Value = "Paket Kotak Box VVIP (10 Kotak)"
+    }
+            })
+            .Events(e => { e.Change("ddlPilihanGoodyBagOnChange"); e.Select("ddlPilihanGoodyBagOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

@@ -1,0 +1,310 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rincian Penerimaan SHT</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                .Items(tabstrip =>
+                {
+                  
+                tabstrip.Add().Text("2017").Selected(true)
+                .Content(@<text>
+                    @(Html.Kendo()
+                        .Grid<Ptpn8.InfoSHT.Models.Rincian_SHT>(Guid.Empty.ToString())
+                        .Name("grdDetail")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.Info_SHTId).Hidden();
+                            g.Bound(i => i.TahunSHT).Width(100).Title("Tahun SHT");
+                            g.Bound(i => i.Register).Width(110).Title("Register");
+                            g.Bound(i => i.Nama).Width(200).Title("Nama");
+                            g.Bound(i => i.Gol).Width(150).Title("Golongan");
+                            g.Bound(i => i.Jabatan).Width(200).Title("Jabatan")
+                                .ClientFooterTemplate("Jumlah Total")
+                                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                            g.Bound(i => i.SHT).Width(120).Title("Nilai SHT").HtmlAttributes(new { style = "text-align: right; color: blue; font-weight : 700" }).Format("{0:N0}")
+                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                            g.Bound(i => i.Unit).Width(150).Title("Unit");
+                            g.Bound(i => i.PeriodePensiun).Width(120).Title("Periode Pensiun");
+                            g.Bound(i => i.JenisPensiun).Width(150).Title("Jenis Pensiun");
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Excel();
+                        })
+                        .Excel(excel => excel.AllPages(true))
+                        .AutoBind(true)
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Groupable()
+                        .Selectable(
+                            selectable => selectable
+                            .Type(GridSelectionType.Cell)
+                        )
+                        .Groupable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                            .Aggregates(ag =>
+                            {
+                                ag.Add(x => x.SHT).Sum();
+                            })
+                        )
+                    )
+                </text>);
+                tabstrip.Add().Text("2018").Selected(false)
+                .Content(@<text>
+                    @(Html.Kendo()
+                        .Grid<Ptpn8.InfoSHT.Models.Rincian_SHT>(Guid.Empty.ToString())
+                        .Name("grdDetail2")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.Info_SHTId).Hidden();
+                            g.Bound(i => i.TahunSHT).Width(100).Title("Tahun SHT");
+                            g.Bound(i => i.Register).Width(110).Title("Register");
+                            g.Bound(i => i.Nama).Width(200).Title("Nama");
+                            g.Bound(i => i.Gol).Width(150).Title("Golongan");
+                            g.Bound(i => i.Jabatan).Width(200).Title("Jabatan")
+                                .ClientFooterTemplate("Jumlah Total")
+                                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                            g.Bound(i => i.SHT).Width(120).Title("Nilai SHT").HtmlAttributes(new { style = "text-align: right; color: blue; font-weight : 700" }).Format("{0:N0}")
+                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                            g.Bound(i => i.Unit).Width(150).Title("Unit");
+                            g.Bound(i => i.PeriodePensiun).Width(120).Title("Periode Pensiun");
+                            g.Bound(i => i.JenisPensiun).Width(150).Title("Jenis Pensiun");
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Excel();
+                        })
+                        .Excel(excel => excel.AllPages(true))
+                        .AutoBind(true)
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Groupable()
+                        .Selectable(
+                            selectable => selectable
+                            .Type(GridSelectionType.Cell)
+                        )
+                        .Groupable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Read(read => read.Action("detailRead", "Report").Data("filterReport2").Type(HttpVerbs.Post))
+                            .Aggregates(ag =>
+                            {
+                                ag.Add(x => x.SHT).Sum();
+                            })
+                        )
+                    )
+                </text>);
+                tabstrip.Add().Text("2019").Selected(false)
+                .Content(@<text>
+                    @(Html.Kendo()
+                        .Grid<Ptpn8.InfoSHT.Models.Rincian_SHT>(Guid.Empty.ToString())
+                        .Name("grdDetail3")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.Info_SHTId).Hidden();
+                            g.Bound(i => i.TahunSHT).Width(100).Title("Tahun SHT");
+                            g.Bound(i => i.Register).Width(110).Title("Register");
+                            g.Bound(i => i.Nama).Width(200).Title("Nama");
+                            g.Bound(i => i.Gol).Width(150).Title("Golongan");
+                            g.Bound(i => i.Jabatan).Width(200).Title("Jabatan")
+                                .ClientFooterTemplate("Jumlah Total")
+                                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                            g.Bound(i => i.SHT).Width(120).Title("Nilai SHT").HtmlAttributes(new { style = "text-align: right; color: blue; font-weight : 700" }).Format("{0:N0}")
+                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                            g.Bound(i => i.Unit).Width(150).Title("Unit");
+                            g.Bound(i => i.PeriodePensiun).Width(120).Title("Periode Pensiun");
+                            g.Bound(i => i.JenisPensiun).Width(150).Title("Jenis Pensiun");
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Excel();
+                        })
+                        .Excel(excel => excel.AllPages(true))
+                        .AutoBind(true)
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Groupable()
+                        .Selectable(
+                            selectable => selectable
+                            .Type(GridSelectionType.Cell)
+                        )
+                        .Groupable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Read(read => read.Action("detailRead", "Report").Data("filterReport3").Type(HttpVerbs.Post))
+                            .Aggregates(ag =>
+                            {
+                                ag.Add(x => x.SHT).Sum();
+                            })
+                        )
+                    )
+                </text>);
+                tabstrip.Add().Text("2020").Selected(false)
+                .Content(@<text>
+                    @(Html.Kendo()
+                        .Grid<Ptpn8.InfoSHT.Models.Rincian_SHT>(Guid.Empty.ToString())
+                        .Name("grdDetail4")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.Info_SHTId).Hidden();
+                            g.Bound(i => i.TahunSHT).Width(100).Title("Tahun SHT");
+                            g.Bound(i => i.Register).Width(110).Title("Register");
+                            g.Bound(i => i.Nama).Width(200).Title("Nama");
+                            g.Bound(i => i.Gol).Width(150).Title("Golongan");
+                            g.Bound(i => i.Jabatan).Width(200).Title("Jabatan")
+                                .ClientFooterTemplate("Jumlah Total")
+                                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                            g.Bound(i => i.SHT).Width(120).Title("Nilai SHT").HtmlAttributes(new { style = "text-align: right; color: blue; font-weight : 700" }).Format("{0:N0}")
+                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                            g.Bound(i => i.Unit).Width(150).Title("Unit");
+                            g.Bound(i => i.PeriodePensiun).Width(120).Title("Periode Pensiun");
+                            g.Bound(i => i.JenisPensiun).Width(150).Title("Jenis Pensiun");
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Excel();
+                        })
+                        .Excel(excel => excel.AllPages(true))
+                        .AutoBind(true)
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Groupable()
+                        .Selectable(
+                            selectable => selectable
+                            .Type(GridSelectionType.Cell)
+                        )
+                        .Groupable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Read(read => read.Action("detailRead", "Report").Data("filterReport4").Type(HttpVerbs.Post))
+                            .Aggregates(ag =>
+                            {
+                                ag.Add(x => x.SHT).Sum();
+                            })
+                        )
+                    )
+                </text>);
+                })
+    )
+</div>
+
+<script>
+    var bagian;
+    var kode, colIdx, pilihan;
+
+    $(document).ready(function () {
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    //fungsi dashboard
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.InfoSHT.Models.Rincian_SHT',
+            scriptSQL: "Declare @@tabelhasil as table (Info_SHTId uniqueidentifier, TahunSHT int, Register nvarchar(max), Nama nvarchar(max), Gol nvarchar(max), Jabatan nvarchar(max), SHT decimal, Unit nvarchar(max), PeriodePensiun nvarchar(max), JenisPensiun nvarchar(max)) " +
+                "insert @@tabelhasil " +
+                "SELECT Info_SHTId, TahunSHT, Register, Nama, Gol, Jabatan, SHT, Unit, PeriodePensiun, JenisPensiun FROM [SPDK_KanpusEF].[dbo].[Info_SHT] " +
+                "WHERE TahunSHT=2017" +
+                "SELECT * FROM @@tabelhasil"
+        }
+    }
+
+    function filterReport2(e) {
+        return {
+            strClassView: 'Ptpn8.InfoSHT.Models.Rincian_SHT',
+            scriptSQL: "Declare @@tabelhasil as table (Info_SHTId uniqueidentifier, TahunSHT int, Register nvarchar(max), Nama nvarchar(max), Gol nvarchar(max), Jabatan nvarchar(max), SHT decimal, Unit nvarchar(max), PeriodePensiun nvarchar(max), JenisPensiun nvarchar(max)) " +
+                "insert @@tabelhasil " +
+                "SELECT Info_SHTId, TahunSHT, Register, Nama, Gol, Jabatan, SHT, Unit, PeriodePensiun, JenisPensiun FROM [SPDK_KanpusEF].[dbo].[Info_SHT] " +
+                "WHERE TahunSHT=2018" +
+                "SELECT * FROM @@tabelhasil"
+        }
+    }
+
+    function filterReport3(e) {
+        return {
+            strClassView: 'Ptpn8.InfoSHT.Models.Rincian_SHT',
+            scriptSQL: "Declare @@tabelhasil as table (Info_SHTId uniqueidentifier, TahunSHT int, Register nvarchar(max), Nama nvarchar(max), Gol nvarchar(max), Jabatan nvarchar(max), SHT decimal, Unit nvarchar(max), PeriodePensiun nvarchar(max), JenisPensiun nvarchar(max)) " +
+                "insert @@tabelhasil " +
+                "SELECT Info_SHTId, TahunSHT, Register, Nama, Gol, Jabatan, SHT, Unit, PeriodePensiun, JenisPensiun FROM [SPDK_KanpusEF].[dbo].[Info_SHT] " +
+                "WHERE TahunSHT=2019" +
+                "SELECT * FROM @@tabelhasil"
+        }
+    }
+
+    function filterReport4(e) {
+        return {
+            strClassView: 'Ptpn8.InfoSHT.Models.Rincian_SHT',
+            scriptSQL: "Declare @@tabelhasil as table (Info_SHTId uniqueidentifier, TahunSHT int, Register nvarchar(max), Nama nvarchar(max), Gol nvarchar(max), Jabatan nvarchar(max), SHT decimal, Unit nvarchar(max), PeriodePensiun nvarchar(max), JenisPensiun nvarchar(max)) " +
+                "insert @@tabelhasil " +
+                "SELECT Info_SHTId, TahunSHT, Register, Nama, Gol, Jabatan, SHT, Unit, PeriodePensiun, JenisPensiun FROM [SPDK_KanpusEF].[dbo].[Info_SHT] " +
+                "WHERE TahunSHT=2020" +
+                "SELECT * FROM @@tabelhasil"
+        }
+    }
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+

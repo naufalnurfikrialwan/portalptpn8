@@ -1,0 +1,431 @@
+﻿@model Ptpn8.UserManagement.Models.RegisterViewModel
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+
+
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+
+<!--header-->
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerkopi">
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+
+                    <tr>
+                        <td width="20%">
+                            <label style="text-align:right">Email:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @Html.Kendo().TextBoxFor(m => m.Email).HtmlAttributes(new { style = "width: 300px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">Password:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @Html.Kendo().TextBoxFor(m => m.Password).Name("Password").HtmlAttributes(new { type = "password", style = "width: 300px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">Confirm Password:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @Html.Kendo().TextBoxFor(m => m.ConfirmPassword).Name("ConfirmPassword").HtmlAttributes(new { type = "password", style = "width: 300px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">No Induk Karyawan:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @*@Html.Kendo().TextBoxFor(m => m.NoIndukKaryawan).Name("ConfirmPassword").HtmlAttributes(new { type = "password", style = "width: 300px;" })*@
+                            @(Html.Kendo().AutoCompleteFor(m => m.NoIndukKaryawan)
+                        .Placeholder("No Registrasi/NIK")
+                        .DataTextField("REG")
+                        .MinLength(2)
+                        .Filter("contains")
+                        .HtmlAttributes(new { type = "password", style = "width: 300px;" })
+                        .Events(e => { e.Change("aucREGOnSelect"); e.DataBound("aucREGOnDataBound"); })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">Nama:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @Html.Kendo().TextBoxFor(m => m.Nama).Name("Nama").HtmlAttributes(new { style = "width: 300px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">Jabatan:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @Html.Kendo().TextBoxFor(m => m.Jabatan).Name("Jabatan").HtmlAttributes(new { style = "width: 300px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">Telepon:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @Html.Kendo().TextBoxFor(m => m.Telepon).Name("Telepon").HtmlAttributes(new { style = "width: 300px;" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">Foto:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @Html.HiddenFor(m => m.FileFoto)
+                            @(Html.Kendo().Upload()
+                            .Name("files")
+                            .Events(e => e.Success("UploadSuccess"))
+                            .Multiple(false)
+                            .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                            .Async(a => a.Save("SaveFoto", "img", new { Area = "Referensi" })
+                            .Remove("RemoveFoto", "img", new { Area = "Referensi" })
+                            .AutoUpload(true)
+                        )
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label style="text-align:right">Lokasi Kerja:</label>
+                        </td>
+                        <td class="_nonkey">
+                            @Html.HiddenFor(m => m.LokasiKerjaId)
+                            @Html.HiddenFor(m => m.PosisiLokasiKerjaId)
+                            @(Html.Kendo().TreeView()
+                            .Name("treeLokasiKerja")
+                            .DataTextField("Nama")
+                            .Events(e => e.Select("treeLokasiKerjaOnSelect"))
+                            .BindTo((IEnumerable<TreeViewItemModel>)ViewBag.treeOrganisasi)
+                            )
+                        </td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Register</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var wndLeaveGrid, wnd, wndDetail, prt, err, del;
+    var buyer;
+    var model;
+    var rowNumber = 0;
+    var menuId = '87fc6e81-36c2-473d-962e-0b4f883b4988'
+
+    $('.k-window.titlebar').css('style', 'display: none');
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+    //disableHeader();
+    $(document).ajaxStart(function () {
+        $("#_header").addClass('disabledbutton');
+        $("#_detail").addClass('disabledbutton');
+        $("#_footer").addClass('disabledbutton');
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+        $("#_header").removeClass('disabledbutton');
+        $("#_detail").removeClass('disabledbutton');
+        $("#_footer").removeClass('disabledbutton');
+    });
+
+    function hapusPenggunaPortalYangAktif() {
+        var url = '/Account/HapusPenggunaPortalYangAktif';
+        return $.ajax({
+            url: url,
+            data: {
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    $(document).ready(function () {
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        wndDetail = $("#konfirmasiDetail").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        err = $("#errWindow").kendoWindow({
+            title: "Error Data",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        prt = $("#printWindow").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+        del = $("#delWindow").kendoWindow({
+            title: "Hapus Header",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        wndLeaveGrid = $("#konfirmasiLeaveGrid").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        gridStatus = 'belum-ngapa-ngapain';
+
+
+        // copykan ke semua view 22/09/16 16:40
+        $("#grdDetail").kendoValidator({
+            rules: { // custom rules
+                chopvalidation: function (input) {
+
+                }
+            }
+        });
+        //////// sampe sini
+    });
+
+    $(window).on("beforeunload", function () {
+        return "Please don't leave me!";
+    });
+
+    $(window).on("unload", function () {
+        hapusPenggunaPortalYangAktif();
+    });
+
+    angular.module("__header", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    simpanHeader().done(function (data) {
+                        if (data) {
+                            alert("Sukses");
+                        }
+                        else {
+                            openErrWindow();
+                        }
+                    })
+                    .fail(function (x) {
+                        alert("Error! Hubungi Bagian TI");
+                    });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                    gridDestroy();
+                }
+            }
+        });
+
+    function openWindow(e) {
+
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            PeriksaConstraintDetail(row).done(function (data) {
+                if (data == 0) {
+                    $('#grdDetail').data('kendoGrid').removeRow(row);
+                    gridStatus = 'sudah-diapa-apain';
+                }
+                else {
+                    openDelDetailWindow();
+                }
+            }).fail(function (x) {
+                alert('Error! Hubungi Bagian TI');
+            });
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+    }
+
+    function openWindowLeaveGrid(e) {
+        e.preventDefault();
+        wndLeaveGrid.open().center();
+        $("#yesLeaveGrid").click(function () {
+            wndLeaveGrid.close();
+            sendData();
+        });
+        $("#noLeaveGrid").click(function () {
+            gridStatus = 'belum-ngapa-ngapain';
+            wndLeaveGrid.close();
+        });
+    }
+
+    function openErrWindow(e) {
+        err.open().center();
+        $("#ok").click(function () {
+            err.close();
+        });
+    }
+
+    function openDelWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function openDelDetailWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function gridDestroy() {
+        $("#grdDetail").data("kendoGrid").dataSource.read([]);
+    }
+
+    function simpanHeader() {
+        var url = '/Input/simpanHeader';
+        var mdl = ViewToModel();
+        return $.ajax({
+            url: url,
+            //contentType: 'application/json; charset=utf-8',
+            data: {
+                _model: JSON.stringify(mdl),
+                _baru: headerBaru,
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ViewToModel() {
+        var mdl = {
+            Email: $('#Email').val(),
+            Password: $('#Password').val(),
+            ConfirmPassword: $('#ConfirmPassword').val(),
+            NoIndukKaryawan: $('#NoIndukKaryawan').val(),
+            Nama: $('#Nama').val(),
+            Jabatan: $('#Jabatan').val(),
+            Telepon: $('#Telepon').val(),
+            FileFoto: $('#FileFoto').val(),
+            LokasiKerjaId: $('#LokasiKerjaId').val(),
+            PosisiLokasiKerjaId: $('#PosisiLokasiKerjaId').val()
+        };
+        return mdl;
+    }
+
+    function aucREGOnSelect(e) {
+        var nama = this.dataItem(e.item);
+        aucregOnSelect(e).done(function (data) {
+            if (data == 0) {
+                alert("REG/NIK belum terdaftar!");
+                $('#NoIndukKaryawan').data('kendoAutoComplete').value(data[0].Nama);
+            }
+            else {
+                $('#NoIndukKaryawan').data('kendoAutoComplete').value("");
+            }
+        }).fail(function (x) {
+            alert('Error! Hubungi Bagian TI');
+        });
+    }
+
+    function aucREGOnDataBound(e) {
+
+    }
+
+    function aucregOnSelect(e) {
+        var url = '/Input/GetDataFrom';
+        return $.ajax({
+            url: url,
+            //contentType: 'application/json; charset=utf-8',
+            data: {
+                strClassView: "Ptpn8.UserManagement.Models.RegisterViewModel",
+                scriptSQL: "SELECT DISTINCT Nama, REG from [SPDK_KanpusEF].[dbo].[Ref_Dik] as A" +
+                            " where REG='" + $('#NoIndukKaryawan').val() + "'" +
+                            " UNION " +
+                            "SELECT DISTINCT Nama, REG from [SPDK_KanpusEF].[dbo].[Ref_DikKLM] as A" +
+                            " where REG='" + $('#NoIndukKaryawan').val() + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function treeLokasiKerjaOnSelect(e) {
+        $('#LokasiKerjaId').val(e.node.dataset.id);
+        $('#PosisiLokasiKerjaId').val(e.node.dataset.id);
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#FileFoto').val(filename);
+    }
+
+</script>
+
+<style type="text/css">
+    #register {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: gainsboro;
+    }
+</style>
+

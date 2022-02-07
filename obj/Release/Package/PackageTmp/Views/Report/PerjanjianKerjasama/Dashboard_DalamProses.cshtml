@@ -1,0 +1,359 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Dashboard Dalam Proses (Suspect-Prospect)</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+        .Items(tabstrip =>
+        {
+            tabstrip.Add().Text("I. Rekap").Selected(true)
+            .Content(@<text>
+                @(Html.Kendo()
+                                    .Grid<Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen_Kabag>(Guid.Empty.ToString())
+                                    .Name("grdDetail")
+                                    .Columns(g =>
+                                    {
+                                        g.Bound(i => i.PIC).Width(100).Title("PIC").HtmlAttributes(new { style = "text-align: left" });
+                                        g.Bound(i => i.Mitra).Width(150).Title("Mitra").HtmlAttributes(new { style = "text-align: left" });
+                                        g.Bound(i => i.BentukKerjasama).Width(120).Title("Bentuk Kerjasama").HtmlAttributes(new { style = "text-align: left" });
+                                        g.Bound(i => i.Perihal).Width(150).Title("Perihal").HtmlAttributes(new { style = "text-align: left" });
+                                        g.Bound(i => i.ProsentaseProses).Width(120).Title("% Proses").Format("{0:N0}").HtmlAttributes(new { style = "text-align: center; color: blue; font-weight : 700" });
+                                    })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Excel();
+                                    })
+                                    .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                                    .Excel(excel => excel.AllPages(true))
+                                    .AutoBind(true)
+                                    .Resizable(resizeable => resizeable.Columns(true))
+                                    .Scrollable()
+                                    .Sortable()
+                                    .Groupable()
+                                    .Selectable(
+                                        selectable => selectable
+                                        .Type(GridSelectionType.Cell)
+                                    )
+                                    .Groupable()
+                                    .HtmlAttributes(new { style = "Height: 450px" })
+                                    .DataSource(o => o
+                                        .Ajax()
+                                        .Group(g => g.Add(gg => gg.PIC))
+                                        .ServerOperation(false)
+                                        .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+                                    )
+                                )
+                        </text>);
+                  })
+            )
+</div>
+
+<script>
+    var kerjasama_DokumenId, bagian;
+    var kode, colIdx, pilihan;
+    var UserName = "@HttpContext.Current.User.Identity.Name";
+
+        $(document).ready(function () {
+            document.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
+            }, false);
+            pdf = $("#pdfWindow").kendoWindow({
+                title: "PDF Viewer",
+                modal: true,
+                visible: false,
+                resizable: false,
+                width: 900,
+                height: 550
+            }).data("kendoWindow");
+
+
+            gridStatus = 'belum-ngapa-ngapain';
+        })
+
+        function onButtonClick(e) {
+            e.preventDefault();
+            var grid = this;
+            var row = $(e.currentTarget).closest("tr");
+
+            var data = grid.dataItem(row);
+            var file = data.NamaFile;
+
+            pdf.open().center();
+
+            var options = {
+                pdfOpenParams: {
+                    navpanes: 1,
+                    toolbar: 0,
+                    statusbar: 0,
+                    pagemode: 'none',
+                    pagemode: "none",
+                    page: 1,
+                    zoom: "page-width",
+
+                    enableHandToolOnLoad: true
+                }
+            }
+
+
+            PDFObject.embed("/Files/Kerjasama/" + file, "#testPDFObject", options)
+        }
+
+        function grdOnDataBound(e) {
+            //var rows = e.sender.tbody.children();
+            //for (var j = 0; j < rows.length; j++) {
+            //    var row = $(rows[j]);
+            //    var dataItem = e.sender.dataItem(row);
+
+            //    //var grid = $('#grdDetail').data('kendoGrid');
+            //    //var dataItem = typeof (grid.dataSource.get(reservasiId)) == "undefined" ? grid.dataSource.getByUid(reservasiId) : grid.dataSource.get(reservasiId);
+            //    var tanggalBerakhir = dataItem.TanggalBerakhir;
+            //    var dateStringTanggalBerakhir = new Date();
+            //    dateStringTanggalBerakhir = tanggalBerakhir.getFullYear() + "/" + (tanggalBerakhir.getMonth() + 1) + "/" + (tanggalBerakhir.getDate());
+            //    var today = new Date();
+            //    today = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate());
+
+            //    var tglBerakhirPisah = dateStringTanggalBerakhir.split('/');
+            //    var todayPisah = today.split('/');
+            //    var objek_tgl = new Date();
+            //    var pisahTanggalBerakhir = objek_tgl.setFullYear(parseInt(tglBerakhirPisah[0]), parseInt(tglBerakhirPisah[1] - 1), parseInt(tglBerakhirPisah[2]));
+            //    var pisahToday = objek_tgl.setFullYear(parseInt(todayPisah[0]), parseInt(todayPisah[1] - 1), parseInt(todayPisah[2]));
+            //    var jumlahHari = (((((pisahToday - pisahTanggalBerakhir) / 1000) / 60) / 60) / 24);
+
+            //    var tanggalBerakhir1 = dataItem.TanggalBerakhir;
+            //    var tanggalBerakhir2 = new Date(tanggalBerakhir1);
+            //    var today1 = new Date();
+            //    var today2 = new Date(today1);
+            //    if (tanggalBerakhir2.getTime() < today2.getTime()) {
+            //        row.addClass("lebihJatuhTempo");
+            //    } else if (jumlahHari == 0) {
+            //        row.addClass("jatuhTempo");
+            //    } else if (jumlahHari > -91 && jumlahHari < 0) {
+            //        row.addClass("tigaBulanDariJatuhTempo");
+            //    }
+            //}
+        }
+
+        function grdCariOnDataBound(e) {
+        }
+
+        function grdCariOnChange(e) {
+            var selected = $.map(this.select(), function (item) {
+                return $(item).text();
+            });
+
+            e.preventDefault();
+            var grid = this;
+            var row = $(e.currentTarget).closest("tr");
+            //colIdx = $("td", row).index(row);
+            var data = grid.dataItem(row);
+            var x = grid.select();
+            var r = x.closest("tr");
+            var xx = grid.dataItem(r);
+            kerjasama_DokumenId = xx.Kerjasama_DokumenId;
+            kode = selected.toString();
+            if (kode.indexOf("Minat") > -1) { pilihan = "Minat" }
+            else if (kode.indexOf("Tanggapan") > -1) { pilihan = "Tanggapan" }
+            else if (kode.indexOf("Legal") > -1) { pilihan = "Legal" }
+            else if (kode.indexOf("BA Survei") > -1) { pilihan = "BA Survei" }
+            else if (kode.indexOf("MOM") > -1) { pilihan = "MOM" }
+            else if (kode.indexOf("Saran Pendapat") > -1) { pilihan = "Saran Pendapat" }
+            else if (kode.indexOf("Memo Kajian") > -1) { pilihan = "Memo Kajian" }
+            else if (kode.indexOf("Peta") > -1) { pilihan = "Peta" }
+            else if (kode.indexOf("MoU") > -1) { pilihan = "MoU" }
+            else if (kode.indexOf("Risalah Rakor") > -1) { pilihan = "Risalah Rakor" }
+            else if (kode.indexOf("Ijin Direksi") > -1) { pilihan = "Ijin Direksi" }
+            else if (kode.indexOf("CRSA") > -1) { pilihan = "CRSA" }
+            else if (kode.indexOf("PKS") > -1) { pilihan = "PKS" }
+            else if (kode.indexOf("Invoice") > -1) { pilihan = "Invoice" }
+            else if (kode.indexOf("Bukti Pembayaran") > -1) { pilihan = "Bukti Pembayaran" }
+            else pilihan = "";
+
+
+            $("#tabstrip").data("kendoTabStrip").select(1);
+            var grid = $('#grdDetail2').data('kendoGrid');
+            grid.dataSource.read();
+        }
+
+        //fungsi menampilkan rincian PK dan IK
+        function filterReport2(e) {
+            if (pilihan == "Minat") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMinat] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Tanggapan") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianTanggapan] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Legal") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianLegal] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "BA Survei") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianBASurvei] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "MOM") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMOM] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Saran Pendapat") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianSaranPendapat] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Memo Kajian") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMemoKajian] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Peta") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianPeta] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "MoU") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMoU] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Risalah Rakor") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianRisalahRakor] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Ijin Direksi") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianIjinDireksi] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "CRSA") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianCRSA] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "PKS") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianPKS] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Invoice") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianInvoice] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Bukti Pembayaran") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianBuktiPembayaran] '" + kerjasama_DokumenId + "'"
+                }
+            }
+        }
+
+        //fungsi dashboard
+        function filterReport(e) {
+            return {
+                strClassView: 'Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen_Kabag',
+                scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_KelengkapanDokumenKabag] '" + UserName + "'"
+            }
+        }
+
+    function WarnaKolom(str, sts) {
+        if (str != null && sts == "Baru") {
+            if (str.indexOf('0') > -1 && str.indexOf('MoU') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: grey;'>" + str + "</div>";
+            else if (str.indexOf('0') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str + "</div>";
+            else
+                return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>";
+        }
+        else if (str != null && (sts == null || sts == 'Perpanjangan')) {
+            if (str.indexOf('0') > -1 && (str.indexOf('CRSA') > -1 || str.indexOf('Risalah Rakor') > -1 || str.indexOf('MoU') > -1))
+                return "<div class='breakWord20' style='color: white; background-color: grey;'>" + str + "</div>";
+            else if (str.indexOf('0') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str + "</div>";
+            else
+                return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>";
+        }
+        else return "<div class='breakWord20' style='color: black'>" + str + "</div>";
+    }
+
+
+
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <script type='text/javascript'>
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+    </script>
+</div>
+
+<style>
+    .tigaBulanDariJatuhTempo {
+        background-color: orange;
+    }
+
+    .jatuhTempo {
+        background-color: lightcoral;
+    }
+
+    .lebihJatuhTempo {
+        background-color: lightcoral;
+    }
+</style>
+
+
+
+
+

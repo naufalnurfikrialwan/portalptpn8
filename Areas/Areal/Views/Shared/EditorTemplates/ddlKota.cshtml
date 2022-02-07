@@ -1,0 +1,23 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Kota
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .AutoBind(false)
+        .Name("ddlKota")
+        .OptionLabel("Pilih Kota...")
+        .DataTextField("Nama")
+        .DataValueField("KotaId")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("getKota", "ddl", new { Area = "Referensi" }).Data("filterKota")).ServerFiltering(true);
+        })
+        .Enable(false)
+        .CascadeFrom("ddlPropinsi")
+        .Events(e => { e.Select("ddlKotaOnSelect"); e.DataBound("ddlKotaOnDataBound");
+        })
+
+)
+@Html.ValidationMessageFor(m => m)
+
+<script>
+    
+</script>

@@ -1,0 +1,1508 @@
+﻿@using Ptpn8.Areas.Areal.Models
+@{
+    ViewBag.Title = "Hanca Panen Per Hari";
+}
+<table width="100%;">
+    <tr><td style="text-align: center; font-weight:600; font-size: large; background: lightgray;vertical-align:middle;">Hanca Panen Per Hari</td></tr>
+    <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerKebun">Layer Kebun</td></tr>
+    <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerAfdeling">Layer Afdeling</td></tr>
+    <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerBlok">Layer Blok</td></tr>
+</table>
+<br />
+<table>
+    <tr>
+        <td width="50%">@Html.Kendo().CheckBox().Name("chkLayerPanel").Label("View Layer Control").Checked(false).HtmlAttributes(new { @onchange = "chkLayerPanelOnChange()" })</td>
+        <td>@Html.Kendo().CheckBox().Name("chkLegendPanel").Label("View Map Legend").Checked(false).HtmlAttributes(new { @onchange = "chkLegendPanelOnChange()" })</td>
+    </tr>
+</table>
+<br />
+
+@(Html.Kendo().Splitter()
+          .Name("vertical")
+          .Orientation(SplitterOrientation.Vertical)
+          .Panes(verticalPanes =>
+          {
+          verticalPanes.Add()
+                .HtmlAttributes(new { id = "top-pane" })
+                .Scrollable(false)
+                .Size("300px")
+                .Collapsible(false)
+                .Content(Html.Kendo().Splitter()
+                            .Name("horizontal")
+                            .HtmlAttributes(new { style = "height: 600px;" })
+                            .Panes(horizontalPanes =>
+                            {
+                            horizontalPanes.Add()
+                                .HtmlAttributes(new { id = "left-pane" })
+                                .Size("200px")
+                                .Collapsible(true)
+                                .Collapsed(true)
+                                .Content(@<div class="pane-content">
+                                    <table style="width: inherit;">
+                                        <tr><td>@Html.Kendo().CheckBox().Name("chkKebun").Label("Kebun").Checked(true).HtmlAttributes(new { @onchange = "chkKebunOnChange()" })</td></tr>
+                                        <tr><td>@Html.Kendo().CheckBox().Name("chkStreetMap").Label("Street Map").Checked(true).HtmlAttributes(new { @onchange = "chkStreetMapOnChange()" })</td></tr>
+                                        <tr><td>@Html.Kendo().CheckBox().Name("chkCitra").Label("Citra").Checked(false).HtmlAttributes(new { @onchange = "chkCitraOnChange()" })</td></tr>
+                                        <tr><td>@Html.Kendo().CheckBox().Name("chkKontur").Label("Peta Kontur").Checked(false).HtmlAttributes(new { @onchange = "chkKonturOnChange()" })</td></tr>
+                                        <tr><td><br /></td></tr>
+                                        <tr><td>@Html.Kendo().Button().Name("btnMapExport").Content("Ekspor Peta").Events(e => e.Click("btnMapExportOnClick"))</td></tr>
+                                        <tr><td><h4>Bulan-Tahun</h4></td></tr>
+                                        <tr>
+                                            <td>
+                                                @(Html.Kendo().DropDownList()
+                                                    .Name("ddlBulan")
+                                                    .AutoBind(true)
+                                                    .OptionLabel("Pilih Bulan...")
+                                                    .DataTextField("Text")
+                                                    .DataValueField("Value")
+                                                    .HtmlAttributes(new { style = "width: 100px;" })
+                                                    .Events(e => { e.Change("ddlBulanChange"); e.Select("ddlBulanSelect"); })
+                                                    .Value(((DateTime.Now.Month) - 1).ToString())
+                                                    .BindTo(new List<SelectListItem>()
+                                                    {
+                                                        new SelectListItem() {Text = "Januari",Value = "1"},
+                                                        new SelectListItem() {Text = "Februari",Value = "2"},
+                                                        new SelectListItem() {Text = "Maret",Value = "3"},
+                                                        new SelectListItem() {Text = "April",Value = "4"},
+                                                        new SelectListItem() {Text = "Mei",Value = "5"},
+                                                        new SelectListItem() {Text = "Juni",Value = "6"},
+                                                        new SelectListItem() {Text = "Juli",Value = "7"},
+                                                        new SelectListItem() {Text = "Agustus",Value = "8"},
+                                                        new SelectListItem() {Text = "September",Value = "9"},
+                                                        new SelectListItem() {Text = "Oktober",Value = "10"},
+                                                        new SelectListItem() {Text = "November",Value = "11"},
+                                                        new SelectListItem() {Text = "Desember",Value = "12"},
+                                                    })
+                                                )
+                                                -
+                                                @(Html.Kendo().IntegerTextBox()
+                                                    .Name("txtTahun")
+                                                    .Value(DateTime.Now.Year)
+                                                    .HtmlAttributes(new { style = "width: 60px;" })
+                                                    .Events(e => { e.Change("txtTahunChange"); })
+                                                    .Format("{0:0000}")
+                                                )
+
+                                            </td>
+                                        </tr>
+
+                                    </table>
+                                </div>);
+
+                                horizontalPanes.Add()
+                                .HtmlAttributes(new { id = "center-pane" })
+                                .Content(
+                                    @<div id="map" style="width:100%;height:100%;">
+                                        <table>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    @(Html.Kendo().Map()
+                                                .Name("map")
+                                                .HtmlAttributes(new { style = "height: 100%;" })
+                                                .Center(-6, 108) //(-6.878055, 107.596070)
+                                                .Zoom(9)
+                                                .Layers(layers =>
+                                                    {
+                                                        layers.Add()
+                                                            .Type(MapLayerType.Tile)
+                                                            .Key("streetmap")
+                                                            .UrlTemplate("https://#= subdomain #.tile.openstreetmap.org/#= zoom #/#= x #/#= y #.png")
+                                                            .Subdomains("a", "b", "c")
+                                                            .Attribution("&copy; <a href='http://osm.org/copyright'>OpenStreetMap contributors</a>");
+                                                    })
+                                                .Layers(layers =>
+                                                {
+                                                    layers.Add()
+                                                    .Style(style => style.Fill(fill => fill.Opacity(1)))
+                                                    .Type(MapLayerType.Tile)
+                                                    .UrlTemplate("https://tile.thunderforest.com/cycle/#= zoom #/#= x #/#= y #.png")
+                                                    .Key("kontur");
+                                                })
+                                                .Layers(layers =>
+                                                {
+                                                    layers.Add()
+                                                    .Style(style => style.Fill(fill => fill.Opacity(1)))
+                                                    .Key("citra")
+                                                    .Type(MapLayerType.Bing)
+                                                    .ImagerySet(MapLayersImagerySet.AerialWithLabels)
+                                                    .Key("AqaPuZWytKRUA8Nm5nqvXHWGL8BDCXvK8onCl2PkC581Zp3T_fYAQBiwIphJbRAK");
+                                                })
+                                                .Layers(layers =>
+                                                {
+                                                    layers.Add()
+                                                        .Style(style => style.Fill(fill => fill.Opacity(1)))
+                                                        .Key("Kebun") // Index : 3
+                                                        .Type(MapLayerType.Shape)
+                                                        .AutoBind(true)
+                                                        .DataSource(dataSource => dataSource
+                                                            .GeoJson()
+                                                            .Read(read => read.Action("KebunGeoJson", "HancaPanenKaret").Data("KebunGeoJsonData"))
+                                                        );
+
+                                                    layers.Add()
+                                                        .Style(style => style.Fill(fill => fill.Opacity(1)))
+                                                        .Key("Afdeling") // Index : 4
+                                                        .AutoBind(false)
+                                                        .Type(MapLayerType.Shape)
+                                                        .DataSource(dataSource => dataSource
+                                                            .GeoJson()
+                                                            .Read(read => read.Action("AfdelingGeoJson", "HancaPanenKaret").Data("AfdelingGeoJsonData"))
+                                                        );
+
+                                                    layers.Add()
+                                                        .Style(style => style.Fill(fill => fill.Opacity(1)))
+                                                        .Key("Blok") // Index : 5
+                                                        .AutoBind(false)
+                                                        .Type(MapLayerType.Shape)
+                                                        .DataSource(dataSource => dataSource
+                                                            .GeoJson()
+                                                            .Read(read => read.Action("BlokGeoJson", "HancaPanenKaret").Data("BlokGeoJsonData"))
+                                                        );
+
+                                                })
+
+                                            .Events(events => events
+                                                .ShapeCreated("onShapeCreated")
+                                                .ShapeMouseEnter("onShapeMouseEnter")
+                                                .ShapeMouseLeave("onShapeMouseLeave")
+                                                .ShapeClick("onShapeClick")
+                                                .MarkerClick("onMarkerClick")
+                                                .Click("onMapClick")
+                                            )
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>);
+
+                                    horizontalPanes.Add()
+                                    .HtmlAttributes(new { id = "right-pane" })
+                                    .Collapsible(true)
+                                    .Collapsed(true)
+                                    .Scrollable(true)
+                                    .Size("300px")
+                                    .Content(@<div class="pane-content">
+                                        <div>
+                                            <h2 style="text-align: center;">Legend</h2>
+                                            <table id="tblLegend">
+                                                <tr style="height: 30px;">
+                                                    <td width="50px" style="color:white; background-color: blue"></td>
+                                                    <td width="250px" style="vertical-align:middle; padding-left: 10px;"><label>Hanca Bulan Ini > 100 % Norma</label></td>
+                                                </tr>
+                                                <tr style="height: 30px;">
+                                                    <td width="50px" style="color:white; background-color: green"></td>
+                                                    <td width="250px" style="vertical-align:middle; padding-left: 10px;"><label>Hanca Bulan Ini 100 % Norma</label></td>
+                                                </tr>
+                                                <tr style="height: 30px;">
+                                                    <td style="color:black; background-color: yellow"></td>
+                                                    <td style="vertical-align:middle;padding-left: 10px;"><label>Hanca Bulan Ini 90 % Norma</label></td>
+                                                </tr>
+                                                <tr style="height: 30px;">
+                                                    <td style="color:black; background-color: orange"></td>
+                                                    <td style="vertical-align:middle;padding-left: 10px;"><label>Hanca Bulan Ini 80 % Norma</label></td>
+                                                </tr>
+                                                <tr style="height: 30px;">
+                                                    <td style="color:white; background-color: red"></td>
+                                                    <td style="vertical-align:middle;padding-left: 10px;"><label>Hanca Bulan Ini 70 % Norma</label></td>
+                                                </tr>
+                                                <tr style="height: 30px;">
+                                                    <td style="color:white; background-color: black"></td>
+                                                    <td style="vertical-align:middle;padding-left: 10px;"><label>Hanca Bulan Ini < 70 % Norma</label></td>
+                                                </tr>
+
+                                            </table>
+
+                                        </div>
+
+                                    </div>);
+
+                            }).ToHtmlString()
+                                    );
+          })
+)
+
+@(Html.Kendo().TabStrip().Name("tabstrib").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                                .HtmlAttributes(new { style = "height: 600px" })
+                                .Items(items =>
+                                {
+                                items.Add().Text("Grafik").Selected(false).Content(@<text>
+                                <div class="LayerKebun">
+                                    <table width="100%" height="100%">
+                                        <tr>
+                                            <td class="tblChart" width="50%">
+                                                @(Html.Kendo().Chart<RotasiPanenPerBulan>()
+                                                        .Name("ChartProtasKaretKebunBI")
+                                                        .Title("Hanca Panen Per Tanggal")
+                                                        .HtmlAttributes(new { style = "height: 600px" })
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Right)
+                                                            .Visible(false)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartHancaPerKebun", "HancaPanenKaret").Data("getKebunData"))
+                                                        )
+                                                        .SeriesDefaults(seriesDefaults =>
+                                                                    seriesDefaults.Bar().Stack(true)
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Bar(model => model.T01LuasJelajah).Name("Hanca Tgl 1").Stack("Realisasi");
+                                                            series.Bar(model => model.T02LuasJelajah).Name("Hanca Tgl 2").Stack("Realisasi");
+                                                            series.Bar(model => model.T03LuasJelajah).Name("Hanca Tgl 3").Stack("Realisasi");
+                                                            series.Bar(model => model.T04LuasJelajah).Name("Hanca Tgl 4").Stack("Realisasi");
+                                                            series.Bar(model => model.T05LuasJelajah).Name("Hanca Tgl 5").Stack("Realisasi");
+                                                            series.Bar(model => model.T06LuasJelajah).Name("Hanca Tgl 6").Stack("Realisasi");
+                                                            series.Bar(model => model.T07LuasJelajah).Name("Hanca Tgl 7").Stack("Realisasi");
+                                                            series.Bar(model => model.T08LuasJelajah).Name("Hanca Tgl 8").Stack("Realisasi");
+                                                            series.Bar(model => model.T09LuasJelajah).Name("Hanca Tgl 9").Stack("Realisasi");
+                                                            series.Bar(model => model.T10LuasJelajah).Name("Hanca Tgl 10").Stack("Realisasi");
+                                                            series.Bar(model => model.T11LuasJelajah).Name("Hanca Tgl 11").Stack("Realisasi");
+                                                            series.Bar(model => model.T12LuasJelajah).Name("Hanca Tgl 12").Stack("Realisasi");
+                                                            series.Bar(model => model.T13LuasJelajah).Name("Hanca Tgl 13").Stack("Realisasi");
+                                                            series.Bar(model => model.T14LuasJelajah).Name("Hanca Tgl 14").Stack("Realisasi");
+                                                            series.Bar(model => model.T15LuasJelajah).Name("Hanca Tgl 15").Stack("Realisasi");
+                                                            series.Bar(model => model.T16LuasJelajah).Name("Hanca Tgl 16").Stack("Realisasi");
+                                                            series.Bar(model => model.T17LuasJelajah).Name("Hanca Tgl 17").Stack("Realisasi");
+                                                            series.Bar(model => model.T18LuasJelajah).Name("Hanca Tgl 18").Stack("Realisasi");
+                                                            series.Bar(model => model.T19LuasJelajah).Name("Hanca Tgl 19").Stack("Realisasi");
+                                                            series.Bar(model => model.T20LuasJelajah).Name("Hanca Tgl 20").Stack("Realisasi");
+                                                            series.Bar(model => model.T21LuasJelajah).Name("Hanca Tgl 21").Stack("Realisasi");
+                                                            series.Bar(model => model.T22LuasJelajah).Name("Hanca Tgl 22").Stack("Realisasi");
+                                                            series.Bar(model => model.T23LuasJelajah).Name("Hanca Tgl 23").Stack("Realisasi");
+                                                            series.Bar(model => model.T24LuasJelajah).Name("Hanca Tgl 24").Stack("Realisasi");
+                                                            series.Bar(model => model.T25LuasJelajah).Name("Hanca Tgl 25").Stack("Realisasi");
+                                                            series.Bar(model => model.T26LuasJelajah).Name("Hanca Tgl 26").Stack("Realisasi");
+                                                            series.Bar(model => model.T27LuasJelajah).Name("Hanca Tgl 27").Stack("Realisasi");
+                                                            series.Bar(model => model.T28LuasJelajah).Name("Hanca Tgl 28").Stack("Realisasi");
+                                                            series.Bar(model => model.T29LuasJelajah).Name("Hanca Tgl 29").Stack("Realisasi");
+                                                            series.Bar(model => model.T30LuasJelajah).Name("Hanca Tgl 30").Stack("Realisasi");
+                                                            series.Bar(model => model.T31LuasJelajah).Name("Hanca Tgl 31").Stack("Realisasi");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.NamaLokasi)
+                                                            .Labels(labels => labels.Rotation("auto"))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(1000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Template("#= series.name# : #= kendo.toString(value,'n2') # Hc")
+                                                        )
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="LayerAfdeling">
+                                        <table width="100%" height="100%">
+                                            <tr>
+                                                <td class="tblChart" width="50%">
+                                                    @(Html.Kendo().Chart<RotasiPanenPerBulan>()
+                                                        .Name("ChartProtasKaretAfdelingBI")
+                                                        .Title("Hanca Panen Per Tanggal")
+                                                        .HtmlAttributes(new { style = "height: 600px" })
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Right)
+                                                            .Visible(false)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartHancaPerAfdeling", "HancaPanenKaret").Data("getAfdelingData"))
+                                                        )
+                                                        .SeriesDefaults(seriesDefaults =>
+                                                                    seriesDefaults.Bar().Stack(true)
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Bar(model => model.T01LuasJelajah).Name("Hanca Tgl 1").Stack("Realisasi");
+                                                            series.Bar(model => model.T02LuasJelajah).Name("Hanca Tgl 2").Stack("Realisasi");
+                                                            series.Bar(model => model.T03LuasJelajah).Name("Hanca Tgl 3").Stack("Realisasi");
+                                                            series.Bar(model => model.T04LuasJelajah).Name("Hanca Tgl 4").Stack("Realisasi");
+                                                            series.Bar(model => model.T05LuasJelajah).Name("Hanca Tgl 5").Stack("Realisasi");
+                                                            series.Bar(model => model.T06LuasJelajah).Name("Hanca Tgl 6").Stack("Realisasi");
+                                                            series.Bar(model => model.T07LuasJelajah).Name("Hanca Tgl 7").Stack("Realisasi");
+                                                            series.Bar(model => model.T08LuasJelajah).Name("Hanca Tgl 8").Stack("Realisasi");
+                                                            series.Bar(model => model.T09LuasJelajah).Name("Hanca Tgl 9").Stack("Realisasi");
+                                                            series.Bar(model => model.T10LuasJelajah).Name("Hanca Tgl 10").Stack("Realisasi");
+                                                            series.Bar(model => model.T11LuasJelajah).Name("Hanca Tgl 11").Stack("Realisasi");
+                                                            series.Bar(model => model.T12LuasJelajah).Name("Hanca Tgl 12").Stack("Realisasi");
+                                                            series.Bar(model => model.T13LuasJelajah).Name("Hanca Tgl 13").Stack("Realisasi");
+                                                            series.Bar(model => model.T14LuasJelajah).Name("Hanca Tgl 14").Stack("Realisasi");
+                                                            series.Bar(model => model.T15LuasJelajah).Name("Hanca Tgl 15").Stack("Realisasi");
+                                                            series.Bar(model => model.T16LuasJelajah).Name("Hanca Tgl 16").Stack("Realisasi");
+                                                            series.Bar(model => model.T17LuasJelajah).Name("Hanca Tgl 17").Stack("Realisasi");
+                                                            series.Bar(model => model.T18LuasJelajah).Name("Hanca Tgl 18").Stack("Realisasi");
+                                                            series.Bar(model => model.T19LuasJelajah).Name("Hanca Tgl 19").Stack("Realisasi");
+                                                            series.Bar(model => model.T20LuasJelajah).Name("Hanca Tgl 20").Stack("Realisasi");
+                                                            series.Bar(model => model.T21LuasJelajah).Name("Hanca Tgl 21").Stack("Realisasi");
+                                                            series.Bar(model => model.T22LuasJelajah).Name("Hanca Tgl 22").Stack("Realisasi");
+                                                            series.Bar(model => model.T23LuasJelajah).Name("Hanca Tgl 23").Stack("Realisasi");
+                                                            series.Bar(model => model.T24LuasJelajah).Name("Hanca Tgl 24").Stack("Realisasi");
+                                                            series.Bar(model => model.T25LuasJelajah).Name("Hanca Tgl 25").Stack("Realisasi");
+                                                            series.Bar(model => model.T26LuasJelajah).Name("Hanca Tgl 26").Stack("Realisasi");
+                                                            series.Bar(model => model.T27LuasJelajah).Name("Hanca Tgl 27").Stack("Realisasi");
+                                                            series.Bar(model => model.T28LuasJelajah).Name("Hanca Tgl 28").Stack("Realisasi");
+                                                            series.Bar(model => model.T29LuasJelajah).Name("Hanca Tgl 29").Stack("Realisasi");
+                                                            series.Bar(model => model.T30LuasJelajah).Name("Hanca Tgl 30").Stack("Realisasi");
+                                                            series.Bar(model => model.T31LuasJelajah).Name("Hanca Tgl 31").Stack("Realisasi");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.NamaLokasi)
+                                                            .Labels(labels => labels.Rotation("auto"))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(500)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Template("#= series.name# : #= kendo.toString(value,'n2') # Hc")
+                                                        )
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="LayerBlok">
+                                        <table width="100%" height="100%">
+                                            <tr>
+                                                <td class="tblChart" width="50%">
+                                                    @(Html.Kendo().Chart<RotasiPanenPerBulan>()
+                                                        .Name("ChartProtasKaretBlokBI")
+                                                        .Title("Hanca Panen Per Tanggal")
+                                                        .HtmlAttributes(new { style = "height: 600px" })
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Right)
+                                                            .Visible(false)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartHancaPerBlok", "HancaPanenKaret").Data("getBlokData"))
+                                                        )
+                                                        .SeriesDefaults(seriesDefaults =>
+                                                                    seriesDefaults.Bar().Stack(true)
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Bar(model => model.T01LuasJelajah).Name("Hanca Tgl 1").Stack("Realisasi");
+                                                            series.Bar(model => model.T02LuasJelajah).Name("Hanca Tgl 2").Stack("Realisasi");
+                                                            series.Bar(model => model.T03LuasJelajah).Name("Hanca Tgl 3").Stack("Realisasi");
+                                                            series.Bar(model => model.T04LuasJelajah).Name("Hanca Tgl 4").Stack("Realisasi");
+                                                            series.Bar(model => model.T05LuasJelajah).Name("Hanca Tgl 5").Stack("Realisasi");
+                                                            series.Bar(model => model.T06LuasJelajah).Name("Hanca Tgl 6").Stack("Realisasi");
+                                                            series.Bar(model => model.T07LuasJelajah).Name("Hanca Tgl 7").Stack("Realisasi");
+                                                            series.Bar(model => model.T08LuasJelajah).Name("Hanca Tgl 8").Stack("Realisasi");
+                                                            series.Bar(model => model.T09LuasJelajah).Name("Hanca Tgl 9").Stack("Realisasi");
+                                                            series.Bar(model => model.T10LuasJelajah).Name("Hanca Tgl 10").Stack("Realisasi");
+                                                            series.Bar(model => model.T11LuasJelajah).Name("Hanca Tgl 11").Stack("Realisasi");
+                                                            series.Bar(model => model.T12LuasJelajah).Name("Hanca Tgl 12").Stack("Realisasi");
+                                                            series.Bar(model => model.T13LuasJelajah).Name("Hanca Tgl 13").Stack("Realisasi");
+                                                            series.Bar(model => model.T14LuasJelajah).Name("Hanca Tgl 14").Stack("Realisasi");
+                                                            series.Bar(model => model.T15LuasJelajah).Name("Hanca Tgl 15").Stack("Realisasi");
+                                                            series.Bar(model => model.T16LuasJelajah).Name("Hanca Tgl 16").Stack("Realisasi");
+                                                            series.Bar(model => model.T17LuasJelajah).Name("Hanca Tgl 17").Stack("Realisasi");
+                                                            series.Bar(model => model.T18LuasJelajah).Name("Hanca Tgl 18").Stack("Realisasi");
+                                                            series.Bar(model => model.T19LuasJelajah).Name("Hanca Tgl 19").Stack("Realisasi");
+                                                            series.Bar(model => model.T20LuasJelajah).Name("Hanca Tgl 20").Stack("Realisasi");
+                                                            series.Bar(model => model.T21LuasJelajah).Name("Hanca Tgl 21").Stack("Realisasi");
+                                                            series.Bar(model => model.T22LuasJelajah).Name("Hanca Tgl 22").Stack("Realisasi");
+                                                            series.Bar(model => model.T23LuasJelajah).Name("Hanca Tgl 23").Stack("Realisasi");
+                                                            series.Bar(model => model.T24LuasJelajah).Name("Hanca Tgl 24").Stack("Realisasi");
+                                                            series.Bar(model => model.T25LuasJelajah).Name("Hanca Tgl 25").Stack("Realisasi");
+                                                            series.Bar(model => model.T26LuasJelajah).Name("Hanca Tgl 26").Stack("Realisasi");
+                                                            series.Bar(model => model.T27LuasJelajah).Name("Hanca Tgl 27").Stack("Realisasi");
+                                                            series.Bar(model => model.T28LuasJelajah).Name("Hanca Tgl 28").Stack("Realisasi");
+                                                            series.Bar(model => model.T29LuasJelajah).Name("Hanca Tgl 29").Stack("Realisasi");
+                                                            series.Bar(model => model.T30LuasJelajah).Name("Hanca Tgl 30").Stack("Realisasi");
+                                                            series.Bar(model => model.T31LuasJelajah).Name("Hanca Tgl 31").Stack("Realisasi");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.NamaLokasi)
+                                                            .Labels(labels => labels.Rotation("auto"))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(100)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Template("#= series.name# : #= kendo.toString(value,'n2') # Hc")
+                                                        )
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </text>);
+                                    items.Add().Text("Data").Selected(true).Content(@<text>
+                                    <div><h3>Hanca Panen, Bulan : <input type="text" id="lblBulan" readonly="readonly" style="font-weight: 600; background: none; " /></h3></div>
+
+                                    <div class="LayerKebun">
+                                        @(Html.Kendo().Grid<Ptpn8.Areas.Areal.Models.RotasiPanenPerBulan>().Name("grdDataKebun")
+                                                .Sortable()
+                                                .Resizable(r => r.Columns(true))
+                                                .Scrollable()
+                                                .Groupable()
+                                                .Selectable()
+                                                .AutoBind(false)
+                                                .Events(e =>
+                                                {
+                                                    e.DataBound("grdDataKebunOnDataBound"); e.Change("grdDataKebunOnChange");
+                                                })
+                                                .HtmlAttributes(new { style = "height: 600px;" })
+                                                .ToolBar(tools => tools.Excel())
+                                                .AutoBind(false)
+                                                .Excel(excel => excel
+                                                    .FileName("HancaPanenKebun.xlsx")
+                                                    .Filterable(true)
+                                                    .AllPages(true)
+                                                    .ProxyURL(Url.Action("Excel_Export_Save", "Home"))
+                                                )
+                                                .Columns(c =>
+                                                {
+                                                    c.Bound(o => o.Id).Hidden();
+                                                    c.Bound(o => o.NamaInduk).HeaderTemplate("Wilayah").Width(100).Groupable(true).Hidden();
+                                                    c.Bound(o => o.NamaLokasi).HeaderTemplate("Kebun").Locked(true).Width(150);
+                                                    c.Bound(o => o.TahunTanam).HeaderTemplate("Tahun Tanam").Locked(false).Width(50).Groupable(true).HtmlAttributes(new { style = "text-align: center;" });
+                                                    c.Bound("LuasAreal").HeaderTemplate("Luas (Ha)").Width(50).Format("{0:n2}")
+                                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                        .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                                    for (int i = 1; i <= 31; i++)
+                                                    {
+                                                        c.Group(o => o
+                                                            .Title("Tanggal " + i.ToString())
+                                                             .Columns(g =>
+                                                             {
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahPohon").HeaderTemplate("Jml Pohon").Format("{0:n0}")
+                                                                     .ClientTemplate("<div>#= kendo.toString(T" + i.ToString("D2") + "JumlahPohon,'n0')#</div>#= kendo.toString(T" + i.ToString("D2") + "LuasJelajah,'n0') # Hc")
+                                                                     .Width(80)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "KgLateks").HeaderTemplate("Kg Lateks").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "KgLump").HeaderTemplate("Kg Lump").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("HK").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("Pohon/HK").Format("{0:n0}")
+                                                                     .ClientTemplate("#= kendo.toString(" + "T" + i.ToString("D2") + "JumlahPohon" + "/" + "T" + i.ToString("D2") + "JumlahHK" + ",'n2') #")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("Kg/HK").Format("{0:n0}")
+                                                                     .ClientTemplate("#= kendo.toString(" + "T" + i.ToString("D2") + "KgLateks" + "/" + "T" + i.ToString("D2") + "JumlahHK" + ",'n2') #")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                             }));
+                                                    }
+
+
+                                                })
+                                              .DataSource(d => d
+                                                  .Ajax()
+                                                  .Read(r => r.Action("HancaPerKebun", "HancaPanenKaret").Data("getKebunData"))
+                                                  .Group(g => g.Add(p => p.NamaInduk))
+                                                  .Model(m =>
+                                                  {
+                                                      m.Id(p => p.Id);
+                                                  })
+                                                  .Aggregates(ag =>
+                                                  {
+                                                      ag.Add(o => o.LuasAreal).Sum();
+                                                      for (int i = 1; i <= 31; i++)
+                                                      {
+                                                          ag.Add("T" + i.ToString("D2") + "JumlahHK", System.Type.GetType("T" + i.ToString("D2") + "JumlahHK")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "JumlahPohon", System.Type.GetType("T" + i.ToString("D2") + "JumlahPohon")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "KgLump", System.Type.GetType("T" + i.ToString("D2") + "KgLump")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "KgLateks", System.Type.GetType("T" + i.ToString("D2") + "KgLateks")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "LuasJelajah", System.Type.GetType("T" + i.ToString("D2") + "LuasJelajah")).Sum();
+                                                      }
+                                                  })
+                                          ))
+
+                                        </div>
+                                        <div class="LayerAfdeling">
+                                            @(Html.Kendo().Grid<Ptpn8.Areas.Areal.Models.RotasiPanenPerBulan>().Name("grdDataAfdeling")
+                                                .Sortable()
+                                                .Scrollable()
+                                                .Resizable(r => r.Columns(true))
+                                                .Groupable()
+                                                .Selectable()
+                                                .AutoBind(false)
+                                                .Events(e =>
+                                                {
+                                                    e.DataBound("grdDataAfdelingOnDataBound"); e.Change("grdDataAfdelingOnChange");
+                                                })
+                                                .HtmlAttributes(new { style = "height: 600px;" })
+                                                .ToolBar(tools => tools.Excel())
+                                                .AutoBind(false)
+                                                .Excel(excel => excel
+                                                    .FileName("HancaPanenAfdeling.xlsx")
+                                                    .Filterable(true)
+                                                    .AllPages(true)
+                                                    .ProxyURL(Url.Action("Excel_Export_Save", "Home"))
+                                                )
+                                                .Columns(c =>
+                                                {
+                                                    c.Bound(o => o.Id).Hidden();
+                                                    c.Bound(o => o.NamaInduk).HeaderTemplate("Kebun").Width(150).Groupable(true).Hidden();
+                                                    c.Bound(o => o.NamaLokasi).HeaderTemplate("Afdeling").Locked(true).Width(150);
+                                                    c.Bound(o => o.TahunTanam).HeaderTemplate("Tahun Tanam").Width(50).Locked(false).Groupable(true).HtmlAttributes(new { style = "text-align: center;" });
+                                                    c.Bound(o => o.LuasAreal).HeaderTemplate("Luas (Ha)").Width(50).Format("{0:n2}")
+                                                      .HtmlAttributes(new { style = "text-align: right;" })
+                                                      .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                      .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                      .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                                    for (int i = 1; i <= 31; i++)
+                                                    {
+                                                        c.Group(o => o
+                                                            .Title("Tanggal " + i.ToString())
+                                                             .Columns(g =>
+                                                             {
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahPohon").HeaderTemplate("Jml Pohon").Format("{0:n0}")
+                                                                     .ClientTemplate("<div>#= kendo.toString(T" + i.ToString("D2") + "JumlahPohon,'n0')#</div>#= kendo.toString(T" + i.ToString("D2") + "LuasJelajah,'n0') # Hc")
+                                                                     .Width(80)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "KgLateks").HeaderTemplate("Kg Lateks").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "KgLump").HeaderTemplate("Kg Lump").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("HK").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("Pohon/HK").Format("{0:n0}")
+                                                                     .ClientTemplate("#= kendo.toString(" + "T" + i.ToString("D2") + "JumlahPohon" + "/" + "T" + i.ToString("D2") + "JumlahHK" + ",'n2') #")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("Kg/HK").Format("{0:n0}")
+                                                                     .ClientTemplate("#= kendo.toString(" + "T" + i.ToString("D2") + "KgLateks" + "/" + "T" + i.ToString("D2") + "JumlahHK" + ",'n2') #")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                             }));
+                                                    }
+                                                })
+                                              .DataSource(d => d
+                                                  .Ajax()
+                                                  .Read(r => r.Action("HancaPerAfdeling", "HancaPanenKaret").Data("getAfdelingData"))
+                                                  .Group(g => g.Add(p => p.NamaInduk))
+                                                  .Model(m => m.Id(p => p.Id))
+                                                  .Aggregates(ag =>
+                                                  {
+                                                      ag.Add(o => o.LuasAreal).Sum();
+                                                      for (int i = 1; i <= 31; i++)
+                                                      {
+                                                          ag.Add("T" + i.ToString("D2") + "JumlahHK", System.Type.GetType("T" + i.ToString("D2") + "JumlahHK")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "JumlahPohon", System.Type.GetType("T" + i.ToString("D2") + "JumlahPohon")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "KgLump", System.Type.GetType("T" + i.ToString("D2") + "KgLump")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "KgLateks", System.Type.GetType("T" + i.ToString("D2") + "KgLateks")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "LuasJelajah", System.Type.GetType("T" + i.ToString("D2") + "LuasJelajah")).Sum();
+                                                      }
+                                                  })
+                                          ))
+                                    </div>
+                                    <div class="LayerBlok">
+                                        @(Html.Kendo().Grid<Ptpn8.Areas.Areal.Models.RotasiPanenPerBulan>().Name("grdDataBlok")
+                                                .Sortable()
+                                                .Scrollable()
+                                                .Groupable()
+                                                .Resizable(r => r.Columns(true))
+                                                .Selectable()
+                                                .AutoBind(false)
+                                                .Events(e =>
+                                                {
+                                                    e.DataBound("grdDataBlokOnDataBound"); e.Change("grdDataBlokOnChange");
+                                                })
+                                                .HtmlAttributes(new { style = "height: 600px;" })
+                                                .ToolBar(tools => tools.Excel())
+                                                .AutoBind(false)
+                                                .Excel(excel => excel
+                                                    .FileName("HancaPanenBlok.xlsx")
+                                                    .Filterable(true)
+                                                    .AllPages(true)
+                                                    .ProxyURL(Url.Action("Excel_Export_Save", "Home"))
+                                                )
+                                                .Columns(c =>
+                                                {
+                                                    c.Bound(o => o.Id).Hidden();
+                                                    c.Bound(o => o.NamaInduk).HeaderTemplate("Afdeling").Width(100).Groupable(true).Hidden();
+                                                    c.Bound(o => o.NamaLokasi).HeaderTemplate("Blok").Locked(true).Width(150);
+                                                    c.Bound(o => o.TahunTanam).HeaderTemplate("Tahun Tanam").Locked(false).Width(50).Groupable(true).HtmlAttributes(new { style = "text-align: center;" });
+                                                    c.Bound(o => o.LuasAreal).HeaderTemplate("Luas (Ha)").Width(50).Format("{0:n2}")
+                                                      .HtmlAttributes(new { style = "text-align: right;" })
+                                                      .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                      .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                      .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                                    for (int i = 1; i <= 31; i++)
+                                                    {
+                                                        c.Group(o => o
+                                                            .Title("Tanggal " + i.ToString())
+                                                             .Columns(g =>
+                                                             {
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahPohon").HeaderTemplate("Jml Pohon").Format("{0:n0}")
+                                                                     .ClientTemplate("<div>#= kendo.toString(T" + i.ToString("D2") + "JumlahPohon,'n0')#</div>#= kendo.toString(T" + i.ToString("D2") + "LuasJelajah,'n0') # Hc")
+                                                                     .Width(80)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "KgLateks").HeaderTemplate("Kg Lateks").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "KgLump").HeaderTemplate("Kg Lump").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("HK").Format("{0:n0}")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("Pohon/HK").Format("{0:n0}")
+                                                                     .ClientTemplate("#= kendo.toString(" + "T" + i.ToString("D2") + "JumlahPohon" + "/" + "T" + i.ToString("D2") + "JumlahHK" + ",'n2') #")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                                 g.Bound("T" + i.ToString("D2") + "JumlahHK").HeaderTemplate("Kg/HK").Format("{0:n0}")
+                                                                     .ClientTemplate("#= kendo.toString(" + "T" + i.ToString("D2") + "KgLateks" + "/" + "T" + i.ToString("D2") + "JumlahHK" + ",'n2') #")
+                                                                     .Width(70)
+                                                                     .HtmlAttributes(new { style = "text-align: right;" })
+                                                                     .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                             }));
+                                                    }
+                                                })
+                                              .DataSource(d => d
+                                                  .Ajax()
+                                                  .Read(r => r.Action("HancaPerBlok", "HancaPanenKaret").Data("getBlokData"))
+                                                  .Group(g => g.Add(p => p.NamaInduk))
+                                                  .Model(m => m.Id(p => p.Id))
+                                                  .Aggregates(ag =>
+                                                  {
+                                                      ag.Add(o => o.LuasAreal).Sum();
+                                                      for (int i = 1; i <= 31; i++)
+                                                      {
+                                                          ag.Add("T" + i.ToString("D2") + "JumlahHK", System.Type.GetType("T" + i.ToString("D2") + "JumlahHK")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "JumlahPohon", System.Type.GetType("T" + i.ToString("D2") + "JumlahPohon")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "KgLump", System.Type.GetType("T" + i.ToString("D2") + "KgLump")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "KgLateks", System.Type.GetType("T" + i.ToString("D2") + "KgLateks")).Sum();
+                                                          ag.Add("T" + i.ToString("D2") + "LuasJelajah", System.Type.GetType("T" + i.ToString("D2") + "LuasJelajah")).Sum();
+                                                      }
+                                                  })
+                                          ))
+
+                                        </div>
+
+                                    </text>);
+                                })
+)
+
+<script>
+var chkPopUp, chkKebun, chkStreetMap, chkCitra, chkKontur;
+var tahun, bulan;
+var map, activeLayer;
+var shapeKlik;
+var statusAreal, kebunID, budidaya, masaBerlakuHGU, textSearch, loadDataKebun;
+var lokasiID, lokasiKebunID, lokasiAfdelingID, lokasiBlokID;
+var indexStreetMap = 0;
+var indexKontur = 1;
+var indexCitra = 2;
+var indexKebun = 3;
+var indexAfdeling = 4;
+var indexBlok = 5;
+var mapExtent;
+var inputProject;
+var warnaKebun, warnaAfdeling, warnaBlok;
+
+var popup = $("<div>Foo</div>")
+    .appendTo(document.body)
+    .kendoPopup()
+    .data("kendoPopup");
+
+$(document).ajaxStart(function () {
+    $("#progress").show();
+}).ajaxStop(function () {
+    $("#progress").hide();
+});
+
+$(document).ready(function () {
+    bulan = $('#ddlBulan').data('kendoDropDownList').value();
+    tahun = $('#txtTahun').val();
+
+    $('#lblBulan').val($('#ddlBulan').data('kendoDropDownList').text() + '-' + $('#txtTahun').val());
+
+    chkPopUp = false;
+    chkKebun = true;
+    chkStreetMap = true;
+    chkCitra = false;
+    chkKontur = false;
+    warnaKebun = "";
+    warnaAfdeling = "";
+    warnaBlok = "";
+    lokasiID = "";
+
+    statusAreal = "0";
+    budidaya = '';
+    textSearch = "";
+    masaBerlakuHGU = "0"
+    shapeKlik = false;
+
+    activeLayer = "Kebun";
+    inputProject = false;
+    map = $('#map').data('kendoMap');
+
+    for (var i = 0; i < map.layers.length; i++) {
+        var lyr = map.layers[i];
+        if (i == 0 || i == 3) {
+            if (i == 3) lyr.dataSource.read();
+            lyr.show();
+        } else lyr.hide();
+    }
+    loadDataKebun = true;
+    resetGridData();
+});
+
+function onShapeCreated(e) {
+    var shape = e.shape;
+    shape.options.fill.set("color", shape.dataItem.properties.COLOR);
+}
+
+function onShapeMouseEnter(e) {
+    e.shape.options.set("fill.opacity", 0.7);
+    var oe = e.originalEvent;
+    var x = oe.pageX || oi.clientX;
+    var y = oe.pageY || oi.clientY;
+    var name = e.shape.dataItem.properties.NAMA_KEBUN;
+    $('#NamaLokasi').val(name);
+
+    popup.element.html("<h4>" + name + "</h4>" +
+                "<table>" +
+                "<tr>" +
+                    "<td width='150px' style='font-weight: 500;'>Jumlah Hanca Bulan Ini</td>" +
+                    "<td width='80px' style='text-align: right; font-weight: 500;'>" + kendo.toString(e.shape.dataItem.properties.VALUE1 , 'n0') + " Hanca</td>" +
+                "</tr>" +
+                "<tr>" +
+                    "<td style='font-weight: 500;'>Jumlah Hanca Sesuai Norma</td>" +
+                    "<td style='text-align: right; font-weight: 500;'>" + kendo.toString(e.shape.dataItem.properties.VALUE2, 'n0') + " Hanca</td>" +
+                "</tr>" +
+                "</table>"
+                );
+    popup.open(x, y);
+}
+
+function onShapeMouseLeave(e) {
+    e.shape.options.set("fill.opacity", 1);
+    if (!$(e.originalEvent.relatedTarget).is(".k-popup, .k-animation-container")) {
+        if (!chkPopUp) {
+            popup.close();
+            popup.element.kendoStop(true, true);
+        }
+    }
+}
+
+function onMarkerClick(e) {
+
+}
+
+function onMapClick(e) {
+    var map = $('#map').data('kendoMap');
+    if (activeLayer == "Kebun") {
+    }
+    else if (activeLayer == "Afdeling" && !shapeKlik) {
+        activeLayer = "Kebun";
+        warnaKebun = "";
+        map.layers[indexKebun].dataSource.read().done(function () {
+            map.layers[indexAfdeling].hide();
+            map.extent(mapExtent);
+            map.zoom(12);
+            resetGridData();
+        });
+    }
+    else if (activeLayer == "Blok" && !shapeKlik) {
+        activeLayer = "Afdeling";
+        warnaAfdeling = "";
+        map.layers[indexAfdeling].dataSource.read().done(function () {
+            map.layers[indexBlok].hide();
+            map.extent(mapExtent);
+            map.zoom(14);
+            resetGridData();
+        });
+    }
+    shapeKlik = false;
+}
+
+function onShapeClick(e) {
+    var map = $('#map').data('kendoMap');
+    var loc1 = new kendo.dataviz.map.Location(e.shape.dataItem.properties.TOPLEFT_Y, e.shape.dataItem.properties.TOPLEFT_X);
+    var loc2 = new kendo.dataviz.map.Location(e.shape.dataItem.properties.BOTTOMRIGHT_Y, e.shape.dataItem.properties.BOTTOMRIGHT_X);
+    var extent = new kendo.dataviz.map.Extent(loc1, loc2);
+
+
+    shapeKlik = true;
+
+    if (activeLayer == "Kebun") {
+        activeLayer = "Afdeling";
+        warnaKebun = "lightgray";
+        lokasiKebunID = e.shape.dataItem.properties.ID;
+        map.layers[indexKebun].dataSource.read().done(function () {
+            var lyr = map.layers[indexAfdeling];
+            lyr.dataSource.data([]);
+            lyr.dataSource.read().done(function () {
+                map.extent(extent);
+                mapExtent = extent;
+                lyr.show();
+                resetGridData();
+            });
+        });
+    }
+    else if (activeLayer == "Afdeling") {
+        activeLayer = "Blok";
+        warnaAfdeling = "lightgray";
+        lokasiAfdelingID = e.shape.dataItem.properties.ID;
+        map.layers[indexAfdeling].dataSource.read().done(function () {
+            var lyr = map.layers[indexBlok];
+            lyr.dataSource.data([]);
+            lyr.dataSource.read().done(function () {
+                map.extent(extent);
+                mapExtent = extent;
+                lyr.show();
+                resetGridData();
+            });
+        });
+    } else if (activeLayer == "Blok") {
+        lokasiBlokID = e.shape.dataItem.properties.ID;
+    }
+}
+
+function chkPopUpOnChange(e) {
+    if (chkPopUp) chkPopUp = false; else chkPopUp = true;
+}
+
+function chkKebunOnChange(e) {
+    var map = $('#map').data('kendoMap');
+    if (chkKebun) {
+        chkKebun = false;
+        map.layers[indexKebun].hide();
+        map.layers[indexAfdeling].hide();
+        map.layers[indexBlok].hide();
+    }
+    else {
+        chkKebun = true;
+        if (activeLayer == "Kebun") {
+            map.layers[indexKebun].show();
+            map.layers[indexAfdeling].hide();
+            map.layers[indexBlok].hide();
+        }
+        else if (activeLayer == "Afdeling") {
+            map.layers[indexKebun].hide();
+            map.layers[indexAfdeling].show();
+            map.layers[indexBlok].hide();
+        }
+        else if (activeLayer == "Blok") {
+            map.layers[indexKebun].hide();
+            map.layers[indexAfdeling].show();
+            map.layers[indexBlok].show();
+        }
+    }
+}
+
+function chkStreetMapOnChange(e) {
+    var map = $('#map').data('kendoMap');
+    if (chkStreetMap) {
+        chkStreetMap = false;
+        map.layers[indexStreetMap].hide();
+    }
+    else {
+        chkStreetMap = true;
+        map.layers[indexStreetMap].show();
+    }
+}
+
+function chkKonturOnChange(e) {
+    var map = $('#map').data('kendoMap');
+    if (chkKontur) {
+        chkKontur = false;
+        map.layers[indexKontur].hide();
+    }
+    else {
+        chkKontur = true;
+        map.layers[indexKontur].show();
+    }
+}
+
+function chkCitraOnChange(e) {
+    var map = $('#map').data('kendoMap');
+    if (chkCitra) {
+        chkCitra = false;
+        map.layers[indexCitra].hide();
+    }
+    else {
+        chkCitra = true;
+        map.layers[indexCitra].show();
+    }
+}
+
+function perbandinganOnChange(e) {
+    var map = $('#map').data('kendoMap');
+
+    if (typeof map != 'undefined') {
+        if (activeLayer == 'Kebun') {
+            map.layers[indexKebun].dataSource.read().done(function () {
+                $('#ChartProtasKaretKebunBI').data('kendoChart').dataSource.read().done(function () {
+                    refreshgrdDataKebun();
+                    if ($("input[name=perbandingan]:checked").val() == "Induk") {
+                        $('.lblPerbandingan').text('Protas Rata-Rata PTPN-VIII');
+                    }
+                    else if ($("input[name=perbandingan]:checked").val() == "RKAP") {
+                        $('.lblPerbandingan').text('Protas RKAP Kebun');
+                    }
+                    else if ($("input[name=perbandingan]:checked").val() == "PKB") {
+                        $('.lblPerbandingan').text('Protas PKB Kebun');
+                    }
+                    else {
+                        $('.lblPerbandingan').text('Protas Rata-Rata Standar Balai');
+                    }
+                });
+            });
+        }
+        else if (activeLayer == 'Afdeling') {
+            map.layers[indexAfdeling].dataSource.read().done(function () {
+                $('#ChartProtasKaretAfdelingBI').data('kendoChart').dataSource.read().done(function () {
+                    refreshgrdDataAfdeling();
+                    if ($("input[name=perbandingan]:checked").val() == "Induk") {
+                        $('.lblPerbandingan').text('Protas Rata-Rata Kebun');
+                    }
+                    else if ($("input[name=perbandingan]:checked").val() == "RKAP") {
+                        $('.lblPerbandingan').text('Protas RKAP Afdeling');
+                    }
+                    else if ($("input[name=perbandingan]:checked").val() == "PKB") {
+                        $('.lblPerbandingan').text('Protas PKB Afdeling');
+                    }
+                    else {
+                        $('.lblPerbandingan').text('Protas Rata-Rata Standar Balai');
+                    }
+                });
+            });
+
+        }
+        else {
+            map.layers[indexBlok].dataSource.read().done(function () { });
+            $('#ChartProtasKaretBlokBI').data('kendoChart').dataSource.read().done(function () {
+
+                refreshgrdDataBlok();
+                if ($("input[name=perbandingan]:checked").val() == "Induk") {
+                    $('.lblPerbandingan').text('Protas Rata-Rata Afdeling');
+                }
+                else if ($("input[name=perbandingan]:checked").val() == "RKAP") {
+                    $('.lblPerbandingan').text('Protas RKAP Blok');
+                }
+                else if ($("input[name=perbandingan]:checked").val() == "PKB") {
+                    $('.lblPerbandingan').text('Protas PKB Blok');
+                }
+                else {
+                    $('.lblPerbandingan').text('Protas Rata-Rata Standar Balai');
+                }
+            });
+
+        }
+    }
+}
+
+function grdLegendKebunOnDataBound(e) {}
+
+function grdLegendKebunOnChange(e) {
+    var data = this.dataItem(this.select());
+    var id = data.KebunId;
+    cariLokasi(id, "Kebun");
+}
+
+function grdLegendAfdelingOnDataBound(e) { }
+
+function grdLegendAfdelingOnChange(e) {
+    var data = this.dataItem(this.select());
+    var id = data.Id;
+    cariLokasi(id, "Afdeling");
+}
+
+function grdLegendBlokOnDataBound(e) { }
+
+function grdLegendBlokOnChange(e) {
+    var data = this.dataItem(this.select());
+    var id = data.Id;
+    cariLokasi(id, "Blok");
+}
+
+function grdLegendCariOnDataBound(e) {}
+
+function grdLegendCariOnChange(e) {
+    var data = this.dataItem(this.select());
+    var id = data.Id;
+    var lyrKey = data.Warna;
+    lokasiID = data.IdInduk;
+    cariLokasi(id, lyrKey);
+}
+
+function grdDataKebunOnDataBound(e) {
+    refreshgrdDataKebun();
+    $('#ChartProtasKaretKebunBI').data('kendoChart').dataSource.read();
+}
+
+function grdDataKebunOnChange(e) {
+    var data = this.dataItem(this.select());
+    var id = data.Id;
+    cariLokasi(id, "Kebun");
+}
+
+function refreshgrdDataKebun() {
+    var grd = $('#grdDataKebun').data('kendoGrid');
+    var rows = grd.tbody.children();
+    var RealProduksiBI = 0;
+    var RealProduksiSBI = 0;
+    var RKAPProduksiBI = 0;
+    var RKAPProduksiSBI = 0;
+
+    for (var j = 0; j < rows.length; j++) {
+        var row = $(rows[j]);
+        var dataItem = grd.dataItem(row);
+        var warna = dataItem.get("Warna");
+
+        row.removeClass("WarnaHijau");
+        row.removeClass("WarnaBiru");
+        row.removeClass("WarnaMerah");
+        row.removeClass("WarnaKuning");
+        row.removeClass("WarnaHitam");
+        row.removeClass("WarnaOrange");
+
+        if (warna == "green") {
+            row.addClass("WarnaHijau");
+        }
+        else if (warna == "yellow") {
+            row.addClass("WarnaKuning");
+        }
+        else if (warna == "orange") {
+            row.addClass("WarnaOrange");
+        }
+        else if (warna == "blue") {
+            row.addClass("WarnaBiru");
+        }
+        else if (warna == "red") {
+            row.addClass("WarnaMerah");
+        }
+        else
+            row.addClass("WarnaHitam");
+
+
+    }
+}
+
+function grdDataAfdelingOnDataBound(e) {
+    refreshgrdDataAfdeling();
+    $('#ChartProtasKaretAfdelingBI').data('kendoChart').dataSource.read();
+}
+
+function refreshgrdDataAfdeling() {
+    var grd = $('#grdDataAfdeling').data('kendoGrid');
+    var rows = grd.tbody.children();
+
+    for (var j = 0; j < rows.length; j++) {
+        var row = $(rows[j]);
+        var dataItem = grd.dataItem(row);
+        var warna = dataItem.get("Warna");
+
+        row.removeClass("WarnaHijau");
+        row.removeClass("WarnaBiru");
+        row.removeClass("WarnaMerah");
+        row.removeClass("WarnaKuning");
+        row.removeClass("WarnaHitam");
+        row.removeClass("WarnaOrange");
+
+        if (warna == "green") {
+            row.addClass("WarnaHijau");
+        }
+        else if (warna == "yellow") {
+            row.addClass("WarnaKuning");
+        }
+        else if (warna == "orange") {
+            row.addClass("WarnaOrange");
+        }
+        else if (warna == "blue") {
+            row.addClass("WarnaBiru");
+        }
+        else if (warna == "red") {
+            row.addClass("WarnaMerah");
+        }
+        else
+            row.addClass("WarnaHitam");
+
+
+
+    }
+}
+
+function grdDataAfdelingOnChange(e) {
+    var data = this.dataItem(this.select());
+    var id = data.Id;
+    cariLokasi(id, "Afdeling");
+}
+
+function refreshgrdDataBlok()
+{
+    var grd = $('#grdDataBlok').data('kendoGrid');
+    var rows = grd.tbody.children();
+
+    for (var j = 0; j < rows.length; j++) {
+        var row = $(rows[j]);
+        var dataItem = grd.dataItem(row);
+        var warna = dataItem.get("Warna");
+
+        row.removeClass("WarnaHijau");
+        row.removeClass("WarnaBiru");
+        row.removeClass("WarnaMerah");
+        row.removeClass("WarnaKuning");
+        row.removeClass("WarnaHitam");
+        row.removeClass("WarnaOrange");
+
+        if (warna == "green") {
+            row.addClass("WarnaHijau");
+        }
+        else if (warna == "yellow") {
+            row.addClass("WarnaKuning");
+        }
+        else if (warna == "orange") {
+            row.addClass("WarnaOrange");
+        }
+        else if (warna == "blue") {
+            row.addClass("WarnaBiru");
+        }
+        else if (warna == "red") {
+            row.addClass("WarnaMerah");
+        }
+        else
+            row.addClass("WarnaHitam");
+
+    }
+}
+
+function grdDataBlokOnDataBound(e) {
+    refreshgrdDataBlok();
+    $('#ChartProtasKaretBlokBI').data('kendoChart').dataSource.read();
+}
+
+function grdDataBlokOnChange(e) {
+    var data = this.dataItem(this.select());
+    var id = data.Id;
+    cariLokasi(id, "Blok");
+}
+
+function cariLokasi(id, lyrKey) {
+    var map = $('#map').data('kendoMap');
+    {
+        _cariLokasi(id, lyrKey).done(function (result) {
+            if (result[0] != '') {
+                var loc1 = new kendo.dataviz.map.Location(result[2], result[1]);
+                var loc2 = new kendo.dataviz.map.Location(result[4], result[3]);
+                var extent = new kendo.dataviz.map.Extent(loc1, loc2);
+                if (lyrKey == "Kebun") {
+                    if (lyrKey != activeLayer) {
+                        activeLayer = "Kebun";
+                        warnaKebun = "";
+                        map.layers[indexKebun].dataSource.data([]);
+                        map.layers[indexKebun].dataSource.read().done(function () {
+                            resetGridData();
+                        });
+
+                    }
+                    mapExtent = extent;
+                    map.extent(extent);
+                    map.zoom(14);
+                }
+                else if (lyrKey == "Afdeling") {
+                    if (lyrKey != activeLayer) {
+                        activeLayer = "Afdeling";
+                        warnaAfdeling = "";
+                        map.layers[indexAfdeling].dataSource.data([]);
+                        map.layers[indexAfdeling].dataSource.read().done(function () {
+                            resetGridData();
+                        });
+                    }
+                    mapExtent = extent;
+                    map.extent(extent);
+                    map.zoom(15);
+
+                }
+                else if (lyrKey == "Blok") {
+                    if (lyrKey != activeLayer) {
+                        activeLayer = "Blok";
+                        warnaBlok = "";
+                        map.layers[indexBlok].dataSource.data([]);
+                        map.layers[indexBlok].dataSource.read().done(function () {
+                            resetGridData();
+                        });
+                    }
+                    mapExtent = extent;
+                    map.extent(extent);
+                    map.zoom(17);
+                }
+            }
+        });
+    }
+}
+
+function _cariLokasi(id, lyrKey)
+{
+    var url = '../Areal/Home/cariLokasi';
+    return $.ajax({
+        url: url,
+        data: {
+            id: id,
+            key: lyrKey
+        }, //parameters go here in object literal form
+        type: 'GET',
+        datatype: 'json'
+    });
+}
+
+function getKebunData() {
+    return { Id: "", budidaya: "Karet", tahun: tahun, bulan: bulan, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+}
+
+function getAfdelingData() {
+    return { Id: lokasiKebunID, budidaya: "Karet", tahun: tahun, bulan: bulan, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+}
+
+function getBlokData() {
+    return { Id: lokasiAfdelingID, budidaya: "Karet", tahun: tahun, bulan: bulan, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+}
+
+function legendData() {
+    return { Id: lokasiID, statusAreal: '1.1', budidaya: "Karet", tahun: tahun, bulan: bulan }
+}
+
+function legendCari() {
+    return { cariText: $('#txtCari').val() }
+}
+
+function KebunGeoJsonData() {
+    return { Id: lokasiID, budidaya: "Karet", tahun: tahun, bulan: bulan, warna: warnaKebun, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+}
+
+function AfdelingGeoJsonData() {
+    return { Id: lokasiKebunID, budidaya: "Karet", tahun: tahun, bulan: bulan, warna: warnaAfdeling, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+}
+
+function BlokGeoJsonData() {
+    return { Id: lokasiAfdelingID, budidaya: "Karet", tahun: tahun, bulan: bulan, warna: warnaBlok, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+}
+
+function ddlBudidayaOnSelect(e) {
+    //budidaya = $('#ddlBudidaya').data('kendoDropDownList').value();
+    //loadDataKebun = true;
+    //resetGridData();
+}
+
+function ddlBudidayaOnChange(e) {
+    budidaya = $('#ddlBudidaya').data('kendoDropDownList').value();
+    loadDataKebun = true;
+    resetGridData();
+}
+
+function resetGridData() {
+
+    var map = $('#map').data('kendoMap');
+
+    if (activeLayer == "Kebun") {
+        $('#grdDataKebun').data('kendoGrid').dataSource.read().done(function () {
+            map.layers[indexKebun].dataSource.read().done(function () {
+                $('.LayerKebun').css('display', 'block');
+                $('.LayerAfdeling').css('display', 'none');
+                $('.LayerBlok').css('display', 'none');
+            });
+        });
+    }
+    else if (activeLayer == "Afdeling") {
+        $('#grdDataAfdeling').data('kendoGrid').dataSource.read().done(function () {
+            map.layers[indexAfdeling].dataSource.read().done(function () {
+                $('.LayerKebun').css('display', 'none');
+                $('.LayerAfdeling').css('display', 'block');
+                $('.LayerBlok').css('display', 'none');
+            });
+        });
+    }
+    else {
+        $('#grdDataBlok').data('kendoGrid').dataSource.read().done(function () {
+            map.layers[indexBlok].dataSource.read().done(function () {
+                $('.LayerKebun').css('display', 'none');
+                $('.LayerAfdeling').css('display', 'none');
+                $('.LayerBlok').css('display', 'block');
+            });
+        });
+    }
+}
+
+function btnSearchOnClick(e) {
+    activeLayer = "Kebun";
+    $('#grdLegendCari').data('kendoGrid').dataSource.read({ cariText: $('#txtCari').val() }).done(function () {
+        $('.legendKebun').css('display', 'none');
+        $('.legendAfdeling').css('display', 'none');
+        $('.legendBlok').css('display', 'none');
+        $('.legendCari').css('display', 'block');
+    });
+}
+
+function btnMapExportOnClick(e) {
+    // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+    kendo.drawing.drawDOM($("#map"))
+    .then(function (group) {
+        // Render the result as a PNG image
+        return kendo.drawing.exportImage(group);
+    })
+    .done(function (data) {
+        // Save the image file
+        kendo.saveAs({
+            dataURI: data,
+            fileName: "Map.png",
+            proxyURL: "@Url.Action("Export_Save", "Home")"
+        });
+    });
+}
+
+function StringJSonDecode(value) {
+    return value.replace(/"/g, '').replace("[", '').replace("]", '').replace(/,/g, ", ");
+}
+
+function ddlBulanChange(e) {
+    bulan = $('#ddlBulan').data('kendoDropDownList').value();
+    loadDataKebun = true;
+    $('#lblBulan').val($('#ddlBulan').data('kendoDropDownList').text() + '-' + $('#txtTahun').val());
+    resetGridData();
+}
+
+function ddlBulanSelect(e) {
+    //bulan = $('#ddlBulan').data('kendoDropDownList').value();
+    //loadDataKebun = true;
+    //resetGridData();
+}
+
+function txtTahunChange(e) {
+    tahun = $('#txtTahun').val();
+    loadDataKebun = true;
+    $('#lblBulan').val($('#ddlBulan').data('kendoDropDownList').text() + '-' + $('#txtTahun').val());
+    resetGridData();
+}
+
+</script>
+
+
+<style>
+    #vertical {
+        height: 300px;
+        margin: 0 auto;
+    }
+
+    #middle-pane {
+        background-color: rgba(60, 70, 80, 0.10);
+    }
+
+    #bottom-pane {
+        background-color: rgba(60, 70, 80, 0.15);
+    }
+
+    #left-pane, #center-pane, #right-pane {
+        background-color: rgba(60, 70, 80, 0.05);
+    }
+
+    .pane-content {
+        padding: 0 10px;
+    }
+    /*.k-grid .k-header {
+    display: none;
+    }*/
+
+    .WarnaMerah {
+        color: white;
+        background-color: red;
+    }
+
+    .WarnaHijau {
+        color: white;
+        background-color: green;
+    }
+
+    .WarnaKuning {
+        color: black;
+        background-color: yellow;
+    }
+
+    .WarnaBiru {
+        color: white;
+        background-color: blue;
+    }
+
+    .WarnaOrange {
+        color: white;
+        background-color: orange;
+    }
+
+    .WarnaHitam {
+        color: white;
+        background-color: black;
+    }
+
+
+    .DataPembandingKosong {
+        color: white;
+        background-color: black;
+    }
+
+    .fieldlist {
+        margin: 0 0 -1em;
+        padding: 0;
+    }
+
+        .fieldlist li {
+            list-style: none;
+            padding-bottom: 1em;
+        }
+</style>

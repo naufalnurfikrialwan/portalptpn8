@@ -1,0 +1,25 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "DENDY FIRMANDA HERNADI",
+                Value = "d.firmanda@gmail.com"
+            },
+            new SelectListItem() {
+                Text = "DENI NUGRAHA",
+                Value = "deninugraha.meneer@gmail.com"
+            },
+            new SelectListItem() {
+                Text = "ANNA YULIANTI HERMAN",
+                Value = "yulianti.anna78@gmail.com"
+            },
+        })
+        .Events(e => { e.Change("ddlPICKerjasamaOnChange"); e.Select("ddlPICKerjasamaOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

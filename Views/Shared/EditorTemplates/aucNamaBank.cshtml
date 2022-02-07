@@ -1,0 +1,12 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("No A/C")
+        .DataTextField("NomorAkunBank")
+        .MinLength(3)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetBankOrganisasi1", "ddl", new { Area = "Referensi" }).Data("filterNamaBank")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucNamaBankOnSelect"); e.DataBound("aucNamaBankOnDataBound"); })
+)

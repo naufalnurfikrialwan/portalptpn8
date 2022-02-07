@@ -1,0 +1,28 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Surat Keputusan",
+                Value = "Surat Keputusan"
+            },
+            new SelectListItem() {
+                Text = "Surat Perjanjian",
+                Value = "Surat Perjanjian"
+            },
+            new SelectListItem() {
+                Text = "Surat Perintah",
+                Value = "Surat Perintah"
+            },
+            new SelectListItem() {
+                Text = "Nota Kesepahaman (MoU)",
+                Value = "Nota Kesepahaman (MoU)"
+            }
+        })
+        .Events(e => { e.Change("ddlJenisPerjanjianOnChange"); e.Select("ddlJenisPerjanjianOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

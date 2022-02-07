@@ -1,0 +1,30 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Grade
+@(Html.Kendo().DropDownListFor(m=>m)
+    .Name("ddlGrade")
+    .AutoBind(true)
+    .OptionLabel("Pilih Grade...")
+    .DataTextField("Text")
+    .DataValueField("GradeId")
+    .TemplateId("textTmpl")
+    .DataSource(o => o.Read(r => r.Action("getGrade", "ddl")).ServerFiltering(false))
+    .Events(e =>
+    {
+        e.Select("ddlGradeOnSelect"); e.DataBound("ddlGradeOnDataBound"); e.Change("ddlGradeOnChange") ;
+    })
+)
+
+<script id="textTmpl" type="text/kendo-tmpl">
+    <table width="100%">
+        <tr>
+            <td width="15%" class="k-state-default">
+                <img width="100%" src="@Url.Content("~/Content/Images/View/"+"#:GradeId#.jpg")" alt="#:GradeId#" />
+            </td>
+            <td>
+                <table width="100%">
+                    <tr style="font-weight: 700; font-size: small"><td>#:Nama#</td></tr>
+                    <tr style="font-weight: 500; font-size: smaller"><td>#:Text#</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</script>

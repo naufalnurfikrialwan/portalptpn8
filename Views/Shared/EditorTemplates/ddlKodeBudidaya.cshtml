@@ -1,0 +1,26 @@
+﻿@model string
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlKodeBudidaya")
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "KARET",
+                Value = "00"
+            },
+            new SelectListItem() {
+                Text = "KELAPA SAWIT",
+                Value = "01"
+            },
+            new SelectListItem() {
+                Text = "TEH",
+                Value = "02"
+            }
+        }).Events(e => { e.Select("ddlKodeBudidayaOnSelect"); e.Change("ddlKodeBudidayaOnSelect"); })
+)
+
+
+
+

@@ -1,0 +1,278 @@
+﻿
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">Rekapitulasi Remise Kebun/Unit</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="20%">
+                <tr>
+                    <td class="_nonkey">
+                        <label style="text-align:Left">Bulan Remise:</label>
+                    </td>
+                    <td class="_nonkey">
+                        @(Html.Kendo().DropDownList()
+                                .Name("BulanRemise")
+                                .AutoBind(true)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                                Text = "Januari",
+                                                Value = "1"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Februari",
+                                                Value = "2"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Maret",
+                                                Value = "3"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "April",
+                                                Value = "4"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Mei",
+                                                Value = "5"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Juni",
+                                                Value = "6"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Juli",
+                                                Value = "7"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Agustus",
+                                                Value = "8"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "September",
+                                                Value = "9"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Oktober",
+                                                Value = "10"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Nopember",
+                                                Value = "11"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Desember",
+                                                Value = "12"
+                                            }
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan", style = "width: 120px" })
+                        )                                             
+                    </td>
+                </tr>
+                <tr>
+                    <td class="_nonkey">
+                        <label style="text-align:left">Tahun Remise:</label>
+                    </td>
+                    <td class="_nonkey">
+                        @(Html.Kendo().IntegerTextBox()
+                                .Name("TahunRemise")
+                                .HtmlAttributes(new { style = "width: 80px;" })
+                                .Format("{0:0000}")
+                                .Min(2016)
+                                .Value(2017)
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Remise.Models.RekapitulasiRemise>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NoUrut).Width(50).Hidden();
+            g.Bound(i => i.Uraian).Width(200).Locked(true);
+            g.Group(i => i
+            .Title("Remise yang Disetujui Bag. Keuangan (Kebun)")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PASIRMALANG).Title("Pasirmalang").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRMALANG) #");
+                c.Bound(q => q.KERTAMANAH).Title("Kertamanah").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAMANAH) #");
+                c.Bound(q => q.MALABAR).Title("Malabar").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MALABAR) #");
+                c.Bound(q => q.PURBASARI).Title("Purbasari").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PURBASARI) #");
+                c.Bound(q => q.TALUNSANTOSA).Title("Talunsantosa").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TALUNSANTOSA) #");
+                c.Bound(q => q.SEDEP).Title("Sedep").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SEDEP) #");
+                c.Bound(q => q.PAPANDAYAN).Title("Papandayan").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PAPANDAYAN) #");
+                c.Bound(q => q.CISARUNI).Title("Cisaruni").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISARUNI) #");
+                c.Bound(q => q.DAYEUHMANGGUNG).Title("Dayeuhmanggung").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(DAYEUHMANGGUNG) #");
+                c.Bound(q => q.MIRAMARE).Title("Miramare").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MIRAMARE) #");
+                c.Bound(q => q.BAGJANAGARA).Title("Bagjanagara").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BAGJANAGARA) #");
+                c.Bound(q => q.BATULAWANG).Title("Batulawang").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BATULAWANG) #");
+                c.Bound(q => q.BUNISARILENDRA).Title("Bunisari/Lendra").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUNISARILENDRA) #");
+                c.Bound(q => q.CIATER).Title("Ciater").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIATER) #");
+                c.Bound(q => q.TAMBAKSARI).Title("Tambaksari").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TAMBAKSARI) #");
+                c.Bound(q => q.WANGUNREJA).Title("Wangunreja").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(WANGUNREJA) #");
+                c.Bound(q => q.CIKUPA).Title("Cikupa").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUPA) #");
+                c.Bound(q => q.BUKITUNGGUL).Title("Bukitunggul").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUKITUNGGUL) #");
+                c.Bound(q => q.SINUMBRA).Title("Sinumbra").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SINUMBRA) #");
+                c.Bound(q => q.RANCABALI).Title("Rancabali").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABALI) #");
+                c.Bound(q => q.RANCABOLANG).Title("Rancabolang").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABOLANG) #");
+                c.Bound(q => q.PANGLEJAR).Title("Panglejar").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANGLEJAR) #");
+                c.Bound(q => q.MONTAYA).Title("Montaya").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MONTAYA) #");
+                c.Bound(q => q.PASIRNANGKA).Title("Pasirnangka").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRNANGKA) #");
+                c.Bound(q => q.PANYAIRAN).Title("Panyairan").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANYAIRAN) #");
+                c.Bound(q => q.GOALPARA).Title("Goalpara").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GOALPARA) #");
+                c.Bound(q => q.GEDEH).Title("Gedeh").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GEDEH) #");
+                c.Bound(q => q.GUNUNGMAS).Title("Gunung Mas").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GUNUNGMAS) #");
+                c.Bound(q => q.CIANTEN).Title("Cianten").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIANTEN) #");
+                c.Bound(q => q.JALUPANG).Title("Jalupang").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(JALUPANG) #");
+                c.Bound(q => q.CIKUMPAY).Title("Cikumpay").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUMPAY) #");
+                c.Bound(q => q.AGRABINTA).Title("Agrabinta").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGRABINTA) #");
+                c.Bound(q => q.CIKASO).Title("Cikaso").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASO) #");
+                c.Bound(q => q.BOJONGDATAR).Title("Bojongdatar").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BOJONGDATAR) #");
+                c.Bound(q => q.CISALAKBARU).Title("Cisalakbaru").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISALAKBARU) #");
+                c.Bound(q => q.CIKASUNGKA).Title("Cikasungka").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASUNGKA) #");
+                c.Bound(q => q.PARAKANSALAK).Title("Parakan Salak").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PARAKANSALAK) #");
+                c.Bound(q => q.SUKAMAJU).Title("Sukamaju").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SUKAMAJU) #");
+                c.Bound(q => q.CIBUNGUR).Title("Cibungur").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIBUNGUR) #");
+                c.Bound(q => q.PASIRBADAK).Title("Pasir Badak").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRBADAK) #");
+                c.Bound(q => q.KERTAJAYA).Title("Kertajaya").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAJAYA) #");
+                c.Bound(q => q.REKAPKEBUN).Title("Jumlah Kebun").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPKEBUN) #");
+                c.Bound(q => q.INDUSTRIHILIRTEH).Title("IHT Teh").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(INDUSTRIHILIRTEH) #");
+                c.Bound(q => q.AGROWISATA).Title("IHT Agro").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGROWISATA) #");
+                c.Bound(q => q.ANEKAUSAHA).Title("IHT Aneka Usaha").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(ANEKAUSAHA) #");
+                c.Bound(q => q.REKAPUNIT).Title("Jumlah Unit").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPUNIT) #");
+                c.Bound(q => q.REKAPPTPN).Title("TOTAL").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPPTPN) #");
+            })
+            );
+        })
+        .AutoBind(false)
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 490px" })
+        //.Filterable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        //.ColumnMenu()
+        .Excel(excel => excel.AllPages(true))
+        .Events(ev => ev.DataBound("grdBound"))
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.NoUrut);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+        )
+    )
+</div>
+
+<script>
+    var wnd, err, prt;
+    var bulanRemise, tahunRemise;
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    bulanRemise = kendo.toString($('#BulanRemise').val());
+                    tahunRemise = kendo.toString($('#TahunRemise').val());
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+
+    function formatNum(n) {
+        if (n == null || n == 0)
+            return " ";
+        else
+            return kendo.toString(n, "n0");
+    }
+
+    function grdBound(e) {
+        // iterate the table rows and apply custom row and cell styling
+        var rows = e.sender.tbody.children();
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = e.sender.dataItem(row);
+            var units = dataItem.get("Uraian");
+
+            if (units.toLowerCase().indexOf("jumlah") > -1 || units.toLowerCase().indexOf("total") > -1) {
+                row.addClass("cssJumlah");
+            }
+
+        }
+    }
+
+    function filterReport(e)
+    {
+        return {
+            strClassView: 'Ptpn8.Remise.Models.RekapitulasiRemise',
+            scriptSQL: "exec [dbo].[RekapitulasiRemiseAwalBulan] " + bulanRemise + "," + tahunRemise
+        }
+    }
+
+</script>
+
+<style>
+    .cssJumlah {
+        font-weight: 600;
+        background-color: darkseagreen;
+    }
+
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,459 @@
+﻿
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="33%" style="vertical-align:top;">
+                        <table width="100%">
+                            <tr>
+                                <td style="vertical-align:top">
+                                    <label style="color: black; background-color: lightgray; text-align: center;">Cari Tanggal</label>
+                                    <table width="100%;" style="border: 1px solid lightgray; margin-bottom : 5px;">
+                                        <tr>
+                                            <td class="_nonkey">
+                                                <label style="text-align:right">Bulan :</label>
+                                            </td>
+                                            <td class="_nonkey">
+                                                @(Html.Kendo().DropDownList()
+                                                .AutoBind(true)
+                                                .Name("BulanTerima")
+                                                .DataTextField("Text")
+                                                .DataValueField("Value")
+                                                .Events(e =>
+                                                                {
+                                                                    e.Change("BulanTerimaOnSelect");
+                                                                })
+                                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                                .BindTo(new List<SelectListItem>()
+                                                {
+                                                    new SelectListItem() {
+                                                        Text = "Januari",
+                                                        Value = "01"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Februari",
+                                                        Value = "02"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Maret",
+                                                        Value = "03"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "April",
+                                                        Value = "04"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Mei",
+                                                        Value = "05"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Juni",
+                                                        Value = "06"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Juli",
+                                                        Value = "07"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Agustus",
+                                                        Value = "08"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "September",
+                                                        Value = "09"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Oktober",
+                                                        Value = "10"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Nopember",
+                                                        Value = "11"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "Desember",
+                                                        Value = "12"
+                                                    }
+                                                    })
+                                                )
+                                                -
+                                                @(Html.Kendo().NumericTextBox().Min(2016).Format("D4").Name("TahunTerima").Value(2018)
+                                                    .HtmlAttributes(new { style = "width:24%", @class = "allcaps" })
+                                                )
+                                            </td>
+                                        </tr>
+                                        @*<tr>
+                                            <td class="_nonkey">
+                                                <label style="text-align:right">Tahun :</label>
+                                            </td>
+                                            <td class="_nonkey">
+                                                @(Html.Kendo().NumericTextBox().Min(2016).Format("D4").Name("TahunTerima").Value(2017)
+                                                    .HtmlAttributes(new { style = "width:24%", @class = "allcaps" })
+                                                )
+                                            </td>
+                                        </tr>*@
+                                        <tr>
+                                            <td class="_nonkey">
+                                                <label style="text-align:right">Kelompok Barang :</label>
+                                            </td>
+                                            <td class="_nonkey">
+                                                @(Html.Kendo().DropDownList()
+                                                .AutoBind(true)
+                                                .Name("KelompokBarang")
+                                                .DataTextField("Text")
+                                                .DataValueField("Value")
+                                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                                .Events(e =>
+                                                                {
+                                                                    e.Change("KelompokBarangOnSelect");
+                                                                })
+                                                .BindTo(new List<SelectListItem>()
+                                                {
+                                                    new SelectListItem() {
+                                                        Text = "JASA",
+                                                        Value = "JASA"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "PUPUK DAN BAHAN KIMIA TANAMAN",
+                                                        Value = "PUPUK DAN BAHAN KIMIA TANAMAN"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT DAN SUKU CADANG KENDARAAN",
+                                                        Value = "ALAT DAN SUKU CADANG KENDARAAN"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "PERALATAN UMUM",
+                                                        Value = "PERALATAN UMUM"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT MESIN DAN INSTALASI PABRIK",
+                                                        Value = "ALAT MESIN DAN INSTALASI PABRIK"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT DAN BAHAN BANGUNAN",
+                                                        Value = "ALAT DAN BAHAN BANGUNAN"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT INSTALASI LISTRIK",
+                                                        Value = "ALAT INSTALASI LISTRIK"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT BENGKEL",
+                                                        Value = "ALAT BENGKEL"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT LABORATURIUM DAN BAHAN KIMIA PENGOLAHAN",
+                                                        Value = "ALAT LABORATURIUM DAN BAHAN KIMIA PENGOLAHAN"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT PELENGKAP PENGOLAHAN",
+                                                        Value = "ALAT PELENGKAP PENGOLAHAN"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT TULIS DAN PELENGKAP KANTOR",
+                                                        Value = "ATK"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT DAN SUKU CADANG MESIN PERTANIAN",
+                                                        Value = "ALAT DAN SUKU CADANG MESIN PERTANIAN"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT INSTALASI AIR",
+                                                        Value = "ALAT INSTALASI AIR"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT KESELAMATAN KERJA",
+                                                        Value = "ALAT KESELAMATAN KERJA"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT DAN SUKU CADANG PEMBANGKIT",
+                                                        Value = "ALAT DAN SUKU CADANG PEMBANGKIT"
+                                                    },
+                                                    new SelectListItem() {
+                                                        Text = "ALAT PELENGKAP PENGEPAKAN",
+                                                        Value = "ALAT PELENGKAP PENGEPAKAN"
+                                                    }
+                                                    })
+                                                )
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                    <td style="vertical-align:top"></td>
+                </tr>
+            </table>
+            <table width="50%;" align="center" style="margin-bottom: 5px;">
+                <tr>
+                    <td width="100%" align="center">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.DaftarHargaBarangBahanDanTarif.Models.RekapitulasiDHBB>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.RekapitulasiDHBBId).Width(50).Hidden();
+            g.Bound(i => i.NomorPenerimaan).Title("Nomor Daftar Harga Barang Bahan").Width(200);
+            g.Bound(i => i.TanggalPenerimaan).Title("Tanggal DHBBT").Width(100).ClientTemplate("#= kendo.toString(TanggalPenerimaan,'dd/MM/yyyy')#");
+            g.Bound(i => i.NamaBarang).Title("Nama Barang").Width(200);
+            g.Bound(i => i.NamaSatuan).Title("Nama Satuan").Width(50);
+            g.Bound(i => i.HargaDasar).Title("Harga Sebelum PPN").Width(200).Width(80).Format("{0:N2}").HtmlAttributes(new { @readonly = "true", style = "text-align: right;" });
+            g.Bound(i => i.Harga).Title("Harga Setelah PPN").Width(200).Width(80).Format("{0:N2}").HtmlAttributes(new { @readonly = "true", style = "text-align: right;" });
+        })
+            .AutoBind(false)
+            .Sortable()
+            .Pageable()
+            .Groupable()
+            .HtmlAttributes(new { style = "Height: 550px" })
+            .Filterable()
+            .ToolBar(toolbar =>
+            {
+                toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='btnPrintHeaderOnClick()' href='#'></span><span class='k-font-icon k-i-trash'></span>Cetak</a>");
+            })
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .ColumnMenu()
+            .Excel(excel => excel.AllPages(true))
+            .DataSource(o => o
+                .Ajax()
+                .Sort(s => s.Add(x => x.NomorPenerimaan))
+                .Group(g => g.Add(gg => gg.NomorPenerimaan))
+                .ServerOperation(false)
+                .Model(model =>
+                {
+                    model.Id(p => p.RekapitulasiDHBBId);
+                })
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                .Aggregates(ag =>
+                {
+                    ag.Add(x => x.Harga).Sum();
+                })
+            )
+    )
+</div>
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+            // Each report viewer must have an id - it will be used by the initialization script
+            // to find the element and initialize the report viewer.
+            .Id("reportViewer")
+            // The URL of the service which will serve reports.
+            // The URL corresponds to the name of the controller class (ReportsController).
+            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+            .ServiceUrl(Url.Content("/api/reports/"))
+            // The URL for custom report vie    wer template. The template can be edited -
+            // new functionalities can be added and unneeded ones can be removed.
+            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+            //
+            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+            .ReportSource(new UriReportSource() { Uri = "../Reports/DaftarHargaBarangBahan/RekapitulasiDHBB.trdx" })
+            // Specifies whether the viewer is in interactive or print preview mode.
+            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+            .ViewMode(ViewMode.Interactive)
+            // Sets the scale mode of the viewer.
+            // Three modes exist currently:
+            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+            // Specific - Uses the scale to zoom in and out the report.
+            .ScaleMode(ScaleMode.Specific)
+            // Zoom in and out the report using the scale
+            // 1.0 is equal to 100%, i.e. the original size of the report
+            .Scale(1.0)
+            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+            .PersistSession(false)
+            // Sets the print mode of the viewer.
+            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+
+<script>
+    var wnd, err, prt;
+    var tahun, bulan, klmpkBrg;
+
+    //print
+    $(document).ready(function () {
+        var h1 = parseInt($(".content-header").css("height"));
+        var h2 = parseInt($(".hdr").css("height"));
+        var h3 = parseInt($(".k-grid-toolbar").css("height"));
+        var h4 = parseInt($(".k-grid-header-wrap").css("height"));
+        var h5 = parseInt($(".__footer").css("height")) + 20;
+        $("#grdDetail").css("height", window.screen.height - (h1 + h2 + h3 + h4 + h5));
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        wndDetail = $("#konfirmasiDetail").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        err = $("#errWindow").kendoWindow({
+            title: "Error Data",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        prt = $("#printWindow").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+        del = $("#delWindow").kendoWindow({
+            title: "Hapus Header",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        wndLeaveGrid = $("#konfirmasiLeaveGrid").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        gridStatus = 'belum-ngapa-ngapain';
+
+        //////// sampe sini
+    });
+ 
+    function btnPrintHeaderOnClick() {
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: { bulan: $('#BulanTerima').val(), tahun: $('#TahunTerima').val(), klmpkBrg:$('#KelompokBarang').val() }
+        });
+        viewer.refreshReport();
+        prt.open().center();
+    }
+    //sampai di sini
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    bulan = $('#BulanTerima').data('kendoDropDownList').value();
+                    tahun = $('#TahunTerima').val();
+                    klmpkBrg = $('#KelompokBarang').data('kendoDropDownList').value();
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.DaftarHargaBarangBahanDanTarif.Models.RekapitulasiDHBB',
+            scriptSQL: "use SPDK_KanpusEF; exec RekapitulasiDHBB '" + bulan + "'," + tahun + ",'" + klmpkBrg+"'"
+        }
+
+    }
+
+    function rekapBiaya() {
+
+        var grid = $('#grdDetail').data('kendoGrid');
+        var newValue = 0;
+        for (var i = 0; i < grid.dataItems().length; i++) {
+            newValue += grid.dataItems()[i].Harga;
+        }
+        return newValue;
+    }
+
+    function BulanTerimaOnSelect(e) {
+        var bulan = $('#BulanTerima ').val();
+    }
+
+    function KelompokBarangOnSelect(e) {
+        var klmpkBrg = $('#KelompokBarang ').val();
+    }
+</script>
+
+<style>
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+</style>

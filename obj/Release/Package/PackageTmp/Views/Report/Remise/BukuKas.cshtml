@@ -1,0 +1,136 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Buku Kas Kebun</div>
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().TextBox().Name("KodeKebun").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Kebun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete()
+                    .Name("NamaKebun")
+                    .MinLength(2)
+                    .Filter("contains")
+                    .Placeholder("Cari Kebun")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 64%" })
+                    .Events(e =>
+                    {
+                        e.DataBound("NamaKebunOnSelect");
+                        e.Change("NamaKebunOnSelect");
+                    })
+                )                    
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Tanggal:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DatePicker().Name("TanggalAwal").Format("dd/MM/yyyy")
+                                            .Value(DateTime.Now)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>sd Tanggal:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DatePicker().Name("TanggalAkhir").Format("dd/MM/yyyy")
+                                            .Value(DateTime.Now)
+
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Remise.Models.BukuKasBank>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.BukuKasBankId).Width(50).Hidden();
+            g.Bound(i => i.Tanggal).Width(80).Format("{0:dd-MM-yyyy}").Title("Tanggal");
+            g.Bound(i => i.Rekening).Width(100).Title("Rekening");
+            g.Bound(i => i.NoBukti).Width(100).Title("NoBukti"); 
+            g.Bound(i => i.Uraian).Width(350).Title("Uraian");
+            g.Bound(i => i.Penerimaan).Title("Penerimaan").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Pengeluaran).Title("Pengeluaran").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Saldo).Title("Saldo").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+        })
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.BukuKasBankId);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+        )
+    )
+
+</div>
+
+<script>
+    function filterKebun() {
+        return {
+            key: "NamaKebun",
+            value: $("#NamaKebun").val()
+        };
+    }
+
+    function NamaKebunOnSelect(e)
+    {
+        var kebun = this.dataItem(e.item);
+        if (typeof (kebun) != 'undefined') {
+            $('#KodeKebun').val(kebun.kd_kbn);
+            $('#NamaKebun').val(kebun.Nama);
+        }
+    }
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Remise.Models.BukuKasBank',
+            scriptSQL: "exec [SPDK_KanpusEF].[dbo].[BukuKasBankKebun] '" + $('#KodeKebun').val() + "','" +
+                $('#TanggalAwal').val() + "','" + $('#TanggalAkhir').val() + "','KAS'"
+        }
+
+    }
+</script>

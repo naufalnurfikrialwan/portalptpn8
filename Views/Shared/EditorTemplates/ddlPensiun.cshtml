@@ -1,0 +1,54 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "MUTASI ANTAR BADAN HUKUM",
+                Value = "MUTASI ANTAR BADAN HUKUM"
+            },
+            new SelectListItem() {
+                Text = "PENSIUN NORMAL",
+                Value = "PENSIUN NORMAL"
+            },
+            new SelectListItem() {
+                Text = "PENSIUN DIPERCEPAT",
+                Value = "PENSIUN DIPERCEPAT"
+            },
+            new SelectListItem() {
+                Text = "PENSIUN CACAT",
+                Value = "PENSIUN CACAT"
+            },
+            new SelectListItem() {
+                Text = "PENSIUN TUNDA",
+                Value = "PENSIUN TUNDA"
+            },
+            new SelectListItem() {
+                Text = "PENSIUN JANDA/ DUDA",
+                Value = "PENSIUN JANDA/ DUDA"
+            },
+            new SelectListItem() {
+                Text = "PENSIUN ANAK",
+                Value = "PENSIUN ANAK"
+            },
+            new SelectListItem() {
+                Text = "PESANGON",
+                Value = "PESANGON"
+            },
+            new SelectListItem() {
+                Text = "MENINGGAL DUNIA",
+                Value = "MENINGGAL DUNIA"
+            },
+            new SelectListItem() {
+                Text = "KELUAR",
+                Value = "KELUAR"
+            }
+
+        })
+        .Events(e => { e.Change("ddlPensiunOnSelect"); e.Select("ddlPensiunOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

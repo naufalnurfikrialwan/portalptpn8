@@ -1,0 +1,160 @@
+﻿@using Kendo.Mvc.UI
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.mobile.all.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.default.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.dataviz.default.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/myStyle.css")" rel="stylesheet" type="text/css" />
+
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/angular.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/jszip.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+    <script src="@Url.Content("~/Scripts/cultures/kendo.culture.id-ID.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/cultures/kendo.culture.id.min.js")"></script>
+
+</head>
+<body>
+    <header>
+        <div class="content-wrapper">
+            <table width="100%" style="margin: 0;">
+                <tr>
+                    <td style="width: 20%;">
+                        <img src="@Url.Content("~/Content/Images/WalagriJatiUtama.jpg")" width="100%" />
+                    </td>
+                    <td style="width: 12%;">
+                        <p class="site-title" style="text-align: left;">@Html.ActionLink("Referensi", "Index", "Home", new { Area = "" }, null)</p>
+                    </td>
+                    <td width="55%">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <span class="k-textbox k-space-right">
+                                        @Html.Kendo().TextBox().Name("txtSearch").Value("Search...").HtmlAttributes(new { style = "width: 90%;" })
+                                        <a href="#" class="k-icon k-i-search">&nbsp;</a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                    <td style="text-align: right;">
+                        @Html.Partial("_LogInPartial")
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%;">
+                <tr>
+                    <td width="100%">
+                        <div>
+                            <ul id="kmenu" style="display: none;">
+                                <li>@Html.ActionLink("Home","Index", "Home", new { Area = "" }, null )</li>
+                                @if (HttpContext.Current.User.IsInRole("KP-Admin-Referensi"))
+                                {
+                                <li>Struktur Organisasi
+                                    <ul>
+                                        <li>@Html.ActionLink("Organisasi", "Index", "Organisasi")</li>
+                                        <li>@Html.ActionLink("Wilayah", "Index", "Wilayah")</li>
+                                        <li>@Html.ActionLink("Bagian", "Index", "Bagian")</li>
+                                        <li>@Html.ActionLink("Kebun", "Index", "Kebun")</li>
+                                    </ul>
+                                </li>
+                                <li>Product
+                                    <ul>
+                                        <li>@Html.ActionLink("Budidaya", "Index", "Budidaya")</li>
+                                        <li>@Html.ActionLink("Grade", "Index", "Grade")</li>
+                                    </ul>
+                                </li>
+                                <li>Areal
+                                    <ul>
+                                        <li>@Html.ActionLink("Blok Kebun", "Index", "BlokAreal")</li>
+                                        <li>@Html.ActionLink("Status Areal", "Index", "StatusAreal")</li>
+                                    </ul>
+                                </li>
+                                <li>Accounting
+                                    <ul>
+                                        <li>@Html.ActionLink("Rekening", "Index", "Rekening")</li>
+                                    </ul>
+                                </li>
+                                <li>Procurment
+                                    <ul>
+                                        <li>@Html.ActionLink("Rekanan", "Index", "Seller")</li>
+                                        <li>@Html.ActionLink("Barang Bahan", "Index", "BarangBahan")</li>
+                                    </ul>
+                                </li>
+                                <li>Marketing
+                                    <ul>
+                                        <li>@Html.ActionLink("Buyers", "Index", "Buyer")</li>
+                                    </ul>
+                                </li>
+                                <li>HR
+                                    <ul>
+                                        <li>@Html.ActionLink("Golongan", "Index", "Golongan")</li>
+                                    </ul>
+                                </li>
+                                <li>Lain-Lain
+                                    <ul>
+                                        <li>@Html.ActionLink("Negara", "Index", "Negara")</li>
+                                        <li>@Html.ActionLink("Propinsi", "Index", "Propinsi")</li>
+                                        <li>@Html.ActionLink("Kota", "Index", "Kota")</li>
+                                        <li>@Html.ActionLink("Kecamatan", "Index", "Kecamatan")</li>
+                                        <li>@Html.ActionLink("Kelurahan", "Index", "Kelurahan")</li>
+                                        <li>@Html.ActionLink("Satuan", "Index", "Satuan")</li>
+                                        <li>@Html.ActionLink("Kemasan", "Index", "Kemasan")</li>
+                                    </ul>
+                                </li>
+                                }
+                                <li>@Html.ActionLink("About", "About", "Home")</li>
+                                <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </header>
+    <div id="body">
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper main-content clear-fix">
+            @RenderBody()
+        </section>
+    </div>
+
+    <footer>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year - PT Perkebunan Nusantara VIII</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<script type="text/javascript">
+    kendo.culture("id-ID");
+    $(document).ready(function () {
+        $('#kmenu').css("display", "block");
+        $('#kmenu').kendoMenu({
+            openOnClick: true
+        });
+    });
+</script>
+
+<style type="text/css">
+    .k-menu {
+        border: 0;
+        color: white;
+        background-color: indianred; /*transparent; */
+        font-size: small;
+        font-weight: 500;
+        text-decoration: none;
+    }
+</style>

@@ -1,0 +1,19 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@model KelompokTransferUang
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlKelompokTransferUang")
+        .AutoBind(true)
+        .OptionLabel("Pilih ..")
+        .DataTextField("NamaKelompok")
+        .DataValueField("KelompokTransferUangId")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetKelompokTransferUang", "ddl", new { Area = "Referensi"})).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("ddlKelompokTransferUangOnSelect"); e.DataBound("ddlKelompokTransferUangOnDataBound"); })
+)
+
+
+
+

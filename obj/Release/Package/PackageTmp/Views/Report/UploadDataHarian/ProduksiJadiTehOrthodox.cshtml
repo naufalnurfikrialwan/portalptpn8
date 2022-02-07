@@ -1,0 +1,260 @@
+﻿
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">Produksi Bahan Olah dan Teh Jadi (Orthodox)</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="10%">
+                        <label>Tanggal:</label>
+                    </td>
+                    <td width="40%">
+                        @(Html.Kendo().DatePicker().Name("TanggalAwal").Format("dd-MM-yyyy")
+                                                    .Value(DateTime.Now)
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>sd Tanggal:</label>
+                    </td>
+                    <td>
+                        @(Html.Kendo().DatePicker().Name("TanggalAkhir").Format("dd-MM-yyyy")
+                                                    .Value(DateTime.Now)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.ArealDanEvaluasiKinerja.Models.ProduksiJadiTehOrthodox>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NoUrut).Width(50).Hidden();
+            g.Bound(i => i.Uraian).Width(200);
+            g.Group(i => i
+            .Title("Kebun")
+            .Columns(c =>
+            {
+                c.Bound(q => q.TANAWATEE).Title("Tanawatee").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TANAWATEE) #");
+                c.Bound(q => q.GOALPARA).Title("Goalpara").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GOALPARA) #");
+                c.Bound(q => q.PASIRNANGKA).Title("Pasirnangka").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRNANGKA) #");
+                c.Bound(q => q.PANGLEJAR).Title("Panglejar").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANGLEJAR) #");
+                c.Bound(q => q.MONTAYA).Title("Montaya").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MONTAYA) #");
+                c.Bound(q => q.CIATER).Title("Ciater").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIATER) #");
+                c.Bound(q => q.SEDEP).Title("Sedep").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SEDEP) #");
+                c.Bound(q => q.TALOON).Title("Taloon").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TALOON) #");
+                c.Bound(q => q.SANTOSA).Title("Santosa").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SANTOSA) #");
+                c.Bound(q => q.PURBASARI).Title("Purbasari").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PURBASARI) #");
+                c.Bound(q => q.PSJUNGHUHN).Title("PsJunghuhn").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PSJUNGHUHN) #");
+                c.Bound(q => q.MALABAR).Title("Malabar").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MALABAR) #");
+                c.Bound(q => q.PASIRMALANG).Title("Pasirmalang").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRMALANG) #");
+                c.Bound(q => q.KERTAMANAH).Title("Kertamanah").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAMANAH) #");
+                c.Bound(q => q.RANCABOLANG).Title("Rancabolang").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABOLANG) #");
+                c.Bound(q => q.SPERATA).Title("Sperata").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SPERATA) #");
+                c.Bound(q => q.SINUMBRA).Title("Sinumbra").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SINUMBRA) #");
+                c.Bound(q => q.CISARUNI).Title("Cisaruni").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISARUNI) #");
+                c.Bound(q => q.PAPANDAYAN).Title("Papandayan").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PAPANDAYAN) #");
+                c.Bound(q => q.DAYEUHMANGGUNG).Title("Dayeuhmanggung").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(DAYEUHMANGGUNG) #");
+                c.Bound(q => q.PURBAWINDU).Title("Purbawindu").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PURBAWINDU) #").Hidden();
+                c.Bound(q => q.PANGHEOTAN).Title("Pangheotan").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANGHEOTAN) #").Hidden();
+            })
+        );
+        })
+        .AutoBind(false)
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .Filterable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Excel(excel => excel.AllPages(true))
+        .Events(ev => ev.DataBound("grdBound"))
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.NoUrut);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+        )
+    )
+</div>
+
+<script>
+    var wnd, err, prt;
+    var tanggalAwal, tanggalAkhir;
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    tanggalAwal = kendo.toString(($('#TanggalAwal').data('kendoDatePicker'))._value, "dd-MM-yyyy");
+                    tanggalAkhir = kendo.toString(($('#TanggalAkhir').data('kendoDatePicker'))._value, "dd-MM-yyyy");
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+
+    function formatNum(n) {
+        if (n == null || n == 0)
+            return " ";
+        else
+            return kendo.toString(n, "n2");
+    }
+
+    function grdBound(e) {
+        // iterate the table rows and apply custom row and cell styling
+        var rows = e.sender.tbody.children();
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = e.sender.dataItem(row);
+            var units = dataItem.get("Uraian");
+
+            if (units.toLowerCase().indexOf("jumlah") > -1 || units.toLowerCase().indexOf("total") > -1) {
+                row.addClass("cssJumlah");
+            }
+
+        }
+    }
+
+    function filterReport(e)
+    {
+        return {
+            strClassView: 'Ptpn8.ArealDanEvaluasiKinerja.Models.ProduksiJadiTehOrthodox',
+            scriptSQL: "SET DATEFORMAT DMY; " +
+                        "DECLARE @@tbl1 TABLE( " +
+                        "NoUrut int, " +
+	                    "Uraian nvarchar(max), " +
+	                    "[PASIRMALANG] float, " +
+	                    "[RANCABOLANG] float, " +
+	                    "[PURBASARI] float, " +
+	                    "[SPERATA] float, " +
+	                    "[CIATER] float, " +
+	                    "[TANAWATEE] float, " +
+	                    "[PURBAWINDU] float, " +
+	                    "[TALOON] float, " +
+	                    "[MALABAR] float,  " +
+	                    "[SEDEP] float, " +
+	                    "[SINUMBRA] float, " +
+	                    "[PS JUNGHUHN] float, " +
+	                    "[PANGHEOTAN] float, " +
+	                    "[MONTAYA] float, " +
+	                    "[PASIRNANGKA] float, " +
+                        "[PANGLEJAR] float, " +
+                        "[PAPANDAYAN] float, " +
+                        "[CISARUNI] float, " +
+                        "[GOALPARA] float, " +
+                        "[SANTOSA] float, " +
+                        "[KERTAMANAH] float, " +
+                        "[DAYEUHMANGGUNG] float " +
+	                    ") " +
+                        "INSERT INTO @@tbl1 SELECT * FROM ( " +
+	                    "SELECT B.Merk, A.NoUrut, A.Uraian, B.Kg FROM [SPDK_KanpusEF].[dbo].[FormatMonitorProduksiJadiHarian] as A " +
+	                    "JOIN [SPDK_KanpusEF].[dbo].[MonitorProduksiJadiHarian] as B " +
+	                    "ON A.FormatMonitorProduksiJadiHarianId=B.FormatMonitorProduksiJadiHarianId " +
+	                    "WHERE A.SubBudidayaId='35614CD9-071A-4624-BEFF-8A4A24E63595' and B.Tanggal>='" + tanggalAwal + "' and B.Tanggal<='" + tanggalAkhir + "') " +
+                        "src pivot ( sum(kg) for Merk in ([PASIRMALANG],[RANCABOLANG],[PURBASARI],[SPERATA],[CIATER],[TANAWATEE],[PURBAWINDU],[TALOON],[MALABAR],[SEDEP],[SINUMBRA],[PS JUNGHUHN],[PANGHEOTAN],[MONTAYA],[PASIRNANGKA],[PANGLEJAR],[PAPANDAYAN],[CISARUNI],[GOALPARA],[SANTOSA],[KERTAMANAH],[DAYEUHMANGGUNG])) piv ORDER BY NoUrut; " +
+                        "DECLARE @@tbl2 TABLE( " +
+                        "NoUrut int, " +
+	                    "Uraian nvarchar(max), " +
+	                    "[PASIRMALANG] float, " +
+	                    "[RANCABOLANG] float, " +
+	                    "[PURBASARI] float, " +
+	                    "[SPERATA] float, " +
+	                    "[CIATER] float, " +
+	                    "[TANAWATEE] float, " +
+	                    "[PURBAWINDU] float, " +
+	                    "[TALOON] float, " +
+	                    "[MALABAR] float,  " +
+	                    "[SEDEP] float, " +
+	                    "[SINUMBRA] float, " +
+	                    "[PS JUNGHUHN] float, " +
+	                    "[PANGHEOTAN] float, " +
+	                    "[MONTAYA] float, " +
+	                    "[PASIRNANGKA] float, " +
+                        "[PANGLEJAR] float, " +
+                        "[PAPANDAYAN] float, " +
+                        "[CISARUNI] float, " +
+                        "[GOALPARA] float, " +
+                        "[SANTOSA] float, " +
+                        "[KERTAMANAH] float, " +
+                        "[DAYEUHMANGGUNG] float " +
+	                    ") " +
+                        "INSERT @@tbl2 " +
+                        "SELECt NoUrut, Uraian, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 FROM [SPDK_KanpusEF].[dbo].[FormatMonitorProduksiJadiHarian] " +
+                        "WHERE SubBudidayaId='35614CD9-071A-4624-BEFF-8A4A24E63595' " +
+                        "SELECT A.NoUrut,A.Uraian, " +
+	                    "B.PASIRMALANG,B.RANCABOLANG,B.PURBASARI,B.SPERATA,B.CIATER,B.TANAWATEE,B.PURBAWINDU,B.TALOON,B.MALABAR,B.SEDEP,B.SINUMBRA,B.[PS JUNGHUHN] AS PSJUNGHUHN,B.PANGHEOTAN,B.MONTAYA,B.PASIRNANGKA,B.PANGLEJAR,B.PAPANDAYAN,B.CISARUNI,B.GOALPARA,B.SANTOSA,B.KERTAMANAH,B.DAYEUHMANGGUNG " +
+	                    "FROM @@tbl2 AS A " +
+	                    "LEFT OUTER JOIN @@tbl1 AS B ON A.NoUrut=B.NoUrut " +
+	                    "ORDER BY A.NoUrut"
+        }
+    }
+
+</script>
+
+<style>
+    .cssJumlah {
+        font-weight: 600;
+        background-color: darkseagreen;
+    }
+
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+
+
+
+
+

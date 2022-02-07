@@ -1,0 +1,23 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Rekening
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlRekening")
+        .OptionLabel("Pilih Rekening...")
+        .DataTextField("KodeRekening")
+        .DataValueField("RekeningId")
+        //.TemplateId("scrRekg")
+        //.HtmlAttributes(new { style = "width: 200px" })
+        .AutoBind(true)
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetRekening", "ddl", new { strRek="130"})).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("ddlRekeningOnSelect"); e.DataBound("ddlRekeningOnDataBound"); })
+        .ToClientTemplate()
+)
+
+
+
+
+
+

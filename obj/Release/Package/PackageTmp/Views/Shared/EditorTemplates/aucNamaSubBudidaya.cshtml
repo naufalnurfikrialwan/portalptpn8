@@ -1,0 +1,18 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m=>m)
+        .Placeholder("Jenis")
+        .DataTextField("Nama")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetSubBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterSubBudidaya")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucNamaSubBudidayaOnSelect"); e.DataBound("aucNamaSubBudidayaOnDataBound"); })
+)
+
+
+
+
+
+

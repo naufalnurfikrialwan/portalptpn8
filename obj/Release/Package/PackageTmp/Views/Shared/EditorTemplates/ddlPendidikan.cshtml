@@ -1,0 +1,16 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlPendidikan")
+        .DataTextField("NM_PEND")
+        .DataValueField("NM_PEND")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterPendidikan").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlPendidikanOnSelect"); e.Change("ddlPendidikanOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

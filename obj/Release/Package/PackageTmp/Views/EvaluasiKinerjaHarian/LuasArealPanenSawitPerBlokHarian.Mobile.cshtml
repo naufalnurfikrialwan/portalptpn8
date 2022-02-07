@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "Luas Areal Panen Sawit per Blok Harian";
+}
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 5%; " />
+
+<table width="100%;">
+    <tr><td style="text-align: center; font-weight:600; font-size: large; background: lightgray;vertical-align:middle;">Luas Areal Panen Sawit per Blok Harian</td></tr>
+    @*<tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerKebun">Layer Kebun</td></tr>
+        <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerAfdeling">Layer Afdeling</td></tr>
+        <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerBlok">Layer Blok</td></tr>*@
+</table>
+
+<div id="splitter">
+    @(Html.Kendo().Splitter().Name("horizontal").Orientation(SplitterOrientation.Vertical).HtmlAttributes(new { style = "height: 600px;" }).Panes(hz =>
+        {
+            hz.Add().Size("250px").HtmlAttributes(new { id = "left-pane" })
+                .Collapsible(true).Content(@<text>
+        @Html.Partial("~/Views/EvaluasiKinerjaHarian/LuasArealPanenSawitPerBlokHarian_left_pane.cshtml",
+                    new ViewDataDictionary {
+                        { "LAYER","FALSE"},
+                        { "SUMBERDANA","FALSE"},
+                        { "RENTANGWAKTU","TRUE"},
+                        { "KEBUN", "TRUE" },
+                        { "BUDIDAYA","TRUE"},
+                        { "REKENINGKEGIATAN","FALSE"},
+                        { "UNSUR","FALSE"},
+                        { "REALISASIDIBANDINGKAN","FALSE"},
+                        { "TOOLS","FALSE" }
+                    })
+                </text>);
+            hz.Add().Size("350px").HtmlAttributes(new { id = "middle-pane" })
+                .Collapsible(false).Content(@<text>
+        @Html.Partial("~/Views/EvaluasiKinerjaHarian/LuasArealPanenSawitPerBlokHarian_middle_pane.cshtml",
+                                       new ViewDataDictionary {
+                        { "PETA","FALSE"},
+                        { "GRID","TRUE"},
+                        { "CHART","FALSE"}
+                    })
+                </text>);
+    @*hz.Add().Size("13%").HtmlAttributes(new { id = "right-pane" })
+                .Collapsible(true).Content(@<text>
+        @Html.Partial("~/Views/EvaluasiKinerjaHarian/BiayaDanProduksiHarian_right_pane.cshtml",
+                        new ViewDataDictionary {
+                        { "LEGEND","TRUE"},
+                        { "KETLEGEND","TRUE"}
+                    })
+                </text>);*@
+        }))
+</div>
+
+<script>
+    var dataKebun, dataAfdeling, dataBlok;
+    var chkPopUp, chkKebun, chkStreetMap, chkCitra, chkKontur;
+    var tahunAwal, bulanAwal, tahunAkhir, bulanAkhir;
+    var map, activeLayer;
+    var shapeKlik;
+    var statusAreal, kebunID, budidaya, masaBerlakuHGU, textSearch, loadDataKebun, rekening, kebun;
+    var lokasiID, lokasiKebunID, lokasiAfdelingID, lokasiBlokID;
+    var indexStreetMap = 0;
+    var indexKontur = 1;
+    var indexCitra = 2;
+    var indexKebun = 3;
+    var indexAfdeling = 4;
+    var indexBlok = 5;
+    var mapExtent;
+    var inputProject;
+    var warnaKebun, warnaAfdeling, warnaBlok;
+    var menuID = 'e6b95034-9cd4-4f7b-a5e8-c59965bf9c52';
+
+    var popup = $("<div>Foo</div>")
+        .appendTo(document.body)
+        .kendoPopup()
+        .data("kendoPopup");
+
+    $(document).ajaxStart(function () {
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+    });
+
+    $(document).ready(function () {
+        bulanAwal = $('#BulanAwal').data('kendoDropDownList').value();
+        tahunAwal = $('#TahunAwal').val();
+        chkPopUp = false;
+        chkKebun = true;
+        chkStreetMap = true;
+        chkCitra = false;
+        chkKontur = false;
+        warnaKebun = "";
+        warnaAfdeling = "";
+        warnaBlok = "";
+        lokasiID = "";
+
+        statusAreal = "0";
+        budidaya = '02';
+        rekening = '601'
+        textSearch = "";
+        masaBerlakuHGU = "0"
+        shapeKlik = false;
+
+        activeLayer = "Kebun";
+        inputProject = false;
+        map = $('#map').data('kendoMap');
+
+        if (typeof (map) != 'undefined') {
+            for (var i = 0; i < map.layers.length; i++) {
+                var lyr = map.layers[i];
+                if (i == 0 || i == 3) {
+                    if (i == 3) lyr.dataSource.read();
+                    lyr.show();
+                } else lyr.hide();
+            }
+        }
+        loadDataKebun = true;
+        //resetGridData();
+    });
+
+
+
+</script>
+
+<style>
+    #vertical {
+        height: 600px;
+        margin: 0 auto;
+    }
+
+    #middle-pane {
+        background-color: rgba(60, 70, 80, 0.10);
+    }
+
+    #bottom-pane {
+        background-color: rgba(60, 70, 80, 0.15);
+    }
+
+    #left-pane, #center-pane, #right-pane {
+        background-color: rgba(60, 70, 80, 0.05);
+    }
+
+    .pane-content {
+        padding: 0 10px;
+    }
+    /*.k-grid .k-header {
+    display: none;
+    }*/
+
+    .WarnaMerah {
+        color: white;
+        background-color: red;
+    }
+
+    .WarnaHijau {
+        color: white;
+        background-color: green;
+    }
+
+    .WarnaKuning {
+        color: black;
+        background-color: yellow;
+    }
+
+    .WarnaBiru {
+        color: white;
+        background-color: blue;
+    }
+
+    .WarnaOrange {
+        color: white;
+        background-color: orange;
+    }
+
+    .WarnaHitam {
+        color: white;
+        background-color: black;
+    }
+
+    .DataPembandingKosong {
+        color: white;
+        background-color: black;
+    }
+
+    .fieldlist {
+        margin: 0 0 -1em;
+        padding: 0;
+    }
+
+        .fieldlist li {
+            list-style: none;
+            padding-bottom: 1em;
+        }
+</style>
+

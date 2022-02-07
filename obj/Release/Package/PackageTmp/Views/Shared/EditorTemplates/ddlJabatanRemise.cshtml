@@ -1,0 +1,45 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Komut/Dirut",
+                Value = "Komut/Dirut"
+            },
+            new SelectListItem() {
+                Text = "Komisaris/Direktur",
+                Value = "Komisaris/Direktur"
+            },
+            new SelectListItem() {
+                Text = "PJP/Setara",
+                Value = "PJP/Setara"
+            },
+            new SelectListItem() {
+                Text = "Kasubag/Setara",
+                Value = "Kasubag/Setara"
+            },
+            new SelectListItem() {
+                Text = "Staf Gol IVA/B/C/D",
+                Value = "Staf Gol IVA/B/C/D"
+            },
+            new SelectListItem() {
+                Text = "Staf Gol IIIA/B/C/D",
+                Value = "Staf Gol IIIA/B/C/D"
+            },
+            new SelectListItem() {
+                Text = "Staf Gol IIA/B/C/D",
+                Value = "Staf Gol IIA/B/C/D"
+            },
+            new SelectListItem() {
+                Text = "Staf Gol IA/B/C/D",
+                Value = "Staf Gol IA/B/C/D"
+            }
+        })
+        .Events(e => { e.Change("ddlJabatanRemiseOnChange"); e.Select("ddlJabatanRemiseOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

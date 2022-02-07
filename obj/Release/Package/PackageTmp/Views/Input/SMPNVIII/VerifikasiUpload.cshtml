@@ -1,0 +1,140 @@
+﻿@model Ptpn8.SMPNVIII.Models.View_Dokumen
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/SMPNVIII/VerifikasiUpload.js"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<button type="button" id="btnSelesaiSimpanDetail" class="k-button" style="color: white; background-color: blue; font-size: small; height: 30px; text-align:left; display: none;"><span class="k-font-icon .k-i-search"></span>Cek Kilometer</button>
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.SMPNVIII.Models.View_Dokumen>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.DokumenId).Width(50).Hidden();
+                    g.Bound(i => i.BagianId).Width(50).Hidden();
+		    g.Bound(i => i.Verifikasi).Title("Checklist").Width(50).ClientTemplate("<input id='#=DokumenId#' type='checkbox' onclick='handleClick(this)'>");
+                    g.Bound(i => i.NomorDokumen).Width(100).Title("Nomor Dokumen");
+                    g.Bound(i => i.Nama).Width(200).Title("Nama");
+                    g.Bound(i => i.Tanggal).Width(100).Title("Tanggal");
+                    g.Bound(i => i.Keterangan).Width(200).Title("No. Verifikasi");
+                    g.Command(command =>
+                    {
+                        command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                      .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                    }).Width(120);
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                })
+                .AutoBind(true)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .HtmlAttributes(new { style = "Height: 600px" })
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+                    e.DataBound("grdOnDataBound");
+                })
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    .Batch(true)
+                    .Sort(i =>
+                    {
+                        i.Add(j => j.Verifikasi).Ascending();
+                        i.Add(j => j.Tanggal).Descending();
+                    })
+                    .Model(model =>
+                    {
+                        model.Id(p => p.DokumenId);
+                        model.Field(f => f.BagianId).Editable(false);
+                        model.Field(f => f.NomorDokumen).Editable(false);
+                        model.Field(f => f.Nama).Editable(false);
+                        model.Field(f => f.Tanggal).Editable(false);
+                        model.Field(f => f.Keterangan).Editable(false);
+                    })
+                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                    )
+    )
+</div>
+
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    // tambahan
+    function handleClick(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(dokumenId)) == "undefined" ? grid.dataSource.getByUid(dokumenId) : grid.dataSource.get(dokumenId);
+
+        if (cb.checked) {
+            model.Verifikasi = true;
+        }
+        else {
+            model.Verifikasi = false;
+        }
+        model.dirty = true;
+    }
+//tambahan
+
+
+</script>

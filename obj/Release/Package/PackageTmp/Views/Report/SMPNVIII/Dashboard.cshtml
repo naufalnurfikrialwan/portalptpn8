@@ -1,0 +1,358 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Dashboard Sistem Manajemen PTP. Nusantara VIII</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                        .Items(tabstrip =>
+                        {
+                            tabstrip.Add().Text("I. Instruksi Dashboard").Selected(true)
+                            .Content(@<text>
+                                1. Menu Dashboard berfungsi untuk menampilkan rekap Prosedur dan Instruksi Kerja semua Bagian dan Unit.
+                                <br />
+                                2. Klik pada kolom tabel apabila ingin melihat lebih rinci Prosedur maupun Instruksi Kerja di masing masing Bagian/Unit.
+                                <br />
+                                3. Klik pada tombol "Lihat Dokumen" apabila ingin melihat file Pdf.
+                                <br />
+                                4. Apabila ingin mendownload atau print dokumen tersebut, kontak Bagian TI PTPN VII.
+
+                            </text>);
+                                    tabstrip.Add().Text("II. Rekap").Selected(false)
+            .Content(@<text>
+                @(Html.Kendo()
+                                                    .Grid<Ptpn8.SMPNVIII.Models.Dashboard>(Guid.Empty.ToString())
+                                                    .Name("grdDetail")
+                                                    .Columns(g =>
+                                                    {
+                                                                g.Bound(i => i.NamaBagian).Width(300).Title("Bagian").HtmlAttributes(new { style = "text-align: left; font-weight : 700" });
+                                                                g.Bound(i => i.JumlahPedoman).Width(100).Title("Jumlah Pedoman").HtmlAttributes(new { style = "text-align: center; color: DarkOliveGreen; font-weight : 700" });
+                                                                g.Bound(i => i.JumlahProsedur).Width(100).Title("Jumlah SOP").HtmlAttributes(new { style = "text-align: center; color: red; font-weight : 700" });
+                                                                g.Bound(i => i.JumlahIK).Width(100).Title("Jumlah IK").HtmlAttributes(new { style = "text-align: center; color: blue; font-weight : 700" });
+                                                                g.Bound(i => i.JumlahDP).Width(100).Title("Jumlah DP").HtmlAttributes(new { style = "text-align: center; color: green; font-weight : 700" });
+                                                                g.Bound(i => i.JumlahFM).Width(100).Title("Jumlah FM").HtmlAttributes(new { style = "text-align: center; color: orange; font-weight : 700" });
+                                                                g.Command(com => com.GetType()).Width(300);
+                                                            })
+                                                    .ToolBar(toolbar =>
+                                                    {
+                                                                toolbar.Excel();
+                                                            })
+                                                    .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                                                    .Excel(excel => excel.AllPages(true))
+                                                    .AutoBind(true)
+                                                    .Resizable(resizeable => resizeable.Columns(true))
+                                                    .Scrollable()
+                                                    .Sortable()
+                                                    .Groupable()
+                                                    .Selectable(
+                                                        selectable => selectable
+                                                        .Type(GridSelectionType.Cell)
+                                                    )
+                                                    .Groupable()
+                                                    .HtmlAttributes(new { style = "Height: 450px" })
+                                                    .DataSource(o => o
+                                                        .Ajax()
+                                                        .ServerOperation(false)
+                                                        .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+                                                    )
+                )
+            </text>);
+                        tabstrip.Add().Text("III. Rincian").Selected(false)
+.Content(@<text>
+    @(Html.Kendo()
+                                        .Grid<Ptpn8.SMPNVIII.Models.ReportDokumen>(Guid.Empty.ToString())
+                                        .Name("grdDetail2")
+                                        .Columns(g =>
+                                        {
+                                                    g.Bound(i => i.NamaBagian).Width(100).Title("Bagian").HtmlAttributes(new { style = "text-align: left;" });
+                                                    g.Bound(i => i.Tanggal).Width(100).Title("Tanggal Dokumen").HtmlAttributes(new { style = "text-align: left;" });
+                                                    g.Bound(i => i.NomorDokumen).Width(100).Title("Nomor Dokumen").HtmlAttributes(new { style = "text-align: center;" });
+                                                    g.Bound(i => i.Nama).Width(200).Title("Nama Dokumen").HtmlAttributes(new { style = "text-align: left;" });
+                                                    g.Bound(i => i.Keterangan).Width(200).Title("No Revisi").HtmlAttributes(new { style = "text-align: left;" });
+                                                    g.Bound(i => i.File).Width(200).Title("File").HtmlAttributes(new { style = "text-align: right;" }).Hidden();
+                                                    g.Command(command =>
+                                        {
+                                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                                                              .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                            }).Width(120);
+                                                })
+                                        .ToolBar(toolbar =>
+                                        {
+                                                    toolbar.Excel();
+                                                })
+                                        .Excel(excel => excel.AllPages(true))
+                                        .AutoBind(false)
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Selectable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Read(read => read.Action("detailRead", "Report").Data("filterReport2").Type(HttpVerbs.Post))
+
+                                        )
+    )
+</text>);
+                        tabstrip.Add().Text("IV. Grafik").Selected(false)
+            .Content(@<text>
+        <div class="demo-section k-content wide">
+            @(Html.Kendo().Chart<Ptpn8.SMPNVIII.Models.ChartDashboard>()
+                                                .Name("chart")
+                                                .Title("SOP/IK/DP/FM SM-PN8")
+                                                .Legend(legend => legend.Position(ChartLegendPosition.Top))
+                                                .DataSource(ds => ds
+                                                    .Read(read => read.Action("GetDataFrom", "Report").Type(HttpVerbs.Post).Data("filterReport3"))
+                                                )
+                                                .ChartArea(chartArea => chartArea
+                                                    .Background("transparent")
+                                                )
+                                                .Series(series =>
+                                                {
+                                        //series.Bar(new double[] { 23, 1, 14, 12, 46, 16, 17, 3, 56, 12, 7, 6 }).Name("Prosedur Kerja");
+                                        //series.Bar(new double[] { 6, 4, 16, 170, 67, 26, 2, 5, 6, 6, 0, 1 }).Name("Instruksi Kerja");
+                                        series.Bar(model => model.JumlahPedoman).Name("Pedoman").Color("DarkOliveGreen");
+                                                    series.Bar(model => model.JumlahProsedur).Name("SOP").Color("red");
+                                                    series.Bar(model => model.JumlahIK).Name("IK").Color("blue");
+                                                    series.Bar(model => model.JumlahDP).Name("DP").Color("green");
+                                                    series.Bar(model => model.JumlahFM).Name("FM").Color("orange");
+                                                })
+                                                //.CategoryAxis(axis => axis
+                                                //    .Categories("Sekper", "SPI", "TI", "Tanaman", "Tekpol", "SDM", "Hukum & PKBL", "Opset", "Keuangan", "Akuntansi", "Pemasaran", "Pengadaan")
+                                                //    .MajorGridLines(lines => lines.Visible(false))
+                                                //)
+                                                .CategoryAxis(axis => axis
+                                                        .Categories(model => model.NamaBagian)
+
+                                                        )
+                                                .ValueAxis(axis => axis
+                                                    .Numeric()
+                                                    .Line(line => line.Visible(false))
+                                                    .MajorGridLines(lines => lines.Visible(true))
+                                                )
+                                                .Tooltip(tooltip => tooltip
+                                                    .Visible(true)
+                                                    .Template("#= series.name #: #= value #")
+                                                )
+            )
+        </div>
+            </text>);
+                                    })
+    )
+</div>
+
+<script>
+    var bagian;
+    var kode, colIdx, pilihan;
+
+    $(document).ready(function () {
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function onButtonClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var file = data.File;
+
+        pdf.open().center();
+
+        var options = {
+            pdfOpenParams: {
+                navpanes: 1,
+                toolbar: 0,
+                statusbar: 0,
+                pagemode: 'none',
+                pagemode: "none",
+                page: 1,
+                zoom: "page-width",
+
+                enableHandToolOnLoad: true
+            } //,
+            //forcePDFJS: true,
+            //PDFJS_URL: "/PDF.js/web/viewer.html"
+        }
+
+
+        PDFObject.embed("/Content/Images/Document/SMPNVIII/" + file, "#testPDFObject", options)
+    }
+
+    function grdCariOnDataBound(e) {
+    }
+
+    function grdCariOnChange(e) {
+        var selected = $.map(this.select(), function (item) {
+            return $(item).text();
+        });
+
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        //colIdx = $("td", row).index(row);
+        var data = grid.dataItem(row);
+        var x = grid.select();
+        var r = x.closest("tr");
+        var xx = grid.dataItem(r);
+        bagian = xx.NamaBagian;
+        kode = selected.toString();
+        if (kode.indexOf("SOP") > -1) { pilihan = "SOP" }
+        else if (kode.indexOf("IK") > -1) { pilihan = "IK" }
+        else if (kode.indexOf("DP") > -1) { pilihan = "DP" }
+        else if (kode.indexOf("FM") > -1) { pilihan = "FM" }
+        else if (kode.indexOf("Pedoman") > -1) { pilihan = "Pedoman" }
+        else pilihan = "";
+
+
+        $("#tabstrip").data("kendoTabStrip").select(2);
+        var grid = $('#grdDetail2').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    //fungsi menampilkan rincian PK dan IK
+    function filterReport2(e) {
+        if (pilihan == "SOP") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and (A.NomorDokumen like 'PK%' or A.NomorDokumen like 'SOP%') and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "IK") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.NomorDokumen like 'IK%' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "DP") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.NomorDokumen like 'DP%' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "FM") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.NomorDokumen like 'FM%' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "Pedoman") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and (A.NomorDokumen like 'KEP%' or A.NomorDokumen like 'SK%') and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+    }
+
+    //fungsi dashboard
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SMPNVIII.Models.Dashboard',
+            scriptSQL: "declare @@dashboard as table (NamaBagian nvarchar(max),JumlahPedoman nvarchar(max),JumlahProsedur nvarchar(max), JumlahIK nvarchar(max), JumlahDP nvarchar(max), JumlahFM nvarchar(max)) " +
+                "insert @@dashboard " +
+                "Select distinct B.NamaUnit as NamaBagian, (select CAST(count(AA.NomorDokumen)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where (AA.NomorDokumen like 'KEP%' or AA.NomorDokumen like 'SK%') and AA.BagianId=A.BagianId and AA.Verifikasi=1)  + ' Pedoman' as JumlahPedoman, (select CAST(count(AA.NomorDokumen)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where (AA.NomorDokumen like '%PK%' or AA.NomorDokumen like 'SOP%') and AA.BagianId=A.BagianId and AA.Verifikasi=1)  + ' SOP' as JumlahProsedur, (select CAST(count(AA.NomorDokumen)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where AA.NomorDokumen like '%IK%' and AA.BagianId=A.BagianId and AA.Verifikasi=1)  + ' IK' as JumlahIK, (select CAST(count(AA.NomorDokumen)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where AA.NomorDokumen like '%DP%' and AA.BagianId=A.BagianId and AA.Verifikasi=1)  + ' DP' as JumlahDP, (select CAST(count(AA.NomorDokumen)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where AA.NomorDokumen like '%FM%' and AA.BagianId=A.BagianId and AA.Verifikasi=1)  + ' FM' as JumlahFM " +
+                "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                "where A.Verifikasi=1 " +
+                "order by B.NamaUnit " +
+                "select * from @@dashboard"
+        }
+    }
+
+    function filterReport3(e) {
+        return {
+            strClassView: 'Ptpn8.SMPNVIII.Models.ChartDashboard',
+            scriptSQL: "declare @@dashboard as table (NamaBagian nvarchar(max),JumlahPedoman int,JumlahProsedur int, JumlahIK int, JumlahDP int, JumlahFM int) " +
+                "insert @@dashboard " +
+                "Select distinct B.NamaUnit as NamaBagian, (select count(AA.NomorDokumen) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where (AA.NomorDokumen like 'SK%' or AA.NomorDokumen like 'KEP%') and AA.BagianId=A.BagianId and AA.Verifikasi=1) as JumlahPedoman, (select count(AA.NomorDokumen) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where (AA.NomorDokumen like '%PK%' or AA.NomorDokumen like 'SOP%') and AA.BagianId=A.BagianId and AA.Verifikasi=1) as JumlahProsedur, (select count(AA.NomorDokumen) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where AA.NomorDokumen like '%IK%' and AA.BagianId=A.BagianId and AA.Verifikasi=1) as JumlahIK, (select count(AA.NomorDokumen) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where AA.NomorDokumen like '%DP%' and AA.BagianId=A.BagianId and AA.Verifikasi=1) as JumlahDP, (select count(AA.NomorDokumen) from [SPDK_KanpusEF].[dbo].[Dokumen] as AA where AA.NomorDokumen like '%FM%' and AA.BagianId=A.BagianId and AA.Verifikasi=1) as JumlahFM " +
+                "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                "where A.Verifikasi=1 " +
+                "order by B.NamaUnit " +
+                "select * from @@dashboard"
+        }
+    }
+
+
+
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <script type='text/javascript'>
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+    </script>
+</div>
+
+
+
+
+

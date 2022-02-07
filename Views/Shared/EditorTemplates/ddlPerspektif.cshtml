@@ -1,0 +1,16 @@
+﻿@model string
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlPerspektif")
+        .DataTextField("Perspektif")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterPerspektif").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlPerspektifOnSelect"); e.Change("ddlPerspektifOnSelect"); })
+)
+
+
+
+

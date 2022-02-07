@@ -1,0 +1,490 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Dashboard Kinerja Kebun PTPN VIII</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Kebun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete()
+                    .Name("NamaKebun")
+                    .MinLength(2)
+                    .Filter("contains")
+                    .Placeholder("Cari Kebun")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 60%" })
+                    .Events(e =>
+                    {
+                        e.DataBound("NamaKebunOnSelect");
+                        e.Change("NamaKebunOnSelect");
+                    })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Budidaya:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete()
+                    .Name("Budidaya")
+                    .MinLength(2)
+                    .Filter("contains")
+                    .Placeholder("Budidaya")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                    .HtmlAttributes(new { style = "width: 60%" })
+                .Events(e =>
+                {
+                    e.Change("BudidayaOnSelect");
+                    e.Select("BudidayaOnSelect");
+                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2016).Format("D4").Value(2018)
+                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Rentang Waktu:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                    .AutoBind(true)
+                    .Name("RentangWaktu")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                    .BindTo(new List<SelectListItem>()
+                    {
+                        new SelectListItem() {
+                            Text = "Bulanan",
+                            Value = "Bulanan"
+                        },
+                        new SelectListItem() {
+                            Text = "Harian",
+                            Value = "Harian"
+                        }
+                        })
+                        .Events(e =>
+                {
+                    e.Change("RentangWaktuOnSelect");
+                    e.Select("RentangWaktuOnSelect");
+                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                    .AutoBind(true)
+                    .Name("Bulan")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                    .BindTo(new List<SelectListItem>()
+                    {
+                        new SelectListItem() {
+                            Text = "Semua Bulan",
+                            Value = "00"
+                        },
+                        new SelectListItem() {
+                            Text = "Januari",
+                            Value = "01"
+                        },
+                        new SelectListItem() {
+                            Text = "Februari",
+                            Value = "02"
+                        },
+                        new SelectListItem() {
+                            Text = "Maret",
+                            Value = "03"
+                        },
+                        new SelectListItem() {
+                            Text = "April",
+                            Value = "04"
+                        },
+                        new SelectListItem() {
+                            Text = "Mei",
+                            Value = "05"
+                        },
+                        new SelectListItem() {
+                            Text = "Juni",
+                            Value = "06"
+                        },
+                        new SelectListItem() {
+                            Text = "Juli",
+                            Value = "07"
+                        },
+                        new SelectListItem() {
+                            Text = "Agustus",
+                            Value = "08"
+                        },
+                        new SelectListItem() {
+                            Text = "September",
+                            Value = "09"
+                        },
+                        new SelectListItem() {
+                            Text = "Oktober",
+                            Value = "10"
+                        },
+                        new SelectListItem() {
+                            Text = "Nopember",
+                            Value = "11"
+                        },
+                        new SelectListItem() {
+                            Text = "Desember",
+                            Value = "12"
+                        }
+                        })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Tanggal:</label>
+            </td>
+            <td width="70%">
+                @(Html.Kendo().DatePicker().Name("TanggalAwal").Format("yyyy-MM-dd").Value(DateTime.Now)) sd Tanggal: @(Html.Kendo().DatePicker().Name("TanggalAkhir").Format("yyyy-MM-dd")
+                                            .Value(DateTime.Now)
+    )
+</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:600px;">
+    <table width="100%" style="border: 1px solid #C6C6C6;">
+        <tr width="100%" style="border: 1px solid #C6C6C6;">
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart()
+                    .Name("chart")
+                    .Title("Harga Pokok /kg dibandingkan dengan RKAP")
+                    .Legend(legend => legend
+                        .Position(ChartLegendPosition.Bottom)
+                    )
+                    .ChartArea(chartArea => chartArea
+                        .Background("transparent")
+                    )
+                    .SeriesDefaults(seriesDefaults =>
+                        seriesDefaults.Line().Style(ChartLineStyle.Smooth)
+                    )
+                    .Series(series =>
+                    {
+                        series.Line(new double[] { 3.907, 7.943, 7.848, 9.284, 9.263, 9.801, 3.890, 8.238, 9.552, 6.855 }).Name("India");
+                        series.Line(new double[] { 1.988, 2.733, 3.994, 3.464, 4.001, 3.939, 1.333, -2.245, 4.339, 2.727 }).Name("World");
+                        series.Line(new double[] { 4.743, 7.295, 7.175, 6.376, 8.153, 8.535, 5.247, -7.832, 4.3, 4.3 }).Name("Russian Federation");
+                        series.Line(new double[] { -0.253, 0.362, -3.519, 1.799, 2.252, 3.343, 0.843, 2.877, -5.416, 5.590 }).Name("Haiti");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Categories("2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011")
+                        .MajorGridLines(lines => lines.Visible(false))
+                    )
+                    .ValueAxis(axis => axis
+                        .Numeric().Labels(labels => labels.Format("{0}%"))
+                        .Line(line => line.Visible(false))
+                        .AxisCrossingValue(-10)
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Format("{0}%")
+                    )
+                ) 
+            </td>
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart()
+                    .Name("chart2")
+                    .Title("Biaya Panen")
+                    .Legend(legend => legend
+                        .Position(ChartLegendPosition.Bottom)
+                    )
+                    .ChartArea(chartArea => chartArea
+                        .Background("transparent")
+                    )
+                    .SeriesDefaults(seriesDefaults =>
+                        seriesDefaults.Line().Style(ChartLineStyle.Smooth)
+                    )
+                    .Series(series =>
+                    {
+                        series.Line(new double[] { 3.907, 7.943, 7.848, 9.284, 9.263, 9.801, 3.890, 8.238, 9.552, 6.855 }).Name("India");
+                        series.Line(new double[] { 1.988, 2.733, 3.994, 3.464, 4.001, 3.939, 1.333, -2.245, 4.339, 2.727 }).Name("World");
+                        series.Line(new double[] { 4.743, 7.295, 7.175, 6.376, 8.153, 8.535, 5.247, -7.832, 4.3, 4.3 }).Name("Russian Federation");
+                        series.Line(new double[] { -0.253, 0.362, -3.519, 1.799, 2.252, 3.343, 0.843, 2.877, -5.416, 5.590 }).Name("Haiti");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Categories("2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011")
+                        .MajorGridLines(lines => lines.Visible(false))
+                    )
+                    .ValueAxis(axis => axis
+                        .Numeric().Labels(labels => labels.Format("{0}%"))
+                        .Line(line => line.Visible(false))
+                        .AxisCrossingValue(-10)
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Format("{0}%")
+                    )
+                ) 
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart()
+                    .Name("chart3")
+                    .ChartArea(chartArea => chartArea
+                        .Background("transparent"))
+                    .Title(title => title
+                        .Text("Biaya Pemupukan")
+                        .Position(ChartTitlePosition.Bottom)
+                    )
+                    .Legend(legend => legend
+                        .Visible(false)
+                    )
+                    .SeriesDefaults(series =>
+                        series.Donut().StartAngle(150)
+                    )
+                    .Series(series =>
+                    {
+                        series.Donut(new dynamic[] {
+                            new {category = "Asia",value = 30.8,color = "#9de219"},
+                            new {category = "Europe",value = 21.1,color = "#90cc38"},
+                            new {category = "Latin America",value = 16.3,color = "#068c35"},
+                            new {category = "Africa",value = 17.6,color = "#006634"},
+                            new {category = "Middle East",value = 9.2,color = "#004d38"},
+                            new {category = "North America",value = 4.6,color = "#033939"}
+                        })
+                        .Name("2011");
+
+                        series.Donut(new dynamic[] {
+                            new {category = "Asia",value = 53.8,color = "#9de219"},
+                            new {category = "Europe",value = 16.1,color = "#90cc38"},
+                            new {category = "Latin America",value = 11.3,color = "#068c35"},
+                            new {category = "Africa",value = 9.6,color = "#006634"},
+                            new {category = "Middle East",value = 5.2,color = "#004d38"},
+                            new {category = "North America",value = 3.6,color = "#033939"}
+                        })
+                        .Name("2012")
+                        .Labels(labels => labels
+                            .Visible(true)
+                            .Position(ChartPieLabelsPosition.OutsideEnd)
+                            .Template("#= category #: \n #= value#%")
+                            .Background("transparent")
+                        );
+                    })
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= category # (#= series.name #): #= value #%")
+                    )
+                ) 
+            </td>
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart()
+                    .Name("chart4")
+                    .Title("Biaya Pemeliharaan TM Diluar Pemupukan")
+                    .Legend(legend => legend
+                        .Position(ChartLegendPosition.Bottom)
+                    )
+                    .ChartArea(chartArea => chartArea
+                        .Background("transparent")
+                    )
+                    .SeriesDefaults(seriesDefaults =>
+                        seriesDefaults.Line().Style(ChartLineStyle.Smooth)
+                    )
+                    .Series(series =>
+                    {
+                        series.Line(new double[] { 3.907, 7.943, 7.848, 9.284, 9.263, 9.801, 3.890, 8.238, 9.552, 6.855 }).Name("India");
+                        series.Line(new double[] { 1.988, 2.733, 3.994, 3.464, 4.001, 3.939, 1.333, -2.245, 4.339, 2.727 }).Name("World");
+                        series.Line(new double[] { 4.743, 7.295, 7.175, 6.376, 8.153, 8.535, 5.247, -7.832, 4.3, 4.3 }).Name("Russian Federation");
+                        series.Line(new double[] { -0.253, 0.362, -3.519, 1.799, 2.252, 3.343, 0.843, 2.877, -5.416, 5.590 }).Name("Haiti");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Categories("2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011")
+                        .MajorGridLines(lines => lines.Visible(false))
+                    )
+                    .ValueAxis(axis => axis
+                        .Numeric().Labels(labels => labels.Format("{0}%"))
+                        .Line(line => line.Visible(false))
+                        .AxisCrossingValue(-10)
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Format("{0}%")
+                    )
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart()
+                    .Name("chart5")
+                    .Title("Produksi Sendiri")
+                    .Legend(legend => legend
+                        .Visible(false)
+                    )
+                    .ChartArea(chartArea => chartArea
+                        .Background("transparent")
+                    )
+                    .Series(series =>
+                    {
+                        series.Bar(new double[] { 56000, 63000, 74000, 91000, 117000, 138000 }).Name("Total Visits");
+                        series.Bar(new double[] { 52000, 34000, 23000, 48000, 67000, 83000 }).Name("Unique visitors");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Categories("Jan", "Feb", "Mar", "Apr", "May", "Jun")
+                        .MajorGridLines(lines => lines.Visible(false))
+                    )
+                    .ValueAxis(axis => axis
+                        .Numeric()
+                        .Max(140000)
+                        .Line(line => line.Visible(false))
+                        .MajorGridLines(lines => lines.Visible(true))
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= series.name #: #= value #")
+                    )
+                ) 
+            </td>
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart()
+                    .Name("chart6")
+                    .Title("Produktivitas Kg/Ha/Tahun")
+                    .Legend(legend => legend
+                        .Visible(false)
+                    )
+                    .ChartArea(chartArea => chartArea
+                        .Background("transparent")
+                    )
+                    .Series(series =>
+                    {
+                        series.Bar(new double[] { 56000, 63000, 74000, 91000, 117000, 138000 }).Name("Total Visits");
+                        series.Bar(new double[] { 52000, 34000, 23000, 48000, 67000, 83000 }).Name("Unique visitors");
+                    })
+                    .CategoryAxis(axis => axis
+                        .Categories("Jan", "Feb", "Mar", "Apr", "May", "Jun")
+                        .MajorGridLines(lines => lines.Visible(false))
+                    )
+                    .ValueAxis(axis => axis
+                        .Numeric()
+                        .Max(140000)
+                        .Line(line => line.Visible(false))
+                        .MajorGridLines(lines => lines.Visible(true))
+                    )
+                    .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Template("#= series.name #: #= value #")
+                    )
+                )
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+var budidayaId;
+
+function NamaKebunOnSelect(e) {
+    var kebun = this.dataItem(e.item);
+    if (typeof (kebun) != 'undefined') {
+        $('#Kd_Kbn').val(kebun.kd_kbn);
+        $('#NamaKebun').val(kebun.Nama);
+    }
+}
+
+function filterKebun() {
+    return {
+        key: "NamaKebun",
+        value: $("#NamaKebun").val()
+    };
+}
+
+function filterBudidaya(e) {
+    return {
+        value: $("#Budidaya").val()
+    };
+}
+
+function btnProsesOnClick() {
+    $('#chart').data('kendoChart').dataSource.read();
+    $('#chart2').data('kendoChart').dataSource.read();
+}
+
+function BudidayaOnSelect(e) {
+    var mainBudidaya = this.dataItem(e.item);
+    $('#MainBudidayaId').val(mainBudidaya.MainBudidayaId);
+    budidayaId = mainBudidaya.MainBudidayaId;
+}
+
+function RentangWaktuOnSelect(e) {
+
+}
+
+function filterReport(e) {
+    return {
+        strClassView: 'Ptpn8.Penjualan.Models.ChartBuyerVolume',
+        scriptSQL: "declare @@dashboard as table (NamaPembeli nvarchar(max),JumlahVolume decimal(18,2)) " +
+                    "insert @@dashboard " +
+                    "Select distinct C.Nama as NamaPembeli, Sum((A.Gross-A.Tare)) as JumlahVolume  " +
+                    "from [SPDK_KanpusEF].[dbo].[DTL_Faktur] as A join [SPDK_KanpusEF].[dbo].[HDR_Faktur] as B on A.HDR_FakturId=B.HDR_FakturId " +
+                    "join [ReferensiEF].[dbo].[Buyer] as C on B.BuyerId = C.BuyerId " +
+                    "where B.MainBudidayaId = '" + budidayaId + "' and B.TahunBuku=" + $('#Tahun').val() + " " +
+                    "group by C.Nama " +
+                    "select * from @@dashboard"
+    }
+}
+
+function filterReport2(e) {
+    return {
+        strClassView: 'Ptpn8.Penjualan.Models.ChartBuyerPendapatan',
+        scriptSQL: "declare @@dashboard as table (NamaPembeli nvarchar(max),JumlahPendapatan decimal(18,2)) " +
+                    "insert @@dashboard " +
+                    "Select distinct C.Nama as NamaPembeli, Sum((A.Gross-A.Tare)*Price) as JumlahPendapatan  " +
+                    "from [SPDK_KanpusEF].[dbo].[DTL_Faktur] as A join [SPDK_KanpusEF].[dbo].[HDR_Faktur] as B on A.HDR_FakturId=B.HDR_FakturId " +
+                    "join [ReferensiEF].[dbo].[Buyer] as C on B.BuyerId = C.BuyerId " +
+                    "where B.MainBudidayaId = '" + budidayaId + "' and B.TahunBuku=" + $('#Tahun').val() + " " +
+                    "group by C.Nama " +
+                    "select * from @@dashboard"
+    }
+}
+
+</script>
+
+
+
+
+
+
+
+
+

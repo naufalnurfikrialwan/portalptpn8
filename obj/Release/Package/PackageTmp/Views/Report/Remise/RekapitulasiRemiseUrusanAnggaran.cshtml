@@ -1,0 +1,605 @@
+﻿
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">Rekapitulasi Remise Kebun/Unit</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="20%">
+                <tr>
+                    <td class="_nonkey">
+                        <label style="text-align:left">Bulan Remise:</label>
+                    </td>
+                    <td class="_nonkey">
+                        @(Html.Kendo().DropDownList()
+                                .Name("BulanRemise")
+                                .AutoBind(true)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                                Text = "Januari",
+                                                Value = "1"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Februari",
+                                                Value = "2"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Maret",
+                                                Value = "3"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "April",
+                                                Value = "4"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Mei",
+                                                Value = "5"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Juni",
+                                                Value = "6"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Juli",
+                                                Value = "7"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Agustus",
+                                                Value = "8"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "September",
+                                                Value = "9"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Oktober",
+                                                Value = "10"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Nopember",
+                                                Value = "11"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Desember",
+                                                Value = "12"
+                                            }
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan", style = "width: 120px" })
+                        )                    
+                    </td>
+                </tr>
+                <tr>
+                    <td class="_nonkey">
+                        <label style="text-align:left">Tahun Remise:</label>
+                    </td>
+                    <td class="_nonkey">
+                        @(Html.Kendo().IntegerTextBox()
+                                .Name("TahunRemise")
+                                .HtmlAttributes(new { style = "width: 80px;" })
+                                .Format("{0:0000}")
+                                .Min(2016)
+                                .Value(2017)
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Remise.Models.RekapitulasiRemiseUrusanAnggaran>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NoUrut).Width(50).Hidden();
+            g.Bound(i => i.Uraian).Width(200).Locked();
+            g.Group(i => i
+            .Title("Pasirmalang")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PASIRMALANGPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRMALANGPKB) #");
+                c.Bound(q => q.PASIRMALANG).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRMALANG) #");
+                c.Bound(q => q.PASIRMALANGPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRMALANGPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Kertamanah")
+            .Columns(c =>
+            {
+                c.Bound(q => q.KERTAMANAHPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAMANAHPKB) #");
+                c.Bound(q => q.KERTAMANAH).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAMANAH) #");
+                c.Bound(q => q.KERTAMANAHPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAMANAHPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Malabar")
+            .Columns(c =>
+            {
+                c.Bound(q => q.MALABARPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MALABARPKB) #");
+                c.Bound(q => q.MALABAR).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MALABAR) #");
+                c.Bound(q => q.MALABARPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MALABARPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Purbasari")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PURBASARIPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PURBASARIPKB) #");
+                c.Bound(q => q.PURBASARI).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PURBASARI) #");
+                c.Bound(q => q.PURBASARIPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PURBASARIPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Talunsantosa")
+            .Columns(c =>
+            {
+                c.Bound(q => q.TALUNSANTOSAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TALUNSANTOSAPKB) #");
+                c.Bound(q => q.TALUNSANTOSA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TALUNSANTOSA) #");
+                c.Bound(q => q.TALUNSANTOSAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TALUNSANTOSAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Sedep")
+            .Columns(c =>
+            {
+                c.Bound(q => q.SEDEPPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SEDEPPKB) #");
+                c.Bound(q => q.SEDEP).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SEDEP) #");
+                c.Bound(q => q.SEDEPPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SEDEPPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Papandayan")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PAPANDAYANPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PAPANDAYANPKB) #");
+                c.Bound(q => q.PAPANDAYAN).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PAPANDAYAN) #");
+                c.Bound(q => q.PAPANDAYANPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PAPANDAYANPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cisaruni")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CISARUNIPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISARUNIPKB) #");
+                c.Bound(q => q.CISARUNI).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISARUNI) #");
+                c.Bound(q => q.CISARUNIPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISARUNIPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Dayeuhmanggung")
+            .Columns(c =>
+            {
+                c.Bound(q => q.DAYEUHMANGGUNGPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(DAYEUHMANGGUNGPKB) #");
+                c.Bound(q => q.DAYEUHMANGGUNG).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(DAYEUHMANGGUNG) #");
+                c.Bound(q => q.DAYEUHMANGGUNGPCT).Title("%").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(DAYEUHMANGGUNGPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Miramare")
+            .Columns(c =>
+            {
+                c.Bound(q => q.MIRAMAREPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MIRAMAREPKB) #");
+                c.Bound(q => q.MIRAMARE).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MIRAMARE) #");
+                c.Bound(q => q.MIRAMAREPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MIRAMAREPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Bagjanagara")
+            .Columns(c =>
+            {
+                c.Bound(q => q.BAGJANAGARAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BAGJANAGARAPKB) #");
+                c.Bound(q => q.BAGJANAGARA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BAGJANAGARA) #");
+                c.Bound(q => q.BAGJANAGARAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BAGJANAGARAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Batulawang")
+            .Columns(c =>
+            {
+                c.Bound(q => q.BATULAWANGPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BATULAWANGPKB) #");
+                c.Bound(q => q.BATULAWANG).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BATULAWANG) #");
+                c.Bound(q => q.BATULAWANGPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BATULAWANGPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Bunisarilendra")
+            .Columns(c =>
+            {
+                c.Bound(q => q.BUNISARILENDRAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUNISARILENDRAPKB) #");
+                c.Bound(q => q.BUNISARILENDRA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUNISARILENDRA) #");
+                c.Bound(q => q.BUNISARILENDRAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUNISARILENDRAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Ciater")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CIATERPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIATERPKB) #");
+                c.Bound(q => q.CIATER).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIATER) #");
+                c.Bound(q => q.CIATERPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIATERPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Tambaksari")
+            .Columns(c =>
+            {
+                c.Bound(q => q.TAMBAKSARIPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TAMBAKSARIPKB) #");
+                c.Bound(q => q.TAMBAKSARI).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TAMBAKSARI) #");
+                c.Bound(q => q.TAMBAKSARIPCT).Title("%").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(TAMBAKSARIPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Wangunreja")
+            .Columns(c =>
+            {
+                c.Bound(q => q.WANGUNREJAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(WANGUNREJAPKB) #");
+                c.Bound(q => q.WANGUNREJA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(WANGUNREJA) #");
+                c.Bound(q => q.WANGUNREJAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(WANGUNREJAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cikupa")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CIKUPAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUPAPKB) #");
+                c.Bound(q => q.CIKUPA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUPA) #");
+                c.Bound(q => q.CIKUPAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUPAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Bukitunggul")
+            .Columns(c =>
+            {
+                c.Bound(q => q.BUKITUNGGULPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUKITUNGGULPKB) #");
+                c.Bound(q => q.BUKITUNGGUL).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUKITUNGGUL) #");
+                c.Bound(q => q.BUKITUNGGULPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BUKITUNGGULPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Sinumbra")
+            .Columns(c =>
+            {
+                c.Bound(q => q.SINUMBRAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SINUMBRAPKB) #");
+                c.Bound(q => q.SINUMBRA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SINUMBRA) #");
+                c.Bound(q => q.SINUMBRAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SINUMBRAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Rancabali")
+            .Columns(c =>
+            {
+                c.Bound(q => q.RANCABALIPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABALIPKB) #");
+                c.Bound(q => q.RANCABALI).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABALI) #");
+                c.Bound(q => q.RANCABALIPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABALIPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Rancabolang")
+            .Columns(c =>
+            {
+                c.Bound(q => q.RANCABOLANGPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABOLANGPKB) #");
+                c.Bound(q => q.RANCABOLANG).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABOLANG) #");
+                c.Bound(q => q.RANCABOLANGPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(RANCABOLANGPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Panglejar")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PANGLEJARPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANGLEJARPKB) #");
+                c.Bound(q => q.PANGLEJAR).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANGLEJAR) #");
+                c.Bound(q => q.PANGLEJARPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANGLEJARPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Montaya")
+            .Columns(c =>
+            {
+                c.Bound(q => q.MONTAYAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MONTAYAPKB) #");
+                c.Bound(q => q.MONTAYA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MONTAYA) #");
+                c.Bound(q => q.MONTAYAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(MONTAYAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Pasirnangka")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PASIRNANGKAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRNANGKAPKB) #");
+                c.Bound(q => q.PASIRNANGKA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRNANGKA) #");
+                c.Bound(q => q.PASIRNANGKAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRNANGKAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Panyairan")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PANYAIRANPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANYAIRANPKB) #");
+                c.Bound(q => q.PANYAIRAN).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANYAIRAN) #");
+                c.Bound(q => q.PANYAIRANPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PANYAIRANPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Goalpara")
+            .Columns(c =>
+            {
+                c.Bound(q => q.GOALPARAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GOALPARAPKB) #");
+                c.Bound(q => q.GOALPARA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GOALPARA) #");
+                c.Bound(q => q.GOALPARAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GOALPARAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Gedeh")
+            .Columns(c =>
+            {
+                c.Bound(q => q.GEDEHPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GEDEHPKB) #");
+                c.Bound(q => q.GEDEH).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GEDEH) #");
+                c.Bound(q => q.GEDEHPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GEDEHPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Gunungmas")
+            .Columns(c =>
+            {
+                c.Bound(q => q.GUNUNGMASPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GUNUNGMASPKB) #");
+                c.Bound(q => q.GUNUNGMAS).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GUNUNGMAS) #");
+                c.Bound(q => q.GUNUNGMASPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(GUNUNGMASPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cianten")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CIANTENPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIANTENPKB) #");
+                c.Bound(q => q.CIANTEN).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIANTEN) #");
+                c.Bound(q => q.CIANTENPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIANTENPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Jalupang")
+            .Columns(c =>
+            {
+                c.Bound(q => q.JALUPANGPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(JALUPANGPKB) #");
+                c.Bound(q => q.JALUPANG).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(JALUPANG) #");
+                c.Bound(q => q.JALUPANGPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(JALUPANGPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cikumpay")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CIKUMPAYPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUMPAYPKB) #");
+                c.Bound(q => q.CIKUMPAY).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUMPAY) #");
+                c.Bound(q => q.CIKUMPAYPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKUMPAYPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Agrabinta")
+            .Columns(c =>
+            {
+                c.Bound(q => q.AGRABINTAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGRABINTAPKB) #");
+                c.Bound(q => q.AGRABINTA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGRABINTA) #");
+                c.Bound(q => q.AGRABINTAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGRABINTAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cikaso")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CIKASOPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASOPKB) #");
+                c.Bound(q => q.CIKASO).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASO) #");
+                c.Bound(q => q.CIKASOPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASOPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Bojongdatar")
+            .Columns(c =>
+            {
+                c.Bound(q => q.BOJONGDATARPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BOJONGDATARPKB) #");
+                c.Bound(q => q.BOJONGDATAR).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BOJONGDATAR) #");
+                c.Bound(q => q.BOJONGDATARPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(BOJONGDATARPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cisalakbaru")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CISALAKBARUPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISALAKBARUPKB) #");
+                c.Bound(q => q.CISALAKBARU).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISALAKBARU) #");
+                c.Bound(q => q.CISALAKBARUPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CISALAKBARUPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cikasungka")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CIKASUNGKAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASUNGKAPKB) #");
+                c.Bound(q => q.CIKASUNGKA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASUNGKA) #");
+                c.Bound(q => q.CIKASUNGKAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIKASUNGKAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Parakansalak")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PARAKANSALAKPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PARAKANSALAKPKB) #");
+                c.Bound(q => q.PARAKANSALAK).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PARAKANSALAK) #");
+                c.Bound(q => q.PARAKANSALAKPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PARAKANSALAKPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Sukamaju")
+            .Columns(c =>
+            {
+                c.Bound(q => q.SUKAMAJUPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SUKAMAJUPKB) #");
+                c.Bound(q => q.SUKAMAJU).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SUKAMAJU) #");
+                c.Bound(q => q.SUKAMAJUPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(SUKAMAJUPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Cibungur")
+            .Columns(c =>
+            {
+                c.Bound(q => q.CIBUNGURPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIBUNGURPKB) #");
+                c.Bound(q => q.CIBUNGUR).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIBUNGUR) #");
+                c.Bound(q => q.CIBUNGURPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(CIBUNGURPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Pasirbadak")
+            .Columns(c =>
+            {
+                c.Bound(q => q.PASIRBADAKPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRBADAKPKB) #");
+                c.Bound(q => q.PASIRBADAK).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRBADAK) #");
+                c.Bound(q => q.PASIRBADAKPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(PASIRBADAKPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Kertajaya")
+            .Columns(c =>
+            {
+                c.Bound(q => q.KERTAJAYAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAJAYAPKB) #");
+                c.Bound(q => q.KERTAJAYA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAJAYA) #");
+                c.Bound(q => q.KERTAJAYAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(KERTAJAYAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Total Kebun")
+            .Columns(c =>
+            {
+                c.Bound(q => q.REKAPKEBUNPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPKEBUNPKB) #");
+                c.Bound(q => q.REKAPKEBUN).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPKEBUN) #");
+                c.Bound(q => q.REKAPKEBUNPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPKEBUNPCT) #");
+            }));
+            g.Group(i => i
+            .Title("IHT Teh")
+            .Columns(c =>
+            {
+                c.Bound(q => q.INDUSTRIHILIRTEHPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(INDUSTRIHILIRTEHPKB) #");
+                c.Bound(q => q.INDUSTRIHILIRTEH).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(INDUSTRIHILIRTEH) #");
+                c.Bound(q => q.INDUSTRIHILIRTEHPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(INDUSTRIHILIRTEHPCT) #");
+            }));
+            g.Group(i => i
+            .Title("IHT Agrowisata")
+            .Columns(c =>
+            {
+                c.Bound(q => q.AGROWISATAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGROWISATAPKB) #");
+                c.Bound(q => q.AGROWISATA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGROWISATA) #");
+                c.Bound(q => q.AGROWISATAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(AGROWISATAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("IHT Aneka Usaha")
+            .Columns(c =>
+            {
+                c.Bound(q => q.ANEKAUSAHAPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(ANEKAUSAHAPKB) #");
+                c.Bound(q => q.ANEKAUSAHA).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(ANEKAUSAHA) #");
+                c.Bound(q => q.ANEKAUSAHAPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(ANEKAUSAHAPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Total Unit")
+            .Columns(c =>
+            {
+                c.Bound(q => q.REKAPUNITPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPUNITPKB) #");
+                c.Bound(q => q.REKAPUNIT).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPUNIT) #");
+                c.Bound(q => q.REKAPUNITPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPUNITPCT) #");
+            }));
+            g.Group(i => i
+            .Title("Total PTPN")
+            .Columns(c =>
+            {
+                c.Bound(q => q.REKAPPTPNPKB).Title("PKB").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPPTPNPKB) #");
+                c.Bound(q => q.REKAPPTPN).Title("Realisasi").Width(100).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPPTPN) #");
+                c.Bound(q => q.REKAPPTPNPCT).Title("%").Width(50).HtmlAttributes(new { style = "text-align: right;" }).ClientTemplate("#= formatNum(REKAPPTPNPCT) #");
+            }));
+            
+        })
+         
+        .AutoBind(false)
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .Filterable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Excel(excel => excel.AllPages(true))
+        .Events(ev => ev.DataBound("grdBound"))
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.NoUrut);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+        )
+    )
+</div>
+
+<script>
+    var wnd, err, prt;
+    var bulanRemise, tahunRemise;
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    bulanRemise = kendo.toString($('#BulanRemise').val());
+                    tahunRemise = kendo.toString($('#TahunRemise').val());
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+
+    function formatNum(n) {
+        if (n == null || n == 0)
+            return " ";
+        else
+            return kendo.toString(n, "n0");
+    }
+
+    function grdBound(e) {
+        // iterate the table rows and apply custom row and cell styling
+        var rows = e.sender.tbody.children();
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = e.sender.dataItem(row);
+            var units = dataItem.get("Uraian");
+
+            if (units.toLowerCase().indexOf("jumlah") > -1 || units.toLowerCase().indexOf("total") > -1) {
+                row.addClass("cssJumlah");
+            }
+
+        }
+    }
+
+    function filterReport(e)
+    {
+        return {
+            strClassView: 'Ptpn8.Remise.Models.RekapitulasiRemiseUrusanAnggaran',
+            scriptSQL: "exec [dbo].[RekapitulasiRemiseAwalBulanUrusanAnggaran] " + bulanRemise + "," + tahunRemise
+        }
+    }
+
+</script>
+
+<style>
+    .cssJumlah {
+        font-weight: 600;
+        background-color: darkseagreen;
+    }
+
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+

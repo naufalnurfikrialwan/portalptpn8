@@ -1,0 +1,197 @@
+﻿
+<script src="@Url.Content(" ~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/jquery.maskedinput.js"></script>
+<script src="~/Scripts/TehRelasi/TehRelasi_PenerimaanPermintaanIHT.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Verifikasi IHT</div>
+            </td>
+        </tr>
+    </table>
+</div>
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+            .Grid<Ptpn8.TehRelasi.Models.TehRelasiView_DTLPengajuan>
+                (Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(o => o.VerIHT).Width(70).Title("Verifikasi").ClientTemplate("#= VerIHT ? 'Sudah':'Belum' #");
+                    g.Bound(o => o.TehRelasi_DTLPengajuanId).Hidden();
+                    g.Bound(o => o.TehRelasi_HDRPengajuanId).Hidden();
+                    //g.Bound(o => o.NoBaris).Template(t => { }).Title("No.").ClientTemplate("#= renderNumber(data) #").Width(15);
+                    g.Bound(o => o.NamaUnit).Width(140).Title("Unit");
+                    g.Bound(o => o.No_Pengajuan).Width(120).Title("No Pengajuan");
+                    g.Bound(o => o.NamaRelasi).Width(120).Title("Nama Relasi");
+                    g.Bound(o => o.Permintaan).Width(120).Title("Product Item");
+                    g.Bound(o => o.JumlahYangDisetujui).Title("Jumlah Disetujui").Width(100);
+                    g.Bound(o => o.Keterangan).Title("Keterangan").Width(200);
+                    g.Bound(o => o.UserNamePenerima).Title("Penerima").Width(200);
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                    toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                })
+                .AutoBind(true)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Excel(excel =>
+                {
+                    excel.FileName("VerifikasiList.xlsx");
+                    excel.Filterable(true);
+                }
+                )
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .Filterable()
+                .Groupable()
+                .Sortable()
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+                    e.DataBinding("grdOnDataBinding");
+                    e.DataBound("grdOnDataBound");
+                })
+                .DataSource(o => o
+                .Ajax()
+                .ServerOperation(false)
+                .Sort(s => s.Add(x => x.Permintaan))
+                .Batch(true)
+                .Model(model =>
+                {
+                    model.Id(p => p.TehRelasi_DTLPengajuanId);
+                    model.Field(f => f.NamaUnit).Editable(false);
+                    model.Field(f => f.No_Pengajuan).Editable(false);
+                    model.Field(f => f.NamaRelasi).Editable(false);
+                    model.Field(f => f.Permintaan).Editable(false);
+                    model.Field(f => f.JumlahYangDisetujui).Editable(false);
+                    model.Field(f => f.Keterangan).Editable(false);
+                })
+                .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                .Create(create => create.Action("detailCreate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                .Update(update => update.Action("detailUpdate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                )
+    )
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Faktur dengan No PO ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<style>
+
+    .kurangDariJatuhTempo {
+        background-color: limegreen;
+    }
+
+    .jatuhTempo {
+        background-color: orange;
+    }
+
+    .lebihJatuhTempo {
+        background-color: lightcoral;
+    }
+</style>
+
+
+

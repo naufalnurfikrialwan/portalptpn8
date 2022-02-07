@@ -1,0 +1,102 @@
+﻿@model Ptpn8.DaftarHargaBarangBahanDanTarif.Models.View_HDRUpdateDHBB
+@*<script src="@Url.Content("~/ReportViewer/js/kendo.subset.2015.3.930.min.js")"></script>*@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.1025.js")"></script>
+<script src="~/Scripts/DaftarHargaBarangBahanDanTarif/VerKabag.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.DaftarHargaBarangBahanDanTarif.Models.View_HDRUpdateDHBB>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.HDR_UpdateDHBBId).Width(50).Hidden();
+            g.Bound(i => i.TahunBuku).Width(50).Hidden();
+            g.Bound(i => i.NomorInput).Width(50).Hidden();
+            g.Bound(i => i.NomorInputView).Width(50).Hidden();
+            g.Bound(i => i.VerKaur).Width(50).Title("Verifikasi").ClientTemplate("#= VerKaur ? 'Sudah':'Belum' #");
+            g.Bound(i => i.NomorDaftarHargaBarangBahan).Width(50);
+            g.Bound(i => i.TanggalDHBBT).Width(50).Hidden();
+            g.Bound(i => i.KebunId).Width(50).Hidden();
+            g.Bound(i => i.UserName).Width(50);
+            g.Bound(i => i.Pejabat).Width(50);
+            g.Bound(i => i.No_SuratTugas).Width(50).Hidden();
+            g.Bound(i => i.VerKabag).Width(50).Hidden();
+            g.Bound(i => i.TglVerKaur).Width(50).Title("Tanggal Verifikasi").ClientTemplate("#= kendo.toString(TglVerKaur,'dd/MM/yyyy')#");
+            g.Bound(i => i.BulanSurvey).Width(50);
+            g.Bound(i => i.TglVerKabag).Width(50).Hidden();
+            g.Bound(i => i.UserNameKaur).Width(50).Hidden();
+            g.Bound(i => i.UserNameKabag).Width(50).Hidden();
+            g.Bound(i => i.KelompokBarang).Width(100);
+            g.Bound(i => i.NamaToko).Width(50);
+            g.Bound(i => i.Alamat).Width(50);
+            g.Bound(i => i.Telepon).Width(50);
+            g.Bound(i => i.Email).Width(50);
+
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        })
+        .AutoBind(true)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBound("grdOnDataBound");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .Sort(s => s.Add(x => x.BulanSurvey))
+            .Group(g => g.Add(gg => gg.BulanSurvey))
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(i =>
+            {
+                i.Add(j => j.VerKaur).Ascending();
+                i.Add(j => j.TanggalDHBBT).Descending();
+            })
+
+            .Model(model =>
+            {
+                model.Id(p => p.HDR_UpdateDHBBId);
+                model.Field(f => f.NomorDaftarHargaBarangBahan).Editable(false);
+                model.Field(f => f.TanggalDHBBT).Editable(false);
+                model.Field(f => f.UserName).Editable(false);
+                model.Field(f => f.NamaToko).Editable(false);
+                model.Field(f => f.Alamat).Editable(false);
+                model.Field(f => f.Telepon).Editable(false);
+                model.Field(f => f.Email).Editable(false);
+
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+
+

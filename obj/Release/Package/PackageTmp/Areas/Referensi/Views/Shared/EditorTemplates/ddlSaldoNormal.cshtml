@@ -1,0 +1,30 @@
+﻿@model String
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlSaldoNormal")
+        .OptionLabel("Pilih Status Saldo...")
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .AutoBind(true)
+        .Events(e=>e.Select("ddlSaldoNormalOnSelect"))
+        .HtmlAttributes(new { style = "width: 200px" })
+        .BindTo(new List<SelectListItem>() {
+              new SelectListItem() {
+                  Text = "Saldo Debet",
+                  Value = "Saldo Debet"
+              },
+              new SelectListItem() {
+                  Text = "Saldo Kredit",
+                  Value = "Saldo Kredit"
+              },
+              new SelectListItem() {
+                  Text = "Saldo Debet atau Kredit",
+                  Value = "Saldo Debet atau Kredit"
+              }
+          })
+)
+@Html.ValidationMessageFor(m => m)
+
+
+
+

@@ -1,0 +1,640 @@
+﻿@model Ptpn8.Remise.Models.View_HDRBahanSPPTengahBulan
+@**@
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Remise/BahanSPPTengahBulan.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<!--header-->
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerteh">
+                @(Html.Kendo().TextBoxFor(m => m.HDR_BahanSPPTengahBulanId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.NomorInput).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TanggalInput).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserName).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="20%">
+                            <label style="text-align:right">Tahun/Nomor Input:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @(Html.Kendo().NumericTextBoxFor(m => m.TahunBuku).Min(2016).Format("D4")
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                                .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                            )
+                            -
+                            @(Html.Kendo().DropDownListFor(m => m.NomorInputView)
+                                .OptionLabel("Pilih No Input")
+                                .AutoBind(false)
+                                .DataValueField("NomorInput")
+                                .DataTextField("NomorInputView")
+                                .DataSource(o =>
+                                {
+                                    o.Read(r => r.Action("getNomorInput", "Input").Data("filterNomorInput").Type(HttpVerbs.Post));
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 35%" })
+                                .SelectedIndex(0)
+                                .Events(e =>
+                                {
+                                    e.Select("NomorInputViewOnSelect");
+                                    e.Change("NomorInputViewOnSelect");
+                                    e.DataBound("NomorInputViewOnDataBound");
+                                })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%" class="_nonkey">
+                            <label style="text-align:right">Bulan/Tahun Remise:</label>
+                        </td>
+                        <td style="font-size:small" class="_nonkey">
+                            @(Html.Kendo().DropDownListFor(m=>m.BulanRemise)
+                                //.AutoBind(true)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                                Text = "Januari",
+                                                Value = "1"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Februari",
+                                                Value = "2"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Maret",
+                                                Value = "3"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "April",
+                                                Value = "4"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Mei",
+                                                Value = "5"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Juni",
+                                                Value = "6"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Juli",
+                                                Value = "7"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Agustus",
+                                                Value = "8"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "September",
+                                                Value = "9"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Oktober",
+                                                Value = "10"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Nopember",
+                                                Value = "11"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Desember",
+                                                Value = "12"
+                                            }
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 35%" })
+                                //.SelectedIndex(0)
+                            )
+                            -
+                            @(Html.Kendo().NumericTextBoxFor(m => m.TahunRemise).Min(2016).Format("D4")
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%" class="_nonkey">
+                            <label style="text-align:right">Nomor SPP:</label>
+                        </td>
+                        <td style="font-size:small" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m=>m.NoSPP).HtmlAttributes(new { style = "width:52%" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%" class="_nonkey">
+                            <label style="text-align:right">Keterangan:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().TextBoxFor(m => m.Keterangan).HtmlAttributes(new { style = "width:52%"}))
+                        </td>
+
+                    </tr>
+                </table>
+
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="23%"></td>
+                        <td align="left">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                                <button type="button" id="btnDeleteHeader" onclick="btnDeleteHeaderOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Hapus</button>
+                                <button type="button" id="btnPrintHeader" onclick="btnPrintHeaderOnClick()" class="k-button" style="color: white; background-color: gray; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Cetak</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@*detail*@
+
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+.Grid<Ptpn8.Remise.Models.View_DTLBahanSPPTengahBulan>(Guid.Empty.ToString())
+.Name("grdDetail")
+.Excel(excel => excel
+.FileName("BahanSPPTengahBulan.xlsx")
+.Filterable(true)
+)
+.Columns(g =>
+{
+g.Bound(i => i.DTL_BahanSPPTengahBulanId).Width(50).Hidden();
+g.Bound(i => i.HDR_BahanSPPTengahBulanId).Width(50).Hidden();
+g.Bound(i => i.NamaBank).Width(300).Title("Bank").Locked();
+g.Bound(i => i.KebunId).Width(50).Hidden();
+g.Bound(i => i.NamaKebun).Width(200).Title("Kebun").Locked();
+g.Bound(q => q.Total_Dibayar).Title("TOTAL DIBAYAR").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120).Locked()
+    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+g.Group(i => i
+    .Title("Barang Bahan")
+    .Columns(c =>
+    {
+    c.Bound(q => q.BarangBahan_Investasi).Title("Investasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+            .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+            .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+            .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+    c.Group(q => q
+            .Title("Ekspoloitasi")
+            .Columns(d =>
+            {
+                d.Bound(r => r.BarangBahan_Rutin).Title("Rutin").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(100)
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                d.Bound(r => r.BarangBahan_Pengepakan).Title("Pengepakan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(100)
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                d.Bound(r => r.BarangBahan_BBM).Title("BBM").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(100)
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                d.Bound(r => r.BarangBahan_BBP).Title("BBP").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(100)
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                d.Bound(r => r.BarangBahan_Lainnya).Title("Lainnya").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(100)
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                d.Bound(r => r.Jumlah_BarangBahan_Eksploitasi).Title("Pengepakan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(100)
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            })
+        );
+    c.Bound(q => q.Jumlah_BarangBahan).Title("Jumlah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+    c.Bound(q => q.Bayar_Jumlah_BarangBahan).Title("Bayar ?")
+        .ClientTemplate("#= Bayar_Jumlah_BarangBahan ? 'Ya':'Tidak' #")
+        .HeaderTemplate(@<text><label style="font-size: smaller;"><input id="Bayar_Jumlah_BarangBahanSemua" type="checkbox" checked="checked" title="Bayar?" />Bayar?</label>
+        </text>)
+        .Width(60);
+    c.Bound(q => q.TglBayar_Jumlah_BarangBahan).Title("Tanggal").Format("{0:dd/MM/yyyy}").Hidden();
+
+    })
+        );
+    g.Group(i => i
+        .Title("Biaya Umum")
+        .Columns(c =>
+        {
+            c.Bound(q => q.BiayaUmumRekg403).Title("Biaya Sosial Karpim (403)").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg404).Title("Biaya Sosial Karpel II (404)").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg405).Title("Biaya Sosial Karpel I (405)").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg406).Title("BPD").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg40604).Title("Biaya Tamu").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg407).Title("Biaya Penelitian / Percobaan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg410).Title("Biaya Pemel Rumah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg411).Title("Biaya Pemel Bangunan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg412).Title("Biaya Mesin & Instalasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg413).Title("Biaya Pemel Jalan, Jembatan & Sal Air").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg414).Title("Biaya Pemel Alat-Alat Kebun").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg420).Title("Iuran & Sumbangan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg421).Title("Pajak/Terra/Kalibrasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg422).Title("Asuransi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg423).Title("Keamanan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg424).Title("Penerangan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg425).Title("Persediaan Air").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg426).Title("Lain-Lain").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg200).Title("Kend. Penumpang").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg201).Title("Kend. Truk").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg601603).Title("Extra Fooding").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.BiayaUmumRekg640).Title("Biaya Operasional (640)").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.Jumlah_BiayaUmum).Title("Biaya Operasional (640)").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            c.Bound(q => q.Bayar_Jumlah_BiayaUmum).Title("Bayar ?")
+                .ClientTemplate("#= Bayar_Jumlah_BiayaUmum ? 'Ya':'Tidak' #")
+                .HeaderTemplate(@<text><label style="font-size: smaller;"><input id="Bayar_Jumlah_BiayaUmumSemua" type="checkbox" checked="checked" title="Bayar?" />Bayar?</label>
+                </text>)
+                .Width(60);
+            c.Bound(q => q.TglBayar_Jumlah_BiayaUmum).Title("Tanggal").Format("{0:dd/MM/yyyy}").Hidden();
+        })
+    );
+    g.Bound(q => q.PembelianProduksi).Title("Pembelian Produksi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+    g.Bound(q => q.Bayar_PembelianProduksi).Title("Bayar ?")
+        .ClientTemplate("#= Bayar_PembelianProduksi ? 'Ya':'Tidak' #")
+        .HeaderTemplate(@<text><label style="font-size: smaller;"><input id="Bayar_PembelianProduksiSemua" type="checkbox" checked="checked" title="Bayar?" />Bayar?</label>
+        </text>)
+        .Width(60);
+    g.Bound(q => q.TglBayar_PembelianProduksi).Title("Tanggal").Format("{0:dd/MM/yyyy}").Hidden();
+
+    g.Bound(q => q.UangMuka).Title("Uang Muka").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+    g.Bound(q => q.Bayar_UangMuka).Title("Bayar ?")
+        .ClientTemplate("#= Bayar_UangMuka ? 'Ya':'Tidak' #")
+        .HeaderTemplate(@<text><label style="font-size: smaller;"><input id="Bayar_UangMukaSemua" type="checkbox" checked="checked" title="Bayar?" />Bayar?</label>
+        </text>)
+        .Width(60);
+    g.Bound(q => q.TglBayar_UangMuka).Title("Tanggal").Format("{0:dd/MM/yyyy}").Hidden();
+
+    g.Bound(q => q.ModalKerjaDiluarPKB).Title("Modal Kerja Diluar PKB").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).Width(120)
+        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+        .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+    g.Bound(q => q.Bayar_ModalKerjaDiluarPKB).Title("Bayar ?")
+        .ClientTemplate("#= Bayar_ModalKerjaDiluarPKB ? 'Ya':'Tidak' #")
+        .HeaderTemplate(@<text><label style="font-size: smaller;"><input id="Bayar_ModalKerjaDiluarPKBSemua" type="checkbox" checked="checked" title="Bayar?" />Bayar?</label>
+        </text>)
+        .Width(60);
+    g.Bound(q => q.TglBayar_ModalKerjaDiluarPKB).Title("Tanggal").Format("{0:dd/MM/yyyy}").Hidden();
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Custom().Name("Simpan").Text("Simpan").Url("#").HtmlAttributes(new { onclick = "sendData()", style = "color: white; background-color: green; font-weight: 600" });
+        toolbar.Custom().Name("Hapus").Text("Hapus Seluruh Baris").Url("#").HtmlAttributes(new { onclick = "hapusSeluruh()", style = "color: white; background-color: red;font-weight: 600" });
+        toolbar.Excel();
+
+    })
+    .AutoBind(false)
+    .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+    .Resizable(resizeable => resizeable.Columns(true))
+    .Scrollable()
+    .HtmlAttributes(new { style = "Height: 460px" })
+    .Events(e =>
+    {
+        e.Change("grdOnChange");
+        e.Edit("grdOnEdit");
+        e.DataBound("grdOnBound");
+        e.Save("grdOnSave");
+    })
+    .DataSource(o => o
+        .Ajax()
+        .ServerOperation(false)
+        .Model(model =>
+        {
+            model.Id(p => p.DTL_BahanSPPTengahBulanId);
+        })
+        .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+        .Aggregates(ag =>
+        {
+            ag.Add(x => x.BarangBahan_Investasi).Sum();
+            ag.Add(x => x.BarangBahan_Rutin).Sum();
+            ag.Add(x => x.BarangBahan_Pengepakan).Sum();
+            ag.Add(x => x.BarangBahan_BBM).Sum();
+            ag.Add(x => x.BarangBahan_BBP).Sum();
+            ag.Add(x => x.BarangBahan_Lainnya).Sum();
+            ag.Add(x => x.Jumlah_BarangBahan_Eksploitasi).Sum();
+            ag.Add(x => x.Jumlah_BarangBahan).Sum();
+            ag.Add(x => x.BiayaUmumRekg403).Sum();
+            ag.Add(x => x.BiayaUmumRekg404).Sum();
+            ag.Add(x => x.BiayaUmumRekg405).Sum();
+            ag.Add(x => x.BiayaUmumRekg406).Sum();
+            ag.Add(x => x.BiayaUmumRekg40604).Sum();
+            ag.Add(x => x.BiayaUmumRekg407).Sum();
+            ag.Add(x => x.BiayaUmumRekg410).Sum();
+            ag.Add(x => x.BiayaUmumRekg411).Sum();
+            ag.Add(x => x.BiayaUmumRekg412).Sum();
+            ag.Add(x => x.BiayaUmumRekg413).Sum();
+            ag.Add(x => x.BiayaUmumRekg414).Sum();
+            ag.Add(x => x.BiayaUmumRekg420).Sum();
+            ag.Add(x => x.BiayaUmumRekg421).Sum();
+            ag.Add(x => x.BiayaUmumRekg422).Sum();
+            ag.Add(x => x.BiayaUmumRekg423).Sum();
+            ag.Add(x => x.BiayaUmumRekg424).Sum();
+            ag.Add(x => x.BiayaUmumRekg425).Sum();
+            ag.Add(x => x.BiayaUmumRekg426).Sum();
+            ag.Add(x => x.BiayaUmumRekg200).Sum();
+            ag.Add(x => x.BiayaUmumRekg201).Sum();
+            ag.Add(x => x.BiayaUmumRekg601603).Sum();
+            ag.Add(x => x.BiayaUmumRekg640).Sum();
+            ag.Add(x => x.Jumlah_BiayaUmum).Sum();
+            ag.Add(x => x.PembelianProduksi).Sum();
+            ag.Add(x => x.UangMuka).Sum();
+            ag.Add(x => x.ModalKerjaDiluarPKB).Sum();
+            ag.Add(x => x.Total_Dibayar).Sum();
+        })
+    )
+)
+
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+            // Each report viewer must have an id - it will be used by the initialization script
+            // to find the element and initialize the report viewer.
+            .Id("reportViewer")
+            // The URL of the service which will serve reports.
+            // The URL corresponds to the name of the controller class (ReportsController).
+            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+            .ServiceUrl(Url.Content("/api/reports/"))
+            // The URL for custom report vie    wer template. The template can be edited -
+            // new functionalities can be added and unneeded ones can be removed.
+            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+            //
+            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+            .ReportSource(new UriReportSource() { Uri ="../Reports/Remise/BahanSPPTengahBulan.trdx"})
+            // Specifies whether the viewer is in interactive or print preview mode.
+            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+            .ViewMode(ViewMode.Interactive)
+            // Sets the scale mode of the viewer.
+            // Three modes exist currently:
+            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+            // Specific - Uses the scale to zoom in and out the report.
+            .ScaleMode(ScaleMode.Specific)
+            // Zoom in and out the report using the scale
+            // 1.0 is equal to 100%, i.e. the original size of the report
+            .Scale(1.0)
+            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+            .PersistSession(false)
+            // Sets the print mode of the viewer.
+            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+    function WarnaKolom(str, str1) {
+        if (str == '')
+            return "<div class='breakWord20' style='color: white; background-color: red;'>Belum UPLOAD!</div>";
+        else if (str.toLowerCase().indexOf("produksi") < 0 || str.toLowerCase().indexOf("lhkh") < 0)
+            return "<div class='breakWord20' style='color: white; background-color: orange;'>" + str + "</div>" +
+                "<div class='breakWord20' style='color: black; background-color: lightgray;'>" + str1 + "</div>";
+        else
+            return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>" +
+                "<div class='breakWord20' style='color: black; background-color: lightgray;'>" + str1 + "</div>";
+    }
+
+    function pctPKB(num1, num2) {
+        if (num2 == 0)
+            return 0;
+        else {
+            var result = (num1 / num2) * 100;
+            return kendo.toString(result, 'n2')
+        }
+    }
+
+    function formatNum(n) {
+        if (n == null || n == 0)
+            return "-";
+        else
+            return kendo.toString(n, "n0");
+    }
+
+
+</script>
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    .rowStyle {
+        color: crimson;
+        background-color: darkseagreen;
+        font-weight: 500;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+
+    .breakWord20 {
+        word-break: break-all !important;
+        word-wrap: break-word !important;
+        vertical-align: top;
+    }
+
+    .k-grid-header .k-header {
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+</style>
+

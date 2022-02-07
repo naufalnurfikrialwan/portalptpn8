@@ -1,0 +1,1099 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <table width="100%">
+                    <tr>
+                        <td width="33%" style="vertical-align:top;">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Rentang Waktu</label>
+                                        <table width="100%;" style="border: 1px solid lightgray; margin-bottom : 5px;">
+                                            <tr>
+                                                <td>Tahun:</td>
+                                                <td>
+                                                    @(Html.Kendo().NumericTextBox().Min(2016).Format("D4")
+                                                        .Name("TahunBuku")
+                                                        .Placeholder("Tahun")
+                                                        .HtmlAttributes(new { style = "width:80px" })
+                                                        .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                                                        .Value(DateTime.Now.Year)
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Bulan:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().DropDownList()
+                                                        .Name("BulanAwal")
+                                                        .AutoBind(true)
+                                                        .DataTextField("Text")
+                                                        .DataValueField("Value")
+                                                        .BindTo(new List<SelectListItem>() {
+                                                            new SelectListItem() {
+                                                                Text = "Seluruh",
+                                                                Value = "0"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Januari",
+                                                                Value = "1"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Februari",
+                                                                Value = "2"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Maret",
+                                                                Value = "3"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "April",
+                                                                Value = "4"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Mei",
+                                                                Value = "5"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juni",
+                                                                Value = "6"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juli",
+                                                                Value = "7"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Agustus",
+                                                                Value = "8"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "September",
+                                                                Value = "9"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Oktober",
+                                                                Value = "10"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Nopember",
+                                                                Value = "11"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Desember",
+                                                                Value = "12"
+                                                            }
+                                                        })
+                                                        .Value("Seluruh")
+                                                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan Awal", style = "width: 120px" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("BulanAwalOnSelect");
+															e.Select("BulanAwalOnSelect");
+                                                        })
+                                                    )
+                                                    sd Bulan:
+                                                    @(Html.Kendo().DropDownList()
+                                                        .Name("BulanAkhir")
+                                                        .AutoBind(true)
+                                                        .DataTextField("Text")
+                                                        .DataValueField("Value")
+                                                        .BindTo(new List<SelectListItem>() {
+                                                            new SelectListItem() {
+                                                                Text = "Seluruh",
+                                                                Value = "0"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Januari",
+                                                                Value = "1"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Februari",
+                                                                Value = "2"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Maret",
+                                                                Value = "3"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "April",
+                                                                Value = "4"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Mei",
+                                                                Value = "5"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juni",
+                                                                Value = "6"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juli",
+                                                                Value = "7"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Agustus",
+                                                                Value = "8"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "September",
+                                                                Value = "9"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Oktober",
+                                                                Value = "10"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Nopember",
+                                                                Value = "11"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Desember",
+                                                                Value = "12"
+                                                            }
+                                                        })
+                                                        .Value("Seluruh")
+                                                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan Akhir", style = "width: 120px" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("BulanAkhirOnSelect");
+															e.Select("BulanAkhirOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="33%" style="vertical-align:top">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black;background-color: lightgray; text-align: center;">Budidaya</label>
+                                        @(Html.Kendo().TextBox().Name("MainBudidayaId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                                        @(Html.Kendo().TextBox().Name("SubBudidayaId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                                        <table width="100%;" style="border: 1px solid lightgray;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Budidaya:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Budidaya")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Budidaya")
+                                                        .DataTextField("Nama")
+                                                        .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("BudidayaOnSelect");
+															e.Select("BudidayaOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Sub Budidaya:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("SubBudidaya")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Sub Budidaya")
+                                                        .DataTextField("Nama")
+                                                        .DataSource(o => o.Read(r => r.Action("GetSubBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterSubBudidaya")).ServerFiltering(true))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("SubBudidayaOnSelect");
+															e.Select("SubBudidayaOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="vertical-align:top">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Status Penjualan</label>
+                                        <table width="100%;" style="border: 1px solid lightgray;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Lokal/Ekspor:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().DropDownList()
+                                                        .Name("StatusPenjualan")
+                                                        .AutoBind(true)
+                                                        .DataTextField("Text")
+                                                        .DataValueField("Value")
+                                                        .HtmlAttributes(new { style = "width:95%" })
+                                                        .BindTo(new List<SelectListItem>() {
+                                                                new SelectListItem() {
+                                                                    Text = "Seluruh",
+                                                                    Value = "1"
+                                                                },
+                                                                new SelectListItem() {
+                                                                    Text = "Lokal",
+                                                                    Value = "2"
+                                                                },
+                                                                new SelectListItem() {
+                                                                    Text = "Lokal KPB",
+                                                                    Value = "3"
+                                                                },
+                                                                new SelectListItem() {
+                                                                    Text = "Free Sales",
+                                                                    Value = "4"
+                                                                },
+                                                                new SelectListItem() {
+                                                                    Text = "Ekspor KPB",
+                                                                    Value = "5"
+                                                                },
+                                                            })
+                                                        .Value("1")
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("StatusPenjualanOnSelect");
+															e.Select("StatusPenjualanOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="_detail" class="_detail">
+    <table width="100%">
+        <tr>
+            <td width="50%" align="center">
+                <label style="color:white; background-color: gray">Sales by Commodity</label>
+                <div style="height: 400px;">
+                    @(Html.Kendo().Chart()
+                        .Name("chart1")
+                        .Legend(legend => legend
+                            .Position(ChartLegendPosition.Top)
+                        )
+                        .Series(series =>
+                        {
+                            series.Donut(new dynamic[] {
+                                new {category = "Teh",value = 35},
+                                new {category = "Karet",value = 25},
+                                new {category = "Sawit",value = 20},
+                                new {category = "Lainnya",value = 10},
+                            })
+                            .Labels(labels => labels
+                                .Visible(true)
+                                .Position(ChartPieLabelsPosition.OutsideEnd)
+                                .Template("#= category # - #= kendo.format('{0:P}', percentage)#")
+                                .Background("transparent")
+                            );
+                        })
+                        .Tooltip(tooltip => tooltip
+                            .Visible(true)
+                            .Template("#= category # - #= kendo.format('{0:P}', percentage) #")
+                        )
+                    )
+                </div>
+            </td>
+            <td align="center">
+                <label style="color:white; background-color: gray">Sales by Commodity vs Target</label>
+                <div style="height: 400px;">
+                    <table width="100%">
+                        <tr>
+                            <td width="50%"><label style="text-align:center;">Teh</label></td>
+                            <td><label style="text-align:center;">Karet</label></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @(Html.Kendo().RadialGauge()
+                                    .Name("gauge1a")
+                                    .HtmlAttributes(new { style="height: 150px;"})
+                                    .Pointer(pointer => pointer.Value(43))
+                                    .Scale(scale => scale
+                                        .MinorUnit(5)
+                                        .StartAngle(-30)
+                                        .EndAngle(210)
+                                        .Max(180)
+                                        .Labels(labels => labels
+                                            .Position(GaugeRadialScaleLabelsPosition.Inside)
+                                        )
+                                        .Ranges(ranges =>
+                                        {
+                                            ranges.Add().From(0).To(60).Color("red");
+                                            ranges.Add().From(60).To(80).Color("orange");
+                                            ranges.Add().From(80).To(100).Color("yellow");
+                                            ranges.Add().From(100).To(180).Color("green");
+                                        })
+                                    )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().RadialGauge()
+                                      .Name("gauge1b")
+                                    .HtmlAttributes(new { style = "height: 150px;" })
+                                      .Pointer(pointer => pointer.Value(73))
+                                      .Scale(scale => scale
+                                          .MinorUnit(5)
+                                          .StartAngle(-30)
+                                          .EndAngle(210)
+                                          .Max(180)
+                                          .Labels(labels => labels
+                                              .Position(GaugeRadialScaleLabelsPosition.Inside)
+                                          )
+                                          .Ranges(ranges =>
+                                          {
+                                              ranges.Add().From(0).To(60).Color("red");
+                                              ranges.Add().From(60).To(80).Color("orange");
+                                              ranges.Add().From(80).To(100).Color("yellow");
+                                              ranges.Add().From(100).To(180).Color("green");
+                                          })
+                                     )
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50%"><label style="text-align:center;">Sawit</label></td>
+                            <td><label style="text-align:center;">Lainnya</label></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @(Html.Kendo().RadialGauge()
+                                      .Name("gauge1c")
+                                    .HtmlAttributes(new { style = "height: 150px;" })
+                                      .Pointer(pointer => pointer.Value(91))
+                                      .Scale(scale => scale
+                                          .MinorUnit(5)
+                                          .StartAngle(-30)
+                                          .EndAngle(210)
+                                          .Max(180)
+                                          .Labels(labels => labels
+                                              .Position(GaugeRadialScaleLabelsPosition.Inside)
+                                          )
+                                          .Ranges(ranges =>
+                                          {
+                                              ranges.Add().From(0).To(60).Color("red");
+                                              ranges.Add().From(60).To(80).Color("orange");
+                                              ranges.Add().From(80).To(100).Color("yellow");
+                                              ranges.Add().From(100).To(180).Color("green");
+                                          })
+                                     )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().RadialGauge()
+                                      .Name("gauge1d")
+                                    .HtmlAttributes(new { style = "height: 150px;" })
+                                      .Pointer(pointer => pointer.Value(21))
+                                      .Scale(scale => scale
+                                          .MinorUnit(5)
+                                          .StartAngle(-30)
+                                          .EndAngle(210)
+                                          .Max(180)
+                                          .Labels(labels => labels
+                                              .Position(GaugeRadialScaleLabelsPosition.Inside)
+                                          )
+                                          .Ranges(ranges =>
+                                          {
+                                              ranges.Add().From(0).To(60).Color("red");
+                                              ranges.Add().From(60).To(80).Color("orange");
+                                              ranges.Add().From(80).To(100).Color("yellow");
+                                              ranges.Add().From(100).To(180).Color("green");
+                                          })
+                                     )
+                                )
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" align="center">
+                <label style="color:white; background-color: gray">Sales by Category</label>
+                <div style="height: 400px;">
+                    <table>
+                        <tr>
+                            <td>
+                                @(Html.Kendo().Chart()
+                                    .Title("Teh")
+                                    .Name("chart2a")
+                                    .HtmlAttributes(new { style="height: 200px;"})
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top)
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Pie(new dynamic[] {
+                                            new {category = "Teh Orthodoks",value = 55},
+                                            new {category = "CTC",value = 45},
+                                        });
+                                    })
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                                .Template("#= category # - #= kendo.format('{0:P}', percentage)#")
+                                    )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().Chart()
+                                    .Title("Karet")
+                                    .Name("chart2b")
+                                    .HtmlAttributes(new { style = "height: 200px;" })
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top)
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Pie(new dynamic[] {
+                                            new {category = "Sheet",value = 35},
+                                            new {category = "Lateks Pekat",value = 25},
+                                            new {category = "SIR",value = 40},
+                                        });
+                                    })
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                                .Template("#= category # - #= kendo.format('{0:P}', percentage)#")
+                                    )
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @(Html.Kendo().Chart()
+                                    .Title("Sawit")
+                                    .Name("chart2c")
+                                    .HtmlAttributes(new { style = "height: 200px;" })
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top)
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Pie(new dynamic[] {
+                                            new {category = "CPO",value = 85},
+                                            new {category = "Kernel",value = 15},
+                                        });
+                                    })
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                                .Template("#= category # - #= kendo.format('{0:P}', percentage)#")
+                                    )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().Chart()
+                                    .Title("Lainnya")
+                                    .Name("chart2d")
+                                    .HtmlAttributes(new { style = "height: 200px;" })
+                                    .Legend(legend => legend
+                                        .Position(ChartLegendPosition.Top)
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Pie(new dynamic[] {
+                                            new {category = "Kayu",value = 45},
+                                            new {category = "Kopi",value = 10},
+                                            new {category = "Lainnya",value = 45},
+                                        });
+                                    })
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                                .Template("#= category # - #= kendo.format('{0:P}', percentage)#")
+                                    )
+                                )
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>                    
+            </td>
+            <td align="center">
+                <label style="color:white; background-color: gray">Sales by Category vs Target</label>
+                <div style="height: 400px;">
+                    <table width="100%">
+                        <tr>
+                            <td width="20%"><label style="text-align:center;">Teh Orthodox</label></td>
+                            <td width="20%"><label style="text-align:center;">CTC</label></td>
+                            <td width="20%"><label style="text-align:center;">Sheet</label></td>
+                            <td width="20%"><label style="text-align:center;">Lateks Pekat</label></td>
+                            <td width="20%"><label style="text-align:center;">SIR</label></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2a")
+                                  .Pointer(pointer => pointer.Value(60))
+                                  .HtmlAttributes(new { style="height: 150px;"})
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2b")
+                                  .Pointer(pointer => pointer.Value(47))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2c")
+                                  .Pointer(pointer => pointer.Value(57))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2d")
+                                  .Pointer(pointer => pointer.Value(38))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2e")
+                                  .Pointer(pointer => pointer.Value(74))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label style="text-align:center;">CPO</label></td>
+                            <td><label style="text-align:center;">Kernel</label></td>
+                            <td><label style="text-align:center;">Kayu</label></td>
+                            <td><label style="text-align:center;">Kopi</label></td>
+                            <td><label style="text-align:center;">Lainnya</label></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2f")
+                                  .Pointer(pointer => pointer.Value(92))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2g")
+                                  .Pointer(pointer => pointer.Value(77))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2h")
+                                  .Pointer(pointer => pointer.Value(96))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2i")
+                                  .Pointer(pointer => pointer.Value(83))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().LinearGauge()
+                                  .Name("gauge2j")
+                                  .Pointer(pointer => pointer.Value(54))
+                                  .HtmlAttributes(new { style = "height: 150px;" })
+                                  .Scale(scale => scale
+                                      .MajorUnit(20)
+                                      .MinorUnit(2)
+                                      .Min(0)
+                                      .Max(180)
+                                      .Ranges(ranges =>
+                                      {
+                                          ranges.Add().From(0).To(60).Color("red");
+                                          ranges.Add().From(60).To(80).Color("orange");
+                                          ranges.Add().From(80).To(100).Color("yellow");
+                                          ranges.Add().From(100).To(180).Color("green");
+                                      }
+                                      )
+                                  )
+                                )
+                            </td>
+                        </tr>
+                    </table>
+                    </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" align="center">
+                <label style="color:white; background-color: gray">Top Ten Buyers</label>
+                <div style="height:400px;">
+                    <table>
+                        <tr>
+                            <td width="50%"><label style="text-align:center;">Lokal</label></td>
+                            <td><label style="text-align:center;">Ekspor</label></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                @(Html.Kendo().Chart()
+                                    .Name("chart3a")
+                                    .Legend(legend => legend
+                                        .Visible(false)
+                                    )
+                                    .ChartArea(chartArea => chartArea
+                                        .Background("transparent")
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Bar(new double[] { 56000, 63000, 74000, 91000, 117000, 138000, 177918, 145276, 116776, 116872 }).Name("Total");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Categories("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
+                                        .MajorGridLines(lines => lines.Visible(false))
+                                    )
+                                    .ValueAxis(axis => axis
+                                        .Numeric()
+                                        .Max(200000)
+                                        .Line(line => line.Visible(false))
+                                        .MajorGridLines(lines => lines.Visible(true))
+                                    )
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                        .Template("#= series.name #: #= value #")
+                                    )
+                                )
+                            </td>
+                            <td>
+                                @(Html.Kendo().Chart()
+                                    .Name("chart3b")
+                                    .Legend(legend => legend
+                                        .Visible(false)
+                                    )
+                                    .ChartArea(chartArea => chartArea
+                                        .Background("transparent")
+                                    )
+                                    .Series(series =>
+                                    {
+                                        series.Bar(new double[] { 6000, 3000, 4000, 1000, 17000, 38000, 77918, 45276, 16776, 16872 }).Name("Total");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Categories("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
+                                        .MajorGridLines(lines => lines.Visible(false))
+                                    )
+                                    .ValueAxis(axis => axis
+                                        .Numeric()
+                                        .Max(80000)
+                                        .Line(line => line.Visible(false))
+                                        .MajorGridLines(lines => lines.Visible(true))
+                                    )
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                        .Template("#= series.name #: #= value #")
+                                    )
+                                )
+
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </td>
+            <td align="center">
+                <label style="color:white; background-color: gray">Sales and Percent Growth of Product Price</label>
+                <div style="height: 400px;" >
+                    @(Html.Kendo().Chart()
+                        .Name("chart4")
+                        .Legend(legend => legend
+                            .Position(ChartLegendPosition.Bottom)
+                        )
+                        .Series(series =>
+                        {
+                            series
+                                .Line(new double[] { 116, 110, 110, 110, 110, 119, 115, 115, 110, 118 })
+                                .Color("#ff1c1c")
+                                .Name("Harga Max")
+                                .Axis("harga");
+                            series
+                                .Line(new double[] { 96, 101, 105, 98, 87, 99, 79, 98, 87, 110})
+                                .Color("#ffae00")
+                                .Name("Harga Min")
+                                .Axis("harga");
+                            series
+                                .Area(new double[] { 16.4, 21.7, 35.4, 19, 10.9, 13.6, 10.9, 10.9, 10.9, 16.4 })
+                                .Color("#73c100")
+                                .Name("Volume (Ton)")
+                                .Axis("volume");
+                            series
+                                .Area(new double[] { 54, 20, 54, 30, 20, 10, 32, 74, 50, 82})
+                                .Color("#007eff")
+                                .Name("Nilai (Rp M)")
+                                .Axis("nilai");
+                        })
+                        .CategoryAxis(axis => axis
+                            .Categories("Teh Orthodox", "CTC", "Sheet", "Lateks Pekat", "SIR", "CPO", "Kernel", "Kayu", "Kopi", "Lainnya")
+                            .AxisCrossingValue(32, 32, 0)
+                            .Justify(true)
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("volume")
+                            .Color("#007eff")
+                            .Min(0)
+                            .Max(60)
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("nilai")
+                            .Color("#73c100")
+                            .Min(0)
+                            .Max(100)
+                        )
+                        .ValueAxis(axis => axis
+                            .Numeric("harga")
+                            .Min(80)
+                            .Max(140)
+                        )
+                        .Tooltip(tooltip => tooltip
+                            .Visible(true)
+                            .Format("{0}")
+                            .Template("#= category #/03: #= value #")
+                        )
+                    )
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+    var wnd, err, prt;
+    var arrFilter = ['','','','','','','','','','','','',''];
+    var scriptFilter;
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    scriptFilter = arrFilter.join(' and ');
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+    $(document).ready(function () {
+
+        arrFilter[0] = 'Tahun = ' + $('#TahunBuku').val();
+        arrFilter[1] = '0=0';
+        arrFilter[2] = '0=0';
+        arrFilter[3] = '0=0';
+        arrFilter[4] = '0=0';
+        arrFilter[5] = '0=0';
+        arrFilter[6] = '0=0';
+        arrFilter[7] = '0=0';
+        arrFilter[8] = '0=0';
+        arrFilter[9] = '0=0';
+        arrFilter[10] = '0=0';
+        arrFilter[11] = '0=0';
+        arrFilter[12] = '0=0';
+    });
+
+    function setArrFilter(str) {
+        if (str == 'tahun') {
+            arrFilter[0] = 'Tahun = ' + $('#TahunBuku').val();
+        }
+
+        if (str == 'bulan') {
+            var bulanAwal = $('#BulanAwal').data('kendoDropDownList').value();
+            var bulanAkhir = $('#BulanAkhir').data('kendoDropDownList').value();
+            if (bulanAwal == '0') {
+                if (bulanAkhir == '0') {
+                    arrFilter[1] = '0=0';
+                }
+                else {
+                    arrFilter[1] = 'Bulan>=1 and Bulan<=' + bulanAkhir;
+                }
+            }
+            else {
+                if (bulanAkhir == '0') {
+                    arrFilter[1] = 'Bulan>=' + bulanAwal;
+                }
+                else {
+                    arrFilter[1] = 'Bulan>=' + bulanAwal + ' and Bulan<=' + bulanAkhir;
+                }
+            }
+        }
+
+        if (str == 'budidaya') {
+            var budidaya = $('#Budidaya').data('kendoAutoComplete').value();
+            if (budidaya.toLowerCase() == 'seluruh' || budidaya.toLowerCase() == '') {
+                arrFilter[2] = '0=0';
+            }
+            else {
+                arrFilter[2] = "lower(NamaMainBudidaya)='" + budidaya.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'subbudidaya') {
+            var subbudidaya = $('#SubBudidaya').data('kendoAutoComplete').value();
+            if (subbudidaya.toLowerCase() == 'seluruh' || subbudidaya.toLowerCase() == '') {
+                arrFilter[3] = '0=0';
+            }
+            else {
+                arrFilter[3] = "lower(NamaSubBudidaya)='" + subbudidaya.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'statuspenjualan') {
+            var statuspenjualan = $('#StatusPenjualan').data('kendoDropDownList').text();
+            if (statuspenjualan.toLowerCase() == 'seluruh') {
+                arrFilter[4] = '0=0';
+            }
+            else {
+                arrFilter[4] = "lower(StatusPenjualan)='" + statuspenjualan.toLowerCase() + "'";
+            }
+        }
+    }
+
+    function TahunBukuOnChange(e)
+    {
+        setArrFilter('tahun');
+    }
+
+
+    function BulanAwalOnSelect(e) {
+        setArrFilter('bulan');
+    }
+
+    function BulanAkhirOnSelect(e) {
+        setArrFilter('bulan');
+    }
+
+    function BudidayaOnSelect(e) {
+        var budidaya = this.dataItem(e.item);
+        $('#MainBudidayaId').val(budidaya.MainBudidayaId);
+        setArrFilter('budidaya');
+    }
+
+    function SubBudidayaOnSelect(e) {
+        var subbudidaya = this.dataItem(e.item);
+        $('#SubBudidayaId').val(subbudidaya.SubBudidayaId);
+        setArrFilter('subbudidaya');
+    }
+
+    function filterBudidaya(e) {
+        return {
+            value: $("#Budidaya").val()
+        };
+    }
+
+    function filterSubBudidaya(e) {
+        return {
+            mainBudidayaId: $("#MainBudidayaId").val(),
+            value: $("#SubBudidaya").val()
+        };
+    }
+
+    function StatusPenjualanOnSelect(e) {
+        setArrFilter('statuspenjualan');
+    }
+
+
+    function filterReport(e)
+    {
+        return {
+            strClassView: 'Ptpn8.Penjualan.Models.Reports',
+            scriptSQL: "select * from [SPDK_KanpusEF].[dbo].[Reports] as A where "+ scriptFilter
+        }
+
+    }
+</script>
+
+<style>
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>

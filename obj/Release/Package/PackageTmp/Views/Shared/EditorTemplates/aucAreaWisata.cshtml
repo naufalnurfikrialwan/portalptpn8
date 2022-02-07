@@ -1,0 +1,12 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Cari ID Pelanggan")
+        .DataTextField("Nama")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetAreaWisata", "ddl", new { Area = "Referensi" }).Data("filterAreaWisata")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucAreaWisataOnSelect"); e.DataBound("aucAreaWisataOnDataBound"); })
+)

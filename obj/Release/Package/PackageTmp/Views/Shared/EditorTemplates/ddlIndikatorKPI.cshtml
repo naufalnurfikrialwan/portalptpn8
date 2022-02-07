@@ -1,0 +1,18 @@
+﻿@model string
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlIndikatorKPI")
+        .DataTextField("IndikatorKPI")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterIndikatorKPI").Type(HttpVerbs.Post));
+
+        })
+        .Events(e => { e.Select("ddlIndikatorKPIOnSelect"); e.Change("ddlIndikatorKPIOnSelect"); })
+)
+
+
+
+

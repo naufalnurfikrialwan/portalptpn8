@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="Default Web Site/Ptpn8_deploy" />
+  <setParameter name="csIdentity-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=Identity;User ID=budi;Password=Wardanie1" />
+  <setParameter name="csReferensi-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=ReferensiEF;User ID=budi;Password=Wardanie1" />
+  <setParameter name="csIHTHortikultur-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=IHTHortikultur;User ID=budi;Password=Wardanie1" />
+  <setParameter name="IHTHortikultur-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=IHTHortikultur;User ID=budi;Password=Wardanie1" />
+  <setParameter name="csAreal-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=ArealEF;User ID=budi;Password=Wardanie1" />
+  <setParameter name="csKonsol-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=SPDK_KBN_KONSOL;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csPortalPTPN8-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=PortalPTPN8;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csNDNK-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=NDNK;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csSDM-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=SDM;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csSPDKKanpus-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csSAPHCM-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=SAPHCM;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csAPH-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=APH;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="eFakturEntities-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=eFaktur;User ID=budi; Password=Wardanie1" />
+  <setParameter name="csBGR-Web.config Connection String" value="Data Source=222.165.223.204;Initial Catalog=wms;User ID=ptpn8; Password=WMSb612" />
+  <setParameter name="csKPBN-Web.config Connection String" value="Data Source=36.37.107.231;Initial Catalog=penjualanPTPN8;User ID=budi; Password=Wardanie1" />
+  <setParameter name="csSPDKKanpus1-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=SPDK_Kanpus1;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csKerjasama-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=KerjasamaEF;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csModalManusia-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=ModalManusiaEF;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csERP-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=ERP;User ID=budi;Password=Wardanie1;" />
+  <setParameter name="csSekper-Web.config Connection String" value="Data Source=192.168.17.17;Initial Catalog=Sekper;User ID=budi;Password=Wardanie1;" />
+</parameters>

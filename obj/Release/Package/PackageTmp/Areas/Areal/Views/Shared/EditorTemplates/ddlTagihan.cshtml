@@ -1,0 +1,17 @@
+﻿@(Html.Kendo().DropDownList()
+        .AutoBind(false)
+        .Name("PengeluaranId")
+        .OptionLabel("Pilih No Input...")
+        .DataTextField("InputText")
+        .DataValueField("HeaderPengeluaranId")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("getHeaderPengeluaran", "Tagihan").Data("filterBuyer")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("ddlHeaderPengeluaranOnSelect"); e.DataBound("ddlHeaderPengeluaranOnDataBound"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+
+
+

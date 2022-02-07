@@ -1,0 +1,1259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="dsHDR_Faktur" Width="95.7272291895127cm" Culture="id-ID" Name="FakturPajak" Zoom="2" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportHDR_Faktur" SelectCommandType="StoredProcedure" Name="dsHDR_Faktur">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Guid" Name="@HDR_FakturId">
+          <Value>
+            <String>= Parameters.HDR_FakturId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportDTL_Faktur" SelectCommandType="StoredProcedure" Name="dsDTL_Faktur">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Guid" Name="@HDR_FakturId">
+          <Value>
+            <String>= Parameters.HDR_FakturId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="0.132291662986916cm" Name="Century">
+      <Style>
+        <Font Name="Gadugi" />
+      </Style>
+    </PageHeaderSection>
+    <DetailSection Height="18.1677090299129cm" Name="Arial">
+      <Style>
+        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+        <Font Name="Gadugi" />
+      </Style>
+      <Items>
+        <Table DataSourceName="dsHDR_Faktur" Width="93.6899278122143cm" Height="2.6085416347474cm" Left="0cm" Top="0.567708589339415cm" Name="table1">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="6.2970769006079cm" Height="0.608541543741015cm" Left="0cm" Top="0cm" Value="= Substr(Fields.NPWP,0,2)" Format="{0:000000000000000}" Name="textBox4">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="8.14915399512371cm" Height="0.608541543740989cm" Left="0cm" Top="0cm" Value="= Substr(Fields.NPWP,2,1)" Format="{0:000000000000000}" Name="textBox6">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.0372856715757cm" Height="0.608541543740983cm" Left="0cm" Top="0cm" Value="= Fields.Tanggal_Faktur.Month" Name="textBox10" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.85989647582136cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="= Fields.Tanggal_Faktur.Year" Name="textBox12" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.53458197841972cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="= Fields.Tanggal_Faktur" Format="{0:d}" Name="textBox14" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.2886455340433cm" Height="0.60854158261128cm" Left="0cm" Top="0cm" Value="014501613429000" Format="{0:N0}" Multiline="False" Name="textBox16" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="8" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="7.25198129449542cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" KeepTogether="True" Value="= Fields.NamaBuyer" Format="{0:N0}" Multiline="False" TextWrap="False" Name="textBox18" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.31208312818892cm" Height="0.608541513501029cm" Left="0cm" Top="0cm" Value="FK" Name="textBox2" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="9" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="14.4486453678308cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="= Fields.Alamat" Name="textBox50" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.15093566321356cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="= Fields.Total" Format="{0:N0}" Name="textBox55" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="11" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.36260183786955cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="= Fields.PPn" Format="{0:N0}" Name="textBox60" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="12" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.81239394995198cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="0" Name="textBox65" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="13" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="5.94228966969251cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Name="textBox70" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="14" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.7859357354238cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="0" Name="textBox75" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="15" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.86531125546338cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="0" Name="textBox80" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="16" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.01083162753497cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="0" Name="textBox85" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="17" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.20926921628589cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="0" Name="textBox90" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="18" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="5.63801841398802cm" Height="0.60854154598185cm" Left="0cm" Top="0cm" Value="= Fields.No_Faktur" Name="textBox95" StyleName="">
+                    <Style>
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.31208279706257cm" Height="0.5cm" Left="0cm" Top="0cm" Value="FAPR" Name="textBox64" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="6.2970769006079cm" Height="0.500000036489692cm" Left="0cm" Top="0cm" Value="PT PERKEBUNAN NUSANTARA VIII" Name="textBox69" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="8.14915399512371cm" Height="0.500000036489671cm" Left="0cm" Top="0cm" Value="JL. SINDANG SIRNA NO. 4 KOTA BANDUNG" Name="textBox74" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.0372856715757cm" Height="0.500000036489666cm" Left="0cm" Top="0cm" Name="textBox84" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.85989617678647cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox89" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.53458648864757cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox94" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.2886455340433cm" Height="0.500000036489662cm" Left="0cm" Top="0cm" Name="textBox96" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="8" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="7.25197872367789cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox97" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="9" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="14.4486570497664cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox98" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.15093828089343cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox99" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="11" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.36260178247077cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox100" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="12" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.81239120376472cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox101" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="13" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="5.94228863720454cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox102" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="14" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.7859349655456cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox103" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="15" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.86530893313511cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox104" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="16" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.01082998518859cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox105" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="17" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.20926938460447cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox106" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="18" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="5.63801841398802cm" Height="0.5cm" Left="0cm" Top="0cm" Name="textBox107" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.73302106936948cm" Height="0.608541605484723cm" Left="0cm" Top="0cm" Value="= Substr(Fields.NPWP,3,14)" Format="{0:000000000000000}" Name="textBox111" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.73302106936948cm" Height="0.50000005528332cm" Left="0cm" Top="0cm" Name="textBox112" StyleName="" />
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="1.31208248101642cm" />
+              <Column Width="6.29707700328556cm" />
+              <Column Width="8.14915621646133cm" />
+              <Column Width="3.7330211644779cm" />
+              <Column Width="4.03728473936711cm" />
+              <Column Width="2.85989489084782cm" />
+              <Column Width="3.53458320843775cm" />
+              <Column Width="4.2886421362532cm" />
+              <Column Width="7.25197795191109cm" />
+              <Column Width="14.4486484532266cm" />
+              <Column Width="3.15093663303567cm" />
+              <Column Width="3.3626011335766cm" />
+              <Column Width="3.81239125117015cm" />
+              <Column Width="5.94228339338882cm" />
+              <Column Width="3.78593257781372cm" />
+              <Column Width="3.86530859788301cm" />
+              <Column Width="4.01082711307722cm" />
+              <Column Width="4.20926472009519cm" />
+              <Column Width="5.63801667729999cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.60854159052593cm" />
+              <Row Height="0.500000049925667cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <Style>
+            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+          </Style>
+          <RowGroups>
+            <TableGroup Name="detailTableGroup">
+              <ChildGroups>
+                <TableGroup Name="group36" />
+                <TableGroup Name="group40" />
+              </ChildGroups>
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="group2">
+              <ReportItem>
+                <TextBox Width="1.31208312818892cm" Height="0.49999998546295cm" Left="0cm" Top="0cm" Value="FK" Name="textBox37" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group24">
+                  <ReportItem>
+                    <TextBox Width="1.31208312818892cm" Height="0.49999998546295cm" Left="0cm" Top="0cm" Value="LT" Name="textBox28" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group15">
+                      <ReportItem>
+                        <TextBox Width="1.31208312818892cm" Height="0.50000011520549cm" Left="0cm" Top="0cm" Value="OF" Name="textBox19" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group73" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="tableGroup">
+              <ReportItem>
+                <TextBox Width="6.2970769006079cm" Height="0.500000036489692cm" Left="0cm" Top="0cm" Value="KD_JENIS_TRANSAKSI" Name="textBox38" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group25">
+                  <ReportItem>
+                    <TextBox Width="6.2970769006079cm" Height="0.500000036489692cm" Left="0cm" Top="0cm" Value="NPWP" Name="textBox29" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group16">
+                      <ReportItem>
+                        <TextBox Width="6.2970769006079cm" Height="0.500000036489692cm" Left="0cm" Top="0cm" Value="KODE_OBJEK" Name="textBox20" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group74" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="tableGroup1">
+              <ReportItem>
+                <TextBox Width="8.14915399512371cm" Height="0.500000036489671cm" Left="0cm" Top="0cm" Value="FG_PENGGANTI" Name="textBox39" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group26">
+                  <ReportItem>
+                    <TextBox Width="8.14915399512371cm" Height="0.500000036489671cm" Left="0cm" Top="0cm" Value="NAMA" Name="textBox30" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group17">
+                      <ReportItem>
+                        <TextBox Width="8.14915399512371cm" Height="0.500000036489671cm" Left="0cm" Top="0cm" Value="NAMA" Name="textBox21" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group75" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group44">
+              <ReportItem>
+                <TextBox Width="3.73302106936948cm" Height="0.50000005528332cm" Left="0cm" Top="0cm" Value="NOMOR_FAKTUR" Format="{0}" CanGrow="False" Name="textBox108" StyleName="" />
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group48">
+                  <ReportItem>
+                    <TextBox Width="3.73302106936948cm" Height="0.50000005528332cm" Left="0cm" Top="0cm" Value="JALAN" Name="textBox109" StyleName="" />
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group52">
+                      <ReportItem>
+                        <TextBox Width="3.73302106936948cm" Height="0.50000005528332cm" Left="0cm" Top="0cm" Value="HARGA_SATUAN" Name="textBox110" StyleName="" />
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group56" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group11">
+              <ReportItem>
+                <TextBox Width="4.0372856715757cm" Height="0.500000036489666cm" Left="0cm" Top="0cm" Value="MASA_PAJAK" Name="textBox41" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group28">
+                  <ReportItem>
+                    <TextBox Width="4.0372856715757cm" Height="0.500000036489666cm" Left="0cm" Top="0cm" Value="BLOK" Name="textBox32" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group19">
+                      <ReportItem>
+                        <TextBox Width="4.0372856715757cm" Height="0.500000036489666cm" Left="0cm" Top="0cm" Value="JUMLAH_BARANG" Name="textBox23" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group77" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group12">
+              <ReportItem>
+                <TextBox Width="2.85989647582136cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="TAHUN_PAJAK" Name="textBox42" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group29">
+                  <ReportItem>
+                    <TextBox Width="2.85989647582136cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="NOMOR" Name="textBox33" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group20">
+                      <ReportItem>
+                        <TextBox Width="2.85989647582136cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="HARGA_TOTAL" Name="textBox24" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group78" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group13">
+              <ReportItem>
+                <TextBox Width="3.53458197841972cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="TANGGAL_FAKTUR" Name="textBox43" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group30">
+                  <ReportItem>
+                    <TextBox Width="3.53458197841972cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="RT" Name="textBox34" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group21">
+                      <ReportItem>
+                        <TextBox Width="3.53458197841972cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="DISKON" Name="textBox25" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group79" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group">
+              <ReportItem>
+                <TextBox Width="4.2886455340433cm" Height="0.500000036489662cm" Left="0cm" Top="0cm" Value="NPWP" Name="textBox44" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group31">
+                  <ReportItem>
+                    <TextBox Width="4.2886455340433cm" Height="0.500000036489662cm" Left="0cm" Top="0cm" Value="RW" Name="textBox35" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group22">
+                      <ReportItem>
+                        <TextBox Width="4.2886455340433cm" Height="0.500000036489662cm" Left="0cm" Top="0cm" Value="DPP" Name="textBox26" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group80" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group1">
+              <ReportItem>
+                <TextBox Width="7.25198129449542cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="NAMA" Name="textBox45" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group32">
+                  <ReportItem>
+                    <TextBox Width="7.25198129449542cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="KECAMATAN" Name="textBox36" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group23">
+                      <ReportItem>
+                        <TextBox Width="7.25198129449542cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="PPN" Name="textBox27" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group81" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group33">
+              <ReportItem>
+                <TextBox Width="14.4486453678308cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="ALAMAT_LENGKAP" Name="textBox46" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group34">
+                  <ReportItem>
+                    <TextBox Width="14.4486453678308cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="KELURAHAN" Name="textBox47" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group35">
+                      <ReportItem>
+                        <TextBox Width="14.4486453678308cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="TARIF_PPNBM" Name="textBox48" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group82" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group37">
+              <ReportItem>
+                <TextBox Width="3.15093566321356cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="JUMLAH_DPP" Name="textBox51" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group38">
+                  <ReportItem>
+                    <TextBox Width="3.15093566321356cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="KABUPATEN" Name="textBox52" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group39">
+                      <ReportItem>
+                        <TextBox Width="3.15093566321356cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="PPNBM" Name="textBox53" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group83" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group41">
+              <ReportItem>
+                <TextBox Width="3.36260183786955cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="JUMLAH_PPN" Name="textBox56" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group42">
+                  <ReportItem>
+                    <TextBox Width="3.36260183786955cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="PROPINSI" Name="textBox57" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group43">
+                      <ReportItem>
+                        <TextBox Width="3.36260183786955cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox58" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group84" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group45">
+              <ReportItem>
+                <TextBox Width="3.81239394995198cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="JUMLAH_PPN_BM" Name="textBox61" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group46">
+                  <ReportItem>
+                    <TextBox Width="3.81239394995198cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="KODE_POS" Name="textBox62" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group47">
+                      <ReportItem>
+                        <TextBox Width="3.81239394995198cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox63" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group85" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group49">
+              <ReportItem>
+                <TextBox Width="5.94228966969251cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="ID_KETERANGAN_TAMBAHAN" Name="textBox66" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group50">
+                  <ReportItem>
+                    <TextBox Width="5.94228966969251cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="NOMOR_TELEPON" Name="textBox67" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group51">
+                      <ReportItem>
+                        <TextBox Width="5.94228966969251cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox68" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group86" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group53">
+              <ReportItem>
+                <TextBox Width="3.7859357354238cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="FG_UANG_MUKA" Name="textBox71" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group54">
+                  <ReportItem>
+                    <TextBox Width="3.7859357354238cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox72" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group55">
+                      <ReportItem>
+                        <TextBox Width="3.7859357354238cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox73" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group87" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group57">
+              <ReportItem>
+                <TextBox Width="3.86531125546338cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="UANG_MUKA_DPP" Name="textBox76" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group58">
+                  <ReportItem>
+                    <TextBox Width="3.86531125546338cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox77" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group59">
+                      <ReportItem>
+                        <TextBox Width="3.86531125546338cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox78" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group88" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group61">
+              <ReportItem>
+                <TextBox Width="4.01083162753497cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="UANG_MUKA_PPN" Name="textBox81" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group62">
+                  <ReportItem>
+                    <TextBox Width="4.01083162753497cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox82" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group63">
+                      <ReportItem>
+                        <TextBox Width="4.01083162753497cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox83" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group89" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group65">
+              <ReportItem>
+                <TextBox Width="4.20926921628589cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="UANG_MUKA_PPNBM" Name="textBox86" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group66">
+                  <ReportItem>
+                    <TextBox Width="4.20926921628589cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox87" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group67">
+                      <ReportItem>
+                        <TextBox Width="4.20926921628589cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox88" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group90" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group69">
+              <ReportItem>
+                <TextBox Width="5.63801841398802cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Value="REFERENSI" Name="textBox91" StyleName="">
+                  <Style>
+                    <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group70">
+                  <ReportItem>
+                    <TextBox Width="5.63801841398802cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox92" StyleName="">
+                      <Style>
+                        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                  <ChildGroups>
+                    <TableGroup Name="group71">
+                      <ReportItem>
+                        <TextBox Width="5.63801841398802cm" Height="0.499999996078951cm" Left="0cm" Top="0cm" Name="textBox93" StyleName="">
+                          <Style>
+                            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                          </Style>
+                        </TextBox>
+                      </ReportItem>
+                      <ChildGroups>
+                        <TableGroup Name="group91" />
+                      </ChildGroups>
+                    </TableGroup>
+                  </ChildGroups>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+        <Table DataSourceName="dsDTL_Faktur" Width="62.4235582052768cm" Height="0.608541667461395cm" Left="0cm" Top="3.20625002207855cm" Name="table2">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.30968703980247cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="OF" Name="textBox3" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="6.29708227627301cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= Fields.nobaris" Name="textBox7" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="8.14916982143209cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= Trim(Fields.NamaGrade)+' '+Trim(Fields.NamaMerk)" Name="textBox11" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.03729427747138cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="=Fields.Gross-Fields.Tare" Format="{0:N0}" Name="textBox5" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.85989615912331cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= (Fields.Price * (Fields.Gross- Fields.Tare)) + ((Fields.Price * (Fields.Gross- Fields.Tare))*0.1)" Format="{0:N0}" Name="textBox9" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.53458392715084cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="0.0" Name="textBox13" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.28864689152292cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= Fields.Price * (Fields.Gross- Fields.Tare)" Format="{0:N0}" Name="textBox15" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="8" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="7.25197928342171cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= (Fields.Price * (Fields.Gross- Fields.Tare))*0.1" Format="{0:N0}" Name="textBox17" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="9" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="14.4486487581945cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="0" Name="textBox49" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.15094115175266cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="0.0" Name="textBox54" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="11" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.36260736633888cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Name="textBox59" StyleName="" />
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.73302071911069cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= Fields.Price" Format="{0:N0}" Name="textBox113" StyleName="" />
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="1.30968848917967cm" />
+              <Column Width="6.29708046940102cm" />
+              <Column Width="8.14916930753581cm" />
+              <Column Width="3.73302057378815cm" />
+              <Column Width="4.03729406221996cm" />
+              <Column Width="2.85989685221734cm" />
+              <Column Width="3.53458266670261cm" />
+              <Column Width="4.28864685315519cm" />
+              <Column Width="7.25197615763851cm" />
+              <Column Width="14.4486603474851cm" />
+              <Column Width="3.1509375501339cm" />
+              <Column Width="3.36260452700068cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.608541667461395cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <RowGroups>
+            <TableGroup Name="detailTableGroup1">
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="tableGroup3" />
+            <TableGroup Name="tableGroup4" />
+            <TableGroup Name="tableGroup5" />
+            <TableGroup Name="group60" />
+            <TableGroup Name="group4" />
+            <TableGroup Name="group5" />
+            <TableGroup Name="group6" />
+            <TableGroup Name="group7" />
+            <TableGroup Name="group8" />
+            <TableGroup Name="group9" />
+            <TableGroup Name="group10" />
+            <TableGroup Name="group14" />
+          </ColumnGroups>
+        </Table>
+      </Items>
+    </DetailSection>
+    <PageFooterSection Height="0.132291659712791cm" Name="pageFooterSection1" />
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings PaperKind="Letter" Landscape="False" ContinuousPaper="False">
+    <Margins>
+      <MarginsU Left="2cm" Right="2cm" Top="0cm" Bottom="0cm" />
+    </Margins>
+  </PageSettings>
+  <ReportParameters>
+    <ReportParameter Name="HDR_FakturId">
+      <Value>
+        <String>84F6043A-2A4F-4534-A876-B3FB819DD8F1</String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

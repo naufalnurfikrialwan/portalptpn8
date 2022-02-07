@@ -1,0 +1,194 @@
+﻿@model Ptpn8.eFakturPajak.Models.HeaderFaktur
+
+<table style="width: 100%">
+    <tr>
+        <td style="width: 40%; vertical-align: top;">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.kdJenisTransaksi)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.kdJenisTransaksi)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.fgPengganti)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.fgPengganti)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.nomorFaktur)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.nomorFaktur)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.tanggalFaktur)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.tanggalFaktur)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.npwpPenjual)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.npwpPenjual)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.namaPenjual)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.namaPenjual)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.alamatPenjual)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.alamatPenjual)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.npwpLawanTransaksi)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.npwpLawanTransaksi)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.namaLawanTransaksi)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.namaLawanTransaksi)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.alamatLawanTransaksi)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.alamatLawanTransaksi)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.jumlahDpp)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.jumlahDpp)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.jumlahPpn)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.jumlahPpn)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.jumlahPpnBm)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.jumlahPpnBm)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.statusApproval)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.statusApproval)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.statusFaktur)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.statusFaktur)
+            </div>
+            <div class="editor-field">
+                @Html.DisplayFor(model => model.kebun.Nama)
+            </div>
+
+        </td>
+        <td style="width: 60%; vertical-align: top;">
+            <table>
+                <tr>
+                    <th>
+                        Nama
+                    </th>
+                    <th>
+                        Harga Satuan
+                    </th>
+                    <th>
+                        Jumlah Barang
+                    </th>
+                    <th>
+                        Harga Total
+                    </th>
+                    <th>
+                        Diskon
+                    </th>
+                    <th>
+                        Dpp
+                    </th>
+                    <th>
+                        Ppn
+                    </th>
+                    <th>
+                        Tarif PpnBM
+                    </th>
+                    <th>
+                        PpnBM
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model.detailFaktur)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nama)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.hargaSatuan)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.jumlahBarang)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.hargaTotal)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.diskon)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.dpp)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ppn)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.tarifPpnbm)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ppnbm)
+                        </td>
+                    </tr>
+                }
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+@if (!@ViewBag.TingaliIsi)
+{
+    <p>
+        <input type="submit" id="Simpan" value="Simpen" />
+    </p>
+}
+
+

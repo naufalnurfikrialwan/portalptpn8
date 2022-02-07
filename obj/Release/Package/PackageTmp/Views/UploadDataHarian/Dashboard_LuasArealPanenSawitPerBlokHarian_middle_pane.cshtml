@@ -1,0 +1,115 @@
+﻿<div class="k-content">
+    @*<label id='judulgroup1' style='font-size: medium; text-align:center;'></label>*@
+
+    <div>
+        <label id="judulgrid1" style="text-align:center; font-size:medium"></label>
+        <label id="judulgrid2" style="text-align:center; font-size:medium"></label>
+        <label id=" rid2" style="text-align:center; font-size:small"></label>
+    </div>
+    <div id="data" style="width:100%;height:535px;">
+        @(Html.Kendo()
+            .Grid<Ptpn8.ArealDanEvaluasiKinerja.Models.MonitorBlokHarian>()
+            .Name("grdDetail")
+            .ToolBar(tools => { tools.Excel(); })
+            .Excel(excel => excel
+                .FileName("LuasArealPanenSawitPerBlokHarian.xlsx")
+                .Filterable(true)
+            )
+            .Columns(g =>
+            {
+                g.Bound(i => i.MonitorBlokHarianId).Width(50).Hidden();
+                g.Bound(i => i.nmafd).Width(150).Title("Afdeling").Hidden();
+                g.Bound(i => i.nmblok).Width(150).Title("Blok").Locked(true);
+                g.Bound(i => i.thntnm).Width(70).Title("Thn Tanam").HtmlAttributes(new { style = "text-align: center;" }).Locked(true);
+                g.Bound(i => i.LuasTM).Width(70).Title("Luas (Ha)").ClientTemplate("#= kendo.toString(LuasTM,'n4') #")
+                    .HtmlAttributes(new { style = "text-align: right;" }).Locked(true);
+
+
+                g.Group(i => i.HeaderTemplate("<label style='font-size: medium; text-align:center;'>Tanggal</label>").Columns(h =>
+                {
+                    for (int ii = 1; ii <= 31; ii++)
+                    {
+                        h.Bound("Tanggal" + ii.ToString("00"))
+                            .HeaderTemplate("<div style='text-align:center'>" + ii.ToString("00") + "</div>")
+                            .ClientTemplate("#= Tanggal" + ii.ToString("00") + " != 0 ? kendo.toString(Tanggal" + ii.ToString("00") + ",'n2') : ' ' #")
+                            .Width(70)
+                            .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                            .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                            .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" })
+                            .Format("{0:N2}").HtmlAttributes(new { style = "text-align: right;" });
+                    }
+                }
+                ));
+            })
+            .AutoBind(false)
+            .Navigatable()
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .HtmlAttributes(new { style = "Height: 550px" })
+            .DataSource(o => o
+                .Ajax()
+                .ServerOperation(false)
+                .Sort(s => s.Add(x => x.thntnm).Descending())
+                .Group(g => g.Add(gg => gg.nmafd))
+                .Batch(true)
+                .Model(model =>
+                {
+                    model.Id(p => p.MonitorBlokHarianId);
+                })
+                .Aggregates(ag =>
+                {
+                    ag.Add(x => x.Tanggal01).Sum();
+                    ag.Add(x => x.Tanggal02).Sum();
+                    ag.Add(x => x.Tanggal03).Sum();
+                    ag.Add(x => x.Tanggal04).Sum();
+                    ag.Add(x => x.Tanggal05).Sum();
+                    ag.Add(x => x.Tanggal06).Sum();
+                    ag.Add(x => x.Tanggal07).Sum();
+                    ag.Add(x => x.Tanggal08).Sum();
+                    ag.Add(x => x.Tanggal09).Sum();
+                    ag.Add(x => x.Tanggal10).Sum();
+                    ag.Add(x => x.Tanggal11).Sum();
+                    ag.Add(x => x.Tanggal12).Sum();
+                    ag.Add(x => x.Tanggal13).Sum();
+                    ag.Add(x => x.Tanggal14).Sum();
+                    ag.Add(x => x.Tanggal15).Sum();
+                    ag.Add(x => x.Tanggal16).Sum();
+                    ag.Add(x => x.Tanggal17).Sum();
+                    ag.Add(x => x.Tanggal18).Sum();
+                    ag.Add(x => x.Tanggal19).Sum();
+                    ag.Add(x => x.Tanggal20).Sum();
+                    ag.Add(x => x.Tanggal21).Sum();
+                    ag.Add(x => x.Tanggal22).Sum();
+                    ag.Add(x => x.Tanggal23).Sum();
+                    ag.Add(x => x.Tanggal24).Sum();
+                    ag.Add(x => x.Tanggal25).Sum();
+                    ag.Add(x => x.Tanggal26).Sum();
+                    ag.Add(x => x.Tanggal27).Sum();
+                    ag.Add(x => x.Tanggal28).Sum();
+                    ag.Add(x => x.Tanggal29).Sum();
+                    ag.Add(x => x.Tanggal30).Sum();
+                    ag.Add(x => x.Tanggal31).Sum();
+
+                })
+                .Read(read => read.Action("GetDataFromGRID", "UploadDataHarian").Data("filterGRD").Type(HttpVerbs.Post))
+                ))
+    </div>
+</div>
+
+<script>
+    function filterGRD(e)
+    {
+        var _blnAwal = $('#BulanAwal').val();
+        var _thnAwal = $('#TahunAwal').val();
+        var _bdy = '01';//$("#ddlBudidaya").data("kendoDropDownList").dataItem().kd_bud;
+        var _kbn = $("#ddlKebun").data("kendoDropDownList").dataItem().kd_kbn;
+        var _scriptSQL = "use SPDK_KanpusEF; exec JelajahPanenSawitHarianPerBlok '" + _kbn + "'," + _blnAwal + "," + _thnAwal + ",'" + _bdy + "'";
+        return {
+            strClassView: "Ptpn8.ArealDanEvaluasiKinerja.Models.MonitorBlokHarian",
+            scriptSQL: _scriptSQL,
+            _menuId: menuID
+        };
+    }
+</script>
+
+

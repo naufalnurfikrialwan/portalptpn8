@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="FPS WILAYAH HDR" Width="17.2004047314213cm" Name="FakturPajakSementara" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.MonitoringPendapatanLain_CetakFPS_KandirHeader_HDRSewaPohonKaret" SelectCommandType="StoredProcedure" Name="FPS WILAYAH HDR">
+      <Parameters>
+        <SqlDataSourceParameter DbType="String" Name="@Nomor_FakturPajakKandir">
+          <Value>
+            <String>= Parameters.Nomor_FakturPajakKandir.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.MonitoringPendapatanLain_CetakFPS_KandirHeader_DTLSewaPohonKaret" SelectCommandType="StoredProcedure" Name="DTL_FPS">
+      <Parameters>
+        <SqlDataSourceParameter DbType="String" Name="@Nomor_FakturPajakKandir">
+          <Value>
+            <String>= Parameters.Nomor_FakturPajakKandir.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="6.50854149834399cm" Name="pageHeaderSection1">
+      <Items>
+        <PictureBox Image="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" Width="2.2997998042957cm" Height="1.30000035325685cm" Left="0cm" Top="0.299999848604206cm" MimeType="image/png" Name="pictureBox1">
+          <Style VerticalAlign="Middle" />
+        </PictureBox>
+        <TextBox Width="8.79999959627788cm" Height="0.600000100930529cm" Left="2.30000005046526cm" Top="0.299999848604206cm" Value="PT PERKEBUNAN NUSANTARA VIII" Name="textBox1">
+          <Style VerticalAlign="Middle">
+            <Font Size="14pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="8.79999959627788cm" Height="0.600000100930529cm" Left="2.30000005046526cm" Top="0.90019979198218cm" Value="Jl. Sindangsirna No. 4" Name="textBox2">
+          <Style VerticalAlign="Middle">
+            <Font Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="8.80000003933907cm" Height="0.600000083446503cm" Left="2.29999924302103cm" Top="1.50039973536015cm" Value="Bandung - 40153" Name="textBox3">
+          <Style VerticalAlign="Middle">
+            <Font Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.99989836295728cm" Height="0.600000100930529cm" Left="14.2000001009305cm" Top="0.299999848604206cm" Value="FAKTUR PAJAK" Name="textBox4">
+          <Style VerticalAlign="Middle">
+            <Font Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.99989831050238cm" Height="0.600000083446503cm" Left="14.2000001009305cm" Top="0.900199993843238cm" Value="SEMENTARA" Name="textBox5">
+          <Style VerticalAlign="Middle">
+            <Font Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.80000111023582cm" Height="0.600000100930529cm" Left="11.3999998990695cm" Top="1.50039973536015cm" Value="Lembar 1 : Untuk Pembeli BKP/JKP" Name="textBox6">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="8.09999954581262cm" Height="0.600000100930529cm" Left="0cm" Top="3.29999994953474cm" Value="Pembeli Barang Kena Pajak / Jasa Kena Pajak" Name="textBox7">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="2.79999968012173cm" Height="0.600000083446503cm" Left="0cm" Top="3.90020029663482cm" Value="Nama Mitra" Name="textBox8">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="0.299800325637642cm" Height="0.600000083446503cm" Left="2.80019964058639cm" Top="3.90020029663482cm" Value=":" Name="textBox9">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="14.099701323512cm" Height="0.600000083446503cm" Left="3.10020029663482cm" Top="3.90020029663482cm" Value="= Fields.Namamitra" Name="textBox10">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="2.79532259318328cm" Height="0.59929841440881cm" Left="0.00467671699231061cm" Top="4.50040064373491cm" Value="Alamat Mitra" Name="textBox13">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="0.299800336360931cm" Height="0.600000083446503cm" Left="2.80019964058639cm" Top="4.50040064373491cm" Value=":" Name="textBox12">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="14.0996990203857cm" Height="0.600000083446503cm" Left="3.10020034666641cm" Top="4.50040064373491cm" Value="= Fields.alamatmitra" Name="textBox11">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="2.79532265663147cm" Height="0.600000083446503cm" Left="0.00467671699231061cm" Top="5.09989932179731cm" Value="NPWP" Name="textBox14">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="0.299800336360931cm" Height="0.59929841440881cm" Left="2.80019964058639cm" Top="5.100600990835cm" Value=":" Name="textBox15">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="14.099698787091cm" Height="0.59929841440881cm" Left="3.10020029663482cm" Top="5.100600990835cm" Value="= Fields.npwpmitra" Name="textBox16">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="2.79999971389771cm" Height="0.600000083446503cm" Left="11.1002007003569cm" Top="2.49999994953474cm" Value="No. Perjanjian" Name="textBox17">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="0.299800336360931cm" Height="0.600000083446503cm" Left="13.9004011483876cm" Top="2.49999994953474cm" Value=":" Name="textBox18">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="2.99959831318382cm" Height="0.600000083446503cm" Left="14.2004022081581cm" Top="2.49999994953474cm" Value="= Fields.No_Perjanjian" Name="textBox19">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="2.79999971389771cm" Height="0.600000083446503cm" Left="11.1002007003569cm" Top="3.10020029663482cm" Value="Tanggal" Name="textBox20">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="0.299800336360931cm" Height="0.600000083446503cm" Left="13.9004011483876cm" Top="3.10020029663482cm" Value=":" Name="textBox21">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="2.99959826469421cm" Height="0.600000083446503cm" Left="14.2004038230466cm" Top="3.10020029663482cm" Value="= Fields.Tanggal_Perjanjian" Format="{0:d}" Name="textBox22">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+      </Items>
+    </PageHeaderSection>
+    <DetailSection Height="8.13219073245789cm" Name="detailSection1">
+      <Items>
+        <TextBox Width="17.1206276264016cm" Height="0.600000100930529cm" Left="0.0793749977921447cm" Top="3.59999979813894cm" Value="Faktur Pajak yang valid beserta nomor Faktur Pajak akan diberikan oleh PTPN VIII setelah pembayaran diterima." Name="textBox23">
+          <Style>
+            <Font Size="9.5pt" />
+          </Style>
+        </TextBox>
+        <Table DataSourceName="DTL_FPS" Width="17.1714568258926cm" Height="3.2170835280125cm" Left="0cm" Top="0cm" Name="table1">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.820208361088721cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= Fields.RowNumber" Name="textBox25">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="11.7475002260563cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= 'Pendapatan Sewa Pohon Karet Kebun/Unit : ' +Fields.NamaUnit " Name="textBox27">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.60375033193109cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="= Fields.Tagihan_NilaiSebelumPPN" Format="{0:N0}" Name="textBox29">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      <Font Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.6037498201818cm" Height="0.5cm" Left="0cm" Top="0cm" Value="= Sum(Fields.Tagihan_NilaiSebelumPPN)" Format="{0:N0}" Name="textBox32" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="0" RowSpan="1" ColumnSpan="2">
+                <ReportItem>
+                  <TextBox Width="12.5677059914774cm" Height="0.499999990688444cm" Left="0cm" Top="0cm" Value="Harga Jual / Penggantian" Name="textBox31" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="2" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.60374975204468cm" Height="0.5cm" Left="0cm" Top="0cm" Value="= Sum(Fields.Tagihan_NilaiSebelumPPN)" Format="{0:N0}" Name="textBox35" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="2" ColumnIndex="0" RowSpan="1" ColumnSpan="2">
+                <ReportItem>
+                  <TextBox Width="12.5677067043977cm" Height="0.500000027164975cm" Left="0cm" Top="0cm" Value="Dasar Pengenaan Pajak" Name="textBox33" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="3" ColumnIndex="0" RowSpan="1" ColumnSpan="2">
+                <ReportItem>
+                  <TextBox Width="12.5677071257629cm" Height="0.500000068067931cm" Left="0cm" Top="0cm" Value="PPN" Name="textBox30" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="3" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.60374975204468cm" Height="0.5cm" Left="0cm" Top="0cm" Value="= Sum(Fields.Tagihan_NilaiSebelumPPN)*0.1" Format="{0:N0}" Name="textBox34" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="0" RowSpan="1" ColumnSpan="2">
+                <ReportItem>
+                  <TextBox Width="12.5677074831595cm" Height="0.500000001932466cm" Left="0cm" Top="0cm" Value="Jumlah Tagihan" Name="textBox36" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.60374975204468cm" Height="0.5cm" Left="0cm" Top="0cm" Value="= (Sum(Fields.Tagihan_NilaiSebelumPPN)*0.1)+Sum(Fields.Tagihan_NilaiSebelumPPN)" Format="{0:N0}" Name="textBox37" StyleName="">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="0.820208608869293cm" />
+              <Column Width="11.7474977228543cm" />
+              <Column Width="4.60374934273311cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.608541664264759cm" />
+              <Row Height="0.500000049870746cm" />
+              <Row Height="0.500000049870746cm" />
+              <Row Height="0.500000049870746cm" />
+              <Row Height="0.500000001932465cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <Style>
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+          </Style>
+          <RowGroups>
+            <TableGroup Name="detailTableGroup">
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+            <TableGroup Name="group" />
+            <TableGroup Name="group1" />
+            <TableGroup Name="group2" />
+            <TableGroup Name="group3" />
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="tableGroup">
+              <ReportItem>
+                <TextBox Width="0.820208361088721cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="No." Name="textBox24">
+                  <Style BackgroundColor="220, 230, 242" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="tableGroup1">
+              <ReportItem>
+                <TextBox Width="11.7475002260563cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="Nama BKP / JKP" Name="textBox26">
+                  <Style BackgroundColor="220, 230, 242" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="tableGroup2">
+              <ReportItem>
+                <TextBox Width="4.60375033193109cm" Height="0.608541649739776cm" Left="0cm" Top="0cm" Value="Nilai" Name="textBox28">
+                  <Style BackgroundColor="220, 230, 242" TextAlign="Center" VerticalAlign="Middle">
+                    <Font Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+        <TextBox Width="4.6326967476651cm" Height="0.600000504652645cm" Left="12.5677079837562cm" Top="4.49999974767368cm" Value="= Fields.Tanggal_Perjanjian" Format="{0:d}" Name="textBox38">
+          <Style TextAlign="Center" />
+        </TextBox>
+        <TextBox Width="4.63269662857056cm" Height="0.600000500679016cm" Left="12.5677079837562cm" Top="7.1998994731931cm" Value="= Fields.namapimpinan" Name="textBox40">
+          <Style TextAlign="Center" VerticalAlign="Middle" />
+        </TextBox>
+        <Barcode Width="3.82062495452414cm" Height="36.3219131578868mm" Left="0.03125in" Top="1.77165349324544in" Value="= 'Tanggal Perjanjian :'+ Fields.Tanggal_Perjanjian + '; Nama Penjual : PT Perkebunan Nusantara VIII ; Alamat Penjual : Jl.Sindangsirna No.4 Bandung - 40153 ; NPWP Rekanan : 01.061.123.1.441.000 ; Nama Mitra :' + Fields.Namamitra+ '; Alamat Mitra :'+ Fields.alamatmitra+';'" Stretch="True" Name="barcode25">
+          <Style>
+            <BorderStyle Top="None" Bottom="None" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Name="Tahoma" Size="9pt" />
+            <Padding Top="0cm" Bottom="0cm" />
+          </Style>
+          <Encoder>
+            <QRCodeEncoder ErrorCorrectionLevel="H" />
+          </Encoder>
+        </Barcode>
+      </Items>
+    </DetailSection>
+    <PageFooterSection Height="0.132291662986908cm" Name="pageFooterSection1" />
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings PaperKind="A4" Landscape="False">
+    <Margins>
+      <MarginsU Left="2cm" Right="1cm" Top="2cm" Bottom="2cm" />
+    </Margins>
+  </PageSettings>
+  <ReportParameters>
+    <ReportParameter Name="Nomor_FakturPajakKandir">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

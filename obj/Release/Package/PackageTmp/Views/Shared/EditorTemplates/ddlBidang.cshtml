@@ -1,0 +1,28 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "TEKNIK DAN PENGOLAHAN",
+                Value = "TEKNIK DAN PENGOLAHAN"
+            },
+            new SelectListItem() {
+                Text = "TANAMAN",
+                Value = "TANAMAN"
+            },
+            new SelectListItem() {
+                Text = "TEKNOLOGI INFORMASI",
+                Value = "TEKNOLOGI INFORMASI"
+            },
+            new SelectListItem() {
+                Text = "SEKRETARIS PERUSAHAAN",
+                Value = "SEKRETARIS PERUSAHAAN"
+            }
+        })
+        .Events(e => { e.Change("ddlBidangOnChange"); e.Select("ddlBidangOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

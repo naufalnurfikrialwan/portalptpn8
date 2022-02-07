@@ -1,0 +1,866 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="dsHDR_TerimaPermintaanBarangDariKebun" Width="30.5000004044755cm" Name="BidangTanaman1" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <Style>
+    <BorderStyle Bottom="None" />
+    <BorderColor Bottom="Black" />
+    <BorderWidth Bottom="1pt" />
+  </Style>
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportHDR_TerimaPermintaanBarangDariKebun" SelectCommandType="StoredProcedure" Name="dsHDR_TerimaPermintaanBarangDariKebun">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Guid" Name="@HDR_TerimaPermintaanBarangDariKebunId">
+          <Value>
+            <String>= Parameters.HDR_TerimaPermintaanBarangDariKebunId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportDTL_TerimaPermintaanBarangDariKebun" SelectCommandType="StoredProcedure" Name="dsDTL_TerimaPermintaanBarangDariKebun">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Guid" Name="@HDR_TerimaPermintaanBarangDariKebunId">
+          <Value>
+            <String>= Parameters.HDR_TerimaPermintaanBarangDariKebunId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="0.132291662986908cm" Name="pageHeaderSection1" />
+    <DetailSection Height="9.86770966450375cm" Name="detailSection1">
+      <Style TextAlign="Center" VerticalAlign="Middle">
+        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+        <Font Name="Gadugi" Bold="False" />
+      </Style>
+      <Items>
+        <Table DataSourceName="dsDTL_TerimaPermintaanBarangDariKebun" Width="30.2489541083224cm" Height="6.2107607926088cm" Left="0.152082827629329cm" Top="1.44715524780716cm" Name="tblDTL_Faktur" StyleName="Normal.TableNormal">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.42332553863525cm" Height="0.691158413887024cm" Left="0cm" Top="0cm" Value="= Fields.NamaBarang" Name="textBox60" StyleName="Normal.TableBody">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.39346729028642cm" Height="0.691158320575891cm" Left="0cm" Top="0cm" Value="= Fields.Uraian" Format="{0:N2}" Name="textBox61" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.16416289826358cm" Height="0.691158320575891cm" Left="0cm" Top="0cm" Value="= Fields.Spesifikasi" Name="textBox6" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.32090651988983cm" Height="0.691158413887024cm" Left="0cm" Top="0cm" Value="= Fields.Qty_Disetujui" Name="textBox8" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.38264036178589cm" Height="0.691158413887024cm" Left="0cm" Top="0cm" Value="= Fields.Satuan" Name="textBox10" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="12" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.81479525566101cm" Height="0.691158354282379cm" Left="0cm" Top="0cm" Value="= Fields.HargaSatuan* Fields.Qty_Disetujui" Format="{0:N0}" Name="textBox12" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="13" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.56784796714783cm" Height="0.691158413887024cm" Left="0cm" Top="0cm" Value="= Fields.Bulan" Format="{0:N0}" Name="textBox14" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="14" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.05291748046875cm" Height="0.691158413887024cm" Left="0cm" Top="0cm" Value="= Fields.Keterangan" Name="textBox16" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.00000023841858cm" Height="0.691158413887024cm" Left="0cm" Top="0cm" Value="= Fields.Norek" Name="textBox19" StyleName="Normal.TableBody">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="8" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.26798605918884cm" Height="0.691158354282379cm" Left="0cm" Top="0cm" Name="textBox40" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.21507012844086cm" Height="0.691158354282379cm" Left="0cm" Top="0cm" Name="textBox44" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="9" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.2910418510437cm" Height="0.691158354282379cm" Left="0cm" Top="0cm" Name="textBox47" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.81479108333588cm" Height="0.691158354282379cm" Left="0cm" Top="0cm" Value="= Fields.NamaKebun" Name="textBox46" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="11" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.00000023841858cm" Height="0.691158413887024cm" Left="0cm" Top="0cm" Name="textBox53" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.42332553863525cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox13" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.00000023841858cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox15" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.39346729028642cm" Height="0.493684805560786cm" Left="0cm" Top="0cm" Name="textBox18" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.16416289826358cm" Height="0.493684805560786cm" Left="0cm" Top="0cm" Name="textBox25" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.32090651988983cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="= Sum(Fields.Qty_Disetujui)" Name="textBox49" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.38264036178589cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox50" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.21507012844086cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox55" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="8" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.26798605918884cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox56" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="9" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.2910418510437cm" Height="0.493684828281403cm" Left="0cm" Top="0cm" Name="textBox57" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.81479108333588cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox58" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="11" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.00000023841858cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox59" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="12" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.81479525566101cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="=SUM(Fields.HargaSatuan* Fields.Qty_Disetujui)" Name="textBox62" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="13" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.56784796714783cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox63" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="14" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.05291748046875cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Name="textBox64" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.38264036178589cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Paraf" Name="textBox104" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.81479108333588cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Paraf" Name="textBox108" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="14" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.05291748046875cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Paraf" Name="textBox112" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="3" ColumnIndex="3" RowSpan="1" ColumnSpan="4">
+                <ReportItem>
+                  <TextBox Width="9.26117809027715cm" Height="0.493684805560786cm" Left="0cm" Top="0cm" Value="Direktur Operasional" Name="textBox86" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="3" ColumnIndex="7" RowSpan="1" ColumnSpan="4">
+                <ReportItem>
+                  <TextBox Width="6.58888912200928cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Direktur Komersil" Name="textBox90" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="3" ColumnIndex="11" RowSpan="1" ColumnSpan="4">
+                <ReportItem>
+                  <TextBox Width="7.4355616569519cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Direktur Utama" Name="textBox94" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="5" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.38264036178589cm" Height="1.77376890182495cm" Left="0cm" Top="0cm" Name="textBox72" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="5" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.81479108333588cm" Height="1.77376890182495cm" Left="0cm" Top="0cm" Name="textBox76" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="5" ColumnIndex="14" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.05291748046875cm" Height="1.77376854419708cm" Left="0cm" Top="0cm" Name="textBox84" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="3" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="7.87853690213499cm" Height="0.493684805560786cm" Left="0cm" Top="0cm" Value="Disposisi" Name="textBox101" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="5" ColumnIndex="3" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="7.87853690213499cm" Height="1.77376907578057cm" Left="0cm" Top="0cm" Name="textBox69" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="7" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="4.77409839630127cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Disposisi" Name="textBox105" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="5" ColumnIndex="7" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="4.77409839630127cm" Height="1.77376890182495cm" Left="0cm" Top="0cm" Name="textBox73" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="11" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="5.382643699646cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Disposisi" Name="textBox109" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="5" ColumnIndex="11" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="5.382643699646cm" Height="1.77376890182495cm" Left="0cm" Top="0cm" Name="textBox77" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1in" Height="0.691158354282379cm" Left="0in" Top="0in" Value="= Fields.NamaKebun" Name="textBox23" StyleName="Normal.TableBody">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1in" Height="0.493684828281403cm" Left="0cm" Top="0cm" Value="Jumlah Biaya" Name="textBox41" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="2" ColumnIndex="0" RowSpan="1" ColumnSpan="15">
+                <ReportItem>
+                  <TextBox Width="11.9090372158319in" Height="0.493684805560786cm" Left="0in" Top="0in" Name="textBox26" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="3" ColumnIndex="0" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="2.74146795272827in" Height="0.493684828281403cm" Left="0in" Top="0in" Value="Diminta Oleh" Name="textBox27" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="4" ColumnIndex="0" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="2.74146795272827in" Height="0.493684828281403cm" Left="0in" Top="0in" Value="KEPALA BAGIAN {Fields.Bidang}" Name="textBox28" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="5" ColumnIndex="0" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="2.74146771430969in" Height="1.77376890182495cm" Left="0in" Top="0in" Value="DIAN HADIANA A" Name="textBox29" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Bottom">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" Underline="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="0.999997792270077in" />
+              <Column Width="2.42332773463586cm" />
+              <Column Width="2.00000130784157cm" />
+              <Column Width="3.3934672388247cm" />
+              <Column Width="3.16416289826359cm" />
+              <Column Width="1.32090676504672cm" />
+              <Column Width="1.38264118814215cm" />
+              <Column Width="1.2150707072458cm" />
+              <Column Width="1.26798597533595cm" />
+              <Column Width="2.29104232522082cm" />
+              <Column Width="1.81479150275942cm" />
+              <Column Width="2.00000130784157cm" />
+              <Column Width="1.81479510871575cm" />
+              <Column Width="1.56784840144319cm" />
+              <Column Width="2.05291759010693cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.691158320575891cm" />
+              <Row Height="0.493684805560786cm" />
+              <Row Height="0.493684805560786cm" />
+              <Row Height="0.493684805560786cm" />
+              <Row Height="0.493684805560786cm" />
+              <Row Height="1.77376907578057cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <Style>
+            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+            <BorderColor Top="228, 108, 10" Bottom="228, 108, 10" Left="228, 108, 10" Right="228, 108, 10" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Name="Gadugi" Size="8pt" />
+          </Style>
+          <RowGroups>
+            <TableGroup Name="detail">
+              <ChildGroups>
+                <TableGroup Name="group6" />
+              </ChildGroups>
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+            <TableGroup Name="group11">
+              <ChildGroups>
+                <TableGroup Name="group12" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group13">
+              <ChildGroups>
+                <TableGroup Name="group14" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group18">
+              <ChildGroups>
+                <TableGroup Name="group19" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group20">
+              <ChildGroups>
+                <TableGroup Name="group25" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group26">
+              <ChildGroups>
+                <TableGroup Name="group27" />
+              </ChildGroups>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="group7">
+              <ReportItem>
+                <TextBox Width="1in" Height="1.77109396457672cm" Left="0in" Top="0in" Value="Nama Kebun" Name="textBox11" StyleName="Normal.TableHeader">
+                  <Style VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="namaMerk">
+              <ReportItem>
+                <TextBox Width="2.42332553863525cm" Height="1.77109396457672cm" Left="0cm" Top="0cm" Value="Jenis Barang/Jasa" Name="textBox30" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group9">
+              <ReportItem>
+                <TextBox Width="2.00000023841858cm" Height="1.77109396457672cm" Left="0cm" Top="0cm" Value="Nomor Kode Rekening" Name="textBox31" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="chop">
+              <ReportItem>
+                <TextBox Width="3.39346729028642cm" Height="1.77109417400919cm" Left="0cm" Top="0cm" Value="Uraian" Name="textBox32" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group">
+              <ReportItem>
+                <TextBox Width="3.16416289826358cm" Height="1.77109417400919cm" Left="0cm" Top="0cm" Value="Penjelasan / Spesifikasi Teknis" Name="textBox33" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group1">
+              <ReportItem>
+                <TextBox Width="2.70354652404785cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Kebutuhan" Name="textBox34" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group16">
+                  <ReportItem>
+                    <TextBox Width="1.32090651988983cm" Height="1.27740967273712cm" Left="0cm" Top="0cm" Value="Jumlah" Name="textBox7" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Gadugi" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group17">
+                  <ReportItem>
+                    <TextBox Width="1.38264036178589cm" Height="1.27740967273712cm" Left="0cm" Top="0cm" Value="Satuan" Name="textBox9" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Gadugi" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group22">
+              <ReportItem>
+                <TextBox Width="2.48305606842041cm" Height="0.49368479847908cm" Left="0cm" Top="0cm" Value="Persediaan" Name="textBox42" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group23">
+                  <ReportItem>
+                    <TextBox Width="1.21507012844086cm" Height="1.27740955352783cm" Left="0cm" Top="0cm" Value="Di Kebun" Name="textBox43" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Gadugi" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group21">
+                  <ReportItem>
+                    <TextBox Width="1.26798605918884cm" Height="1.27740955352783cm" Left="0cm" Top="0cm" Value="Min" Name="textBox39" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Gadugi" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group2">
+              <ReportItem>
+                <TextBox Width="2.2910418510437cm" Height="1.77109444141388cm" Left="0cm" Top="0cm" Value="Setelah di perhitungkan persediaan" Name="textBox35" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group15">
+              <ReportItem>
+                <TextBox Width="1.81479108333588cm" Height="1.77109444141388cm" Left="0cm" Top="0cm" Value="Untuk Kebun/ Bagian" Name="textBox3" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group24">
+              <ReportItem>
+                <TextBox Width="2.00000023841858cm" Height="1.77109396457672cm" Left="0cm" Top="0cm" Value="Anggaran Yang Tersedia (Rp.000)" Name="textBox52" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group3">
+              <ReportItem>
+                <TextBox Width="1.81479525566101cm" Height="1.77109444141388cm" Left="0cm" Top="0cm" Value="Perkiraan Biaya (Rp.000)" Name="textBox36" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group4">
+              <ReportItem>
+                <TextBox Width="1.56784796714783cm" Height="1.77109456062317cm" Left="0cm" Top="0cm" Value="Bulan Dipenuhi" Name="textBox37" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group5">
+              <ReportItem>
+                <TextBox Width="2.05291748046875cm" Height="1.77109396457672cm" Left="0cm" Top="0cm" Value="Keterangan" Name="textBox38" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Gadugi" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+        <TextBox Width="16.0352775735552cm" Height="1.19980001449585cm" Left="5.11540467338628cm" Top="0.247155449668216cm" Value="PERMINTAAN BARANG BAHAN&#xD;&#xA;" Name="textBox5">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="None" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Name="Gadugi" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="4.96302132376604cm" Height="1.19979977607727cm" Left="0.152183051644638cm" Top="0.247155449668216cm" Value="PTP. NUSANTARA VIII&#xD;&#xA;BAGIAN : {Fields.Bidang}" Name="textBox4">
+          <Style TextAlign="Left" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Name="Gadugi" Size="9pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="3.15952974619948cm" Height="0.627658247947693cm" Left="21.1508843154462cm" Top="0.819297513425022cm" Value="Tgl. Permintaan" Name="textBox21">
+          <Style VerticalAlign="Middle">
+            <Font Name="Gadugi" Size="9pt" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.43556502772978cm" Height="0.571941912174225cm" Left="24.9654742397534cm" Top="0.247155424435584cm" Value="= Fields.NomorPenerimaan" Name="textBox2">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Right="Solid" />
+            <BorderColor Top="Black" Right="Black" />
+            <BorderWidth Top="1pt" Right="1pt" />
+            <Font Name="Gadugi" Size="9pt" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.654662054153525cm" Height="0.627658307552338cm" Left="24.3106132993131cm" Top="0.819297513425022cm" Value=":" Name="textBox17">
+          <Style VerticalAlign="Middle">
+            <Font Name="Gadugi" Size="9pt" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.654862300323085cm" Height="0.57194185256958cm" Left="24.3106136322021cm" Top="0.247155368328094cm" Value=":" Name="textBox20">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" />
+            <BorderColor Top="Black" />
+            <BorderWidth Top="1pt" />
+            <Font Name="Gadugi" Size="9pt" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.43556447261187cm" Height="0.627657830715179cm" Left="24.9654747948713cm" Top="0.819297513425022cm" Value="= Fields.TanggalPenerimaan" Format="{0:dd MMMM yyyy}" Name="textBox1">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Right="Solid" />
+            <BorderColor Right="Black" />
+            <BorderWidth Right="1pt" />
+            <Font Name="Gadugi" Size="9pt" />
+          </Style>
+        </TextBox>
+        <TextBox Width="3.15953069888033cm" Height="0.571941792964935cm" Left="21.1508821580562cm" Top="0.247155449668216cm" Value="Nomor" Name="textBox22">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" />
+            <BorderColor Top="Black" />
+            <BorderWidth Top="1pt" />
+            <Font Name="Gadugi" Size="9pt" />
+          </Style>
+        </TextBox>
+      </Items>
+    </DetailSection>
+    <PageFooterSection Height="0.132291659712791cm" Name="pageFooterSection1" />
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings PaperKind="Legal" Landscape="True" ContinuousPaper="False">
+    <Margins>
+      <MarginsU Left="2cm" Right="0cm" Top="1cm" Bottom="0cm" />
+    </Margins>
+  </PageSettings>
+  <ReportParameters>
+    <ReportParameter Name="HDR_TerimaPermintaanBarangDariKebunId">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

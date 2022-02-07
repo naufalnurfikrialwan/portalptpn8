@@ -1,0 +1,307 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rekapitulasi Penggunaan Tenaga Kerja KLM dan PKWT</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2020)
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                            .AutoBind(true)
+                            .Name("Bulan")
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                            .BindTo(new List<SelectListItem>()
+                            {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "01"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "02"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "03"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "04"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "05"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "06"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "07"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "08"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "09"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "Nopember",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.SumberDayaManusia.Models.RekapKaryawanKLMHarian>
+    (Guid.Empty.ToString())
+    .Name("grdDetail")
+    .Columns(g =>
+    {
+        g.Bound(i => i.KodeKebun).Width(100).Title("Kd Kbn").Locked(true);
+        g.Bound(i => i.NamaKebun).Width(200).Title("Kebun").Locked(true)
+        .ClientFooterTemplate("JUMLAH")
+        .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+        g.Group(i =>
+        {
+            i.Title("Master Data").Locked(true);
+            i.Columns(c =>
+            {
+                c.Bound(j => j.KT).Width(100).Title("KT").HtmlAttributes(new { style = "text-align: center; color: blue; font-weight : 700" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver; color: blue; font-weight : 700" });
+                c.Bound(j => j.PKWT).Width(100).Title("PKWT").HtmlAttributes(new { style = "text-align: center; color: green; font-weight : 700" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver; color: green; font-weight : 700" });
+                c.Bound(j => j.Jumlah).Width(100).Title("Jumlah").HtmlAttributes(new { style = "text-align: center; color: red; font-weight : 700" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver; color: red; font-weight : 700" });
+            });
+        });
+        g.Group(i =>
+        {
+            i.Title("Jml. Tenaga Kerja (KT dan PKWT)");
+            i.Columns(c =>
+            {
+                c.Bound(j => j.T01).Width(100).Title("01").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T02).Width(100).Title("02").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T03).Width(100).Title("03").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T04).Width(100).Title("04").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T05).Width(100).Title("05").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T06).Width(100).Title("06").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T07).Width(100).Title("07").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T08).Width(100).Title("08").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T09).Width(100).Title("09").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T10).Width(100).Title("10").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T11).Width(100).Title("11").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T12).Width(100).Title("12").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T13).Width(100).Title("13").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T14).Width(100).Title("14").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T15).Width(100).Title("15").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T16).Width(100).Title("16").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T17).Width(100).Title("17").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T18).Width(100).Title("18").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T19).Width(100).Title("19").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T20).Width(100).Title("20").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T21).Width(100).Title("21").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T22).Width(100).Title("22").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T23).Width(100).Title("23").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T24).Width(100).Title("24").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T25).Width(100).Title("25").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T26).Width(100).Title("26").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T27).Width(100).Title("27").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T28).Width(100).Title("28").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T29).Width(100).Title("29").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T30).Width(100).Title("30").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                c.Bound(j => j.T31).Width(100).Title("31").HtmlAttributes(new { style = "text-align: right" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            });
+        });
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Excel();
+    })
+    .Excel(excel => excel.AllPages(true))
+    .AutoBind(false)
+    .Navigatable()
+    .Resizable(resizeable => resizeable.Columns(true))
+    .Scrollable()
+    .Sortable()
+    .Groupable()
+    .HtmlAttributes(new { style = "Height: 450px" })
+    .DataSource(o => o
+    .Ajax()
+    //.Group(g => g.Add(gg => gg.NamaKebun))
+    .ServerOperation(false)
+    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+    .Aggregates(ag =>
+    {
+        ag.Add(x => x.PKWT).Sum();
+        ag.Add(x => x.KT).Sum();
+        ag.Add(x => x.Jumlah).Sum();
+        ag.Add(x => x.T01).Sum();
+        ag.Add(x => x.T02).Sum();
+        ag.Add(x => x.T03).Sum();
+        ag.Add(x => x.T04).Sum();
+        ag.Add(x => x.T05).Sum();
+        ag.Add(x => x.T06).Sum();
+        ag.Add(x => x.T07).Sum();
+        ag.Add(x => x.T08).Sum();
+        ag.Add(x => x.T09).Sum();
+        ag.Add(x => x.T10).Sum();
+        ag.Add(x => x.T11).Sum();
+        ag.Add(x => x.T12).Sum();
+        ag.Add(x => x.T13).Sum();
+        ag.Add(x => x.T14).Sum();
+        ag.Add(x => x.T15).Sum();
+        ag.Add(x => x.T16).Sum();
+        ag.Add(x => x.T17).Sum();
+        ag.Add(x => x.T18).Sum();
+        ag.Add(x => x.T19).Sum();
+        ag.Add(x => x.T20).Sum();
+        ag.Add(x => x.T21).Sum();
+        ag.Add(x => x.T22).Sum();
+        ag.Add(x => x.T23).Sum();
+        ag.Add(x => x.T24).Sum();
+        ag.Add(x => x.T25).Sum();
+        ag.Add(x => x.T26).Sum();
+        ag.Add(x => x.T27).Sum();
+        ag.Add(x => x.T28).Sum();
+        ag.Add(x => x.T29).Sum();
+        ag.Add(x => x.T30).Sum();
+        ag.Add(x => x.T31).Sum();
+    })
+    )
+    )
+</div>
+
+<script>
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.RekapKaryawanKLMHarian',
+            scriptSQL: "EXEC SDM_RekapPenggunaanTenagaKerjaKLM '" + $('#Bulan').val() + "','" + $('#Tahun').val() + "'"
+        }
+    }
+</script>
+
+
+
+
+
+

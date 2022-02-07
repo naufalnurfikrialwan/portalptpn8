@@ -1,0 +1,266 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Cari Dokumen</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Lokasi Kerja:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete().Name("aucLokasiKerja")
+                                .MinLength(2)
+                                .Filter("contains")
+                                .DataTextField("Nama")
+                                .Placeholder("Cari Disini")
+                                .Events(ev => { ev.Change("aucLokasiKerjaOnSelect"); })
+                                .HtmlAttributes(new { style = "width: 100%", @class = "allcaps" })
+                                .DataSource(o =>
+                                {
+                                    o.Read(r => r.Action("GetLokasiKerja1", "ddl", new { Area = "Referensi" }).Data("filterLokasiKerja").Type(HttpVerbs.Post));
+                                    o.ServerFiltering(true);
+                                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo()
+        .Grid<Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Group(i =>
+            {
+                i.Title("Rincian Perjanjian Kerjasama");
+                i.Columns(c =>
+                {
+                    c.Bound(j => j.NamaBagian).Title("Unit").Width(120);
+                    c.Bound(j => j.NomorPerjanjian).Title("Nomor Perjanjian").Width(120);
+                    c.Bound(j => j.Perihal).Title("Ruang Lingkup Kerjasama").Width(200);
+                    c.Bound(j => j.JenisPerjanjian).Title("Jenis").Width(150);
+                    c.Bound(j => j.NamaMitra).Title("Mitra").Width(150);
+                    c.Bound(j => j.LokasiPerjanjian).Title("Lokasi Perjanjian").Width(150);
+                    c.Bound(j => j.PIC).Title("PIC").Width(150);
+                });
+            });
+            g.Group(i =>
+            {
+                i.Title("Jangka Waktu");
+                i.Columns(c =>
+                {
+                    c.Bound(j => j.JangkaWaktuKerjasama).Title("Jangka Waktu").Width(150);
+                    c.Bound(j => j.TanggalMulai).Width(100).Title("Tgl Mulai").Format("{0:dd/MM/yyyy}");
+                    c.Bound(j => j.TanggalBerakhir).Width(100).Title("Tgl Berakhir").Format("{0:dd/MM/yyyy}");
+                });
+            });
+            g.Group(i =>
+            {
+                i.Title("Kompensasi");
+                i.Columns(c =>
+                {
+                    c.Bound(j => j.BentukKompensasi).Title("Bentuk Kompensasi").Width(150);
+                    c.Bound(j => j.NilaiNominal).Title("Nilai Nominal").Width(150).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                });
+            });
+
+            g.Bound(i => i.Keterangan).Title("Keterangan").Width(150);
+            g.Bound(i => i.File).Title("File").Width(120).Hidden();
+            g.Command(command =>
+            {
+                command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                              .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+            }).Width(120);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .Events(e =>
+         {
+             e.DataBound("grdOnDataBound");
+         })
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+        )
+    )
+
+</div>
+
+<script>
+
+
+    var bagianId;
+
+    $(document).ready(function () {
+
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function aucLokasiKerjaOnSelect(e) {
+        bagianId = e.sender.dataItem().LokasiKerjaId;
+    }
+
+    function filterLokasiKerja() {
+        return {
+            //id: IdBudidaya,
+            value: $('#aucLokasiKerja').val()
+        };
+    }
+
+    function onButtonClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var file = data.File;
+
+        pdf.open().center();
+
+        var options = {
+            pdfOpenParams: {
+                navpanes: 1,
+                toolbar: 0,
+                statusbar: 0,
+                pagemode: 'none',
+                pagemode: "none",
+                page: 1,
+                zoom: "page-width",
+                
+                enableHandToolOnLoad: true
+            } //,
+            //forcePDFJS: true,
+            //PDFJS_URL: "/PDF.js/web/viewer.html"
+        }
+
+
+        PDFObject.embed("/Content/Images/Document/PerjanjianKerjasama/" + file, "#testPDFObject", options)
+    }
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama',
+            scriptSQL: "exec [Spdk_Kanpusef].[dbo].[PerjanjianKerjasama_ViewPerBagian] '" + bagianId + "','" + usrName + "'"
+        }
+    }
+
+    function grdOnDataBound(e) {
+        var rows = e.sender.tbody.children();
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = e.sender.dataItem(row);
+
+            //var grid = $('#grdDetail').data('kendoGrid');
+            //var dataItem = typeof (grid.dataSource.get(reservasiId)) == "undefined" ? grid.dataSource.getByUid(reservasiId) : grid.dataSource.get(reservasiId);
+            var tanggalBerakhir = dataItem.TanggalBerakhir;
+            var dateStringTanggalBerakhir = new Date();
+            dateStringTanggalBerakhir = tanggalBerakhir.getFullYear() + "/" + (tanggalBerakhir.getMonth() + 1) + "/" + (tanggalBerakhir.getDate());
+            var today = new Date();
+            today = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate());
+
+            var tglBerakhirPisah = dateStringTanggalBerakhir.split('/');
+            var todayPisah = today.split('/');
+            var objek_tgl = new Date();
+            var pisahTanggalBerakhir = objek_tgl.setFullYear(parseInt(tglBerakhirPisah[0]), parseInt(tglBerakhirPisah[1] - 1), parseInt(tglBerakhirPisah[2]));
+            var pisahToday = objek_tgl.setFullYear(parseInt(todayPisah[0]), parseInt(todayPisah[1] - 1), parseInt(todayPisah[2]));
+            var jumlahHari = (((((pisahToday - pisahTanggalBerakhir) / 1000) / 60) / 60) / 24);
+
+            var tanggalBerakhir1 = dataItem.TanggalBerakhir;
+            var tanggalBerakhir2 = new Date(tanggalBerakhir1);
+            var today1 = new Date();
+            var today2 = new Date(today1);
+            if (tanggalBerakhir2.getTime() < today2.getTime()) {
+                row.addClass("lebihJatuhTempo");
+            } else if (jumlahHari == 0) {
+                row.addClass("jatuhTempo");
+            } else if (jumlahHari > -91 && jumlahHari < 0) {
+                row.addClass("tigaBulanDariJatuhTempo");
+            }
+        }
+    }
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<style>
+    .tigaBulanDariJatuhTempo {
+        background-color: orange;
+    }
+    .jatuhTempo {
+        background-color: lightcoral;
+    }
+    .lebihJatuhTempo {
+        background-color: lightcoral;
+    }
+</style>
+<script>
+    var usrName = "@HttpContext.Current.User.Identity.Name";
+</script>
+
+
+

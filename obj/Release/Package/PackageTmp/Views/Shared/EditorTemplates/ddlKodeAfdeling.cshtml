@@ -1,0 +1,17 @@
+﻿@model string
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlKodeAfdeling")
+        .DataTextField("NamaUnit")
+        .DataValueField("OrgId")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterKodeAfdeling").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlKodeAfdelingOnSelect"); e.Change("ddlKodeAfdelingOnSelect"); })
+)
+
+
+
+

@@ -1,0 +1,165 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Report Karyawan Per Posisi Jabatan</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2019)
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                            .AutoBind(true)
+                            .Name("Bulan")
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                            .BindTo(new List<SelectListItem>()
+                            {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "01"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "02"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "03"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "04"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "05"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "06"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "07"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "08"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "09"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "Nopember",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+            .Grid<Ptpn8.SumberDayaManusia.Models.KaryawanPerPosisi>(Guid.Empty.ToString())
+            .Name("grdDetail")
+            .Columns(g =>
+            {
+                g.Bound(i => i.namakebun).Width(100).Title("Kebun");
+                g.Bound(i => i.namaafdeling).Width(100).Title("Afdeling");
+                g.Bound(i => i.nama).Width(100).Title("Nama Karyawan");
+                g.Bound(i => i.nama_jab).Width(100).Title("Jabatan");
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Excel();
+            })
+            .Excel(excel => excel.AllPages(true))
+            .AutoBind(false)
+            .Navigatable()
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .Sortable()
+            .Groupable()
+            .HtmlAttributes(new { style = "Height: 450px" })
+            .DataSource(o => o
+                .Ajax()
+                .Group(g => g.Add(gg => gg.namakebun))
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+<script>
+    function btnProsesOnClick() {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+        //$('#chart').data('kendoChart').dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.KaryawanPerPosisi',
+            scriptSQL: "EXEC SDM_KaryawanPerPosisi '" + $('#Bulan').val() + "','" + $('#Tahun').val() + "'"
+        }
+    }
+
+    function filterReport2(e) {
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.KaryawanPerKebunChart',
+            scriptSQL: "declare @@dashboard as table (Unit nvarchar(max),JumlahKaryawanTetap int,JumlahKaryawanPKWT int, JumlahKaryawanKLM int) " +
+                "insert @@dashboard " +
+                "Select distinct A.Nama as Unit, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahKaryawanTetap, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dikklm] as AA where AA.KD_KBN=A.KD_KBN and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "' and AA.GPO>1 and AA.KLS_SK='PKWT') as JumlahKaryawanPKWT, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dikklm] as AA where AA.KD_KBN=A.KD_KBN and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "' and AA.GPO>1 and AA.KLS_SK='KLM') as JumlahKaryawanKLM " +
+                "from [ReferensiEF].[dbo].[Kebun] as A " +
+                "order by A.Nama " +
+                "select * from @@dashboard"
+        }
+    }
+</script>
+
+
+
+
+
+

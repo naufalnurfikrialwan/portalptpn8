@@ -1,0 +1,41 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "ISLAM",
+                Value = "ISLAM"
+            },
+            new SelectListItem() {
+                Text = "KATOLIK",
+                Value = "KATOLIK"
+            },
+            new SelectListItem() {
+                Text = "PROTESTAN",
+                Value = "PROTESTAN"
+            },
+            new SelectListItem() {
+                Text = "HINDU",
+                Value = "HINDU"
+            },
+            new SelectListItem() {
+                Text = "BUDHA",
+                Value = "BUDHA"
+            },
+            new SelectListItem() {
+                Text = "LAIN-LAIN",
+                Value = "LAIN-LAIN"
+            }
+        })
+        .Events(e => { e.Change("ddlAgamaOnChange"); e.Select("ddlAgamaOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+
+
+
+
+

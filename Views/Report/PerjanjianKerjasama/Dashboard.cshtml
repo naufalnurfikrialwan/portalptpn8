@@ -1,0 +1,471 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Dashboard Perjanjian Kerjasama PTP. Nusantara VIII</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+.Items(tabstrip =>
+{
+    tabstrip.Add().Text("I. Instruksi Dashboard").Selected(true)
+    .Content(@<text>
+        1. Menu Dashboard berfungsi untuk menampilkan rekap Perjanjian Kerjasama semua Divisi.
+        <br />
+        2. Klik pada kolom tabel apabila ingin melihat lebih rinci Perjanjian Kerjasama di masing masing Divisi.
+        <br />
+        3. Klik pada tombol "Lihat Dokumen" apabila ingin melihat file Pdf.
+        <br />
+        4. Apabila ingin mendownload atau print dokumen tersebut, kontak Sekretaris Perusahaan PTPN VII.
+
+    </text>);
+    tabstrip.Add().Text("II. Rekap").Selected(false)
+    .Content(@<text>
+            @(Html.Kendo()
+            .Grid<Ptpn8.PerjanjianKerjasama.Models.Dashboard_PerjanjianKerjasama>(Guid.Empty.ToString())
+            .Name("grdDetail")
+            .Columns(g =>
+            {
+                g.Bound(i => i.NamaBagian).Width(100).Title("Bagian").HtmlAttributes(new { style = "text-align: left; font-weight : 700" });
+                g.Bound(i => i.SuratKeputusan).Width(100).Title("Surat Keputusan").HtmlAttributes(new { style = "text-align: center; color: red; font-weight : 700" });
+                g.Bound(i => i.SuratPerjanjian).Width(100).Title("Surat Perjanjian").HtmlAttributes(new { style = "text-align: center; color: blue; font-weight : 700" });
+                g.Bound(i => i.SuratPerintah).Width(100).Title("Surat Perintah").HtmlAttributes(new { style = "text-align: center; color: brown; font-weight : 700" });
+                g.Bound(i => i.NotaKesepahaman).Width(100).Title("Nota Kesepahaman").HtmlAttributes(new { style = "text-align: center; color: SEAGREEN; font-weight : 700" });
+                g.Command(com => com.GetType()).Width(300);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Excel();
+            })
+            .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+            .Excel(excel => excel.AllPages(true))
+            .AutoBind(true)
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .Sortable()
+            .Groupable()
+            .Selectable(
+                selectable => selectable
+                .Type(GridSelectionType.Cell)
+            )
+            .Groupable()
+            .HtmlAttributes(new { style = "Height: 450px" })
+            .DataSource(o => o
+                .Ajax()
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+            )
+            )
+    </text>);
+    tabstrip.Add().Text("III. Rincian").Selected(false)
+    .Content(@<text>
+            @(Html.Kendo()
+            .Grid<Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama>(Guid.Empty.ToString())
+            .Name("grdDetail2")
+            .Columns(g =>
+            {
+                g.Group(i =>
+                {
+                    i.Title("Rincian Perjanjian Kerjasama");
+                    i.Columns(c =>
+                    {
+                        c.Bound(j => j.NamaBagian).Title("Nama Bagian").Width(200);
+                        c.Bound(j => j.NomorPerjanjian).Title("Nomor Perjanjian").Width(120);
+                        c.Bound(j => j.Perihal).Title("Ruang Lingkup Kerjasama").Width(200);
+                        c.Bound(j => j.JenisPerjanjian).Title("Jenis").Width(150);
+                        c.Bound(j => j.NamaMitra).Title("Mitra").Width(150);
+                        c.Bound(j => j.LokasiPerjanjian).Title("Lokasi Perjanjian").Width(150);
+                        c.Bound(j => j.PIC).Title("PIC").Width(150);
+                    });
+                });
+                g.Group(i =>
+                {
+                    i.Title("Jangka Waktu");
+                    i.Columns(c =>
+                    {
+                        c.Bound(j => j.JangkaWaktuKerjasama).Title("Jangka Waktu").Width(150);
+                        c.Bound(j => j.TanggalMulai).Width(100).Title("Tgl Mulai").Format("{0:dd/MM/yyyy}");
+                        c.Bound(j => j.TanggalBerakhir).Width(100).Title("Tgl Berakhir").Format("{0:dd/MM/yyyy}");
+                    });
+                });
+                g.Group(i =>
+                {
+                    i.Title("Kompensasi");
+                    i.Columns(c =>
+                    {
+                        c.Bound(j => j.BentukKompensasi).Title("Bentuk Kompensasi").Width(150);
+                        c.Bound(j => j.NilaiNominal).Title("Nilai Nominal").Width(150).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                    });
+                });
+
+                g.Bound(i => i.Keterangan).Title("Keterangan").Width(150);
+                g.Bound(i => i.File).Title("File").Width(120).Hidden();
+                g.Command(command =>
+                {
+                    command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                  .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                }).Width(120);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Excel();
+            })
+            .Excel(excel => excel.AllPages(true))
+            .AutoBind(false)
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .Selectable()
+            .Sortable()
+            .Filterable()
+            .Groupable()
+            .Events(e =>
+             {
+                 e.DataBound("grdOnDataBound");
+             })
+            .HtmlAttributes(new { style = "Height: 450px" })
+            .DataSource(o => o
+                .Ajax()
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport2").Type(HttpVerbs.Post))
+
+            )
+            )
+    </text>);
+        tabstrip.Add().Text("IV. Grafik").Selected(false)
+    .Content(@<text>
+            <div class="demo-section k-content wide">
+                @(Html.Kendo().Chart<Ptpn8.PerjanjianKerjasama.Models.ChartDashboard_PerjanjianKerjasama>()
+                .Name("chart")
+                .Title("Perjanjian Kerjasama")
+                .Legend(legend => legend.Position(ChartLegendPosition.Top))
+                .DataSource(ds => ds
+                    .Read(read => read.Action("GetDataFrom", "Report").Type(HttpVerbs.Post).Data("filterReport3"))
+                )
+                .ChartArea(chartArea => chartArea
+                    .Background("transparent")
+                )
+                .Series(series =>
+                {
+                    series.Bar(model => model.SuratKeputusan).Name("Surat Keputusan").Color("red");
+                    //series.Bar(model => model.SE).Name("SE").Color("blue");
+                    series.Bar(model => model.SuratPerjanjian).Name("Surat Perjanjian").Color("blue");
+                    //series.Bar(model => model.SB).Name("SB").Color("orange");
+                    //series.Bar(model => model.M).Name("M").Color("black");
+                    //series.Bar(model => model.ST).Name("ST").Color("grey");
+                    series.Bar(model => model.SuratPerintah).Name("Surat Perintah").Color("brown");
+                    //series.Bar(model => model.SKU).Name("SKU").Color("magenta");
+                    //series.Bar(model => model.KET).Name("KET").Color("violet");
+                    series.Bar(model => model.NotaKesepahaman).Name("Nota Kesepahaman").Color("SEAGREEN");
+                })
+                .CategoryAxis(axis => axis
+                        .Categories(model => model.NamaBagian)
+
+                        )
+                .ValueAxis(axis => axis
+                    .Numeric()
+                    .Line(line => line.Visible(false))
+                    .MajorGridLines(lines => lines.Visible(true))
+                )
+                .Tooltip(tooltip => tooltip
+                    .Visible(true)
+                    .Template("#= series.name #: #= value #")
+                )
+                )
+            </div>
+    </text>);
+})
+    )
+</div>
+
+<script>
+    var bagian;
+    var kode, colIdx, pilihan;
+    var UserName = "@HttpContext.Current.User.Identity.Name";
+
+        $(document).ready(function () {
+            document.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
+            }, false);
+            pdf = $("#pdfWindow").kendoWindow({
+                title: "PDF Viewer",
+                modal: true,
+                visible: false,
+                resizable: false,
+                width: 900,
+                height: 550
+            }).data("kendoWindow");
+
+
+            gridStatus = 'belum-ngapa-ngapain';
+        })
+
+        function onButtonClick(e) {
+            e.preventDefault();
+            var grid = this;
+            var row = $(e.currentTarget).closest("tr");
+
+            var data = grid.dataItem(row);
+            var file = data.File;
+
+            pdf.open().center();
+
+            var options = {
+                pdfOpenParams: {
+                    navpanes: 1,
+                    toolbar: 0,
+                    statusbar: 0,
+                    pagemode: 'none',
+                    pagemode: "none",
+                    page: 1,
+                    zoom: "page-width",
+
+                    enableHandToolOnLoad: true
+                }
+            }
+
+
+            PDFObject.embed("/Content/Images/Document/PerjanjianKerjasama/" + file, "#testPDFObject", options)
+        }
+
+        function grdOnDataBound(e) {
+            var rows = e.sender.tbody.children();
+            for (var j = 0; j < rows.length; j++) {
+                var row = $(rows[j]);
+                var dataItem = e.sender.dataItem(row);
+
+                //var grid = $('#grdDetail').data('kendoGrid');
+                //var dataItem = typeof (grid.dataSource.get(reservasiId)) == "undefined" ? grid.dataSource.getByUid(reservasiId) : grid.dataSource.get(reservasiId);
+                var tanggalBerakhir = dataItem.TanggalBerakhir;
+                var dateStringTanggalBerakhir = new Date();
+                dateStringTanggalBerakhir = tanggalBerakhir.getFullYear() + "/" + (tanggalBerakhir.getMonth() + 1) + "/" + (tanggalBerakhir.getDate());
+                var today = new Date();
+                today = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate());
+
+                var tglBerakhirPisah = dateStringTanggalBerakhir.split('/');
+                var todayPisah = today.split('/');
+                var objek_tgl = new Date();
+                var pisahTanggalBerakhir = objek_tgl.setFullYear(parseInt(tglBerakhirPisah[0]), parseInt(tglBerakhirPisah[1] - 1), parseInt(tglBerakhirPisah[2]));
+                var pisahToday = objek_tgl.setFullYear(parseInt(todayPisah[0]), parseInt(todayPisah[1] - 1), parseInt(todayPisah[2]));
+                var jumlahHari = (((((pisahToday - pisahTanggalBerakhir) / 1000) / 60) / 60) / 24);
+
+                var tanggalBerakhir1 = dataItem.TanggalBerakhir;
+                var tanggalBerakhir2 = new Date(tanggalBerakhir1);
+                var today1 = new Date();
+                var today2 = new Date(today1);
+                if (tanggalBerakhir2.getTime() < today2.getTime()) {
+                    row.addClass("lebihJatuhTempo");
+                } else if (jumlahHari == 0) {
+                    row.addClass("jatuhTempo");
+                } else if (jumlahHari > -91 && jumlahHari < 0) {
+                    row.addClass("tigaBulanDariJatuhTempo");
+                }
+            }
+        }
+
+        function grdCariOnDataBound(e) {
+        }
+
+        function grdCariOnChange(e) {
+            var selected = $.map(this.select(), function (item) {
+                return $(item).text();
+            });
+
+            e.preventDefault();
+            var grid = this;
+            var row = $(e.currentTarget).closest("tr");
+            //colIdx = $("td", row).index(row);
+            var data = grid.dataItem(row);
+            var x = grid.select();
+            var r = x.closest("tr");
+            var xx = grid.dataItem(r);
+            bagian = xx.NamaBagian;
+            kode = selected.toString();
+            if (kode.indexOf("Surat Keputusan") > -1) { pilihan = "Surat Keputusan" }
+            else if (kode.indexOf("Surat Perjanjian") > -1) { pilihan = "Surat Perjanjian" }
+            else if (kode.indexOf("Surat Perintah") > -1) { pilihan = "Surat Perintah" }
+            else if (kode.indexOf("Nota Kesepahaman") > -1) { pilihan = "Nota Kesepahaman" }
+            else pilihan = "";
+
+
+            $("#tabstrip").data("kendoTabStrip").select(2);
+            var grid = $('#grdDetail2').data('kendoGrid');
+            grid.dataSource.read();
+        }
+
+        //fungsi menampilkan rincian PK dan IK
+        function filterReport2(e) {
+            if (pilihan == "Surat Keputusan") {
+                return {
+                    strClassView: 'Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama',
+                    scriptSQL: "declare @@PosisiBagianUserId nvarchar(max) "+
+	                           "declare @@PosisiWilayahUserId nvarchar(max) "+
+	                           "declare @@PosisiKebunUserId nvarchar(max) "+
+                               "set @@PosisiBagianUserId = (select '%'+convert(nvarchar(50), BagianId)+'%' from [ReferensiEF].[dbo].[Bagian] where bagianId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiWilayahUserId = (select '%'+convert(nvarchar(50), WilayahId)+'%' from [ReferensiEF].[dbo].[Wilayah] where wilayahId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) "+
+	                           "set @@PosisiKebunUserId = (select '%'+convert(nvarchar(50), KebunId)+'%' from [ReferensiEF].[dbo].[Kebun] where kebunId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "Select B.NamaUnit as NamaBagian, A.NomorPerjanjian, A.Perihal, A.JenisPerjanjian, A.NamaMitra, A.LokasiPerjanjian, CONVERT(varchar(10), (DATEDIFF(year, [TanggalMulai], [TanggalBerakhir]))) +' Tahun' as JangkaWaktuKerjasama, A.TanggalMulai, A.TanggalBerakhir, A.NilaiNominal, A.BentukKompensasi, A.PIC, A.Keterangan, A.[File] " +
+                               "from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                               "where B.NamaUnit ='" + bagian + "' and A.JenisPerjanjian like 'Surat Keputusan%' and A.Verifikasi=1 and (A.StatusOtoritas like @@PosisiBagianUserId or A.StatusOtoritas like @@PosisiWilayahUserId or A.StatusOtoritas like @@PosisiKebunUserId or A.BagianId like @@PosisiBagianUserId or A.BagianId like @@PosisiWilayahUserId or A.BagianId like @@PosisiKebunUserId)" +
+                               "order by A.Perihal "
+                }
+            }
+            else if (pilihan == "Surat Perjanjian") {
+                return {
+                    strClassView: 'Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama',
+                    scriptSQL: "declare @@PosisiBagianUserId nvarchar(max) " +
+                               "declare @@PosisiWilayahUserId nvarchar(max) " +
+                               "declare @@PosisiKebunUserId nvarchar(max) " +
+                               "set @@PosisiBagianUserId = (select '%'+convert(nvarchar(50), BagianId)+'%' from [ReferensiEF].[dbo].[Bagian] where bagianId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiWilayahUserId = (select '%'+convert(nvarchar(50), WilayahId)+'%' from [ReferensiEF].[dbo].[Wilayah] where wilayahId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiKebunUserId = (select '%'+convert(nvarchar(50), KebunId)+'%' from [ReferensiEF].[dbo].[Kebun] where kebunId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "Select B.NamaUnit as NamaBagian, A.NomorPerjanjian, A.Perihal, A.JenisPerjanjian, A.NamaMitra, A.LokasiPerjanjian, CONVERT(varchar(10),(DATEDIFF (year,[TanggalMulai],[TanggalBerakhir]))) +' Tahun' as JangkaWaktuKerjasama, A.TanggalMulai, A.TanggalBerakhir, A.NilaiNominal, A.BentukKompensasi, A.PIC, A.Keterangan, A.[File] " +
+                               "from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                               "where B.NamaUnit ='" + bagian + "' and A.JenisPerjanjian like '%Surat Perjanjian%' and A.Verifikasi=1 and (A.StatusOtoritas like @@PosisiBagianUserId or A.StatusOtoritas like @@PosisiWilayahUserId or A.StatusOtoritas like @@PosisiKebunUserId or A.BagianId like @@PosisiBagianUserId or A.BagianId like @@PosisiWilayahUserId or A.BagianId like @@PosisiKebunUserId) " +
+                               "order by A.Perihal "
+                }
+            }
+            else if (pilihan == "Surat Perintah") {
+                return {
+                    strClassView: 'Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama',
+                    scriptSQL: "declare @@PosisiBagianUserId nvarchar(max) " +
+                               "declare @@PosisiWilayahUserId nvarchar(max) " +
+                               "declare @@PosisiKebunUserId nvarchar(max) " +
+                               "set @@PosisiBagianUserId = (select '%'+convert(nvarchar(50), BagianId)+'%' from [ReferensiEF].[dbo].[Bagian] where bagianId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiWilayahUserId = (select '%'+convert(nvarchar(50), WilayahId)+'%' from [ReferensiEF].[dbo].[Wilayah] where wilayahId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiKebunUserId = (select '%'+convert(nvarchar(50), KebunId)+'%' from [ReferensiEF].[dbo].[Kebun] where kebunId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "Select B.NamaUnit as NamaBagian, A.NomorPerjanjian, A.Perihal, A.JenisPerjanjian, A.NamaMitra, A.LokasiPerjanjian, CONVERT(varchar(10),(DATEDIFF (year,[TanggalMulai],[TanggalBerakhir]))) +' Tahun' as JangkaWaktuKerjasama, A.TanggalMulai, A.TanggalBerakhir, A.NilaiNominal, A.BentukKompensasi, A.PIC, A.Keterangan, A.[File] " +
+                               "from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                               "where B.NamaUnit ='" + bagian + "' and A.JenisPerjanjian like '%Surat Perintah%' and A.Verifikasi=1 and (A.StatusOtoritas like @@PosisiBagianUserId or A.StatusOtoritas like @@PosisiWilayahUserId or A.StatusOtoritas like @@PosisiKebunUserId or A.BagianId like @@PosisiBagianUserId or A.BagianId like @@PosisiWilayahUserId or A.BagianId like @@PosisiKebunUserId) " +
+                               "order by A.Perihal "
+                }
+            }
+            else if (pilihan == "Nota Kesepahaman") {
+                return {
+                    strClassView: 'Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama',
+                    scriptSQL: "declare @@PosisiBagianUserId nvarchar(max) " +
+                               "declare @@PosisiWilayahUserId nvarchar(max) " +
+                               "declare @@PosisiKebunUserId nvarchar(max) " +
+                               "set @@PosisiBagianUserId = (select '%'+convert(nvarchar(50), BagianId)+'%' from [ReferensiEF].[dbo].[Bagian] where bagianId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiWilayahUserId = (select '%'+convert(nvarchar(50), WilayahId)+'%' from [ReferensiEF].[dbo].[Wilayah] where wilayahId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiKebunUserId = (select '%'+convert(nvarchar(50), KebunId)+'%' from [ReferensiEF].[dbo].[Kebun] where kebunId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "Select B.NamaUnit as NamaBagian, A.NomorPerjanjian, A.Perihal, A.JenisPerjanjian, A.NamaMitra, A.LokasiPerjanjian, CONVERT(varchar(10),(DATEDIFF (year,[TanggalMulai],[TanggalBerakhir]))) +' Tahun' as JangkaWaktuKerjasama, A.TanggalMulai, A.TanggalBerakhir, A.NilaiNominal, A.BentukKompensasi, A.PIC, A.Keterangan, A.[File] " +
+                               "from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                               "where B.NamaUnit ='" + bagian + "' and A.JenisPerjanjian like 'Nota Kesepahaman%' and A.Verifikasi=1 and (A.StatusOtoritas like @@PosisiBagianUserId or A.StatusOtoritas like @@PosisiWilayahUserId or A.StatusOtoritas like @@PosisiKebunUserId or A.BagianId like @@PosisiBagianUserId or A.BagianId like @@PosisiWilayahUserId or A.BagianId like @@PosisiKebunUserId) " +
+                               "order by A.Perihal "
+                }
+            }
+            else {
+                return {
+                    strClassView: 'Ptpn8.PerjanjianKerjasama.Models.ReportPerjanjianKerjasama',
+                    scriptSQL: "declare @@PosisiBagianUserId nvarchar(max) " +
+                               "declare @@PosisiWilayahUserId nvarchar(max) " +
+                               "declare @@PosisiKebunUserId nvarchar(max) " +
+                               "set @@PosisiBagianUserId = (select '%'+convert(nvarchar(50), BagianId)+'%' from [ReferensiEF].[dbo].[Bagian] where bagianId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiWilayahUserId = (select '%'+convert(nvarchar(50), WilayahId)+'%' from [ReferensiEF].[dbo].[Wilayah] where wilayahId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "set @@PosisiKebunUserId = (select '%'+convert(nvarchar(50), KebunId)+'%' from [ReferensiEF].[dbo].[Kebun] where kebunId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                               "Select B.NamaUnit as NamaBagian, A.NomorPerjanjian, A.Perihal, A.JenisPerjanjian, A.NamaMitra, A.LokasiPerjanjian, CONVERT(varchar(10),(DATEDIFF (year,[TanggalMulai],[TanggalBerakhir]))) +' Tahun' as JangkaWaktuKerjasama, A.TanggalMulai, A.TanggalBerakhir, A.NilaiNominal, A.BentukKompensasi, A.PIC, A.Keterangan, A.[File] " +
+                               "from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                               "where B.NamaUnit ='" + bagian + "' and A.Verifikasi=1 and (A.StatusOtoritas like @@PosisiBagianUserId or A.StatusOtoritas like @@PosisiWilayahUserId or A.StatusOtoritas like @@PosisiKebunUserId or A.BagianId like @@PosisiBagianUserId or A.BagianId like @@PosisiWilayahUserId or A.BagianId like @@PosisiKebunUserId) " +
+                               "order by A.Perihal "
+                }
+            }
+        }
+
+        //fungsi dashboard
+        function filterReport(e) {
+            return {
+                strClassView: 'Ptpn8.PerjanjianKerjasama.Models.Dashboard_PerjanjianKerjasama',
+                scriptSQL: "declare @@PosisiBagianUserId nvarchar(max) " +
+                           "declare @@PosisiWilayahUserId nvarchar(max) " +
+                           "declare @@PosisiKebunUserId nvarchar(max) " +
+                           "set @@PosisiBagianUserId = (select '%'+convert(nvarchar(50), BagianId)+'%' from [ReferensiEF].[dbo].[Bagian] where bagianId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                           "set @@PosisiWilayahUserId = (select '%'+convert(nvarchar(50), WilayahId)+'%' from [ReferensiEF].[dbo].[Wilayah] where wilayahId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                           "set @@PosisiKebunUserId = (select '%'+convert(nvarchar(50), KebunId)+'%' from [ReferensiEF].[dbo].[Kebun] where kebunId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                           "declare @@dashboard as table (NamaBagian nvarchar(max), SuratKeputusan nvarchar(max), SuratPerjanjian nvarchar(max), SuratPerintah nvarchar(max), NotaKesepahaman nvarchar(max)) " +
+                           "insert @@dashboard " +
+                           "Select distinct B.NamaUnit as NamaBagian, (select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Surat Keputusan%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId))  + ' Surat Keputusan' as SuratKeputusan, (select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Surat Perjanjian%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId))  + ' Surat Perjanjian' as SuratPerjanjian, (select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Surat Perintah%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId))  + ' Surat Perintah' as SuratPerintah, (select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Nota Kesepahaman%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId))  + ' Nota Kesepahaman' as NotaKesepahaman " +
+                           "from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                           "where A.Verifikasi=1 and (A.StatusOtoritas like @@PosisiBagianUserId or A.StatusOtoritas like @@PosisiWilayahUserId or A.StatusOtoritas like @@PosisiKebunUserId or A.BagianId like @@PosisiBagianUserId or A.BagianId like @@PosisiWilayahUserId or A.BagianId like @@PosisiKebunUserId) " +
+                           "order by B.NamaUnit " +
+                           "select * from @@dashboard"
+            }
+        }
+
+        function filterReport3(e) {
+            return {
+                strClassView: 'Ptpn8.PerjanjianKerjasama.Models.ChartDashboard_PerjanjianKerjasama',
+                scriptSQL: "declare @@PosisiBagianUserId nvarchar(max) " +
+                    "declare @@PosisiWilayahUserId nvarchar(max) " +
+                    "declare @@PosisiKebunUserId nvarchar(max) " +
+                    "set @@PosisiBagianUserId = (select '%'+convert(nvarchar(50), BagianId)+'%' from [ReferensiEF].[dbo].[Bagian] where bagianId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                    "set @@PosisiWilayahUserId = (select '%'+convert(nvarchar(50), WilayahId)+'%' from [ReferensiEF].[dbo].[Wilayah] where wilayahId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                    "set @@PosisiKebunUserId = (select '%'+convert(nvarchar(50), KebunId)+'%' from [ReferensiEF].[dbo].[Kebun] where kebunId=(select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + UserName + "')) " +
+                           "declare @@dashboard as table (NamaBagian nvarchar(max), SuratKeputusan int, SuratPerjanjian int, SuratPerintah int, NotaKesepahaman int) " +
+                           "insert @@dashboard Select distinct B.NamaUnit as NamaBagian, "+
+                           "(select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Surat Keputusan%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId)) as SuratKeputusan, " +
+                           "(select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Surat Perjanjian%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId)) as SuratPerjanjian, " +
+                           "(select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Surat Perintah%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId)) as SuratPerintah, " +
+                           "(select CAST(count(AA.NomorPerjanjian)AS Nvarchar) from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as AA where AA.JenisPerjanjian like '%Nota Kesepahaman%' and AA.BagianId=A.BagianId and AA.Verifikasi=1 and (AA.StatusOtoritas like @@PosisiBagianUserId or AA.StatusOtoritas like @@PosisiWilayahUserId or AA.StatusOtoritas like @@PosisiKebunUserId or AA.BagianId like @@PosisiBagianUserId or AA.BagianId like @@PosisiWilayahUserId or AA.BagianId like @@PosisiKebunUserId))  as NotaKesepahaman " +
+                           "from [SPDK_KanpusEF].[dbo].[PerjanjianKerjasama_Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId where A.Verifikasi=1 and (A.StatusOtoritas like @@PosisiBagianUserId or A.StatusOtoritas like @@PosisiWilayahUserId or A.StatusOtoritas like @@PosisiKebunUserId or A.BagianId like @@PosisiBagianUserId or A.BagianId like @@PosisiWilayahUserId or A.BagianId like @@PosisiKebunUserId) order by B.NamaUnit select * from @@dashboard "
+            }
+        }
+
+
+
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <script type='text/javascript'>
+            document.addEventListener("contextmenu", function(e){
+    e.preventDefault();
+}, false);
+    </script>
+</div>
+
+<style>
+    .tigaBulanDariJatuhTempo {
+        background-color: orange;
+    }
+
+    .jatuhTempo {
+        background-color: lightcoral;
+    }
+
+    .lebihJatuhTempo {
+        background-color: lightcoral;
+    }
+</style>
+
+
+
+
+

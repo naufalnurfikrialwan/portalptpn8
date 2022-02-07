@@ -1,0 +1,52 @@
+﻿@model String
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlKelompokRekening")
+        .OptionLabel("Pilih Kelompok Rekening...")
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .AutoBind(true)
+        .Events(e=>e.Select("ddlKelompokRekeningOnSelect"))
+        .HtmlAttributes(new { style = "width: 300px" })
+        .BindTo(new List<SelectListItem>() {
+              new SelectListItem() {
+                  Text = "Aset Lancar",
+                  Value = "Aset Lancar"
+              },
+              new SelectListItem() {
+                  Text = "Aset Tetap",
+                  Value = "Aset Tetap"
+              },
+              new SelectListItem() {
+                  Text = "Hutang Jangka Pendek",
+                  Value = "Hutang Jangka Pendek"
+              },
+              new SelectListItem() {
+                  Text = "Hutang Jangka Panjang",
+                  Value = "Hutang Jangka Panjang"
+              },
+              new SelectListItem() {
+                  Text = "Modal",
+                  Value = "Modal"
+              },
+              new SelectListItem() {
+                  Text = "Biaya Investasi",
+                  Value = "Biaya Investasi"
+              },
+              new SelectListItem() {
+                  Text = "Biaya Eksploitasi",
+                  Value = "Biaya Eksploitasi"
+              },
+              new SelectListItem() {
+                  Text = "Pendapatan",
+                  Value = "Pendapatan"
+              },
+          })
+
+)
+@Html.ValidationMessageFor(m => m)
+
+
+
+
+

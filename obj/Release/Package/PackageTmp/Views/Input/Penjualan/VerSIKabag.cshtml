@@ -1,0 +1,148 @@
+﻿@model Ptpn8.Penjualan.Models.View_HDRShippingInstruction
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Penjualan/VerSIKabag.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Penjualan.Models.View_HDRShippingInstruction>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.HDR_ShippingInstructionId).Width(50).Hidden();
+            g.Bound(i => i.NomorInput).Width(50).Hidden();
+            g.Bound(i => i.NomorInputView).Width(50).Hidden();
+            g.Bound(i => i.Consignee2).Width(50).Hidden();
+            g.Bound(i => i.Consignee3).Width(50).Hidden();
+            g.Bound(i => i.Consignee4).Width(50).Hidden();
+            g.Bound(i => i.Consignee5).Width(50).Hidden();
+            g.Bound(i => i.NotifyAddress1).Width(50).Hidden();
+            g.Bound(i => i.NotifyAddress2).Width(50).Hidden();
+            g.Bound(i => i.NotifyAddress3).Width(50).Hidden();
+            g.Bound(i => i.NotifyAddress4).Width(50).Hidden();
+            g.Bound(i => i.NotifyAddress5).Width(50).Hidden();
+            g.Bound(i => i.WeightList_Sets).Width(50).Hidden();
+            g.Bound(i => i.WeightList_Copies).Width(50).Hidden();
+            g.Bound(i => i.Certificate_Sets).Width(50).Hidden();
+            g.Bound(i => i.Certificate_Copies).Width(50).Hidden();
+            g.Bound(i => i.BL_Sets).Width(50).Hidden();
+            g.Bound(i => i.BL_Signed).Width(50).Hidden();
+            g.Bound(i => i.BL_Copies).Width(50).Hidden();
+            g.Bound(i => i.UserName).Width(50).Hidden();
+            g.Bound(i => i.JenisContainer).Width(50).Hidden();
+            g.Bound(i => i.JumlahContainer).Width(50).Hidden();
+            g.Bound(i => i.No_PO).Width(50).Hidden();
+            g.Bound(i => i.Enclosures_Sets).Width(50).Hidden();
+            g.Bound(i => i.Remarks_No_LC).Width(50).Hidden();
+            g.Bound(i => i.Remarks_Bank).Width(50).Hidden();
+            g.Bound(i => i.Remarks_Shipment).Width(50).Hidden();
+            g.Bound(i => i.NomorInput).Width(50).Hidden();
+            g.Bound(i => i.ETD).Width(50).Hidden();
+            g.Bound(i => i.ETA).Width(50).Hidden();
+            g.Bound(i => i.Kota_Loading).Width(50).Hidden();
+            g.Bound(i => i.BrokerId).Width(50).Hidden();
+            g.Bound(i => i.MainBudidayaId).Width(50).Hidden();
+            g.Bound(i => i.NamaMainBudidaya).Width(50).Hidden();
+            g.Bound(i => i.TahunBuku).Width(50).Hidden();
+            g.Bound(i => i.Pejabat).Width(50).Hidden();
+            g.Bound(i => i.UserNameKabag).Width(50).Hidden();
+            g.Bound(i => i.UserNameKaur).Width(50).Hidden();
+            g.Bound(i => i.VerKaur).Width(50).Title("Verifikasi Kaur").ClientTemplate("#= VerKaur ? 'Sudah':'Belum' #");
+            g.Bound(i => i.TglVerKaur).Width(100).Title("Tanggal Verifikasi Kaur").ClientTemplate("#= kendo.toString(TglVerKaur,'dd/MM/yyyy')#");
+            g.Bound(i => i.VerKabag).Width(50).Title("Verifikasi Kabag").ClientTemplate("#= VerKabag ? 'Sudah':'Belum' #");
+            g.Bound(i => i.TglVerKabag).Width(100).Title("Tanggal Verifikasi Kabag").ClientTemplate("#= kendo.toString(TglVerKabag,'dd/MM/yyyy')#");
+            g.Bound(i => i.No_SI).Width(70).Title("No SI");
+            g.Bound(i => i.Tanggal_SI).Width(70).Title("Tanggal SI").ClientTemplate("#= kendo.toString(Tanggal_SI,'dd/MM/yyyy')#");
+            g.Bound(i => i.Consignee1).Width(120).Title("Buyer");
+            g.Bound(i => i.NamaBroker).Width(120).Title("Broker");
+            g.Group(group => group
+                .Title("Destination")
+                .Columns(pa =>
+                {
+                    pa.Bound(o => o.Kota_Destination).Title("City").Width(80);
+                    pa.Bound(o => o.Negara_Destination).Title("Country").Width(80);
+                })
+            );
+            g.Bound(i => i.TotalQty).Width(100).Title("Sacks").Width(80).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.TotalPrice).Width(100).Title("USD").Width(80).Format("{0:N2}").HtmlAttributes(new { style = "text-align: right;" });
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        })
+        .AutoBind(true)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 600px" })
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBound("grdOnDataBound");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(i =>
+            {
+                i.Add(j => j.VerKaur).Ascending();
+                i.Add(j => j.Tanggal_SI).Descending();                
+            })
+            .Group(g => g.Add(gg => gg.NamaMainBudidaya))
+            .Model(model =>
+            {
+                model.Id(p => p.HDR_ShippingInstructionId);
+                model.Field(f => f.No_SI).Editable(false);
+                model.Field(f => f.Tanggal_SI).Editable(false);
+                model.Field(f => f.Consignee1).Editable(false);
+                model.Field(f => f.NamaBroker).Editable(false);
+                model.Field(f => f.Kota_Destination).Editable(false);
+                model.Field(f => f.Negara_Destination).Editable(false);
+                model.Field(f => f.NamaVessel).Editable(false);
+                model.Field(f => f.VerKaur).Editable(false);
+                model.Field(f => f.TglVerKaur).Editable(false);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>

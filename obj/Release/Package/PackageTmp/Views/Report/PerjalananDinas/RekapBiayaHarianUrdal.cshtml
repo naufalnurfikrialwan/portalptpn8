@@ -1,0 +1,167 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rekapitulasi Perjalanan Dinas Harian</div>
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().TextBox().Name("KodeKebun").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tanggal:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DatePicker().Name("TanggalAwal").Format("yyyy-MM-dd")
+                                            .Value(DateTime.Now)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>sd Tanggal:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DatePicker().Name("TanggalAkhir").Format("yyyy-MM-dd")
+                                            .Value(DateTime.Now)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.PerjalananDinas.Models.RekapBiayaKanpus>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NamaBagian).Width(100).Title("Nama Bagian");
+            g.Bound(i => i.NomorAlokasi).Width(100).Title("No Alokasi");
+            g.Bound(i => i.Berangkat).Width(80).Format("{0:dd-MM-yyyy}").Title("Berangkat");
+            g.Bound(i => i.Kembali).Width(80).Format("{0:dd-MM-yyyy}").Title("Kembali");
+            g.Bound(i => i.JenisTujuan).Width(100).Title("Jenis Tujuan");
+            g.Bound(i => i.Tujuan).Width(100).Title("Tujuan");
+            g.Bound(i => i.KendaraanDinas).Width(50).Title("Kendaraan").ClientTemplate("#= KendaraanDinas ? 'Mobil Dinas':'Umum' #");
+            g.Bound(i => i.NIK).Width(100).Title("NIK");
+            g.Bound(i => i.Nama).Width(100).Title("Nama");
+            g.Bound(i => i.Jabatan).Width(200).Title("Jabatan").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("TOTAL")
+                .ClientGroupFooterTemplate("Jumlah Per Bagian")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.UangSaku).Width(100).Title("Uang Saku").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangMakan).Width(100).Title("Uang Makan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangCucian).Width(100).Title("Uang Cucian").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangTransport).Width(100).Title("Uang Transport").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangLain).Width(100).Title("Penggantian Uang/Bensin").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangPenginapan).Width(100).Title("Uang Penginapan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+               .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+               .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+               .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.JumlahBPD).Width(100).Title("Jumlah BPD").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+               .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+               .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+               .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        //.Events(ev => ev.ExcelExport("excelExport"))
+        .DataSource(o => o
+            .Ajax()
+            .Group(g => g.Add(gg => gg.NamaBagian))
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.UangSaku).Sum();
+                ag.Add(x => x.UangMakan).Sum();
+                ag.Add(x => x.UangCucian).Sum();
+                ag.Add(x => x.UangTransport).Sum();
+                ag.Add(x => x.UangLain).Sum();
+                ag.Add(x => x.UangPenginapan).Sum();
+                ag.Add(x => x.JumlahBPD).Sum();
+            })
+        )
+    )
+
+</div>
+
+<script>
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.PerjalananDinas.Models.RekapBiayaKanpus',
+            scriptSQL: "Select D.Nama as NamaBagian, C.NomorAlokasi as NomorAlokasi, A.Berangkat, A.Kembali, A.JenisTujuan, (case when (A.Tujuan != '') then A.Tujuan else A.TujuanDalamWilayah end) as Tujuan, A.KendaraanDinas,C.NamaDriver, C.NopolKendaraan, B.NIK, B.Nama, B.Jabatan as Jabatan, B.UangSaku, B.UangMakan, B.UangCucian,B.UangTransport,B.UangLain,B.UangPenginapan,B.JumlahBPD " +
+                       "from [SPDK_KanpusEF].[dbo].[HDR_PermintaanPerjalananDinasKanpus] as A join [SPDK_KanpusEF].[dbo].[DTL_PermintaanPerjalananDinasKanpus] as B " +
+                       "on A.HDR_PermintaanPerjalananDinasKanpusId = B.HDR_PermintaanPerjalananDinasKanpusId " +
+                       "join [SPDK_KanpusEF].[dbo].[AlokasiUrdal] as C on C.AlokasiUrdalId = B.HDR_PermintaanPerjalananDinasKanpusId " +
+                       "join [ReferensiEF].[dbo].[Bagian] as D on D.BagianId = A.BagianId " +
+                       "where A.Berangkat>='" + $('#TanggalAwal').val() + "' and A.Berangkat<='" + $('#TanggalAkhir').val() + "' and verkaur=1 and C.NomorAlokasi !=''"
+        }
+    }
+
+    function excelExport(e) {
+        var sheet = e.workbook.sheets[0];
+        for (var rowIndex = 1; rowIndex < sheet.rows.length; rowIndex++) {
+
+            var row = sheet.rows[rowIndex];
+            for (var cellIndex = 1; cellIndex < row.cells.length; cellIndex++) {
+                var str = row.cells[cellIndex].value;
+                if (str.toLowerCase().indexOf("TRUE") < 0) {
+                    row.cells[cellIndex].value = 'Kendaraan Dinas';
+                }
+                else if (str.toLowerCase().indexOf("FALSE") < 0) {
+                    row.cells[cellIndex].value = 'Angkutan Umum';
+                }
+            }
+        }
+    }
+</script>
+
+
+

@@ -1,0 +1,146 @@
+﻿@model Ptpn8.UserManagement.Models.RegisterViewModel
+@using Kendo.Mvc.UI
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    <div id="register">
+        @Html.AntiForgeryToken()
+        <h4>Create a new account.</h4>
+        <hr />
+        @Html.ValidationSummary(true, "Account creation was unsuccessful. Please correct the errors and try again.")
+
+        <table>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Email)
+                </td>
+                <td>
+                    <div>
+                        @Html.Kendo().TextBoxFor(m => m.Email).HtmlAttributes(new { style = "width: 300px;" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Password)
+                </td>
+                <td>
+                    <div>
+                        @Html.Kendo().TextBoxFor(m => m.Password).Name("Password").HtmlAttributes(new { type = "password", style = "width: 300px;" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.ConfirmPassword)
+                </td>
+                <td>
+                    <div>
+                        @Html.Kendo().TextBoxFor(m => m.ConfirmPassword).Name("ConfirmPassword").HtmlAttributes(new { type = "password", style = "width: 300px;" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.NoIndukKaryawan)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.NoIndukKaryawan).Name("NoIndukKaryawan").HtmlAttributes(new { style = "width: 300px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Nama)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.Nama).Name("Nama").HtmlAttributes(new { style = "width: 300px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Jabatan)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.Jabatan).Name("Jabatan").HtmlAttributes(new { style = "width: 300px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Telepon)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.Telepon).Name("Telepon").HtmlAttributes(new { style = "width: 300px;" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Foto)
+                </td>
+                <td>
+                    @Html.HiddenFor(m => m.FileFoto)
+                    @(Html.Kendo().Upload()
+                            .Name("files")
+                            .Events(e => e.Success("UploadSuccess"))
+                            .Multiple(false)
+                            .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                            .Async(a => a.Save("SaveFoto", "img", new { Area = "Referensi" })
+                            .Remove("RemoveFoto", "img", new { Area = "Referensi" })
+                            .AutoUpload(true)
+                        )
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.LokasiKerjaId)
+                </td>
+                <td>
+                    @Html.HiddenFor(m => m.LokasiKerjaId)
+                    @Html.HiddenFor(m => m.PosisiLokasiKerjaId)
+                    @(Html.Kendo().TreeView()
+                        .Name("treeLokasiKerja")
+                        .DataTextField("Nama")
+                        .Events(e => e.Select("treeLokasiKerjaOnSelect"))
+                        .BindTo((IEnumerable<TreeViewItemModel>)ViewBag.treeOrganisasi)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div>
+                        <input type="submit" class="k-button" value="Register" />
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+}
+
+<script type="text/javascript">
+    function treeLokasiKerjaOnSelect(e) {
+        $('#LokasiKerjaId').val(e.node.dataset.id);
+        $('#PosisiLokasiKerjaId').val(e.node.dataset.id);
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#FileFoto').val(filename);
+    }
+
+</script>
+
+<style type="text/css">
+    #register {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: gainsboro;
+    }
+</style>
+

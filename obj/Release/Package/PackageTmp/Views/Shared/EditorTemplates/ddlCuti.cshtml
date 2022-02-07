@@ -1,0 +1,29 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Cuti Tahunan",
+                Value = "Cuti Tahunan"
+            },
+            new SelectListItem() {
+                Text = "Cuti Panjang",
+                Value = "Cuti Panjang"
+            },
+            new SelectListItem() {
+                Text = "Cuti Hamil",
+                Value = "Cuti Hamil"
+            },
+            new SelectListItem() {
+                Text = "Cuti Diluar Tanggungan",
+                Value = "Cuti Diluar Tanggungan"
+            }
+        })
+        .Events(e => { e.Change("ddlCutiOnSelect"); e.Select("ddlCutiOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

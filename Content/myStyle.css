@@ -1,0 +1,200 @@
+﻿    .content-header {
+        background-color: transparent;
+        width: 100%;
+        margin: 0;
+    }
+
+    .hdr {
+        background: gray;
+        color: white;
+        font-size: large;
+        font-weight: 500;
+        padding-left: 5px;
+    }
+    .photo {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+    }
+
+    .required {
+        font-weight: bold;
+    }
+
+    .accept, .status {
+    }
+
+    .valid {
+        color: green;
+        font-weight: 700;
+    }
+
+    .invalid {
+        color: red;
+        font-weight: 700;
+    }
+
+    .blue {
+        color: blue;
+        font-weight: 700;
+    }
+
+    ._header, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: darkseagreen ;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #ff9999 ;
+    }
+
+    ._headerkaret, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #ffaa80 ;
+    }
+
+    ._headersawit, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #bfbfbf ;
+    }
+
+    ._headerlainnya, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: yellowgreen;
+    }
+    
+    ._headerkina, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: lightsteelblue ;
+    }
+
+    ._headerkopi, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: lightslategrey ;
+    }
+
+    ._detail {
+        padding: 0px 0px;
+        border-radius: 2px;
+    }
+
+    .lokasikerja {
+        font-size: 0.9em;
+        color: brown;
+    }
+
+    .edit-buttons {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 26px;
+        height: 146px;
+        padding: 2px 2px 0 3px;
+        background-color: rgba(0,0,0,0.1);
+    }
+
+    .id {
+        font-size: small;
+    }
+
+    .k-grid th.k-header,
+    .k-grid-header {
+        background: lightslategrey;
+    }
+
+    .k-grid th.k-header,
+    .k-grid th.k-header .k-link {
+        color: white;
+        text-align: center;
+        height: auto;
+    }
+
+    .text-box, .k-textbox {
+        border-radius: 3px;
+        color: red;
+        background: darkgrey;
+        line-height: 22px;
+        font-size: 1.2em;
+        
+    }
+
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    .enabledbutton {
+        pointer-events: auto;
+        opacity: 1;
+    }
+
+    .edit{
+        background-color: green ;
+        box-shadow: rgba(0,0,0,0.4) 3px 3px;  
+        font-weight: 700;
+        margin: 5px 5px;
+    }
+
+    .delete{
+        background-color: red;
+        box-shadow: rgba(0,0,0,0.4) 3px 3px;  
+        font-weight: 700;
+        margin: 5px 5px;
+    }
+
+    .submit{
+        background-color: cornflowerblue ;
+        box-shadow: rgba(0,0,0,0.4) 3px 3px;  
+        font-weight: 700;
+        margin: 5px 5px;
+    }
+
+    .konfirmasi {
+        background-color: red  ;
+        color : white;
+        text-align: center;
+        box-shadow: rgba(0,0,0,0.4) 10px 10px;  
+    }
+
+  
+.k-grid  .k-grid-header  .k-header {
+    white-space: normal;
+}
+
+._key {
+    color: red;
+}
+
+._key k-input {
+    color: red;
+    font-weight: 600;
+}
+._nonkey {
+    color: black;
+
+}
+
+.k-grid-edit {
+    background : cornflowerblue;
+}
+
+.k-grid-cancel {
+    background : red;
+}
+
+.tblChart {
+    border: 2px solid silver;
+}
+
+.allcaps
+{ 
+    text-transform: uppercase; 
+}

@@ -1,0 +1,46 @@
+﻿@model Ptpn8.Models.PenggunaPortalYangAktif
+@using Ptpn8.Models
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+<script src="~/Scripts/Referensi/PenggunaAktif.js"></script>
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td><div style="text-align:center">@ViewBag.Title</div></td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Models.PenggunaPortalYangAktif>()
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.PenggunaPortalYangAktifId).Hidden();
+            g.Bound(i => i.Tanggal).Width(100).Filterable(false).Sortable(false).Title("Foto").ClientTemplate(
+                   @"<div class='photo'><img id='#:PenggunaPortalYangAktifId#' src='" + Url.Content("~/Content/Images/View/") + "#:PenggunaPortalYangAktifId#.jpg' alt='#: PenggunaPortalYangAktifId #' /></div>");
+            g.Bound(i => i.Tanggal).Title("Tanggal").Width(60).Format("{0:dd-MM-yyyy hh:mm}");
+            g.Bound(i => i.UserName).Title("User Name").Width(150);
+            g.Bound(i => i.Nama).Title("Nama").Width(150);
+            g.Bound(i => i.LokasiKerja).Title("Lokasi Kerja").Width(300);
+            //g.ForeignKey(i => i.LokasiKerjaId, Ptpn8.Areas.Referensi.Models.CRUD.CRUDLokasiKerja.CRUD.getFlatData(), "LokasiKerjaId", "Text").Title("Lokasi Kerja").Width(200);
+            g.Bound(i => i.Aplikasi).Title("Aplikasi").Width(120);
+            g.Bound(i => i.Menu).Title("Menu").Width(120);
+        })
+        .AutoBind(true)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Pageable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.PenggunaPortalYangAktifId);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+        )
+    )
+</div>

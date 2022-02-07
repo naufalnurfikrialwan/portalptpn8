@@ -1,0 +1,10 @@
+﻿@(Html.Kendo().Upload()
+    .Name("files")
+    .Async(a => a
+        .Save("Save", "Input")
+        .Remove("Remove", "Input")
+        .AutoUpload(true)
+    )
+    .Events(e => e.Success("uplOnSuccess"))
+    .Multiple(false)
+)

@@ -1,0 +1,765 @@
+﻿@model Ptpn8.Models.Migrasi.View_Migrasi_ArusProduksi
+
+@*<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+    <script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+    <img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+    @(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+    )*@
+
+@*header*@
+<div>
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center;">@ViewBag.Title</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_header" style="font-size: medium;" class="_headerteh">
+    @(Html.Kendo().TextBox().Name("NamaUser").Value(HttpContext.Current.User.Identity.Name).HtmlAttributes(new { style = "display: none" }))
+    <table>
+        <tr>
+            <td width="20%">
+                <label style="text-align:right">Bulan Produksi:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DropDownList().Name("blnProduksi")
+                    .AutoBind(true)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .BindTo(new List<SelectListItem>() {
+                        new SelectListItem() {
+                            Text = "Januari",
+                            Value = "01"
+                        },
+                        new SelectListItem() {
+                            Text = "Februari",
+                            Value = "02"
+                        },
+                        new SelectListItem() {
+                            Text = "Maret",
+                            Value = "03"
+                        },
+                        new SelectListItem() {
+                            Text = "April",
+                            Value = "04"
+                        },
+                        new SelectListItem() {
+                            Text = "Mei",
+                            Value = "05"
+                        },
+                        new SelectListItem() {
+                            Text = "Juni",
+                            Value = "06"
+                        },
+                        new SelectListItem() {
+                            Text = "Juli",
+                            Value = "07"
+                        },
+                        new SelectListItem() {
+                            Text = "Agustus",
+                            Value = "08"
+                        },
+                        new SelectListItem() {
+                            Text = "September",
+                            Value = "09"
+                        },
+                        new SelectListItem() {
+                            Text = "Oktober",
+                            Value = "10"
+                        },
+                        new SelectListItem() {
+                            Text = "Nopember",
+                            Value = "11"
+                        },
+                        new SelectListItem() {
+                            Text = "Desember",
+                            Value = "12"
+                        }
+                    })
+                )
+                -
+                @(Html.Kendo().NumericTextBox().Name("thnProduksi").Min(2019).Format("D4").Value(DateTime.Now.Year)
+                                                                                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label style="text-align:right">Kebun/Plant:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DropDownList()
+                    .Name("ddlKebun")
+                    .AutoBind(true)
+                    .OptionLabel("Pilih Kebun...")
+                    .DataTextField("Description")
+                    .DataValueField("Plant")
+                    .DataSource(dataSource =>
+                    {
+                        dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterKebun").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+                    })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="button" id="btnSubmit" onclick="btnSubmitOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon"></span>Submit</button>
+            </td>
+        </tr>
+    </table>
+</div>
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Models.Migrasi.View_Migrasi_ArusProduksi>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.Migrasi_ArusProduksiId).Hidden();
+            g.Bound(i => i.Plant).Width(50).Hidden();
+            g.Bound(i => i.NamaKebun).Width(120).Title("Kebun");
+            g.Bound(i => i.SLoc).Width(120).Title("Storage Location");
+            g.Bound(i => i.Material).Width(50).Hidden();
+            g.Bound(i => i.NamaGrade).Width(80).Title("Grade");
+            g.Bound(i => i.BulanProduksi).Width(70).Title("Bulan Prod");
+            g.Bound(i => i.Batch).Width(100).Title("Chop").HtmlAttributes(new { style = "text-align: center;" });
+            g.Bound(i => i.Quantity).Width(100).Title("Qty").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Unit_of_Entry).Width(100).Title("Satuan");
+
+            g.Group(i => i
+                .Title("Alokasi Untuk")
+                .Columns(h =>
+                {
+                    h.Bound(q => q.MvT343).HeaderTemplate("Auction").Width(100)
+                        .HtmlAttributes(new { style = "text-align: left; font-size: smaller;" })
+                        .ClientTemplate("#= WarnaKolom(MvT343,'red') #");
+                    h.Bound(q => q.MvT341).HeaderTemplate("Kontrak KPBN & PTPNVIII").Width(100)
+                        .HtmlAttributes(new { style = "text-align: left; font-size: smaller;" })
+                        .ClientTemplate("#= WarnaKolom(MvT341,'blue') #");
+                    h.Bound(q => q.MvT349).HeaderTemplate("Offering").Width(100)
+                        .HtmlAttributes(new { style = "text-align: left; font-size: smaller;" })
+                        .ClientTemplate("#= WarnaKolom(MvT349,'green') #");
+                }));
+            g.Bound(i => i.MvT101).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT102).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT201).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT202).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT261).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT262).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT301).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT302).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT309).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT310).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT311).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT312).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT321).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT322).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT342).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT344).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT350).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT413).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT414).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT531).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT532).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT561).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT562).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT601).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT602).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT701).Width(100).Title("").Hidden();
+            g.Bound(i => i.MvT702).Width(100).Title("").Hidden();
+
+
+            g.Bound(i => i.SudahKontrak341).Width(200).Title("").
+                ClientTemplate("#= buatButton(Migrasi_ArusProduksiId) #");
+            g.Bound(i => i.SudahKirim343).Width(100).Title("").Hidden();
+            g.Bound(i => i.SudahTerjual343).Width(100).Title("").Hidden();
+            g.Bound(i => i.SudahKontrak343).Width(100).Title("").Hidden();
+            g.Bound(i => i.SudahKirim349).Width(100).Title("").Hidden();
+            g.Bound(i => i.SudahApprove349).Width(100).Title("").Hidden();
+            g.Bound(i => i.SudahCancel349).Width(100).Title("").Hidden();
+            g.Bound(i => i.SudahLewatWaktu).Width(100).Title("").Hidden();
+            g.Bound(i => i.SudahKontrak349).Width(100).Title("").Hidden();
+
+            //g.Command(command =>
+            //{
+            //    command.Custom("Alokasi1").Text("Auction KPBN").Click("openWindow1").HtmlAttributes(new { @class = "k-state-disabled", style = "font-size: large; background-color: red; color: white; height: 30px;" });
+            //    command.Custom("Alokasi2").Text("Kontrak KPBN & PTPN VIII").Click("openWindow2").HtmlAttributes(new { @class = "k-state-disabled", style = "font-size: large; background-color: blue; color: white; height: 30px;" });
+            //    command.Custom("Alokasi3").Text("Offering").Click("openWindow3").HtmlAttributes(new { @class = "k-state-disabled", style = "font-size: large; background-color: green; color: white; height: 30px;" });
+            //}).Width(200);
+        })
+        //.ToolBar(toolbar =>
+        //{
+        //    toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        //})
+        .AutoBind(false)
+        //.Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "font-size: medium; height: 650px" })
+        .Events(e =>
+        {
+            e.DataBound("grdOnDataBound");
+            //e.Change("grdOnChange");
+            //e.Edit("grdOnEdit");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Sort(s => s.Add(x => x.Plant))
+            .Batch(true)
+            .Model(model =>
+            {
+                model.Id(p => p.Migrasi_ArusProduksiId);
+            })
+            .Read(read => read.Action("GetDataFromGRID", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+        )
+    )
+</div>
+
+@* Auction KPBN *@
+<div id="winAlokasi1" title="Alokasi Untuk Auction KPBN" style="font-size: medium;">
+    <table width="100%">
+        <tr>
+            <td width="40%"><label>Tanggal Alokasi:</label></td>
+            <td>
+                @(Html.Kendo().DateTimePicker().Name("Tanggal_Alokasi1").Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 70%" }).Value(DateTime.Now))
+            </td>
+        </tr>
+        <tr>
+            <td><label>No Alokasi:</label></td>
+            <td>
+                @(Html.Kendo().NumericTextBox().Name("No_Alokasi1").Min(1).Format("D4").HtmlAttributes(new { style = "width:70%", @class = "allcaps" }))
+            </td>
+        </tr>
+        <tr>
+            <td><label>No Katalog:</label></td>
+            <td>
+                @(Html.Kendo().NumericTextBox().Name("No_Katalog").Min(1).Format("D4").HtmlAttributes(new { style = "width:70%", @class = "allcaps" }))
+            </td>
+        </tr>
+        <tr>
+            <td><label>Tanggal Auction</label></td>
+            <td>
+                @(Html.Kendo().DateTimePicker().Name("Tanggal_Auction").Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 70%" }).Value(DateTime.Now))
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button id="submit1" class="submit k-button">Submit</button>
+                <button id="cancel1" class="delete k-button">Cancel</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+@* Kontrak KPBN dan Bandung *@
+<div id="winAlokasi2" title="Alokasi Untuk Pemenuhan Kontrak Free Sales KPBN dan Bandung" style="font-size: medium;">
+    <table width="100%">
+        <tr>
+            <td width="40%"><label>Tanggal Alokasi:</label></td>
+            <td>
+                @(Html.Kendo().DateTimePicker().Name("Tanggal_Alokasi2").Format("dd/MM/yyyy HH:mm").HtmlAttributes(new { style = "width: 70%" }).Value(DateTime.Now))
+            </td>
+        </tr>
+        <tr>
+            <td><label>No Alokasi:</label></td>
+            <td>
+                @(Html.Kendo().NumericTextBox().Name("No_Alokasi2").Min(1).Format("D4").HtmlAttributes(new { style = "width:70%", @class = "allcaps" }))
+            </td>
+        </tr>
+        <tr>
+            <td><label>No Kontrak/SC:</label></td>
+            <td>
+                @(Html.Kendo().TextBox().Name("No_Kontrak").HtmlAttributes(new { style = "width:70%", @class = "allcaps" }))
+            </td>
+        </tr>
+        <tr>
+            <td><label>Tanggal Kontrak/SC</label></td>
+            <td>
+                @(Html.Kendo().DateTimePicker().Name("Tanggal_Kontrak").Format("dd/MM/yyyy HH:mm").HtmlAttributes(new { style = "width: 70%" }).Value(DateTime.Now))
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button id="submit2" class="submit k-button">Submit</button>
+                <button id="cancel2" class="delete k-button">Cancel</button>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+@* Offering *@
+<div id="winAlokasi3" title="Alokasi Untuk Offering" style="font-size: medium;">
+    <table width="100%">
+        <tr>
+            <td width="40%"><label>Tanggal Alokasi:</label></td>
+            <td>
+                @(Html.Kendo().DateTimePicker().Name("Tanggal_Alokasi3").Format("dd/MM/yyyy HH:mm").HtmlAttributes(new { style = "width: 70%" }).Value(DateTime.Now))
+            </td>
+        </tr>
+        <tr>
+            <td><label>No Alokasi:</label></td>
+            <td>
+                @(Html.Kendo().NumericTextBox().Name("No_Alokasi3").Min(1).Format("D4").HtmlAttributes(new { style = "width:70%", @class = "allcaps" }))
+            </td>
+        </tr>
+        <tr>
+            <td><label>Calon Pembeli:</label></td>
+            <td>
+                @(Html.Kendo().TextBox().Name("BuyerId").HtmlAttributes(new { style="display:none;"}))
+                @(Html.Kendo().AutoComplete().Name("NamaBuyer")
+                                        .MinLength(2)
+                                        .Filter("contains")
+                                        .DataTextField("Nama")
+                                        .DataSource(o => o.Read(r => r.Action("GetBuyer1", "ddl", new { Area = "Referensi" }).Data("filterBuyer")).ServerFiltering(true))
+                                        .HtmlAttributes(new { required = "required", data_required_msg = "Isi Buyer", style = "width: 70%", @class = "allcaps" })
+                                        .Placeholder("Pilih Buyer")
+                                        .Events(e => e.Change("BuyerOnSelect"))
+                )
+            </td>
+        </tr>
+        @*<tr>
+            <td><label>Email Calon Pembeli:</label></td>
+            <td>
+                @(Html.Kendo().TextBox().Name("Alamat_eMail").HtmlAttributes(new { required = "required", data_required_msg = "Isi Alamat EMail", style = "width: 70%" }))
+            </td>
+        </tr>*@
+        <tr>
+            <td><label>Tanggal Batas Penawaran</label></td>
+            <td>
+                @(Html.Kendo().DateTimePicker().Name("Tanggal_BatasPenawaran").Format("dd/MM/yyyy HH:mm").HtmlAttributes(new { style = "width: 70%" }).Value(DateTime.Now))
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button id="submit3" class="submit k-button">Submit</button>
+                <button id="cancel3" class="delete k-button">Cancel</button>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+@*footer*@
+<div id="_footer">
+</div>
+
+<script>
+    var menuId = 'DA9F0A46-3165-4094-8060-44D11B994EE6';
+    var bln, kbn;
+    var win1, win2, win3;
+    var migrasi_ArusProduksiId,currentRow;
+
+    $(document).ready(function () {
+        win1 = $("#winAlokasi1").kendoWindow({
+            title: "Alokasi Untuk Auction KPBN",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 500
+        }).data("kendoWindow");
+
+        win2 = $("#winAlokasi2").kendoWindow({
+            title: "Alokasi Untuk Pemenuhan Kontrak Free Sales KPBN dan Bandung",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 500
+        }).data("kendoWindow");
+
+        win3 = $("#winAlokasi3").kendoWindow({
+            title: "Alokasi Untuk Offering",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 500
+        }).data("kendoWindow");
+
+        win4 = $("#konfirmasiDetail").kendoWindow({
+            title: "Cancel Alokasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 500
+        }).data("kendoWindow");
+
+    });
+
+
+    function filterdetailRead(e) {
+        var sql;
+
+        if (bln != '' && kbn != '') {
+            sql = "SELECT A.Migrasi_ArusProduksiId,A.Plant,B.Uraian as NamaKebun,A.Material,D.Nama as NamaGrade,A.BulanProduksi,A.Batch,A.Quantity,A.Unit_of_Entry,A.MvT343,A.MvT341,A.MvT349,case when G.SudahKirim=1 then '1' else '0' end as SudahKirim343,case when I.StatusAuction not like 'bid' then '1' else '0' end as SudahNoBid343,case when I.StatusAuction like 'bid' then '1' else '0' end as SudahTerjual343,case when I.KontrakKPBN!='' then '1' else '0' end as SudahKontrak343,case when H.SudahKirim=1 then '1' else '0' end as SudahKirim349,case when J.StatusOffering=1 then '1' else '0' end as SudahApprove349,case when J.StatusOffering=0 then '1' else '0' end as SudahCancel349,case when getdate()>K.TanggalBatasWaktu then '1' else '0' end as SudahLewatWaktu,case when J.NoKontrak!='' then '1' else '0' end as SudahKontrak349,SLoc FROM [ERP].[dbo].[Migrasi_ArusProduksi] A LEFT JOIN ERP..Migrasi_Kebun B ON A.Plant=B.Plant LEFT JOIN ERP..Migrasi_Material C ON A.Material=C.Material LEFT JOIN ReferensiEF..Grade D ON C.GradeId=cast(D.GradeId as varchar(50)) LEFT JOIN [ERP].[dbo].[Migrasi_Alokasi] E ON A.Migrasi_ArusProduksiId=E.Migrasi_ArusProduksiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi341 F ON E.Migrasi_AlokasiId=F.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi343 G ON E.Migrasi_AlokasiId=G.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi349 H ON E.Migrasi_AlokasiId=H.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatKatalog I ON E.Migrasi_AlokasiId=I.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatOffering J ON E.Migrasi_AlokasiId=J.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_HDR_BuatOffering K ON J.Migrasi_HDR_BuatOfferingId=K.Migrasi_HDR_BuatOfferingId where MvT321 is not null and MvT601 is null and MvT413 is null and BulanProduksi='" + bln + "' and A.Plant='" + kbn + "'";
+        }
+        else if (bln != '' && kbn == '') {
+            sql = "SELECT A.Migrasi_ArusProduksiId,A.Plant,B.Uraian as NamaKebun,A.Material,D.Nama as NamaGrade,A.BulanProduksi,A.Batch,A.Quantity,A.Unit_of_Entry,A.MvT343,A.MvT341,A.MvT349,case when G.SudahKirim=1 then '1' else '0' end as SudahKirim343,case when I.StatusAuction not like 'bid' then '1' else '0' end as SudahNoBid343,case when I.StatusAuction like 'bid' then '1' else '0' end as SudahTerjual343,case when I.KontrakKPBN!='' then '1' else '0' end as SudahKontrak343,case when H.SudahKirim=1 then '1' else '0' end as SudahKirim349,case when J.StatusOffering=1 then '1' else '0' end as SudahApprove349,case when J.StatusOffering=0 then '1' else '0' end as SudahCancel349,case when getdate()>K.TanggalBatasWaktu then '1' else '0' end as SudahLewatWaktu,case when J.NoKontrak!='' then '1' else '0' end as SudahKontrak349,SLoc FROM [ERP].[dbo].[Migrasi_ArusProduksi] A LEFT JOIN ERP..Migrasi_Kebun B ON A.Plant=B.Plant LEFT JOIN ERP..Migrasi_Material C ON A.Material=C.Material LEFT JOIN ReferensiEF..Grade D ON C.GradeId=cast(D.GradeId as varchar(50)) LEFT JOIN [ERP].[dbo].[Migrasi_Alokasi] E ON A.Migrasi_ArusProduksiId=E.Migrasi_ArusProduksiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi341 F ON E.Migrasi_AlokasiId=F.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi343 G ON E.Migrasi_AlokasiId=G.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi349 H ON E.Migrasi_AlokasiId=H.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatKatalog I ON E.Migrasi_AlokasiId=I.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatOffering J ON E.Migrasi_AlokasiId=J.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_HDR_BuatOffering K ON J.Migrasi_HDR_BuatOfferingId=K.Migrasi_HDR_BuatOfferingId where MvT321 is not null and MvT601 is null and MvT413 is null and BulanProduksi='" + bln + "'";
+        }
+        else if (bln == '' && kbn != '') {
+            sql = "SELECT A.Migrasi_ArusProduksiId,A.Plant,B.Uraian as NamaKebun,A.Material,D.Nama as NamaGrade,A.BulanProduksi,A.Batch,A.Quantity,A.Unit_of_Entry,A.MvT343,A.MvT341,A.MvT349,case when G.SudahKirim=1 then '1' else '0' end as SudahKirim343,case when I.StatusAuction not like 'bid' then '1' else '0' end as SudahNoBid343,case when I.StatusAuction like 'bid' then '1' else '0' end as SudahTerjual343,case when I.KontrakKPBN!='' then '1' else '0' end as SudahKontrak343,case when H.SudahKirim=1 then '1' else '0' end as SudahKirim349,case when J.StatusOffering=1 then '1' else '0' end as SudahApprove349,case when J.StatusOffering=0 then '1' else '0' end as SudahCancel349,case when getdate()>K.TanggalBatasWaktu then '1' else '0' end as SudahLewatWaktu,case when J.NoKontrak!='' then '1' else '0' end as SudahKontrak349,SLoc FROM [ERP].[dbo].[Migrasi_ArusProduksi] A LEFT JOIN ERP..Migrasi_Kebun B ON A.Plant=B.Plant LEFT JOIN ERP..Migrasi_Material C ON A.Material=C.Material LEFT JOIN ReferensiEF..Grade D ON C.GradeId=cast(D.GradeId as varchar(50)) LEFT JOIN [ERP].[dbo].[Migrasi_Alokasi] E ON A.Migrasi_ArusProduksiId=E.Migrasi_ArusProduksiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi341 F ON E.Migrasi_AlokasiId=F.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi343 G ON E.Migrasi_AlokasiId=G.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi349 H ON E.Migrasi_AlokasiId=H.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatKatalog I ON E.Migrasi_AlokasiId=I.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatOffering J ON E.Migrasi_AlokasiId=J.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_HDR_BuatOffering K ON J.Migrasi_HDR_BuatOfferingId=K.Migrasi_HDR_BuatOfferingId where MvT321 is not null and MvT601 is null and MvT413 is null and A.Plant='" + kbn + "'";
+        }
+        else {
+            sql = "SELECT A.Migrasi_ArusProduksiId,A.Plant,B.Uraian as NamaKebun,A.Material,D.Nama as NamaGrade,A.BulanProduksi,A.Batch,A.Quantity,A.Unit_of_Entry,A.MvT343,A.MvT341,A.MvT349,case when G.SudahKirim=1 then '1' else '0' end as SudahKirim343,case when I.StatusAuction not like 'bid' then '1' else '0' end as SudahNoBid343,case when I.StatusAuction like 'bid' then '1' else '0' end as SudahTerjual343,case when I.KontrakKPBN!='' then '1' else '0' end as SudahKontrak343,case when H.SudahKirim=1 then '1' else '0' end as SudahKirim349,case when J.StatusOffering=1 then '1' else '0' end as SudahApprove349,case when J.StatusOffering=0 then '1' else '0' end as SudahCancel349,case when getdate()>K.TanggalBatasWaktu then '1' else '0' end as SudahLewatWaktu,case when J.NoKontrak!='' then '1' else '0' end as SudahKontrak349,SLoc FROM [ERP].[dbo].[Migrasi_ArusProduksi] A LEFT JOIN ERP..Migrasi_Kebun B ON A.Plant=B.Plant LEFT JOIN ERP..Migrasi_Material C ON A.Material=C.Material LEFT JOIN ReferensiEF..Grade D ON C.GradeId=cast(D.GradeId as varchar(50)) LEFT JOIN [ERP].[dbo].[Migrasi_Alokasi] E ON A.Migrasi_ArusProduksiId=E.Migrasi_ArusProduksiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi341 F ON E.Migrasi_AlokasiId=F.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi343 G ON E.Migrasi_AlokasiId=G.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_Alokasi349 H ON E.Migrasi_AlokasiId=H.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatKatalog I ON E.Migrasi_AlokasiId=I.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_DTL_BuatOffering J ON E.Migrasi_AlokasiId=J.Migrasi_AlokasiId LEFT JOIN [ERP].[dbo].Migrasi_HDR_BuatOffering K ON J.Migrasi_HDR_BuatOfferingId=K.Migrasi_HDR_BuatOfferingId where MvT321 is not null and MvT601 is null and MvT413 is null";
+        }
+
+        return {
+            strClassView: 'Ptpn8.Models.Migrasi.View_Migrasi_ArusProduksi',
+            scriptSQL: sql,
+            _menuId: menuId,
+            _cs: 'csERP'
+        };
+    }
+
+    function filterKebun(e) {
+        return {
+            strClassView: "Ptpn8.Migrasi.Models.BKM_Plant",
+            scriptSQL: "SELECT Plant as Plant, Uraian as Description FROM [ERP].[dbo].[Migrasi_Kebun] order by Plant",
+            _menuId: menuId
+        };
+    }
+
+    function btnSubmitOnClick(e) {
+
+        if ($('#thnProduksi').val() == '') {
+            bln = '';
+        }
+        else {
+            bln = $('#blnProduksi').val() + $('#thnProduksi').val();
+        }
+
+        if ($('#ddlKebun').data('kendoDropDownList').value() == '') {
+            kbn = '';
+        }
+        else {
+            kbn = $('#ddlKebun').data('kendoDropDownList').value();
+        }
+
+        $('#grdDetail').data('kendoGrid').dataSource.read();
+    }
+
+    function openWindow1(id) {
+        var grd = $('#grdDetail').data('kendoGrid');
+        currentRow = grd.dataSource.get(id);
+        migrasi_ArusProduksiId = currentRow.Migrasi_ArusProduksiId;
+        read1(currentRow).done(function () {
+            win1.open().center();
+            $("#submit1").click(function () {
+                submit1(currentRow).done(function () {
+                    var grid = $('#grdDetail').data('kendoGrid');
+                    var dataItem = typeof (grid.dataSource.get(migrasi_ArusProduksiId)) == "undefined" ? grid.dataSource.getByUid(migrasi_ArusProduksiId) : grid.dataSource.get(migrasi_ArusProduksiId);
+                    var tgl = ($('#Tanggal_Auction').val()).toString();
+                    dataItem.set("MvT341", "");
+                    dataItem.set("MvT343", '<label>Tgl Auction:</label><label>' + tgl.substr(0,10) + '</label><label>' + 'No Katalog:</label><label>' + $('#No_Katalog').val())+'</label>';
+                    dataItem.set("MvT349", '');
+
+                    win1.close();
+                });
+            });
+            $("#cancel1").click(function () {
+                win1.close();
+            });
+        });
+    }
+
+    function read1(dataItem) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            success: function (dt) {
+                if (dt.length > 0) {
+                    $('#Tanggal_Alokasi1').val(dt[0][0]);
+                    $('#No_Alokasi1').data('kendoNumericTextBox').value(dt[0][1]);
+                    $('#No_Katalog').data('kendoNumericTextBox').value(dt[0][2]);
+                    $('#Tanggal_Auction').val(dt[0][3]);
+                }
+            },
+            data: {
+                scriptSQL: "select top 1 A.TanggalAlokasi, A.NoAlokasi, B.NoKatalog, B.TanggalAuction from ERP..Migrasi_Alokasi A join ERP..Migrasi_Alokasi343 B on A.Migrasi_AlokasiId=B.Migrasi_AlokasiId where Migrasi_ArusProduksiId='" + dataItem.Migrasi_ArusProduksiId+"'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function submit1(currentData) {
+        var url = '/Input/ExecSQL';
+        var grid = $('#grdDetail').data('kendoGrid');
+        var tglAlokasi = $('#Tanggal_Alokasi1').val();
+        var noAlokasi = $('#No_Alokasi1').val();
+        var namaUser = $('#NamaUser').val();
+        var noKatalog = $('#No_Katalog').val();
+        var tglKatalog = $('#Tanggal_Auction').val();
+        var scrSQL = "set dateformat DMY; exec ERP..Migrasi_SimpanAuctionKPBN '" + currentData.Migrasi_ArusProduksiId + "','" + tglAlokasi + "','" + noAlokasi + "','343','" + namaUser + "','" + noKatalog + "','" + tglKatalog + "'";
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: scrSQL,
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function openWindow2(id) {
+        var grd = $('#grdDetail').data('kendoGrid');
+        currentRow = grd.dataSource.get(id);
+        migrasi_ArusProduksiId = currentRow.Migrasi_ArusProduksiId;
+        read2(currentRow).done(function () {
+            win2.open().center();
+            $("#submit2").click(function () {
+                submit2(currentRow).done(function () {
+                    var grid = $('#grdDetail').data('kendoGrid');
+                    var dataItem = typeof (grid.dataSource.get(migrasi_ArusProduksiId)) == "undefined" ? grid.dataSource.getByUid(migrasi_ArusProduksiId) : grid.dataSource.get(migrasi_ArusProduksiId);
+                    var tgl = ($('#Tanggal_Kontrak').val()).toString();
+                    dataItem.set("MvT341", '<label>Tgl Kontrak:</label><label>' + tgl.substr(0,10) + '</label>' + '<label>No Kontrak:</label><label>' + $('#No_Kontrak').val())+'</label>';
+                    dataItem.set("MvT343", '');
+                    dataItem.set("MvT349", '');
+
+                    win2.close();
+                });
+            });
+            $("#cancel2").click(function () {
+                win2.close();
+            });
+        });
+
+    }
+
+    function read2(dataItem) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            success: function (dt) {
+                if (dt.length > 0) {
+                    $('#Tanggal_Alokasi2').val(dt[0][0]);
+                    $('#No_Alokasi2').data('kendoNumericTextBox').value(dt[0][1]);
+                    $('#No_Kontrak').val(dt[0][2]);
+                    $('#Tanggal_Kontrak').val(dt[0][3]);
+                }
+            },
+            data: {
+                scriptSQL: "select top 1 A.TanggalAlokasi, A.NoAlokasi, B.NoKontrak, B.TanggalKontrak from ERP..Migrasi_Alokasi A join ERP..Migrasi_Alokasi341 B on A.Migrasi_AlokasiId=B.Migrasi_AlokasiId where Migrasi_ArusProduksiId='" + dataItem.Migrasi_ArusProduksiId + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function submit2(currentData) {
+        var url = '/Input/ExecSQL';
+        var grid = $('#grdDetail').data('kendoGrid');
+        var tglAlokasi = $('#Tanggal_Alokasi2').val();
+        var noAlokasi = $('#No_Alokasi2').val();
+        var namaUser = $('#NamaUser').val();
+        var noKontrak = $('#No_Kontrak').val();
+        var tglKontrak = $('#Tanggal_Kontrak').val();
+        var scrSQL = "set dateformat DMY; exec ERP..Migrasi_SimpanKontrak '" + currentData.Migrasi_ArusProduksiId + "','" + tglAlokasi + "','" + noAlokasi + "','341','" + namaUser + "','" + noKontrak + "','" + tglKontrak + "'";
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: scrSQL,
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function openWindow3(id) {
+        var grd = $('#grdDetail').data('kendoGrid');
+        currentRow = grd.dataSource.get(id);
+        migrasi_ArusProduksiId = currentRow.Migrasi_ArusProduksiId;
+        read3(currentRow).done(function () {
+            win3.open().center();
+            $("#submit3").click(function () {
+                submit3(currentRow).done(function () {
+                    var grid = $('#grdDetail').data('kendoGrid');
+                    var dataItem = typeof (grid.dataSource.get(migrasi_ArusProduksiId)) == "undefined" ? grid.dataSource.getByUid(migrasi_ArusProduksiId) : grid.dataSource.get(migrasi_ArusProduksiId);
+                    var tgl = ($('#Tanggal_BatasPenawaran').val()).toString();
+                    dataItem.set("MvT341", '');
+                    dataItem.set("MvT343", '');
+                    dataItem.set("MvT349", '<label>Batas Waktu:</label><label>' + tgl.substr(0,10) + '</label><label>' + 'Ditawarkan Kpd:</label><label>' + $('#NamaBuyer').val())+'</label>';
+                    win3.close();
+                });
+            });
+            $("#cancel3").click(function () {
+                win3.close();
+            });
+        });
+    }
+
+    function openWindow4(id) {
+        var grd = $('#grdDetail').data('kendoGrid');
+        currentRow = grd.dataSource.get(id);
+        migrasi_ArusProduksiId = currentRow.Migrasi_ArusProduksiId;
+        
+        //e.preventDefault();
+        //var grid = this;
+        //var row = $(e.currentTarget).closest("tr");
+        
+        win4.open().center();
+
+        $("#yesDetail").click(function () {
+            submit4(currentRow).done(function () {
+                var grid = $('#grdDetail').data('kendoGrid');
+                    var dataItem = typeof (grid.dataSource.get(migrasi_ArusProduksiId)) == "undefined" ? grid.dataSource.getByUid(migrasi_ArusProduksiId) : grid.dataSource.get(migrasi_ArusProduksiId);
+                    var tgl = ($('#Tanggal_Auction').val()).toString();
+                    dataItem.set("MvT341", "");
+                    dataItem.set("MvT343", '');
+                    dataItem.set("MvT349", '');      
+                
+            });
+            win4.close();
+            
+        });
+        $("#noDetail").click(function () {
+            win4.close();
+        });
+    }
+
+    function read3(dataItem) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            success: function (dt) {
+                if (dt.length > 0) {
+                    $('#Tanggal_Alokasi3').val(dt[0][0]);
+                    $('#No_Alokasi3').data('kendoNumericTextBox').value(dt[0][1]);
+                    $('#BuyerId').val(dt[0][2]);
+                    $('#NamaBuyer').val(dt[0][3]);
+                    //$('#Alamat_eMail').val(dt[0][4]);
+                    $('#Tanggal_BatasPenawaran').val(dt[0][5]);
+                }
+            },
+            data: {
+                scriptSQL: "select top 1 A.TanggalAlokasi, A.NoAlokasi, B.BuyerId, C.Nama, B.TanggalBatasWaktu from ERP..Migrasi_Alokasi A join ERP..Migrasi_Alokasi349 B on A.Migrasi_AlokasiId=B.Migrasi_AlokasiId join ReferensiEF..Buyer C ON B.BuyerId=C.BuyerId where Migrasi_ArusProduksiId='" + dataItem.Migrasi_ArusProduksiId + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function submit3(currentData) {
+        var url = '/Input/ExecSQL';
+        var grid = $('#grdDetail').data('kendoGrid');
+        var tglAlokasi = $('#Tanggal_Alokasi3').val();
+        var noAlokasi = $('#No_Alokasi3').val();
+        var namaUser = $('#NamaUser').val();
+        var buyerId = $('#BuyerId').val();
+        var namaBuyer = $('#NamaBuyer').val();
+        var alamatEMail = '';
+        var tglBatas = $('#Tanggal_BatasPenawaran').val();
+
+
+        var scrSQL = "set dateformat DMY; exec ERP..Migrasi_SimpanOffering '" + currentData.Migrasi_ArusProduksiId + "','" + tglAlokasi + "','" +
+            noAlokasi + "','349','" + namaUser + "','" +
+            buyerId + "','"+namaBuyer+ "','"+tglBatas+"'";
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: scrSQL,
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function submit4(currentData) {
+        var url = '/Input/ExecSQL';
+        var grid = $('#grdDetail').data('kendoGrid');
+
+
+        var scrSQL = "set dateformat DMY; exec ERP..Migrasi_HapusAlokasi '" + currentData.Migrasi_ArusProduksiId + "'";
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: scrSQL,
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function filterBuyer() {
+        return {
+            value: $("#NamaBuyer").val(),
+            mainBudidayaId: '3D662350-146F-48B0-A181-5A840330C451' //teh
+        };
+    }
+
+    function BuyerOnSelect(e) {
+        var buyer = this.dataItem(e.item);
+        $('#BuyerId').val(buyer.BuyerId)
+        $('#NamaBuyer').val(buyer.Nama);
+    }
+
+    function WarnaKolom(str, str1) {
+        if (str == '' || str == null || str == 'null')
+            return "<div style='color: white; background-color: white;'></div>";
+        else
+            return "<div style='color: white; background-color: " + str1 + ";'>" + str + "</div>"; 
+    }
+
+    function grdOnDataBound(e) {
+    }
+
+    function buatButton(id) {
+        var grd = $('#grdDetail').data('kendoGrid');
+        currentRow = grd.dataSource.get(id);
+        var str1 = 'openWindow1("' + id + '")';
+        var str2 = 'openWindow2("' + id + '")';
+        var str3 = 'openWindow3("' + id + '")';
+        var str4 = 'openWindow4("' + id + '")';
+
+        if (currentRow.SudahKontrak341 == '1') {
+            return "<div></div>";
+        } else if (currentRow.SudahKirim343 == '1' || currentRow.SudahTerjual343 == '1' || currentRow.SudahKontrak343 == '1') {
+            return "<div></div>"
+        } else if (currentRow.SudahNoBid343 == '1') { 
+            return "<input type='button' class='k-button' value='Auction KPBN' style='font-size: small; background-color: red; color: white; height: 30px; display:block;' onclick='"+str1+"'/>" +
+                "<input type='button' class='k-button' value='Kontrak KPBN & PTPN VIII' style='font-size: small; background-color: blue; color: white; height: 30px;display:block;' onclick='"+str2+"'/>" +
+                "<input type='button' class='k-button' value='Offering' style='font-size: small; background-color: green; color: white; height: 30px; display:block;' onclick='"+str3+"' />"+
+                "<input type='button' class='k-button' value='Cancel Alokasi' style='font-size: small; background-color: Grey; color: white; height: 30px; display:block;' onclick='"+str4+"' />";
+        } else if (currentRow.SudahKirim349 == '1' || currentRow.SudahApprove349 == '1' || currentRow.SudahKontrak349 == '1') { 
+            return "<div></div>";
+        } else
+            return "<input type='button' class='k-button' value='Auction KPBN' style='font-size: small; background-color: red; color: white; height: 30px; display:block;' onclick='"+str1+"'/>" +
+                "<input type='button' class='k-button' value='Kontrak KPBN & PTPN VIII' style='font-size: small; background-color: blue; color: white; height: 30px;display:block;' onclick='"+str2+"'/>" +
+                "<input type='button' class='k-button' value='Offering' style='font-size: small; background-color: green; color: white; height: 30px; display:block;' onclick='"+str3+"' />"+
+                "<input type='button' class='k-button' value='Cancel Alokasi' style='font-size: small; background-color: Grey; color: white; height: 30px; display:block;' onclick='"+str4+"' />";
+    }
+
+</script>

@@ -1,0 +1,36 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "SUAMI",
+                Value = "SUAMI"
+            },
+            new SelectListItem() {
+                Text = "ISTRI",
+                Value = "ISTRI"
+            },
+            new SelectListItem() {
+                Text = "ANAK KANDUNG",
+                Value = "ANAK KANDUNG"
+            },
+            new SelectListItem() {
+                Text = "ANAK TIRI",
+                Value = "ANAK TIRI"
+            },
+            new SelectListItem() {
+                Text = "ANAK ANGKAT",
+                Value = "ANAK ANGKAT"
+            },
+            new SelectListItem() {
+                Text = "LAIN-LAIN",
+                Value = "LAIN-LAIN"
+            }
+        })
+        .Events(e => { e.Change("ddlHubunganKeluargaOnSelect"); e.Select("ddlHubunganKeluargaOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+

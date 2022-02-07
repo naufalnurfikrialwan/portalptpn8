@@ -1,0 +1,56 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Buyer
+@using Ptpn8.Areas.Referensi.Models
+
+<div class="txtBuyer">
+    @(Html.Kendo().AutoCompleteFor(m => m)
+        .Name("aucBuyer")
+        .Placeholder("Pilih Buyer...")
+        .Filter("contains")
+        .MinLength(2)
+        .HtmlAttributes(new { style = "width: 300px" })
+        .DataSource(o =>
+        {
+            o.Read(r => { r.Action("getBuyer", "ddl").Data("onAdditionalData"); })
+            .ServerFiltering(true);
+        })
+    )
+</div>
+
+<div class="hlpBuyer" >
+    <button id="btnHlpBuyer" class="k-button k-primary" type="button" onclick="openWindowHlpBuyer">?</button>
+</div>
+
+<div id="modalWindowHlpBuyer">
+    @(Html.Kendo().Grid<Buyer>()
+        .Name("grdHlpBuyer")
+        .AutoBind(true)
+        .ColumnMenu(c => c.Columns(true))
+        .Pageable()
+        .Sortable()
+        .Columns(i =>
+        {
+            i.Bound(o => o.BuyerId).Width(200).Hidden();
+            i.Bound(o => o.Nama).Width(200);
+            i.Bound(o => o.Direktur).Width(300);
+            i.Bound(o => o.FileFoto).Title("Foto").ClientTemplate(
+                    @"<div class='photo'><img src='" + Url.Content("~/Content/Images/View/") + "#:BuyerId#.jpg' alt='#: BuyerId #' /></div>");
+        })
+        .DataSource(j => j
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(k => k.BuyerId);
+            })
+            .Read(r => r.Action("BuyerRead", "Buyer"))
+            );
+    )
+
+
+    
+    <button id="ok" class="k-button">Ok</button>
+    <button id="cancel" class="k-button">Cancel</button>
+</div>
+
+<script>
+
+</script>

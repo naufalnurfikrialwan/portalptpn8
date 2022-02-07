@@ -1,0 +1,437 @@
+﻿@model Ptpn8.Remise.Models.View_HDRRemiseBiayaPerjalananDinas
+@**@
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Remise/RemisePerhitunganBPDKanpus.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<!--header-->
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerteh">
+                @(Html.Kendo().TextBoxFor(m => m.HDR_RemiseBiayaPerjalananDinasId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.KebunId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.NomorInput).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserName).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.BulanRemise).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TahunRemise).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="50%;" align="center">
+
+                    <tr>
+                        <td width="20%">
+                            <label style="text-align:right">Tahun Buku/Kebun:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @(Html.Kendo().NumericTextBoxFor(m => m.TahunBuku).Min(2016).Format("D4")
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                                .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                            )
+                            -
+                            @(Html.Kendo().AutoCompleteFor(m => m.NamaKebun)
+                                            .MinLength(2)
+                                            .Filter("contains")
+                                            .Placeholder("Cari Kebun")
+                                            .DataTextField("Nama")
+                                            .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                                            .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 64%" })
+                                            .Events(e =>
+                                            {
+                                                e.DataBound("NamaKebunOnSelect");
+                                                e.Change("NamaKebunOnSelect");
+                                            })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">
+                            <label style="text-align:right">Nomor/Tgl Input:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @(Html.Kendo().DropDownList()
+                                .Name("NomorInputView")
+                                .AutoBind(true)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                                Text = "00001-Remise Januari",
+                                                Value = "00001-Remise Januari"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00002-Remise Februari",
+                                                Value = "00002-Remise Februari"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00003-Remise Maret",
+                                                Value = "00003-Remise Maret"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00004-Remise April",
+                                                Value = "00004-Remise April"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00005-Remise Mei",
+                                                Value = "00005-Remise Mei"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00006-Remise Juni",
+                                                Value = "00006-Remise Juni"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00007-Remise Juli",
+                                                Value = "00007-Remise Juli"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00008-Remise Agustus",
+                                                Value = "00008-Remise Agustus"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00009-Remise September",
+                                                Value = "00009-Remise September"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00010-Remise Oktober",
+                                                Value = "00010-Remise Oktober"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00011-Remise Nopember",
+                                                Value = "00011-Remise Nopember"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "00012-Remise Desember",
+                                                Value = "00012-Remise Desember"
+                                            }
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 50%" })
+                                .SelectedIndex(0)
+                                .Events(e =>
+                                {
+                                    e.Change("NomorInputViewOnSelect");
+                                    e.Select("NomorInputViewOnSelect");
+                                    e.DataBound("NomorInputViewOnDataBound");
+                                })
+
+                            )
+                            -
+                            @(Html.Kendo().DateTimePickerFor(m=>m.TanggalInput).Format("dd/MM/yyyy HH:mm").HtmlAttributes(new { style = "width: 29%" }))
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                                <button type="button" id="btnDeleteHeader" onclick="btnDeleteHeaderOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Hapus Permintaan</button>
+                                <button type="button" id="btnPrintHeader" onclick="btnPrintHeaderOnClick()" class="k-button" style="color: white; background-color: gray; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Cetak Permintaan</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+
+    @(Html.Kendo().Grid<Ptpn8.Remise.Models.View_DTLRemiseBiayaPerjalananDinas>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.DTL_RemiseBiayaPerjalananDinasId).Width(50).Hidden();
+            g.Bound(i => i.HDR_RemiseBiayaPerjalananDinasId).Width(50).Hidden();
+            g.Bound(i => i.Jabatan).Width(150).Title("Jabatan");
+            g.Bound(i => i.StatusWilayah).Width(200).Title("Wilayah");
+            g.Bound(i => i.StatusKMdanMenginap).Width(200).Title("KM dan Menginap");
+            g.Bound(i => i.DapatMakanPagi_Disetujui).Width(80).Title("Dapat Makan Pagi ?").ClientTemplate("#= DapatMakanPagi_Disetujui ? 'Ya':'Tidak' #");
+            g.Bound(i => i.DapatMakanSiang_Disetujui).Width(80).Title("Dapat Makan Siang ?").ClientTemplate("#= DapatMakanSiang_Disetujui ? 'Ya':'Tidak' #");
+            g.Bound(i => i.DapatMakanMalam_Disetujui).Width(80).Title("Dapat Makan Malam ?").ClientTemplate("#= DapatMakanMalam_Disetujui ? 'Ya':'Tidak' #");
+            g.Bound(i => i.Tarip_Disetujui).Width(100).Title("Tarip Tanpa Menginap").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.DapatBiayaPenginapan_Disetujui).Width(80).Title("Dapat Penginapan ?").ClientTemplate("#= DapatBiayaPenginapan_Disetujui ? 'Ya':'Tidak' #");
+            g.Bound(i => i.TaripMenginap_Disetujui).Width(100).Title("Tarip Menginap").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Volume_Disetujui).Width(80).Title("Jml Orang").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.JumlahHari_Disetujui).Width(80).Title("Jml Hari").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("Jml BPD")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" }); 
+            g.Bound(i => i.JumlahBPD_Disetujui).Width(100).Title("BPD").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.Keterangan).Width(200).Title("Keterangan");
+
+            g.Bound(i => i.Tarip).Hidden();
+            g.Bound(i => i.TaripMenginap).Hidden();
+            g.Bound(i => i.DapatBiayaPenginapan).Hidden();
+            g.Bound(i => i.DapatMakanPagi).Hidden();
+            g.Bound(i => i.DapatMakanSiang).Hidden();
+            g.Bound(i => i.DapatMakanMalam).Hidden();
+            g.Bound(i => i.Volume).Width(80).Hidden();
+            g.Bound(i => i.JumlahHari).Hidden();
+            g.Bound(i => i.JumlahBPD).Hidden();
+
+
+
+            g.Command(command =>
+            {
+                command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+            }).Width(200);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+        })
+        .AutoBind(false)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .Pageable()
+        .HtmlAttributes(new { style = "Height: 460px" })
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBound("grdOnBound");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.DTL_RemiseBiayaPerjalananDinasId);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+            //.Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+            //.Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+            //.Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.Volume_Disetujui).Sum();
+                ag.Add(x => x.JumlahBPD_Disetujui).Sum();
+            })
+        )
+    )
+
+
+</div>
+
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+            // Each report viewer must have an id - it will be used by the initialization script
+            // to find the element and initialize the report viewer.
+            .Id("reportViewer")
+            // The URL of the service which will serve reports.
+            // The URL corresponds to the name of the controller class (ReportsController).
+            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+            .ServiceUrl(Url.Content("/api/reports/"))
+            // The URL for custom report vie    wer template. The template can be edited -
+            // new functionalities can be added and unneeded ones can be removed.
+            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+            //
+            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+            .ReportSource(new UriReportSource() { Uri = "../Reports/Remise/remise.trdx" })
+            // Specifies whether the viewer is in interactive or print preview mode.
+            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+            .ViewMode(ViewMode.Interactive)
+            // Sets the scale mode of the viewer.
+            // Three modes exist currently:
+            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+            // Specific - Uses the scale to zoom in and out the report.
+            .ScaleMode(ScaleMode.Specific)
+            // Zoom in and out the report using the scale
+            // 1.0 is equal to 100%, i.e. the original size of the report
+            .Scale(1.0)
+            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+            .PersistSession(false)
+            // Sets the print mode of the viewer.
+            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+
+    function WarnaKolom(str, str1) {
+        if (str == '')
+            return "<div class='breakWord20' style='color: white; background-color: red;'>Belum UPLOAD!</div>";
+        else if (str.toLowerCase().indexOf("produksi") < 0 || str.toLowerCase().indexOf("lhkh") < 0)
+            return "<div class='breakWord20' style='color: white; background-color: orange;'>" + str + "</div>" +
+                "<div class='breakWord20' style='color: black; background-color: lightgray;'>" + str1 + "</div>";
+        else
+            return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>" +
+                "<div class='breakWord20' style='color: black; background-color: lightgray;'>" + str1 + "</div>";
+    }
+
+    function pctPKB(num1,num2)
+    {
+        if (num2 == 0)
+            return 0;
+        else {
+            var result = (num1 / num2) * 100;
+            return kendo.toString(result, 'n2')
+        }
+    }
+
+    function formatNum(n) {
+        if (n == null || n == 0)
+            return "-";
+        else
+            return kendo.toString(n, "n0");
+    }
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    .rowStyle {
+        color: crimson;
+        background-color: darkseagreen;
+        font-weight: 500;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+
+    .breakWord20 {
+        word-break: break-all !important;
+        word-wrap: break-word !important;
+        vertical-align: top;
+    }
+
+    .k-grid-header .k-header {
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+</style>
+
+

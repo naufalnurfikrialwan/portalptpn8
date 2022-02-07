@@ -1,0 +1,35 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "E-mail Company",
+                Value = "0001"
+            },
+            new SelectListItem() {
+                Text = "E-mail Personnel",
+                Value = "0002"
+            },
+            new SelectListItem() {
+                Text = "Mobile Number",
+                Value = "0003"
+            },
+            new SelectListItem() {
+                Text = "Office Telephone Number",
+                Value = "0004"
+            },
+            new SelectListItem() {
+                Text = "Home Telephone Number",
+                Value = "0005"
+            },
+            new SelectListItem() {
+                Text = "NIK Lama Karyawan",
+                Value = "0006"
+            }
+        })
+        .Events(e => { e.Change("ddlJenisKomunikasiOnChange"); e.Select("ddlJenisKomunikasiOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

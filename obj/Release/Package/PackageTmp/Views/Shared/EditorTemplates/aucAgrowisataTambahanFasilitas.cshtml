@@ -1,0 +1,13 @@
+﻿@model Ptpn8.Agrowisata.Models.View_ReservasiTambahanFasilitas
+@(Html.Kendo()
+    .AutoCompleteFor(m => m.Nama)
+    .ValuePrimitive(true)
+    .Placeholder("Pilih Jenis Fasilitas")
+    .DataTextField("Nama")
+    .MinLength(2)
+    .Filter("contains")
+    .DataSource(o => { o.Read(r => r.Action("GetDataFrom", "Input").Data("filterReservasiTambahanFasilitas").Type(HttpVerbs.Post)); })
+    .Events(e => { e.Change("aucReservasiTambahanFasilitasOnSelect"); e.Select("aucReservasiTambahanFasilitasOnDataBound"); })
+)
+
+

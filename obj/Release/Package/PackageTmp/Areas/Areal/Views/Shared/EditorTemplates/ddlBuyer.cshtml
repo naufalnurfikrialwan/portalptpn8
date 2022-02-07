@@ -1,0 +1,29 @@
+﻿@(Html.Kendo().AutoComplete()
+    .Name("aucBuyer")
+    .MinLength(2)
+    .Filter("contains")
+    .Placeholder("Cari buyer...")
+    .TemplateId("BuyerTmpl")
+    .DataTextField("Nama")
+    .DataSource(o => o.Read(r => r.Action("GetBuyer", "ddl", new { Area = "Referensi" }).Data("filterBuyer")).ServerFiltering(true))
+    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Pembeli", style = "width: 100%" })
+    .Events(e =>
+    {
+        e.Select("ddlBuyerOnSelect"); e.DataBound("ddlBuyerOnDataBound"); e.Change("ddlBuyerOnChange");
+    })
+)
+<script id="BuyerTmpl" type="text/kendo-tmpl">
+    <table width="100%">
+        <tr>
+            <td width="15%" class="k-state-default">
+                <img width="100%" src="@Url.Content("~/Content/Images/View/"+"#:BuyerId#.jpg")" alt="#:BuyerId#" />
+            </td>
+            <td>
+                <table width="100%">
+                    <tr style="font-weight: 700; font-size: small"><td>#:Nama#</td></tr>
+                    <tr style="font-weight: 500; font-size: smaller"><td>#:Alamat# RT:#:RT# RW:#:RW# </td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</script>

@@ -1,0 +1,20 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Kebun")
+        .DataTextField("Nama")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetKebun2", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucNamaKebunOnSelect"); e.DataBound("aucNamaKebunOnDataBound"); })
+)
+
+
+
+
+
+
+
+

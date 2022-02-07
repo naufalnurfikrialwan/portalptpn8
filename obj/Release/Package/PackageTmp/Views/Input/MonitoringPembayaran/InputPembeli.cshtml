@@ -1,0 +1,445 @@
+﻿@model Ptpn8.MonitoringPembayaran.Models.MonitoringPembayaran_InputPembeli
+
+@(Html.Kendo().TextBoxFor(m => m.MonitoringPembayaran_InputPembeliId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+@(Html.Kendo().TextBoxFor(m => m.File_BuktiPembayaran).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+
+<link rel="stylesheet" type="text/css" href="~/Content/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/fonts/iconic/css/material-design-iconic-font.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/vendor/animate/animate.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/vendor/noui/nouislider.min.css">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="~/Content/css/util.css">
+<link rel="stylesheet" type="text/css" href="~/Content/css/main.css">
+
+
+
+@*header*@
+
+@*<table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">@ViewBag.Title</div>
+            </td>
+        </tr>
+    </table>*@
+
+<div class="container-contact100" ng-app="__header">
+    <div class="wrap-contact100" ng-controller="MyCtrl">
+        <form class="contact100-form validate-form" kendo-validator="validator" ng-submit="validate($event)">
+            <span class="contact100-form-title">
+                PAYMENT CONFIRMATION
+            </span>
+            <div class="wrap-input100 validate-input bg1" data-validate="Please Type Your Name">
+                <span class="label-input100">Customer/Company Name *</span>
+                <input id="NamaPerusahaan" class="input100" type="text" name="name" placeholder="Enter Your Name">
+            </div>
+
+            <div class="wrap-input100 validate-input bg1 rs1-wrap-input100" data-validate="Enter Your Email (e@a.x)">
+                <span class="label-input100">Email *</span>
+                <input id="Email" class="input100" type="text" value="@HttpContext.Current.User.Identity.Name" name="email" placeholder="Enter Your Email ">
+            </div>
+
+            <div class="wrap-input100 bg1 rs1-wrap-input100">
+                <span class="label-input100">Phone</span>
+                <input id="Telepon" class="input100" type="text" name="phone" placeholder="Enter Phone Number">
+            </div>
+
+            <div class="wrap-input100 validate-input bg1 rs1-wrap-input100" data-validate="Please Type Your Bank">
+                <span class="label-input100">Origin Bank *</span>
+                <div>
+                    <select class="js-select2" name="service" id="AsalBank">
+                        <option>Bank Mandiri</option>
+                        <option>BNI</option>
+                        <option>BRI</option>
+                        <option>BTN</option>
+                        <option>Bank DBS Indonesia</option>
+                        <option>BCA</option>
+                        <option>Bank Panin</option>
+                        <option>BSI</option>
+                        <option>Bank CIMB</option>
+                        <option>Bank Muamalat</option>
+                        <option>Bank Danamon</option>
+                        <option>Bank Permata</option>
+                        <option>Bank Maybank Indonesia</option>
+                        <option>Bank UOB Indonesia</option>
+                        <option>Bank OCBC NISP</option>
+                        <option>Bank HSBC Indonesia</option>
+                        <option>Bank Mega</option>
+                    </select>
+                    <div class="dropDownSelect2"></div>
+                </div>
+                @*<input id="AsalBank" class="input100" type="text" name="email" placeholder="Enter Your Origin Bank ">*@
+            </div>
+
+            <div class="wrap-input100 bg1 rs1-wrap-input100">
+                <span class="label-input100">Account Number</span>
+                <input id="NoRekeningAsal" class="input100" type="text" name="phone" placeholder="Enter Your Account Number">
+            </div>
+            <div class="wrap-input100 input100-select bg1" data-validate="Please Type Your Bank">
+                <span class="label-input100">Destination Bank (PTPN) *</span>
+                <div>
+                    <select class="js-select2" name="service" id="TujuanBank">
+                        <option>Bank Mandiri (AC.No 130 0074 0000 20)</option>
+                        <option>Bank Mandiri (AC.No 130 0038 3800 05)</option>
+                        <option>Bank Mandiri (AC.No 130 001 7159 388)</option>
+                        <option>Bank Mandiri US$ (AC.No 130 008 2000 079)</option>
+                        <option>BNI (AC.No 002 2852 100)</option>
+                        <option>BNI (AC.No 2285 210 009)</option>
+                        <option>BRI Agrowisata (AC.No 0405 0100 0080 309)</option>
+                        <option>BRI Dago (AC.No 0405 0100 0069 303)</option>
+                        <option>BRI Dago (AC.No 0405 0100 0207 309)</option>
+                        <option>BRI Valas (AC.No 0405 0200 0001 301)</option>
+                    </select>
+                    <div class="dropDownSelect2"></div>
+                </div>
+                @*<input id="TujuanBank" class="input100" type="text" name="email" placeholder="Enter Destination Bank (PTPN) ">*@
+            </div>
+
+            <div class="wrap-input100 input100-select bg1">
+                <span class="label-input100">Transfer Date *</span>
+                <input id="Tanggal_Transfer" class="input100" type="date" required="required" />
+            </div>
+
+            <div class="wrap-input100 validate-input bg1 rs1-wrap-input100">
+                <span class="label-input100">Currency *</span>
+                <div>
+                    <select class="js-select2" name="service" id="Currency">
+                        <option>IDR (Rp)</option>
+                        <option>US Dollar (US$)</option>
+                    </select>
+                    <div class="dropDownSelect2"></div>
+                </div>
+            </div>
+
+            <div class="wrap-input100 bg1 rs1-wrap-input100">
+                <span class="label-input100">Total Amount *</span>
+                <input id="JumlahTransfer" class="input100" type="text" name="amount" placeholder="Enter Total Amount">
+            </div>
+
+            <div class="wrap-input100 input100-select bg1">
+                <span class="label-input100">Billing/Invoice PTPN No. *</span>
+                <input id="NoReferensi" class="input100" type="text" name="NoReferensi" placeholder="Enter Number of Billing/Invoice">
+            </div>
+
+            <div class="wrap-input100 input100-select bg1">
+                <span class="label-input100">Upload Payment (Photo / PDF). *</span>
+                @*<input id="File_BuktiPembayaran" class="input100" type="file" name="File_BuktiPembayaran" accept=".jpg, .jpeg, .png, .pdf" placeholder="Enter Number of Billing/Invoice">*@
+                @(Html.Kendo().Upload()
+                                    .Name("files")
+                                    .Async(a => a
+                                        .Save("SaveBuktiBayar", "Input", new { folder = "~/Content/Images/FileBuktiPembayaran", unit = @HttpContext.Current.User.Identity.Name })
+                                        .Remove("RemoveBuktiBayar", "Input", new { folder = "~/Content/Images/FileBuktiPembayaran", unit = @HttpContext.Current.User.Identity.Name }).AutoUpload(true)
+                                    )
+                                    .Events(e => { e.Success("onSuccessUpload"); })
+                                    .ShowFileList(false)
+                                    .Validation(v => v.AllowedExtensions(new string[] { ".zip", ".docx", ".doc", ".pptx", ".ppt", ".xlsx", ".xls", ".pdf", ".jpg", ".rar", ".csv", ".txt", ".png" }).MaxFileSize(100000000))
+                )
+            </div>
+
+            <div class="wrap-input100 validate-input bg0 rs1-alert-validate" data-validate="Please Type Your Message">
+                <span class="label-input100">Description</span>
+                <textarea id="DeskripsiPembayaran" class="input100" name="message" placeholder="Your Description Here..."></textarea>
+            </div>
+
+            <div class="container-contact100-form-btn">
+                <button class="contact100-form-btn">
+                    <span>
+                        Submit
+                        <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@*detail*@
+<div id="_detail" class="_detail">
+</div>
+@*<script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/animsition.min.js"></script>
+    <script src="~/Scripts/popper.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>*@
+<script src="~/Scripts/select2.min.js"></script>
+<!--===============================================================================================-->
+
+<script>
+    var menuId = 'e0c3141f-bb7e-4355-b9b0-cc019e8a19b5';
+
+    $('.k-window.titlebar').css('style', 'display: none');
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+    $(document).ready(function () {
+    });
+
+
+    angular.module("__header", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    SimpanData().done(function () {
+                        alert("Data Sudah Tersimpan...");
+                        location.reload();
+                        //window.location.href = "https://www.portalpn8.net";
+                    });
+                } else {
+                    alert("Ada Kesalahan Data!!!Tidak dapat disimpan...");
+                }
+            }
+        });
+    $.extend({
+        distinct: function (anArray) {
+            var result = [];
+            $.each(anArray, function (i, v) {
+                if ($.inArray(v, result) == -1) result.push(v);
+            });
+            return result;
+        }
+    });
+
+
+
+    function hapusPenggunaPortalYangAktif() {
+        var url = '/Account/HapusPenggunaPortalYangAktif';
+        return $.ajax({
+            url: url,
+            data: {
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData() {
+        var url = '/Input/ExecSQL';
+        var MonitoringPembayaran_InputPembeliId = guid();
+        var NamaPerusahaan = $('#NamaPerusahaan').val();
+        var Email = $('#Email').val();
+        var Telepon = $('#Telepon').val();
+        var DeskripsiPembayaran = $('#DeskripsiPembayaran').val();
+        var AsalBank = $('#AsalBank').val();
+        var NoRekeningAsal = $('#NoRekeningAsal').val();
+        var TujuanBank = $('#TujuanBank').val();
+        var NoRekeningTujuan = '';
+        var JumlahTransfer = $('#JumlahTransfer').val();
+        var PPN = $('#PPN').val();
+        var NoReferensi = $('#NoReferensi').val();
+        var Currency = $('#Currency').val();
+        var Tanggal_Transfer = $("#Tanggal_Transfer").val().toString().substr(0, 10);
+        var files = $('#Email').val() + '_' + $('#File_BuktiPembayaran').val();;
+
+
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "insert [SPDK_KanpusEF].dbo.MonitoringPembayaran_InputPembeli values('" + MonitoringPembayaran_InputPembeliId +
+                    "','" + NamaPerusahaan + "','" + DeskripsiPembayaran + "','" + AsalBank + "','" + TujuanBank + "','" + Tanggal_Transfer +
+                    "','" + files + "','" + JumlahTransfer + "',0,'" + Email + "','" + Telepon + "','" + NoRekeningAsal + "','" + NoRekeningTujuan + "','" + NoReferensi + "','" + Currency + "',0)",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    $(".js-select2").each(function () {
+        $(this).select2({
+            minimumResultsForSearch: 20,
+            dropdownParent: $(this).next('.dropDownSelect2')
+        });
+
+
+        $(".js-select2").each(function () {
+            $(this).on('select2:close', function (e) {
+                if ($(this).val() == "Please chooses") {
+                    $('.js-show-service').slideUp();
+                }
+                else {
+                    $('.js-show-service').slideUp();
+                    $('.js-show-service').slideDown();
+                }
+            });
+        });
+    })
+
+    function onSuccessUpload(e) {
+        var fileLampiran = $('#File_BuktiPembayaran').val().split(',');
+        if ($('#File_BuktiPembayaran').val() == "") fileLampiran = [];
+        fileLampiran.push(e.files[0].name)
+        $('#File_BuktiPembayaran').val(fileLampiran.toString());
+        renderBuktiNamaFile(e.files[0].name);
+    }
+
+    function renderBuktiNamaFile(nmFile) {
+        var extension = "";
+        var i = nmFile.lastIndexOf('.');
+        if (i > 0)
+            extension = nmFile.substring(i + 1).toLowerCase().substring(0, 3);
+        else
+            extension = "";
+        $("<p><div class='daftarfile'><table><tr><td><img src='/Content/Images/FileTypeIcon/png/" + extension + ".png'/></td></tr><tr><td>[" + nmFile + "]</td></tr><tr><td><button type='button' onClick='btnHapusBuktiMemoOnClick(\"" + nmFile + "\")'><span class='k-font-icon k-i-trash'></span>Hapus</button><button type='button' onClick='btnViewBuktiMemoOnClick(\"" + nmFile + "\")'><span class='k-font-icon k-i-justify-clear'></span>View</button></td></tr></table></div></p>").appendTo($("#daftarFile1"));
+    }
+
+    function btnViewOnClick(nmFile) {
+        var file = $('#Email').val() + '_' + nmFile;
+        var newwindow = window.open("/Content/Images/FileBuktiPembayaran/" + file, "window2", "");
+    }
+
+    function btnHapusBuktiMemoOnClick(nmFile) {
+        hapusFile(nmFile).done(function (data) {
+            var listLampiranMemoDinas = $('#File_BuktiPembayaran').val();
+            if (listLampiranMemoDinas == null || listLampiranMemoDinas == '') {
+                listLampiranMemoDinas = [];
+            }
+            else {
+                listLampiranMemoDinas = listLampiranMemoDinas.split(',');
+            }
+            var index = listLampiranMemoDinas.indexOf(nmFile);
+            if (index !== -1) listLampiranMemoDinas.splice(index, 1);
+
+            $('#File_BuktiPembayaran').val(listLampiranMemoDinas.toString())
+            for (var i = 0; i < listLampiranMemoDinas.length; i++) {
+                renderBuktiNamaFile(listLampiranMemoDinas[i]);
+            }
+        });
+    }
+
+    function btnViewBuktiMemoOnClick(nmFile) {
+        var file = $('#Email').val() + '_' + nmFile;
+        var newwindow = window.open("/Content/Images/FileBuktiPembayaran/" + file, "window2", "");
+    }
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    /*Bootstrap Calendar*/
+    .datepicker {
+        border-radius: 0;
+        padding: 0;
+    }
+
+    .datepicker-days table thead, .datepicker-days table tbody, .datepicker-days table tfoot {
+        padding: 10px;
+        display: list-item;
+    }
+
+    .datepicker-days table thead, .datepicker-months table thead, .datepicker-years table thead, .datepicker-decades table thead, .datepicker-centuries table thead {
+        background: #3546b3;
+        color: #ffffff;
+        border-radius: 0;
+    }
+
+        .datepicker-days table thead tr:nth-child(2n+0) td, .datepicker-days table thead tr:nth-child(2n+0) th {
+            border-radius: 3px;
+        }
+
+        .datepicker-days table thead tr:nth-child(3n+0) {
+            text-transform: uppercase;
+            font-weight: 300 !important;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+    .table-condensed > tbody > tr > td, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > td, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > thead > tr > th {
+        padding: 11px 13px;
+    }
+
+    .datepicker-months table thead td, .datepicker-months table thead th, .datepicker-years table thead td, .datepicker-years table thead th, .datepicker-decades table thead td, .datepicker-decades table thead th, .datepicker-centuries table thead td, .datepicker-centuries table thead th {
+        border-radius: 0;
+    }
+
+    .datepicker td, .datepicker th {
+        border-radius: 50%;
+        padding: 0 12px;
+    }
+
+    .datepicker-days table thead, .datepicker-months table thead, .datepicker-years table thead, .datepicker-decades table thead, .datepicker-centuries table thead {
+        background: #3546b3;
+        color: #ffffff;
+        border-radius: 0;
+    }
+
+    .datepicker table tr td.active, .datepicker table tr td.active:hover, .datepicker table tr td.active.disabled, .datepicker table tr td.active.disabled:hover {
+        background-image: none;
+    }
+
+    .datepicker .prev, .datepicker .next {
+        color: rgba(255, 255, 255, 0.5);
+        transition: 0.3s;
+        width: 37px;
+        height: 37px;
+    }
+
+        .datepicker .prev:hover, .datepicker .next:hover {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.99);
+            font-size: 21px;
+        }
+
+    .datepicker .datepicker-switch {
+        font-size: 24px;
+        font-weight: 400;
+        transition: 0.3s;
+    }
+
+        .datepicker .datepicker-switch:hover {
+            color: rgba(255, 255, 255, 0.7);
+            background: transparent;
+        }
+
+    .datepicker table tr td span {
+        border-radius: 2px;
+        margin: 3%;
+        width: 27%;
+    }
+
+        .datepicker table tr td span.active, .datepicker table tr td span.active:hover, .datepicker table tr td span.active.disabled, .datepicker table tr td span.active.disabled:hover {
+            background-color: #3546b3;
+            background-image: none;
+        }
+
+    .dropdown-menu {
+        border: 1px solid rgba(0,0,0,.1);
+        box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    }
+
+    .datepicker-dropdown.datepicker-orient-top:before {
+        border-top: 7px solid rgba(0,0,0,.1);
+    }
+</style>
+

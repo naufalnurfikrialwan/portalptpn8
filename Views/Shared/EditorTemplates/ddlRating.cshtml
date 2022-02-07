@@ -1,0 +1,37 @@
+﻿@model int
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = " ★★★★★",
+                Value = "5"
+            },
+            new SelectListItem() {
+                Text = "★★★★",
+                Value = "4"
+            },
+            new SelectListItem() {
+                Text = "★★★",
+                Value = "3"
+            },
+            new SelectListItem()
+            {
+                Text = "★★",
+                Value = "2"
+            },
+            new SelectListItem()
+            {
+                Text = "★",
+                Value = "1"
+            }
+        })
+        .Events(e => { e.Change("ddlRatingOnChange"); e.Select("ddlRatingOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+
+
+

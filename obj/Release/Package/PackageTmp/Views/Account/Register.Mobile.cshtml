@@ -1,0 +1,229 @@
+﻿@model Ptpn8.UserManagement.Models.RegisterViewModel
+@using Kendo.Mvc.UI
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    <div id="register">
+        @Html.AntiForgeryToken()
+        <h4>Create a new account.</h4>
+        <hr />
+        @Html.ValidationSummary(true, "Account creation was unsuccessful. Please correct the errors and try again.")
+
+        <table width="100%"> 
+            <tr>
+                <td width="40%">
+                    @Html.LabelFor(m => m.Email)
+                </td>
+                <td width="60%">
+                    <div>
+                        @Html.Kendo().TextBoxFor(m => m.Email).HtmlAttributes(new { style = "width: 100%;" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="vertical-align:middle; color: green;">
+                        Masukan alamat Email anda dengan format alamat email, contoh xyz@gmail.com
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Password)
+                </td>
+                <td>
+                    <div>
+                        @Html.Kendo().TextBoxFor(m => m.Password).Name("Password").HtmlAttributes(new { type = "password", style = "width: 100%;" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="vertical-align:middle; color: green;">
+                        Isikan password, minimal 6 huruf
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.ConfirmPassword)
+                </td>
+                <td>
+                    <div>
+                        @Html.Kendo().TextBoxFor(m => m.ConfirmPassword).Name("ConfirmPassword").HtmlAttributes(new { type = "password", style = "width: 100%;" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.NoIndukKaryawan)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.NoIndukKaryawan).Name("NoIndukKaryawan").HtmlAttributes(new { style = "width: 100%;" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="vertical-align:middle;color: green;">
+                        Isikan No Induk Karyawan (NIK) anda
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Nama)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.Nama).Name("Nama").HtmlAttributes(new { style = "width: 100%;" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td width="30%">
+                    <div style="vertical-align:middle;color: green;">
+                        Isikan Nama Lengkap anda
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Jabatan)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.Jabatan).Name("Jabatan").HtmlAttributes(new { style = "width: 100%;" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="vertical-align:middle;color: green;">
+                        Isikan Jabatan anda saat ini
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Telepon)
+                </td>
+                <td>
+                    @Html.Kendo().TextBoxFor(m => m.Telepon).Name("Telepon").HtmlAttributes(new { style = "width: 100%;" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td width="30%">
+                    <div style="vertical-align:middle;color: green;">
+                        Isikan 1 (satu) Nomor telepon/HP yang aktif saat ini
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.Foto)
+                </td>
+                <td>
+                    @Html.HiddenFor(m=>m.FileFoto)
+                    @Html.HiddenFor(m=>m.Foto)
+                    @(Html.Kendo().Upload()
+                            .Name("files")
+                            .Events(e => e.Success("UploadSuccess"))
+                            .Multiple(false)
+                            .HtmlAttributes(new { style = "width: 100%;" })
+                            .Async(a => a.Save("SaveFoto", "img", new { Area = "Referensi"})
+                            .Remove("RemoveFoto", "img", new { Area = "Referensi" })
+                            .AutoUpload(true)
+                        )
+                    )
+                    <div id="gbr"></div>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td></td>    
+                <td>
+                    <div style="vertical-align:middle;color: green;">
+                        Klik Select Files. Pilih dan Upload foto anda, format foto JPEG, ukuran max 300 Kbytes
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(m => m.LokasiKerjaId)
+                </td>
+                <td>
+                    @Html.HiddenFor(m=>m.LokasiKerjaId)
+                    @(Html.Kendo().TreeView()
+                        .Name("treeLokasiKerja")
+                        .DataTextField("Nama")
+                        .Events(e => e.Select("treeLokasiKerjaOnSelect"))
+                        .BindTo((IEnumerable<TreeViewItemModel>)ViewBag.treeOrganisasi)
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="vertical-align:middle;color: green;">
+                        Pilih lokasi kerja anda saat ini
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div>
+        <table width="100%">
+            <tr>
+                <td style="text-align: center;">
+                    <input type="submit" class="k-button" value="Register" style="width: 120px; height: 50px; color: white; background-color: green; font-size: x-large" />
+                </td>
+            </tr>
+        </table>
+
+    </div>
+}
+
+<script type="text/javascript">
+    function treeLokasiKerjaOnSelect(e) {
+        $('#LokasiKerjaId').val(e.node.dataset.id);
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        //var filecontent = files[0].;
+        $('#FileFoto').val(filename);
+        var loc = $(location).attr('origin') + '/Content/Images/Upload/' + filename;
+        var img = $("<img />").attr('src', '/Content/Images/Upload/' + filename);
+        $('#gbr').empty();
+        $("#gbr").append(img);
+    }
+
+</script>
+
+<style type="text/css">
+    #register {
+        /*padding: 0px 0px;*/
+        border-radius: 5px;
+        /*background-color: gainsboro;*/
+    }
+</style>
+

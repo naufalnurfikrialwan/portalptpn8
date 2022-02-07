@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNet.Identity
+@using Ptpn8.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", new { Area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <table class="k-link" width="100%">
+            <tr>
+                <td><img src="@Url.Content("~/Content/Images/View/"+CRUDApplicationUser.CRUD.Get1Record(User.Identity.Name).Id+".jpg")" alt="" width="100%" /></td>
+                <td>
+                    <table>
+                        <tr><td><strong>@Html.ActionLink(CRUDApplicationUser.CRUD.Get1Record(User.Identity.Name).Nama, "Index", "Manage", new { Area = "UserManagement" }, htmlAttributes: new { title = "Manage" })</strong></td></tr>
+                        <tr><td><strong>@ViewBag.LokasiKerja</strong></td></tr>
+                        <tr><td><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></td></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    }
+}
+else
+{
+    <ul class="k-link" style="list-style: none;">
+        @*<li>@Html.ActionLink("Register", "Register", "Account", new { Area = "UserManagement" }, htmlAttributes: new { id = "registerLink" })</li>*@
+        <li>@Html.ActionLink("Login/Register", "Login", "Account", new { Area = "" }, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

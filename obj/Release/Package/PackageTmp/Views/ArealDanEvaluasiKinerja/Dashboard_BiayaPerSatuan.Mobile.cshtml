@@ -1,0 +1,460 @@
+﻿@{
+    ViewBag.Title = "Biaya Per Satuan";
+}
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 5%; " />
+
+<table width="100%;">
+    <tr><td style="text-align: center; font-weight:600; font-size: large; background: lightgray;vertical-align:middle;">Biaya Per Satuan</td></tr>
+    <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerKebun">Layer Kebun</td></tr>
+    <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerAfdeling">Layer Afdeling</td></tr>
+    <tr><td style="text-align: center; font-weight:600; font-size: medium; background: gray; color: white;vertical-align:middle;" class="LayerBlok">Layer Blok</td></tr>
+</table>
+
+<div id="splitter">
+    @(Html.Kendo().Splitter().Orientation(SplitterOrientation.Vertical).Name("horizontal").HtmlAttributes(new { style = "height: 600px;" }).Panes(hz =>
+        {
+            hz.Add().Size("150px").HtmlAttributes(new { id = "left-pane" })
+                .Collapsible(true).Content(@<text>
+        @Html.Partial("~/Views/ArealDanEvaluasiKinerja/Dashboard_BiayaPerSatuan_left_pane.cshtml",
+                    new ViewDataDictionary {
+                        { "LAYER","TRUE"},
+                        { "SUMBERDANA","FALSE"},
+                        { "RENTANGWAKTU","TRUE"},
+                        { "BUDIDAYA","TRUE"},
+                        { "REKENINGKEGIATAN","FALSE"},
+                        { "UNSUR","FALSE"},
+                        { "REALISASIDIBANDINGKAN","TRUE"},
+                        { "TOOLS","TRUE" }
+                    })
+                </text>);
+            hz.Add().Size("300px").HtmlAttributes(new { id = "middle-pane" })
+                .Collapsible(false).Content(@<text>
+        @Html.Partial("~/Views/ArealDanEvaluasiKinerja/Dashboard_BiayaPerSatuan_middle_pane.cshtml",
+                                       new ViewDataDictionary {
+                        { "PETA","TRUE"},
+                        { "GRID","TRUE"},
+                        { "CHART","TRUE"}
+                    })
+                </text>);
+            hz.Add().Size("150px").HtmlAttributes(new { id = "right-pane" })
+                .Collapsible(true).Content(@<text>
+        @Html.Partial("~/Views/ArealDanEvaluasiKinerja/Dashboard_BiayaPerSatuan_right_pane.cshtml",
+                        new ViewDataDictionary {
+                        { "LEGEND","TRUE"},
+                        { "KETLEGEND","TRUE"}
+                    })
+                </text>);
+        }))
+</div>
+
+<script>
+    var dataKebun, dataAfdeling, dataBlok;
+    var chkPopUp, chkKebun, chkStreetMap, chkCitra, chkKontur;
+    var tahunAwal, bulanAwal, tahunAkhir, bulanAkhir;
+    var map, activeLayer;
+    var shapeKlik;
+    var statusAreal, kebunID, budidaya, masaBerlakuHGU, textSearch, loadDataKebun, rekening;
+    var lokasiID, lokasiKebunID, lokasiAfdelingID, lokasiBlokID;
+    var indexStreetMap = 0;
+    var indexKontur = 1;
+    var indexCitra = 2;
+    var indexKebun = 3;
+    var indexAfdeling = 4;
+    var indexBlok = 5;
+    var mapExtent;
+    var inputProject;
+    var warnaKebun, warnaAfdeling, warnaBlok;
+    var menuID = '1D3D03A4-787B-46CB-BA89-08C28EB9883B';
+
+    var popup = $("<div>Foo</div>")
+        .appendTo(document.body)
+        .kendoPopup()
+        .data("kendoPopup");
+
+    $(document).ajaxStart(function () {
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+    });
+
+    $(document).ready(function () {
+        bulanAwal = $('#BulanAwal').data('kendoDropDownList').value();
+        tahunAwal = $('#TahunAwal').val();
+        bulanAkhir = $('#BulanAkhir').data('kendoDropDownList').value();
+        tahunAkhir = $('#TahunAkhir').val();
+        chkPopUp = false;
+        chkKebun = true;
+        chkStreetMap = true;
+        chkCitra = false;
+        chkKontur = false;
+        warnaKebun = "";
+        warnaAfdeling = "";
+        warnaBlok = "";
+        lokasiID = "";
+
+        statusAreal = "0";
+        budidaya = '02';
+        rekening = '601'
+        textSearch = "";
+        masaBerlakuHGU = "0"
+        shapeKlik = false;
+
+        activeLayer = "Kebun";
+        inputProject = false;
+        map = $('#map').data('kendoMap');
+
+        for (var i = 0; i < map.layers.length; i++) {
+            var lyr = map.layers[i];
+            if (i == 0 || i == 3) {
+                if (i == 3) lyr.dataSource.read();
+                lyr.show();
+            } else lyr.hide();
+        }
+        loadDataKebun = true;
+        resetGridData();
+    });
+
+
+
+    function grdLegendKebunOnDataBound(e) { }
+
+    function grdLegendKebunOnChange(e) {
+        var data = this.dataItem(this.select());
+        var id = data.KebunId;
+        cariLokasi(id, "Kebun");
+    }
+
+    function grdLegendAfdelingOnDataBound(e) { }
+
+    function grdLegendAfdelingOnChange(e) {
+        var data = this.dataItem(this.select());
+        var id = data.Id;
+        cariLokasi(id, "Afdeling");
+    }
+
+    function grdLegendBlokOnDataBound(e) { }
+
+    function grdLegendBlokOnChange(e) {
+        var data = this.dataItem(this.select());
+        var id = data.Id;
+        cariLokasi(id, "Blok");
+    }
+
+    function grdLegendCariOnDataBound(e) { }
+
+    function grdLegendCariOnChange(e) {
+        var data = this.dataItem(this.select());
+        var id = data.Id;
+        var lyrKey = data.Warna;
+        lokasiID = data.IdInduk;
+        cariLokasi(id, lyrKey);
+    }
+
+    function grdDataKebunOnDataBound(e) {
+        refreshgrdDataKebun();
+        $('#ChartProtasKaretKebunBI').data('kendoChart').dataSource.read();
+    }
+
+    function grdDataKebunOnChange(e) {
+        var data = this.dataItem(this.select());
+        var id = data.Id;
+        cariLokasi(id, "Kebun");
+    }
+
+    function refreshgrdDataKebun() {
+        var grd = $('#grdDataKebun').data('kendoGrid');
+        var rows = grd.tbody.children();
+        var RealProduksiBI = 0;
+        var RealProduksiSBI = 0;
+        var RKAPProduksiBI = 0;
+        var RKAPProduksiSBI = 0;
+
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = grd.dataItem(row);
+            var warna = dataItem.get("Warna");
+
+            row.removeClass("WarnaHijau");
+            row.removeClass("WarnaBiru");
+            row.removeClass("WarnaMerah");
+            row.removeClass("WarnaKuning");
+            row.removeClass("WarnaHitam");
+            row.removeClass("WarnaOrange");
+
+            if (warna == "green") {
+                row.addClass("WarnaHijau");
+            }
+            else if (warna == "yellow") {
+                row.addClass("WarnaKuning");
+            }
+            else if (warna == "orange") {
+                row.addClass("WarnaOrange");
+            }
+            else if (warna == "blue") {
+                row.addClass("WarnaBiru");
+            }
+            else if (warna == "red") {
+                row.addClass("WarnaMerah");
+            }
+            else
+                row.addClass("WarnaHitam");
+        }
+    }
+
+    function grdDataAfdelingOnDataBound(e) {
+        refreshgrdDataAfdeling();
+        $('#ChartProtasKaretAfdelingBI').data('kendoChart').dataSource.read();
+    }
+
+    function refreshgrdDataAfdeling() {
+        var grd = $('#grdDataAfdeling').data('kendoGrid');
+        var rows = grd.tbody.children();
+
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = grd.dataItem(row);
+            var warna = dataItem.get("Warna");
+
+            row.removeClass("WarnaHijau");
+            row.removeClass("WarnaBiru");
+            row.removeClass("WarnaMerah");
+            row.removeClass("WarnaKuning");
+            row.removeClass("WarnaHitam");
+            row.removeClass("WarnaOrange");
+
+            if (warna == "green") {
+                row.addClass("WarnaHijau");
+            }
+            else if (warna == "yellow") {
+                row.addClass("WarnaKuning");
+            }
+            else if (warna == "orange") {
+                row.addClass("WarnaOrange");
+            }
+            else if (warna == "blue") {
+                row.addClass("WarnaBiru");
+            }
+            else if (warna == "red") {
+                row.addClass("WarnaMerah");
+            }
+            else
+                row.addClass("WarnaHitam");
+
+        }
+    }
+
+    function grdDataAfdelingOnChange(e) {
+        var data = this.dataItem(this.select());
+        var id = data.Id;
+        cariLokasi(id, "Afdeling");
+    }
+
+    function refreshgrdDataBlok() {
+        var grd = $('#grdDataBlok').data('kendoGrid');
+        var rows = grd.tbody.children();
+
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = grd.dataItem(row);
+            var warna = dataItem.get("Warna");
+
+            row.removeClass("WarnaHijau");
+            row.removeClass("WarnaBiru");
+            row.removeClass("WarnaMerah");
+            row.removeClass("WarnaKuning");
+            row.removeClass("WarnaHitam");
+            row.removeClass("WarnaOrange");
+
+            if (warna == "green") {
+                row.addClass("WarnaHijau");
+            }
+            else if (warna == "yellow") {
+                row.addClass("WarnaKuning");
+            }
+            else if (warna == "orange") {
+                row.addClass("WarnaOrange");
+            }
+            else if (warna == "blue") {
+                row.addClass("WarnaBiru");
+            }
+            else if (warna == "red") {
+                row.addClass("WarnaMerah");
+            }
+            else
+                row.addClass("WarnaHitam");
+        }
+    }
+
+    function grdDataBlokOnDataBound(e) {
+        refreshgrdDataBlok();
+        $('#ChartProtasKaretBlokBI').data('kendoChart').dataSource.read();
+    }
+
+    function grdDataBlokOnChange(e) {
+        var data = this.dataItem(this.select());
+        var id = data.Id;
+        cariLokasi(id, "Blok");
+    }
+
+    function cariLokasi(id, lyrKey) {
+        var map = $('#map').data('kendoMap');
+        {
+            _cariLokasi(id, lyrKey).done(function (result) {
+                if (result[0] != '') {
+                    var loc1 = new kendo.dataviz.map.Location(result[2], result[1]);
+                    var loc2 = new kendo.dataviz.map.Location(result[4], result[3]);
+                    var extent = new kendo.dataviz.map.Extent(loc1, loc2);
+                    if (lyrKey == "Kebun") {
+                        if (lyrKey != activeLayer) {
+                            activeLayer = "Kebun";
+                            warnaKebun = "";
+                            map.layers[indexKebun].dataSource.data([]);
+                            map.layers[indexKebun].dataSource.read().done(function () {
+                                resetGridData();
+                            });
+                        }
+                        mapExtent = extent;
+                        map.extent(extent);
+                        map.zoom(14);
+                    }
+                    else if (lyrKey == "Afdeling") {
+                        if (lyrKey != activeLayer) {
+                            activeLayer = "Afdeling";
+                            warnaAfdeling = "";
+                            map.layers[indexAfdeling].dataSource.data([]);
+                            map.layers[indexAfdeling].dataSource.read().done(function () {
+                                resetGridData();
+                            });
+                        }
+                        mapExtent = extent;
+                        map.extent(extent);
+                        map.zoom(15);
+
+                    }
+                    else if (lyrKey == "Blok") {
+                        if (lyrKey != activeLayer) {
+                            activeLayer = "Blok";
+                            warnaBlok = "";
+                            map.layers[indexBlok].dataSource.data([]);
+                            map.layers[indexBlok].dataSource.read().done(function () {
+                                resetGridData();
+                            });
+                        }
+                        mapExtent = extent;
+                        map.extent(extent);
+                        map.zoom(17);
+                    }
+                }
+            });
+        }
+    }
+
+    function _cariLokasi(id, lyrKey) {
+        var url = '../Areal/Home/cariLokasi';
+        return $.ajax({
+            url: url,
+            data: {
+                id: id,
+                key: lyrKey
+            }, //parameters go here in object literal form
+            type: 'GET',
+            datatype: 'json'
+        });
+    }
+
+    function getKebunData() {
+        return { Id: "", budidaya: budidaya, tahun: tahunAwal, bulan: bulanAwal }
+    }
+
+    function getAfdelingData() {
+        return { Id: lokasiKebunID, budidaya: budidaya, tahun: tahunAwal, bulan: bulanAwal, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+    }
+
+    function getBlokData() {
+        return { Id: lokasiAfdelingID, budidaya: budidaya, tahun: tahunAwal, bulan: bulanAwal, perbandingan: $("input[name=perbandingan]:checked").val(), pctBalai: $('#txtBalai').val() }
+    }
+
+    function legendData() {
+        return { Id: lokasiID, statusAreal: '1.1', budidaya: budidaya, tahun: tahunAwal, bulan: bulanAwal }
+    }
+
+    function legendCari() {
+        return { cariText: $('#txtCari').val() }
+    }
+
+
+    function StringJSonDecode(value) {
+        return value.replace(/"/g, '').replace("[", '').replace("]", '').replace(/,/g, ", ");
+    }
+</script>
+
+<style>
+    #vertical {
+        height: 600px;
+        margin: 0 auto;
+    }
+
+    #middle-pane {
+        background-color: rgba(60, 70, 80, 0.10);
+    }
+
+    #bottom-pane {
+        background-color: rgba(60, 70, 80, 0.15);
+    }
+
+    #left-pane, #center-pane, #right-pane {
+        background-color: rgba(60, 70, 80, 0.05);
+    }
+
+    .pane-content {
+        padding: 0 10px;
+    }
+    /*.k-grid .k-header {
+    display: none;
+    }*/
+
+    .WarnaMerah {
+        color: white;
+        background-color: red;
+    }
+
+    .WarnaHijau {
+        color: white;
+        background-color: green;
+    }
+
+    .WarnaKuning {
+        color: black;
+        background-color: yellow;
+    }
+
+    .WarnaBiru {
+        color: white;
+        background-color: blue;
+    }
+
+    .WarnaOrange {
+        color: white;
+        background-color: orange;
+    }
+
+    .WarnaHitam {
+        color: white;
+        background-color: black;
+    }
+
+    .DataPembandingKosong {
+        color: white;
+        background-color: black;
+    }
+
+    .fieldlist {
+        margin: 0 0 -1em;
+        padding: 0;
+    }
+
+        .fieldlist li {
+            list-style: none;
+            padding-bottom: 1em;
+        }
+</style>

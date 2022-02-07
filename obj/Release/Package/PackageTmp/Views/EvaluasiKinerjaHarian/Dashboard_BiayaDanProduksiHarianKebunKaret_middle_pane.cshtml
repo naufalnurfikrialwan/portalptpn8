@@ -1,0 +1,151 @@
+﻿<div class="k-content">
+    @*<label id='judulgroup1' style='font-size: medium; text-align:center;'></label>*@
+
+    <div>
+        <label id="judulgrid1" style="text-align:center; font-size:medium"></label>
+        <label id="judulgrid2" style="text-align:center; font-size:medium"></label>
+        <label id=" rid2" style="text-align:center; font-size:small"></label>
+    </div>
+    <div id="data" style="width:100%;height:535px;">
+        @(Html.Kendo()
+                        .Grid<Ptpn8.ArealDanEvaluasiKinerja.Models.MonitorBiayaDanProduksiHarianSeluruhKebun>()
+                        .Name("grdDetail")
+                        .ToolBar(tools => { tools.Excel(); })
+                        .Excel(excel => excel
+                            .FileName("BiayadanProduksiHarian.xlsx")
+                            .Filterable(true)
+                            .ProxyURL(Url.Action("Excel_Export_Save", "EvaluasiKinerjaHarian"))
+                        )
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.KebunId).Width(50).Hidden();
+                            g.Bound(i => i.Kebun).Width(250).Title("Kebun").Locked(true);
+                            g.Bound(i => i.Tgl).Width(100).Title("Tgl").Locked(true);
+                            g.Group(i => i
+                               .Title("Produksi Basah Murni REGULER(Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_4).Width(75).Title("Lateks").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_5).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_6).Width(75).Title("Jumlah basah murni").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                               })
+                           );
+                            g.Group(i => i
+                               .Title("Produksi Basah Murni BORONG(Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_8).Width(75).Title("Lateks").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_9).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_10).Width(75).Title("Jumlah basah borong").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                               })
+                           );
+                            g.Group(i => i
+                               .Title("JUMLAH Produksi Basah(Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_12).Width(75).Title("Lateks").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_13).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_14).Width(75).Title("Total").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                               })
+                           );
+                            g.Group(i => i
+                               .Title("Lancuran (Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_16).Width(75).Title("Lateks").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_17).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_18).Width(75).Title("Jumlah Lancuran").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                               })
+                           );
+                            g.Group(i => i
+                               .Title("TOTAL PRODUKSI BASAH (Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_20).Width(75).Title("Lateks").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_21).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                               })
+                           );
+                            g.Bound(i => i.Field_22).Width(75).Title("Total Basah - LHKH").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                            g.Bound(i => i.Field_23).Width(75).Title("Total Basah - Data AKUN").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                            g.Group(i => i
+                                .Title("Produksi Kering Murni REGULER(Kg)")
+                                .Columns(c =>
+                                {
+                                    c.Bound(q => q.Field_26).Width(75).Title("Sheet").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                    c.Bound(q => q.Field_27).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                    c.Bound(q => q.Field_28).Width(75).Title("Jumlah kering murni").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                })
+                            );
+                            g.Group(i => i
+                                .Title("Produksi Kering Murni BORONG(Kg)")
+                                .Columns(c =>
+                                {
+                                    c.Bound(q => q.Field_30).Width(75).Title("Sheet").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                    c.Bound(q => q.Field_31).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                    c.Bound(q => q.Field_32).Width(75).Title("Jumlah kering borong").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                })
+                            );
+                            g.Group(i => i
+                               .Title("Jumlah Kering Murni(Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_34).Width(75).Title("Sheet").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_35).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                   c.Bound(q => q.Field_36).Width(75).Title("Total kering Murni").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                               })
+                           );
+                            g.Group(i => i
+                                .Title("Produksi Kering LANCURAN(Kg)")
+                                .Columns(c =>
+                                {
+                                    c.Bound(q => q.Field_38).Width(75).Title("Sheet").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                    c.Bound(q => q.Field_39).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                    c.Bound(q => q.Field_40).Width(75).Title("Jumlah kering lancuran").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                })
+                            );
+                            g.Group(i => i
+                                .Title("TOTAL PRODUKSI KERING(Kg)")
+                                .Columns(c =>
+                                {
+                                    c.Bound(q => q.Field_42).Width(75).Title("Sheet").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                    c.Bound(q => q.Field_43).Width(75).Title("Lump/KKK 40%").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                                })
+                            );
+                            g.Bound(i => i.Field_44).Width(75).Title("TOTAL KERING (Kg) - Data LHKH").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                            g.Bound(i => i.Field_45).Width(75).Title("TOTAL KERING (Kg) - Data AKUN").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                        })
+                        .AutoBind(false)
+                        .Navigatable()
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .HtmlAttributes(new { style = "Height: 550px" })
+                        .DataSource(o => o
+                        .Ajax()
+                        .ServerOperation(false)
+                        .Sort(s => { s.Add(x => x.Kebun); s.Add(x => x.Tgl); })
+                        .Batch(true)
+                        .Model(model =>
+                        {
+                            model.Id(p => p.KebunId);
+                        })
+                        .Read(read => read.Action("GetDataFromGRID", "EvaluasiKinerjaHarian").Data("filterGRD").Type(HttpVerbs.Post))
+                        ))
+    </div>
+</div>
+
+<script>
+
+    function filterGRD(e)
+    {
+        var _blnAwal = $('#dtpTanggalTransaksi').val();
+        var _thnAwal = $('#TahunAwal').val();
+        var _bdy = '01EB6E4D-31D2-4ECF-A143-D109A71A3EC8';
+        var _scriptSQL = "use SPDK_KanpusEF; SET DATEFORMAT DMY exec TransposeMonitorBiayadanProduksiHarian '" + _blnAwal + "','" + _bdy + "'";
+
+        return {
+            strClassView: "Ptpn8.ArealDanEvaluasiKinerja.Models.MonitorBiayaDanProduksiHarianSeluruhKebun",
+            scriptSQL: _scriptSQL,
+            _menuId: menuID
+        };
+    }
+</script>

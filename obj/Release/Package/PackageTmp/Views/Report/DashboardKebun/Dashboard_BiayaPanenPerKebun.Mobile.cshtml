@@ -1,0 +1,241 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<script src="~/Scripts/DashboardKebun/Dashboard_PemeliharaanTMPerKebun.js"></script>
+
+<div id="_header">
+    <table width="50%">
+        <tr>
+            <td width="100px">
+                <label>Tahun:</label>
+            </td>
+            <td>
+                @(
+                Html.Kendo().NumericTextBox().Name("Tahun").Min(2016).Format("D4").Value(2019).HtmlAttributes(new { style = "width:100px", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Kebun:</label>
+            </td>
+            <td>
+                @(Html.Kendo().TextBox().Name("kd_kbn").HtmlAttributes(new { style="display: none;"}))
+                @(Html.Kendo().AutoComplete()
+                        .Name("NamaKebun")
+                        .MinLength(2)
+                        .Filter("contains")
+                        .Placeholder("Cari Kebun")
+                        .DataTextField("Nama")
+                        .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 60%" })
+                        .Events(e =>
+                        {
+                            e.DataBound("NamaKebunOnSelect");
+                            e.Change("NamaKebunOnSelect");
+                        })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Budidaya:</label>
+            </td>
+            <td>
+                @(Html.Kendo().TextBox().Name("kd_bud").HtmlAttributes(new { style = "display: none;" }))
+                @(Html.Kendo().AutoComplete()
+                    .Name("Budidaya")
+                    .MinLength(2)
+                    .Filter("contains")
+                    .Placeholder("Budidaya")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                    .HtmlAttributes(new { style = "width: 60%" })
+                .Events(e =>
+                {
+                    e.Change("BudidayaOnSelect");
+                    e.Select("BudidayaOnSelect");
+                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<p></p>
+<div id="_detail" style="width:100%;">
+    <table width="100%" style="border: 1px solid #C6C6C6;">
+        <tr width="100%" style="border: 1px solid #C6C6C6;">
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi>()
+                                    .Name("chart1")
+                                    .Title("Perbandingan Biaya Pemeliharaan TM & Produksi")
+                                    .AutoBind(false)
+                                    .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                                    .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport1")))
+                                    .Series(series =>
+                                    {
+                                        series.Column(model=>model.Biaya).Name("Biaya (RpJuta)").Color("red").Axis("biaya").CategoryField("Bulan");
+                                        series.Line(model=>model.Produksi).Name("Produksi Basah (Ton)").Color("blue").Axis("produksi").CategoryField("Bulan");
+                                    })
+                                    .ValueAxis(axis => axis.Numeric("biaya").Title("Biaya (RpJuta)"))
+                                    .ValueAxis(axis => axis.Numeric("produksi").Title("Produksi Basah (Ton)"))
+                                    .Tooltip(tooltip => tooltip.Visible(true).Format("{0:N0}"))
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi>()
+                                .Name("chart2")
+                                .Title("Perbandingan Biaya Pemeliharaan TM & Produksi")
+                                .AutoBind(false)
+                                .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                                .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport2")).Group(gr=>gr.Add(model=>model.Uraian)))
+                                .Series(series =>
+                                {
+                                    series.Column(model => model.Biaya).Name("Biaya (RpJuta)").CategoryField("Bulan");
+                                    series.Line(model => model.Produksi).Name("Produksi Basah (Ton)").CategoryField("Bulan");
+                                })
+                                //.CategoryAxis(axis=>axis.Categories(model=>model.Uraian))
+                                .ValueAxis(axis => axis.Numeric("biaya").Title("Biaya (RpJuta)"))
+                                .ValueAxis(axis => axis.Numeric("produksi").Title("Produksi Basah (Ton)"))
+                                .Tooltip(tooltip => tooltip.Visible(true).Format("{0:N0}"))
+                )
+            </td>
+        </tr>
+        @*<tr>
+            <td>
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi>()
+                                .Name("chart3")
+                                .Title("Perbandingan Biaya Pemeliharaan TM & Produksi SAWIT")
+                                .AutoBind(false)
+                                .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                                .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport3")))
+                                .Series(series =>
+                                {
+                                    series.Column(model => model.Biaya).Name("Biaya (RpJuta)").Color("red").Axis("biaya").CategoryField("Uraian");
+                                    series.Line(model => model.Produksi).Name("Produksi Basah (Ton)").Color("blue").Axis("produksi").CategoryField("Uraian");
+                                })
+                                    .ValueAxis(axis => axis.Numeric("biaya").Title("Biaya (RpJuta)"))
+                                    .ValueAxis(axis => axis.Numeric("produksi").Title("Produksi Basah (Ton)"))
+                                .Tooltip(tooltip => tooltip.Visible(true).Format("{0:N0}"))
+                )
+            </td>
+            <td>
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi>()
+                                .Name("chart4")
+                                .Title("Perbandingan Biaya Pemeliharaan TM & Produksi KOPI")
+                                .AutoBind(false)
+                                .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                                .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport4")))
+                                .Series(series =>
+                                {
+                                    series.Column(model => model.Biaya).Name("Biaya (RpJuta)").Color("red").Axis("biaya").CategoryField("Bulan");
+                                    series.Line(model => model.Produksi).Name("Produksi Basah (Ton)").Color("blue").Axis("produksi").CategoryField("Bulan");
+                                })
+                                    .ValueAxis(axis => axis.Numeric("biaya").Title("Biaya (RpJuta)"))
+                                    .ValueAxis(axis => axis.Numeric("produksi").Title("Produksi Basah (Ton)"))
+                                .Tooltip(tooltip => tooltip.Visible(true).Format("{0:N0}"))
+                )
+            </td>
+        </tr>*@
+    </table>
+</div>
+
+
+
+<script>
+    function filterReport1(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi',
+            scriptSQL: "exec Dashboard_ViewPerbandinganBiayaPemelTMDanProduksiPerKebun '" + $('#kd_bud').val()+"', '"+$('#kd_kbn').val()+"'," + $('#Tahun').val(),
+            _menuId: menuId
+        }
+    }
+
+    function filterReport2(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi',
+            scriptSQL: "exec Dashboard_ViewPerbandinganBiayaPemelTMDanProduksiPerAfdeling '" + $('#kd_bud').val() + "', '" + $('#kd_kbn').val() + "'," + $('#Tahun').val(),
+            _menuId: menuId
+        }
+    }
+
+    function filterReport3(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi',
+            scriptSQL: "exec Dashboard_ViewPerbandinganBiayaDanProduksiPerKebun '01', '" + $('#kd_kbn').val() +"'," + $('#Tahun').val(),
+            _menuId: menuId
+        }
+    }
+
+    function filterReport4(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_PerbandinganBiayaDanProduksi',
+            scriptSQL: "exec Dashboard_ViewPerbandinganBiayaDanProduksiPerKebun '36', '" + $('#kd_kbn').val() +"'," + $('#Tahun').val(),
+            _menuId: menuId
+        }
+    }
+
+    function btnProsesOnClick(e) {
+
+        $('#chart1').data('kendoChart').options.title.text = "Perbandingan Biaya Pemeliharaan TM & Produksi "+$('#Budidaya').val()+", Kebun "+$('#NamaKebun').val()+" (" + $('#Tahun').val()+")";
+        $('#chart2').data('kendoChart').options.title.text = "Perbandingan Biaya Pemeliharaan TM & Produksi " + $('#Budidaya').val() + ", Kebun " + $('#NamaKebun').val() + " (" + $('#Tahun').val() + ")";
+        //$('#chart3').data('kendoChart').options.title.text = "Perbandingan Biaya Pemeliharaan TM & Produksi SAWIT (" + $('#Tahun').val() + ")";
+        //$('#chart4').data('kendoChart').options.title.text = "Perbandingan Biaya Pemeliharaan TM & Produksi KOPI (" + $('#Tahun').val() + ")";
+
+        $('#chart1').data('kendoChart').dataSource.read();
+        $('#chart2').data('kendoChart').dataSource.read();
+        //$('#chart3').data('kendoChart').dataSource.read();
+        //$('#chart4').data('kendoChart').dataSource.read();
+
+        $('#chart1').data('kendoChart').refresh();
+        $('#chart2').data('kendoChart').refresh();
+        //$('#chart3').data('kendoChart').refresh();
+        //$('#chart4').data('kendoChart').refresh();
+    }
+
+    function NamaKebunOnSelect(e) {
+        var kebun = this.dataItem(e.item);
+        if (typeof (kebun) != 'undefined') {
+            $('#kd_kbn').val(kebun.kd_kbn);
+            $('#NamaKebun').val(kebun.Nama);
+        }
+    }
+
+    function filterKebun() {
+        return {
+            key: "NamaKebun",
+            value: $("#NamaKebun").val()
+        };
+    }
+
+    function filterBudidaya(e) {
+        return {
+            value: $("#Budidaya").val()
+        };
+    }
+
+    function BudidayaOnSelect(e) {
+        var mainBudidaya = this.dataItem(e.item);
+        $('#kd_bud').val(mainBudidaya.kd_bud);
+    }
+
+</script>
+
+
+
+
+
+

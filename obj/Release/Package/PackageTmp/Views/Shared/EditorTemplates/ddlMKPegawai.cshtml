@@ -1,0 +1,72 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+.DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "01",
+                Value = "01"
+            },
+            new SelectListItem() {
+                Text = "02",
+                Value = "02"
+            },
+            new SelectListItem() {
+                Text = "03",
+                Value = "03"
+            },
+            new SelectListItem() {
+                Text = "04",
+                Value = "04"
+            },
+            new SelectListItem() {
+                Text = "05",
+                Value = "05"
+            },
+            new SelectListItem() {
+                Text = "06",
+                Value = "06"
+            },
+            new SelectListItem() {
+                Text = "07",
+                Value = "07"
+            },
+            new SelectListItem() {
+                Text = "08",
+                Value = "08"
+            },
+            new SelectListItem() {
+                Text = "09",
+                Value = "09"
+            },
+            new SelectListItem() {
+                Text = "10",
+                Value = "10"
+            },
+            new SelectListItem() {
+                Text = "11",
+                Value = "11"
+            },
+            new SelectListItem() {
+                Text = "12",
+                Value = "12"
+            },
+            new SelectListItem() {
+                Text = "13",
+                Value = "13"
+            },
+            new SelectListItem() {
+                Text = "14",
+                Value = "14"
+            },
+            new SelectListItem() {
+                Text = "15",
+                Value = "15"
+            }
+        }).Events(e => { e.Select("ddlMKPegawaiOnSelect"); e.Change("ddlMKPegawaiOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

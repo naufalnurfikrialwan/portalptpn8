@@ -1,0 +1,231 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+<script src="~/Scripts/UserManagement/Users.js"></script>
+@*detail*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td><div style="text-align:center">@ViewBag.Title</div></td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="10%">
+                        <label style="text-align:left">Lokasi Kerja:</label>
+                    </td>
+                    <td>
+                        @(Html.Kendo().AutoComplete().Name("aucLokasiKerja")
+                            .MinLength(2)
+                            .Filter("contains")
+                            .DataTextField("Nama")
+                            .Events(ev => { ev.Change("aucLokasiKerjaOnSelect"); })
+                            .HtmlAttributes(new { style = "width: 55%", @class = "allcaps" })
+                            .DataSource(o =>
+                            {
+                                o.Read(r => r.Action("GetLokasiKerja1", "ddl", new { Area = "Referensi" }).Data("filterLokasiKerja").Type(HttpVerbs.Post));
+                                o.ServerFiltering(true);
+                            })
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="confirm">
+                            <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<div id="_detail" class="_detail">
+    @(Html.Kendo().Grid<Ptpn8.UserManagement.Models.ApplicationUser>()
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.Id).Width(100).Hidden();
+            g.Bound(i => i.Foto).Width(70).Title("Foto").ClientTemplate(
+                    @"<div class='photo'><img src='" + Url.Content("~/Content/Images/View/") + "#:UserName#.jpg' alt='#: UserName #' /></div>");
+            g.Bound(i => i.NoIndukKaryawan).Title("NIK").Width(80);
+            //g.Bound(i => i.StatusNoIndukKaryawan).Title("?").Width(20).ClientTemplate("<input type = \"checkbox\" #= StatusNoIndukKaryawan ? \"checked=checked\" : \"\" # disabled=\"disabled\" ></input>");
+            g.Bound(i => i.Nama).Title("Nama").Width(120);
+            //g.Bound(i => i.StatusNama).Title("?").Width(20).ClientTemplate("<input type = \"checkbox\" #= StatusNama ? \"checked=checked\" : \"\" # disabled=\"disabled\" ></input>");
+            g.Bound(i => i.Jabatan).Title("Jabatan").Width(120);
+            //g.Bound(i => i.StatusJabatan).Title("?").Width(20).ClientTemplate("<input type = \"checkbox\" #= StatusJabatan ? \"checked=checked\" : \"\" # disabled=\"disabled\" ></input>");
+            g.ForeignKey(i => i.LokasiKerjaId, Ptpn8.Areas.Referensi.Models.CRUD.CRUDLokasiKerja.CRUD.getFlatData(), "LokasiKerjaId", "Text").Title("Lokasi Kerja").Width(200);
+            //g.Bound(i => i.StatusLokasiKerja).Title("?").Width(20).ClientTemplate("<input type = \"checkbox\" #= StatusLokasiKerja ? \"checked=checked\" : \"\" # disabled=\"disabled\" ></input>");
+            g.Bound(i => i.UserName).Title("User Name").Width(100);
+            g.Bound(i => i.IsApprove).Title("Approve?").Width(50).ClientTemplate("<input type = \"checkbox\" #= IsApprove ? \"checked=checked\" : \"\" # disabled=\"disabled\" ></input>");
+        })
+        .AutoBind(false)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ClientDetailTemplateId("detailUser")
+        .Sortable()
+        .Selectable(selectable => selectable.Mode(GridSelectionMode.Single))
+        .HtmlAttributes(new { style = "Height: 600px" })
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Custom().Name("Simpan").Text("Simpan").HtmlAttributes(new { @class = "k-button k-font-icon k-i-restore", onclick = "sendDataHDR()", style = "background-color: green; color: white; font-size:medium;" });
+        })
+
+        .DataSource(o => o
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(p => p.Id);
+                model.Field(p => p.Id).Editable(true);
+                model.Field(i => i.NoIndukKaryawan).Editable(false);
+                model.Field(i => i.Nama).Editable(false);
+                model.Field(i => i.Jabatan).Editable(false);
+                model.Field(i => i.LokasiKerjaId).Editable(false);
+                model.Field(i => i.UserName).Editable(false);
+                model.Field(i => i.IsApprove).Editable(true);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterReadMaster").Type(HttpVerbs.Post))
+        )
+    )
+</div>
+
+<script id="detailUser" type="text/kendo-tmpl">
+    @(Html.Kendo().Grid<Ptpn8.UserManagement.Models.ApplicationUserRole>()
+        .Name("grduserRole_#=Id#")
+        .Columns(column =>
+        {
+            column.Bound(o => o.UserId).Width(100).Hidden();
+            column.Bound(o => o.RoleId).Width(100).Hidden();
+            column.Bound(o => o.Idd).Width(100).Hidden();
+            column.Bound(o => o.RoleName).Title("Role Name").Width(250);
+            column.Bound(o => o.Description).Width(200);
+            column.Command(command =>
+            {
+                command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+
+            }).Width(180);
+        })
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Events(e => { e.Edit("grduserRoleOnEdit"); e.DataBound("grduserRoleOnDataBound"); })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Custom().Name("Tambah").Text("Tambah Baris").HtmlAttributes(new { @class = "k-button k-grid-add k-font-icon k-i-plus", style= "background-color: blue; color: white; font-size:small;" });
+            toolbar.Custom().Name("Simpan").Text("Simpan").HtmlAttributes(new { @class = "k-button k-font-icon k-i-restore", onclick = "sendDataDTL()", style= "background-color: green; color: white; font-size:small;" });
+        })
+        .DataSource(datasource => datasource
+        .Ajax()
+        .Model(model =>
+        {
+            model.Id(p => p.UserId);
+            model.Field(p => p.UserId).Editable(false);
+            model.Field(p => p.RoleId).Editable(true);
+            model.Field(p => p.Idd).Editable(true);
+            model.Field(p => p.Description).Editable(true);
+        })
+        .Read(read => read.Action("detailRead", "Input", new { id = "#=Id#", _menuId = "974061E2-4C62-4299-ACD1-CBF7DCCA3622", _classDetailView = "Ptpn8.UserManagement.Models.ApplicationUserRole" }).Type(HttpVerbs.Post))
+        .Create(create => create.Action("detailCreate", "Input", new { id = "#=Id#", _menuId = "974061E2-4C62-4299-ACD1-CBF7DCCA3622", _classDetailView = "Ptpn8.UserManagement.Models.ApplicationUserRole" }).Type(HttpVerbs.Post))
+        .Update(update => update.Action("detailUpdate", "Input", new { id = "#=Id#", _menuId = "974061E2-4C62-4299-ACD1-CBF7DCCA3622", _classDetailView = "Ptpn8.UserManagement.Models.ApplicationUserRole" }).Type(HttpVerbs.Post))
+        .Destroy(destroy => destroy.Action("detailDelete", "Input", new { id = "#=Id#", _menuId = "974061E2-4C62-4299-ACD1-CBF7DCCA3622", _classDetailView = "Ptpn8.UserManagement.Models.ApplicationUserRole" }).Type(HttpVerbs.Post))
+        )
+        .ToClientTemplate()
+    )
+</script>
+
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Ada Masalah.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+

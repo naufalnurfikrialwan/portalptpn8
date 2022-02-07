@@ -1,0 +1,258 @@
+﻿@{
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoalBOM4dan5] where NamaTipeSoal='Tipe E'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="100%">
+    <tr>
+        <td>
+            <div id="_ChapterE" style="display: none;">
+                <div id="ContohChapterE" style="display: none;">
+                    <label style="font-size: large; font-weight: 1000; text-align: center;">CONTOH SOAL Chapter E</label>
+                    <label style="font-size: large; font-weight: 600;">INSTRUKSI:</label>
+                    <label id="instruksiE1" style="font-size: large; font-weight: 600;margin: 5px 5px 5px 5px">@instruksi</label>
+                    <label style="font-size: large;">Contoh Soal 1 :</label>
+                    <table class="multiplechoice">
+                        <tr><td width="50%">1+5 = </td><td></td></tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_a" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_a" disabled>(a) 0</td>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_b" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_b" disabled>(b) 1</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_c" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_c" disabled>(c) 2</td>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_d" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_d" disabled>(d) 3</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_e" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_e" disabled>(e) 4</td>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_f" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_f" disabled>(f) 5</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_g" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_g" disabled checked="checked">(g) 6</td>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_h" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_h" disabled>(h) 7</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_i" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_i" disabled>(i) 8</td>
+                            <td><input class="largerRadio" id="ContohSoal1_ChapterE_j" type="radio" name="ContohSoal1_ChapterE" value="ContohSoal1_ChapterE_j" disabled>(j) 9</td>
+                        </tr>
+                    </table>
+                    <label style="color: blue;">Jawaban soal tersebut adalah 6.</label>
+                    <label style="font-size: large;">Contoh Soal 2 :</label>
+                    <table class="multiplechoice">
+                        <tr><td width="50%">2+7 = </td><td></td></tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_a" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_a" disabled>(a) 0</td>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_b" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_b" disabled>(b) 1</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_c" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_c" disabled>(c) 2</td>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_d" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_d" disabled>(d) 3</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_e" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_e" disabled>(e) 4</td>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_f" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_f" disabled>(f) 5</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_g" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_g" disabled>(g) 6</td>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_h" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_h" disabled>(h) 7</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_i" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_i" disabled>(i) 8</td>
+                            <td><input class="largerRadio" id="ContohSoal2_ChapterE_j" type="radio" name="ContohSoal2_ChapterE" value="ContohSoal2_ChapterE_j" disabled checked="checked">(j) 9</td>
+                        </tr>
+                    </table>
+                    <label style="color: blue;">Jawaban soal tersebut adalah 9.</label>
+                    <label style="font-size: large;">Contoh Soal 3 :</label>
+                    <table class="multiplechoice">
+                        <tr><td width="50%">7+8 =</td><td></td></tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_a" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_a" disabled>(a) 0</td>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_b" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_b" disabled>(b) 1</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_c" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_c" disabled>(c) 2</td>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_d" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_d" disabled>(d) 3</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_e" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_e" disabled>(e) 4</td>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_f" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_f" disabled checked="checked">(f) 5</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_g" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_g" disabled>(g) 6</td>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_h" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_h" disabled>(h) 7</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_i" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_i" disabled>(i) 8</td>
+                            <td><input class="largerRadio" id="ContohSoal3_ChapterE_j" type="radio" name="ContohSoal3_ChapterE" value="ContohSoal3_ChapterE_j" disabled>(j) 9</td>
+                        </tr>
+                    </table>
+                    <label style="color: blue;">Jawaban soal tersebut adalah 15. Maka pilihlah angka 5 pada pilihan jawaban yang tersedia.</label>
+                    <label style="font-size: large;">Contoh Soal 4 :</label>
+                    <table class="multiplechoice">
+                        <tr><td width="50%">6+6 = </td><td></td></tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_a" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_a" disabled>(a) 0</td>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_b" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_b" disabled>(b) 1</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_c" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_c" disabled checked="checked">(c) 2</td>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_d" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_d" disabled>(d) 3</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_e" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_e" disabled>(e) 4</td>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_f" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_f" disabled>(f) 5</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_g" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_g" disabled>(g) 6</td>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_h" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_h" disabled>(h) 7</td>
+                        </tr>
+                        <tr>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_i" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_i" disabled>(i) 8</td>
+                            <td><input class="largerRadio" id="ContohSoal4_ChapterE_j" type="radio" name="ContohSoal4_ChapterE" value="ContohSoal4_ChapterE_j" disabled>(j) 9</td>
+                        </tr>
+                    </table>
+                    <label style="color: blue;">Jawaban soal tersebut adalah 12. Maka pilihlah angka 2 pada pilihan jawaban yang tersedia.</label>
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <button type="button" id="btnMulaiTestChapterE" onclick="btnMulaiTestOnClick('Tipe E')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter E</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="TestChapterE" style="display: none;">
+                    @{
+                        Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIKBOM4dan5.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                        Ptpn8.Models.ModalManusia.PaketDetailBOM4dan5 paketDetail;
+                        Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoalBOM4dan5.CRUD.GetRecord("Tipe E").TipeSoalId;
+                        int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoalBOM4dan5.CRUD.GetRecord("Tipe E").JumlahPertanyaan;
+                        Ptpn8.Models.ModalManusia.PertanyaanBOM4dan5 pertanyaan;
+                        List<Ptpn8.Models.ModalManusia.PertanyaanDetailBOM4dan5> pertanyaanDetail;
+                        List<Ptpn8.Models.ModalManusia.JawabanBOM4dan5> jawaban;
+                        Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5 mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5)HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name];
+                        if (mdlLoadPerChapter == null)
+                        {
+                            mdlLoadPerChapter = new Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5();
+                        }
+
+                        <label style="font-size: large; font-weight: 1000; text-align: center;">SOAL Chapter E</label>
+                        <label style="font-size: large; font-weight: 600;">INSTRUKSI:</label>
+                        <label id="instruksiH2" style="font-size: large; font-weight: 600;margin: 5px 5px 5px 5px">@instruksi</label>
+                        <label style="font-size: large; margin: 5px 5px 5px 5px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.</label>
+                        <label style="font-size: large; margin: 5px 5px 5px 5px">Apabila anda ingin melanjutkan ke soal berikutnya, Click <span style="color: red">"Soal Chapter E Berikutnya"</span> atau <span style="color: red">"Lanjut ke Chapter F"</span></label>
+                        mdlLoadPerChapter.JumlahLoadChapterE = 0;
+                        for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                        {
+                            paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetailBOM4dan5.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                            pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaanBOM4dan5.CRUD.GetRecord(tipeSoalId, noUrut);
+                            pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetailBOM4dan5.CRUD.GetRecord(paketDetail.PertanyaanId);
+                            jawaban = Ptpn8.Models.ModalManusia.CRUDJawabanBOM4dan5.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                            <div id="E_@noUrut.ToString()" class="XTestChapterE" style="display: none;">
+                                @if (noUrut % 2 == 0)
+                                {
+                                    <h1 style="color: red;">Soal No @noUrut</h1>
+                                }
+                                else
+                                {
+                                    <h1 style="color: black;">Soal No @noUrut</h1>
+                                }
+                                <table class="multiplechoice" width="100%">
+                                    <tr>
+                                        @foreach (var mp1 in pertanyaanDetail)
+                                        {
+                                            <td width="50%">
+                                                @if (noUrut % 2 == 0)
+                                                {
+                                                    <label id="E1_@noUrut" style="font-size: x-large; color: red; display: none;">@mp1.PertanyaanId</label>
+                                                    <span style="font-size: xx-large; color: red;">@mp1.PertanyaanTeks</span>
+                                                }
+                                                else
+                                                {
+                                                    <label id="E1_@noUrut" style="font-size: x-large; color: black; display: none;">@mp1.PertanyaanId</label>
+                                                    <span style="font-size: xx-large; color: black;">@mp1.PertanyaanTeks</span>
+                                                }
+                                            </td>
+                                            <td></td>
+                                        }
+                                    </tr>
+                                    @for (int nI = 0; nI < 10; nI++)
+                                    {
+                                        if ((nI + 1) % 2 != 0)
+                                        {
+                                            <tr width="100%">
+                                                <td width="50%">
+                                                    <input class="largerRadio" type="radio" name="E_@noUrut" value="@(nI + 1)" onclick="jawabanOnClick('E_@noUrut','@(nI + 1)')" /><span class="jawaban" style="font-size: x-large;" onclick="pertanyaanOnClick('E_@noUrut','@nI')">(@Convert.ToChar(97 + @nI)) @nI</span>
+                                                </td>
+                                                <td width="50%">
+                                                    <input class="largerRadio" type="radio" name="E_@noUrut" value="@(nI + 1 + 1)" onclick="jawabanOnClick('E_@noUrut','@(nI + 1 + 1)')" /><span class="jawaban" style="font-size: x-large;" onclick="pertanyaanOnClick('E_@noUrut','@(nI + 1)')">(@Convert.ToChar(97 + @nI + 1)) @(nI + 1)</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </table>
+                                <br />
+
+
+                                @if (noUrut < jumlahPertanyaan)
+                                {
+                                    <table width="100%">
+                                        <tr>
+                                            <td align="center">
+                                                <button type="button" id="btnE_@noUrut" onclick="btnOnClick1('Tipe E')" class="btn-big" style="height: 60px; width: 350px; display:none;">Soal Chapter E Berikutnya</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <table width="100%">
+                                        <tr>
+                                            <td align="center">
+                                                <button type="button" id="btnE_@noUrut" onclick="btnOnClick('Tipe E')" class="btn-big" style="height: 60px; width: 250px; display:none;">Lanjut ke Chapter F</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                                <br />
+
+                            </div>
+                            mdlLoadPerChapter.JumlahLoadChapterE = mdlLoadPerChapter.JumlahLoadChapterE + 1;
+                            HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name] = mdlLoadPerChapter;
+                        }
+                    }
+
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+<style>
+    #ContohChapterE {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #TestChapterE {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .XTestChapterE {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+</style>

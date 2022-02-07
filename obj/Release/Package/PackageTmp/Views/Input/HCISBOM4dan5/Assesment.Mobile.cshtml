@@ -1,0 +1,1672 @@
+﻿@model Ptpn8.Models.ModalManusia.View_DIK
+
+<script src="@Url.Content("~/Scripts/jquery.signalR-2.2.1.min.js")"></script>
+<script src="@Url.Content("~/signalr/hubs")"></script>
+
+@*header*@
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; display: none;" />
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+<table width="100%;" align="center">
+    <tr>
+        <td width="100%;">
+            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+        </td>
+    </tr>
+</table>
+
+<div id="sisaWaktu" style="display:none;">
+    <label id="msgSisaWaktu" style="text-align:center; color: red; background-color: white; font-size: x-large; "></label>
+</div>
+
+
+@{
+    string scriptSQL = "set dateformat DMY; select top 1 getdate(),MulaiAssesment,SelesaiAssesment,JadwalNIKId from [dbo].[Assesment_JadwalNIKBOM4dan5] where NIK='" + HttpContext.Current.User.Identity.Name + "' order by MulaiAssesment desc";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    if (tap.Rows.Count > 0)
+    {
+        System.Data.DataRow dr = tap.Rows[0];
+        if ((System.DateTime)dr[0] >= (System.DateTime)dr[1] && (System.DateTime)dr[0] <= (System.DateTime)dr[2])
+        {
+<div id="_header1" class="_hdr" style="display: none;">
+    <label class="ipLocal" style="display:none;">@ViewBag.AlamatIPLocal</label>
+    <label class="ipPublic" style="display:none;">@ViewBag.AlamatIPPublic</label>
+    <h3 style="text-align: center; text-decoration:underline;  ">PERNYATAAN</h3>
+    <div class="_isihdr">
+        <label>Saya yang menjadi peserta digital assessment ini:</label>
+        <br />
+        <table width="100%" style="margin-left: 10px;">
+            <tr>
+                <td width="2%"><label>1.</label></td>
+                <td width="30%"><label>NIK:</label></td>
+                <td>
+                    <label id="NIK" style="color: red;">@HttpContext.Current.User.Identity.Name</label>
+                </td>
+                <td align="left"></td>
+            </tr>
+            <tr>
+                <td><label>2.</label></td>
+                <td><label>Nama:</label></td>
+                <td><label id="NamaLengkap" style="color: blue;"></label></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>3.</label></td>
+                <td><label>Jabatan:</label></td>
+                <td>
+                    <label id="Jabatan" style="color: blue;"></label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>4.</label></td>
+                <td><label>Unit:</label></td>
+                <td>
+                    <label id="Kebun" style="color: blue;"></label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>5.</label></td>
+                <td><label>Tgl Lahir:</label></td>
+                <td>
+                    <label id="TanggalLahir" style="color: blue;"></label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>6.</label></td>
+                <td><label>Usia:</label></td>
+                <td>
+                    <label id="Usia" style="color: blue;"></label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>7.</label></td>
+                <td><label>Jns Kelamin:</label></td>
+                <td>
+                    <label id="JenisKelamin" style="color: blue;"></label>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><label>8.</label></td>
+                <td><label>Pendidikan:</label></td>
+                <td>
+                    <label id="PendidikanTerakhir" style="color: blue;"></label>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+        <br />
+        <label>Menyatakan telah membaca ketentuan-ketentuan sebagai berikut:</label>
+        <table width="100%" style="margin-left: 10px;">
+            <tr>
+                <td width="2%"><label>1.</label></td>
+                <td><label>Adalah benar bahwa saya sendiri yang mengerjakan soal-soal digital assessment milik saya.</label></td>
+            </tr>
+            <tr>
+                <td><label>2.</label></td>
+                <td><label>Adalah benar bahwa saya tidak meminta bantuan orang lain untuk mengerjakan maupun menjawab digital assessment milik saya.</label></td>
+            </tr>
+
+            <tr>
+                <td><label>3.</label></td>
+                <td><label>Adalah benar bahwa saya tidak memfoto, menangkap layar (screenshoot) maupun membocorkan soal-soal digital assessment.</label></td>
+            </tr>
+
+            <tr>
+                <td><label>4.</label></td>
+                <td><label>Adalah benar bahwa saya mengerjakan soal-soal pada digital assessment ini tanpa mencontek maupun melihat contekan lainnya saat mengerjakannya.</label></td>
+            </tr>
+
+            <tr>
+                <td><label>5.</label></td>
+                <td><label>Apabila saya melanggar salah satu ketentuan diatas, saya bersedia menerima sanksi dan hukuman yang diberikan oleh PT. Perkebunan Nusantara VIII.</label></td>
+            </tr>
+        </table>
+        <br />
+        <table width="100%">
+            <tr>
+                <td width="2%"><input style="cursor: pointer;" type="checkbox" class="largerCheckbox" id="pernyataan" name="pernyataan" onclick="pernyataanOnClick()"></td>
+                <td width="40%"><label style="color: blue;">Dengan memberi tanda centang (checklist) pada kotak disamping, maka saya menyetujui dan menyepakati seluruh ketentuan tersebut dan patuh pada peraturan yang berlaku dalam proses digital assessment PT. Perkebunan Nusantara VIII.</label></td>
+            </tr>
+        </table>
+        <table width="100%">
+            <tr>
+                <td align="center">
+                    <button type="button" id="btnStart" onclick="btnStartOnClick()" class="btn-big" style="font-size: x-large; width: 300px; height: 60px; text-align: center; ">Setuju dan Mulai Test</button>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+            <div>
+                @{
+                    Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5 mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5)HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name];
+                    if (mdlLoadPerChapter == null)
+                    {
+                        mdlLoadPerChapter = new Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5();
+                    }
+                    else
+                    {
+                        mdlLoadPerChapter.JumlahLoadChapterA = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterB = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterC = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterD = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterE = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterF = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterG = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterH = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterI = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterJ = 0;
+                        mdlLoadPerChapter.JumlahLoadChapterK = 0;
+                    }
+
+                    System.Guid jadwalNIKId = (Guid)dr[3];
+                    scriptSQL = "exec Assesment_AmbilSeluruhSisaWaktuBOM4dan5 '" + jadwalNIKId.ToString() + "'";
+                    con.Open();
+                    tap = new System.Data.DataTable();
+                    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+                    con.Close();
+
+                    if (tap.Rows.Count > 0)
+                    {
+                        string ASCIIChar;
+                        int ASCIICode;
+                        var posisiTerakhir = "Tipe A";
+                        for (int ii = 0; ii < tap.Rows.Count; ii++)
+                        {
+                            dr = tap.Rows[ii];
+                            if ((int)dr[1] == -1 && (int)dr[2] == -1)
+                            {
+                                ASCIIChar = posisiTerakhir.Substring(5, 1);
+                                ASCIICode = char.ConvertToUtf32(ASCIIChar, 0);
+
+                                if (posisiTerakhir == "Tipe A")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterA = mdlLoadPerChapter.JumlahLoadChapterA + 20;
+                                }
+                                else if (posisiTerakhir == "Tipe B")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterB = mdlLoadPerChapter.JumlahLoadChapterB + 20;
+                                }
+                                else if (posisiTerakhir == "Tipe C")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterC = mdlLoadPerChapter.JumlahLoadChapterC + 20;
+                                }
+                                else if (posisiTerakhir == "Tipe D")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterD = mdlLoadPerChapter.JumlahLoadChapterD + 20;
+                                }
+                                else if (posisiTerakhir == "Tipe E")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterE = mdlLoadPerChapter.JumlahLoadChapterE + 20;
+                                }
+                                else if (posisiTerakhir == "Tipe F")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterF = mdlLoadPerChapter.JumlahLoadChapterF + 20;
+                                }
+                                else if (posisiTerakhir == "Tipe G")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterG = mdlLoadPerChapter.JumlahLoadChapterG + 20;
+                                }
+                                else if (posisiTerakhir == "Tipe H")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterH = mdlLoadPerChapter.JumlahLoadChapterH + 400;
+                                }
+                                else if (posisiTerakhir == "Tipe I")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterI = mdlLoadPerChapter.JumlahLoadChapterI + 150;
+                                }
+                                else if (posisiTerakhir == "Tipe J")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterJ = mdlLoadPerChapter.JumlahLoadChapterJ + 24;
+                                }
+                                else if (posisiTerakhir == "Tipe K")
+                                {
+                                    mdlLoadPerChapter.JumlahLoadChapterK = mdlLoadPerChapter.JumlahLoadChapterK + 90;
+                                }
+
+                                HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name] = mdlLoadPerChapter;
+                                posisiTerakhir = "Tipe " + char.ConvertFromUtf32(ASCIICode + 1);
+                            }
+                            else
+                            {
+                                posisiTerakhir = (string)dr[0];
+                            }
+                        }
+
+                        //65 to 77
+                        ASCIIChar = posisiTerakhir.Substring(5, 1);
+                        ASCIICode = char.ConvertToUtf32(ASCIIChar, 0);
+                        if(ASCIICode<78) { 
+                            <div id="_detail" class="_detail">
+                                @{ for (int ii = ASCIICode; ii < 78; ii++)
+                                    {
+                                        @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_Chapter" + char.ConvertFromUtf32(ii) + ".Mobile.cshtml")
+                                    }
+                                }
+                            </div>
+                                        }
+                                        else
+                                        {
+                                            scriptSQL = "update [dbo].[Assesment_JadwalNIKBOM4dan5] set Setuju=case when Setuju='SETUJU' then 'SETUJU dan SUDAH SELESAI' else Setuju end where NIK = '" + HttpContext.Current.User.Identity.Name + "'";
+                                            con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+                                            con.Open();
+                                            tap = new System.Data.DataTable();
+                                            new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+                                            con.Close();
+                                        }
+
+
+                                    }
+                                    else
+                                    {
+                        <div id="_detail" class="_detail">
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterA.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterB.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterC.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterD.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterE.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterF.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterG.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterH.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterI.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterJ.Mobile.cshtml")
+                            @Html.Partial("~/Views/Input/HCISBOM4dan5/Assesment_ChapterK.Mobile.cshtml")
+                        </div>
+                    }
+
+                    //Ptpn8.Models.ModalManusia.View_LoadSoal mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoal)HttpContext.Current.Application["Assesment"+(string)HttpContext.Current.User.Identity.Name];
+                    if (mdlLoadPerChapter != null)
+                    {
+                        int jmlSoalYangDiLoad;
+                        jmlSoalYangDiLoad = mdlLoadPerChapter.JumlahLoadChapterA + mdlLoadPerChapter.JumlahLoadChapterB + mdlLoadPerChapter.JumlahLoadChapterC +
+                                mdlLoadPerChapter.JumlahLoadChapterD + mdlLoadPerChapter.JumlahLoadChapterE + mdlLoadPerChapter.JumlahLoadChapterF +
+                                mdlLoadPerChapter.JumlahLoadChapterG + mdlLoadPerChapter.JumlahLoadChapterH + mdlLoadPerChapter.JumlahLoadChapterI +
+                                mdlLoadPerChapter.JumlahLoadChapterJ + mdlLoadPerChapter.JumlahLoadChapterK;
+                        if (jmlSoalYangDiLoad != 864)
+                        {
+                            scriptSQL = "update [dbo].[Assesment_JadwalNIKBOM4dan5] set Setuju='TIDAK LENGKAP' where NIK = '" + HttpContext.Current.User.Identity.Name + "'";
+                            con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+                            con.Open();
+                            tap = new System.Data.DataTable();
+                            new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+                            con.Close();
+                        }
+                        else
+                        {
+                            scriptSQL = "update [dbo].[Assesment_JadwalNIKBOM4dan5] set Setuju=case when Setuju='TIDAK LENGKAP' then '' else Setuju end where NIK = '" + HttpContext.Current.User.Identity.Name + "'";
+                            con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+                            con.Open();
+                            tap = new System.Data.DataTable();
+                            new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+                            con.Close();
+                        }
+                    }
+                }
+
+            </div>
+        }
+        else
+        {
+            <div id="belumWaktu" style="font-size: x-large; color: red;">
+                <label>Anda sudah terdaftar sebagai peserta Digital Assesment, tetapi jadwal nya bukan saat ini!</label>
+                <label>Jadwal anda adalah : @((System.DateTime)dr[1]) sd @((System.DateTime)dr[2])</label>
+                <label>Terima kasih.</label>
+            </div>
+        }
+    }
+    else
+    {
+        <div id="belumTerjadwal" style="font-size: x-large; color: red;">
+            <label>Saat ini anda belum terdaftar sebagai peserta Digital Assesment.</label>
+            <label>Hubungi Bagian SDM!</label>
+        </div>
+    }
+}
+
+<div id="errorLoad" style="display:none;">
+    <label>Assesment tidak dapat dilanjutkan, dikarenakan terjadi kesalahan pada saat download soal.</label>
+    <label>Untuk memperbaikinya, anda harus me-refresh / mengulang tampilan halaman ini.</label>
+    <label>Klik tombol <span><button id="btnRefresfh" style="color:white; background-color: red">Refresh!</button></span></label>
+</div>
+
+<div id="errorSimpanKeLocal" style="display:none;">
+    <label>Jawaban tidak dapat disimpan pada memory perangkat yang anda gunakan.</label>
+    <label>Untuk memperbaikinya, anda harus me-refresh / mengulang tampilan halaman ini. Apabila message ini masih muncul, hubungi panitia!</label>
+    <label>Klik tombol <span><button id="btnSimpanKeLocal" style="color:white; background-color: red">Refresh!</button></span></label>
+</div>
+
+<div id="_tutupChapter" style="display:none;">
+    <h1 style="text-align: center;">Terima Kasih</h1>
+</div>
+
+
+
+<script>
+    var menuId = 'da439d6d-e4a7-4b69-bc00-6b5af6fc8e00';
+    var _tipeSoal;
+    var _noUrut;
+    var _pertanyaanId;
+    var _nik;
+    var _jawaban;
+    var _sisaWaktu; // dalam mili second
+    var _myInterval, _myInterval1;
+    var _TipeSoalSaatIni;
+    var dialog, window;
+    var waktuAwal, waktuAkhir;
+    var html, html1;
+    var jadwalNIKId;
+    var _setuju;
+    var a, b, c;
+    var arrJumlahJawabanM;
+    var paketID;
+    var showLoadingEnabled = true;
+    var pengurangWaktu = 30; // 30 detik
+    var arrTipeSoal;
+    var arrJadwal;
+    var arrJmlSoal;
+    var arrLoadChapter;
+    var wRefresh;
+    var alamatIPLocal;
+    var alamatIPPublic;
+    var wSimpanKeLocal;
+
+    $(document).ajaxStart(function () {
+        if (showLoadingEnabled) { $("#progress").show(); } else { $("#progress").hide(); };
+    }).ajaxStop(function () {
+        if (showLoadingEnabled) { $("#progress").hide(); } else { $("#progress").hide(); };
+    });
+
+    function RefreshPage() {
+        setTimeout(function () {
+            window.location.reload();
+        }, 10000);
+    }
+
+    $(document).ready(function () {
+        _nik = $('#_username').val();
+        _setuju = null;
+
+        alamatIPLocal = $('.ipLocal').text();
+        alamatIPPublic = $('.ipPublic').text();
+
+        wRefresh = $("#errorLoad").kendoWindow({
+            title: "Error",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        wSimpanKeLocal = $("#errorSimpanKeLocal").kendoWindow({
+            title: "Error",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+
+        ambilJadwal(_nik).done(function (dt1) {
+            ambilTipeSoal().done(function (dt2) {
+                htgJmlJawabanJ().done(function (dt3) {
+                    htgJmlSoalSeluruh().done(function (dt4) {
+                        arrJadwal = dt1;
+                        arrTipeSoal = dt2;
+                        arrJumlahJawabanM = dt3;
+                        arrJmlSoal = dt4;
+                        TutupSemuaChapter();
+                        if (arrJadwal.length > 0) {
+                            var date1 = arrJadwal[0][0];
+                            var date2 = arrJadwal[0][1];
+                            var date3 = arrJadwal[0][2];
+
+                            var tgl1 = new Date(parseInt(date1.substr(6, 4)), parseInt(date1.substr(3, 2)) - 1, parseInt(date1.substr(0, 2)), date1.substr(11, 2), parseInt(date1.substr(14, 2)), parseInt(date1.substr(17, 2)));
+                            var tgl2 = new Date(parseInt(date2.substr(6, 4)), parseInt(date2.substr(3, 2)) - 1, parseInt(date2.substr(0, 2)), date2.substr(11, 2), parseInt(date2.substr(14, 2)), parseInt(date2.substr(17, 2)));
+                            var tgl3 = new Date(parseInt(date3.substr(6, 4)), parseInt(date3.substr(3, 2)) - 1, parseInt(date3.substr(0, 2)), date3.substr(11, 2), parseInt(date3.substr(14, 2)), parseInt(date3.substr(17, 2)));
+
+                            if (tgl1 >= tgl2 && tgl1 <= tgl3) {
+                                jadwalNIKId = arrJadwal[0][3];
+                                _setuju = arrJadwal[0][4];
+                                paketID = arrJadwal[0][5];
+                                EmpIDOnSelect();
+                                _TipeSoalSaatIni = 'Tipe A';
+                                $('#sisaWaktu').kendoWindow();
+                                dialog = $('#sisaWaktu').data("kendoWindow");
+                                dialog.title("Sisa Waktu");
+                                dialog.setOptions({ width: 300 });
+
+                                $("#sisaWaktu").kendoWindow({
+                                    position: {
+                                        top: 20, // or "100px"
+                                        left: "80%"
+                                    }
+                                });
+
+                                if (_setuju == 'SETUJU') {
+                                    $('#pernyataan').prop("checked", true);
+                                    $('#btnStart').click();
+                                }
+                                else if (_setuju == 'TIDAK LENGKAP') {
+                                    openWindowErrorLoad();
+                                }
+                                else if (_setuju == 'SETUJU dan SUDAH SELESAI') {
+                                    TutupSemuaChapter();
+                                    $('#msgInputView').text('');
+                                    HapusContext().done(function () {
+                                        $('#_tutupChapter').show();
+                                        $(window).scrollTop(0);
+                                    });
+                                }
+                                else if (_setuju == '') {
+                                    $('#_header1').show();
+                                    $('#_header2').hide();
+                                }
+                                else {
+                                    location.reload();
+                                }
+
+                            }
+                            else {
+                                $('#belumWaktu').show();
+                            }
+                        }
+                        else {
+                            $('#belumTerjadwal').show();
+                        }
+                    });
+                });
+            });
+        });
+    });
+
+    function openWindowErrorLoad() {
+        wRefresh.open().center();
+        $("#btnRefresfh").click(function () {
+            wRefresh.close();
+            location.reload();
+        });
+    }
+
+    function EmpIDOnSelect(e) {
+        GetEmployee().done(function (data) {
+            if (data) {
+                var dta = data[0];
+                $('#NIK1').text(dta.REG);
+                $('#NIK2').text(dta.REG);
+                $('#NamaLengkap').text(dta.NAMA);
+                $('#NamaLengkap1').text(dta.NAMA);
+                $('#NamaLengkap2').text(dta.NAMA);
+                $('#Kebun').text(dta.KD_KBN);
+                $('#Jabatan').text(dta.NAMA_JAB);
+                $('#Jabatan1').text(dta.NAMA_JAB);
+                var x = new Date(parseInt(dta.TGL_LAHIR.substr(6)))
+                $('#TanggalLahir').text(
+                    x.getDate().toString() + "/" + (x.getMonth() + 1).toString() + "/" + x.getFullYear().toString()
+                );
+                $('#Usia').text(dta.KANDUNG.toString() + ' tahun');
+                var kelamin;
+                if (dta.KELAMIN == 'L') {
+                    kelamin = 'Laki-Laki';
+                }
+                else {
+                    kelamin = 'Perempuan';
+                }
+                $('#JenisKelamin').text(kelamin);
+                $('#PendidikanTerakhir').text(dta.KD_PEND);
+            }
+        });
+    }
+
+    function GetEmployee() {
+        var url = '/Input/GetDataFrom';
+        var _NIK = $('#NIK').text();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.ModalManusia.View_DIK',
+                scriptSQL: "SELECT reg as REG,nama as NAMA,TGL_LAHIR, KELAMIN, KD_PEND, " +
+                    "CONVERT(int,ROUND(DATEDIFF(hour,TGL_LAHIR,GETDATE())/8766.0,0)) as KANDUNG," +
+                    "(select top 1 ltrim(substring(NamaUnit, charindex(':', NamaUnit) + 1, 100)) from referensief..unit where orgid=(select top 1 PosisiLokasiKerjaId from [identity]..[AspNetUsers] where username='" + _NIK + "')) as KD_KBN," +
+                    "(select top 1 Jabatan from[identity]..[AspNetUsers] where username = '" + _NIK + "') as NAMA_JAB," +
+                    "(select top 1 MulaiAssesment from [ModalManusiaEF].[dbo].[Assesment_JadwalNIKBOM4dan5] where NIK='" + _NIK + "') as TGL_NIKAH, " +
+                    "(select top 1 SelesaiAssesment from [ModalManusiaEF].[dbo].[Assesment_JadwalNIKBOM4dan5] where NIK='" + _NIK + "') as TGL_CERAI " +
+                    "FROM [ModalManusiaEF].[dbo].[ref_dik] where reg = '" + _NIK + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function myFuncInterval1() {
+        var saatIni = new Date();
+        if (arrJadwal.length > 0) {
+            var tgl = arrJadwal[0][2];
+            var tglSelesai = new Date(parseInt(tgl.substr(6, 4)), parseInt(tgl.substr(3, 2)) - 1, parseInt(tgl.substr(0, 2)),
+                parseInt(tgl.substr(11, 2)), parseInt(tgl.substr(14, 2)), parseInt(tgl.substr(17, 2)));
+            if (saatIni - tglSelesai < 0) {
+                HapusContext().done(function () {
+                    TutupSemuaChapter();
+                    $('#msgInputView').text('');
+                    $('#_tutupChapter').show();
+                    $(window).scrollTop(0);
+                    var _HurufTipeSoalSaatIni = _TipeSoalSaatIni.substr(5, 1);
+                    var _intHurufTipeSoalSaatIni = _HurufTipeSoalSaatIni.charCodeAt(0);
+                    var _intM = 77;
+                    for (var i = _intHurufTipeSoalSaatIni; i <= _intM; i++) {
+                        _HurufTipeSoalSaatIni = String.fromCharCode(i);
+                        simpanSisaWaktu(jadwalNIKId, 'Tipe ' + _HurufTipeSoalSaatIni, -1, -1);
+                        simpanWaktuSelesai(jadwalNIKId, 'Tipe ' + _HurufTipeSoalSaatIni);
+                    }
+
+                });
+            }
+        }
+    }
+
+    function myFuncInterval() {
+        var mnt, dtk;
+        var jmlSoal;
+        var durasi;
+        var tipeBaru = _TipeSoalSaatIni.substr(5, 1);
+        if (tipeBaru != 'J' && tipeBaru != 'K' && tipeBaru != 'L' && tipeBaru != 'M') {
+            _sisaWaktu = _sisaWaktu - pengurangWaktu * 1000; //1000;
+            if (_sisaWaktu <= 0) {
+                clearInterval(_myInterval);
+                _myInterval = null;
+                simpanSisaWaktu(jadwalNIKId, _TipeSoalSaatIni, -1, -1);
+                simpanWaktuSelesai(jadwalNIKId, _TipeSoalSaatIni);
+                waktuAkhir = new Date();
+
+                jmlSoal = parseInt(cariJumlahSoal(_TipeSoalSaatIni));
+                for (var nI = 1; nI <= jmlSoal; nI++) {
+                    _pertanyaanId = $('#' + tipeBaru + '1_' + nI.toString()).text();
+                    if (typeof ($("input[name='" + tipeBaru + "_" + nI.toString() + "']:checked").val()) != "undefined") {
+                        SimpanData($("input[name='" + tipeBaru + "_" + nI.toString() + "']:checked").val(), tipeBaru + '_' + nI.toString());
+                    }
+                    else {
+                        SimpanData('0', tipeBaru + '_' + nI.toString());
+                    }
+                }
+                $('#TestChapter' + tipeBaru).css('display', 'none');
+                TutupSemuaChapter();
+                tipeBaru = String.fromCharCode(((_TipeSoalSaatIni.substr(5, 1)).charCodeAt(0)) + 1);
+                durasi = parseInt(cariDurasi(tipeBaru));
+                $('#_header1').hide();
+                $('#_header2').show();
+                $('#_chapter' + tipeBaru).show();
+                $('#ContohChapter' + tipeBaru).show();
+                $('#msgInputView').text('');
+                var dd = ambilSisaWaktu(jadwalNIKId, 'Tipe ' + tipeBaru);
+                if (dd.length > 0) {
+                    _sisaWaktu = parseInt(dd[0][0]) * 60 * 1000 + parseInt(dd[0][1]) * 1000
+                    if (_sisaWaktu < 0) {
+                        btnOnClick('Tipe ' + tipeBaru);
+                    }
+                }
+            }
+            else {
+                mnt = Math.floor((_sisaWaktu / 1000) / 60).toString();
+                dtk = Math.floor((_sisaWaktu / 1000) % 60).toString();
+                $('#msgSisaWaktu').text(mnt + ' Menit ' + dtk + ' Detik');
+                simpanSisaWaktu(jadwalNIKId, _TipeSoalSaatIni, mnt, dtk);
+            }
+        }
+    }
+
+    function btnStartOnClick() {
+        var x = document.getElementById("pernyataan").checked;
+        var posisiTerakhir = "Tipe A";
+        showLoadingEnabled = false;
+        $(window).scrollTop(0);
+        if (x != false) {
+            // cari chapter terakhir yang dikerjakan akibat refresh
+            ambilSeluruhSisaWaktu(jadwalNIKId).done(function (dd1) {
+                if (dd1.length > 0) {
+                    for (var i = 0; i < dd1.length; i++) {
+                        var sisaWaktu = localStorage.getItem(dd1[i][0]);
+                        if (sisaWaktu == null) {
+                            if (typeof (dd1[i]) != 'undefined') {
+                                sisaWaktu = dd1[i][1] + ',' + dd1[i][2]
+                                localStorage.setItem(dd1[i][0], sisaWaktu);
+                            }
+                            else {
+                                posisiTerakhir = dd1[i][0];
+                                break;
+                            }
+                        }
+                        var sisaMenit = parseInt(sisaWaktu.substring(0, sisaWaktu.indexOf(',')));
+                        var sisaDetik = parseInt(sisaWaktu.substring(sisaWaktu.indexOf(',') + 1));
+                        if (sisaMenit == -1 && sisaDetik == -1) {
+                            posisiTerakhir = 'Tipe ' + String.fromCharCode((posisiTerakhir.charCodeAt(5)) + 1);
+                            continue;
+                        }
+                        else {
+                            posisiTerakhir = dd1[i][0];
+                            break;
+                        }
+                    }
+                    if (posisiTerakhir == "Tipe N") {
+                        SimpanDataKeServer().done(function (dt) {
+                            TutupSemuaChapter();
+                            $('#msgInputView').text('');
+                            HapusContext().done(function () {
+                                $('#_tutupChapter').show();
+                                $(window).scrollTop(0);
+                            });
+                        });
+                    }
+                    else {
+                        for (var nI = 0; nI < localStorage.length; nI++) {
+                            a = localStorage.key(nI);
+                            b = localStorage.getItem(a);
+                            if (a.substring(0, 1) != "J") {
+                                if (b.indexOf(';') < 0) {
+                                    $("input:radio[name='" + a + "'][value='" + b + "']").prop('checked', true);
+                                }
+                                else {
+                                    $("input:radio[name='" + a.substring(0, 1) + "1" + a.substring(1) + "'][value='" + b.substring(0, b.indexOf(';')) + "']").prop('checked', true);
+                                    $("input:radio[name='" + a.substring(0, 1) + "2" + a.substring(1) + "'][value='" + b.substring((b.indexOf(';')) + 1) + "']").prop('checked', true);
+                                }
+                            }
+                            else {
+                                $('#' + a).val(b);
+                            }
+                        }
+                        $('#_header1').hide();
+                        $('#_header2').show();
+                        $('#_chapter' + posisiTerakhir.substring(5)).show();
+                        $('#msgInputView').text('');
+                        btnMulaiTestOnClick(posisiTerakhir);
+                    }
+                }
+                else {
+                    localStorage.clear(); //kosongkanLocalStorage();
+                    $('#_header1').hide();
+                    $('#_header2').show();
+                    $('#_chapterA').show();
+                    $('#ContohChapterA').show();
+                    $('#msgInputView').text('');
+                }
+            });
+        }
+        else {
+            $('#msgInputView').text('Anda belum mencentang pernyataan setuju!');
+        }
+    }
+
+    function btnMulaiTestOnClick(tipe,idx) {
+        var durasi;
+        showLoadingEnabled = false;
+        _tipeSoal = tipe;
+        _TipeSoalSaatIni = _tipeSoal;
+        waktuAwal = new Date();
+        _noUrut = 1;
+        sts = 0;
+        simpanWaktuMulai(jadwalNIKId, _TipeSoalSaatIni).done(function (dtaWaktuMulai) {
+            if (dtaWaktuMulai.length > 0) {
+                durasi = parseInt(cariDurasi(tipe));
+                if (durasi != 0) {
+                    var dd = ambilSisaWaktu(jadwalNIKId, _TipeSoalSaatIni);
+                    if (dd.length > 0) {
+                        _sisaWaktu = parseInt(dd[0][0]) * 60 * 1000 + parseInt(dd[0][1]) * 1000
+                        $('#msgSisaWaktu').text(dd[0][0].toString() + ' Menit ' + dd[0][1].toString() + ' Detik');
+                        if (_TipeSoalSaatIni == 'Tipe H' || _TipeSoalSaatIni == 'Tipe I') {
+                            noAkhir = ambilSoalTerakhir(_TipeSoalSaatIni);
+                            if (noAkhir.length != 0) {
+                                _noUrut = parseInt(noAkhir[0][0]);
+                            }
+                            if (typeof ($('#' + tipe.substring(5) + '_' + _noUrut.toString()).val()) != 'undefined') {
+                                $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                            }
+                            else {
+                                btnOnClick(tipe);
+                            }
+                        }
+                        else {
+                            $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                        }
+                    }
+                    else {
+                        $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                        _sisaWaktu = durasi * 60 * 1000;//dta[0][0] * 60 * 1000; //mili second
+                        $('#msgSisaWaktu').text(durasi.toString() + ' Menit 0 Detik');
+                    }
+                    $('#ContohChapter' + tipe.substring(5)).css('display', 'none');
+                    $('#TestChapter' + tipe.substring(5)).show();
+                    $(window).scrollTop(0);
+                    _myInterval = setInterval(myFuncInterval, pengurangWaktu * 1000);
+                }
+                else { // tidak ada batas waktu
+                    if (_TipeSoalSaatIni == 'Tipe J' || _TipeSoalSaatIni == 'Tipe K' || _TipeSoalSaatIni == 'Tipe L' || _TipeSoalSaatIni == 'Tipe M') {
+                        noAkhir = ambilSoalTerakhir(_TipeSoalSaatIni);
+                        if (noAkhir.length != 0) {
+                            _noUrut = parseInt(noAkhir[0][0]);
+                        }
+                        $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                        $('#ContohChapter' + tipe.substring(5)).css('display', 'none');
+                        $('#TestChapter' + tipe.substring(5)).show();
+                        $(window).scrollTop(0);
+                    }
+                    else {
+                        $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+                    }
+                    $('#ContohChapter' + tipe.substring(5)).css('display', 'none');
+                    $('#TestChapter' + tipe.substring(5)).show();
+                    $(window).scrollTop(0);
+                    _sisaWaktu = -1;
+                    $('#msgSisaWaktu').text('');
+                }
+            }
+            else {
+                if (idx == null) { idx = 0; }
+                if (idx > 5) {
+                    idx = 0;
+                    wSimpanKeLocal.open().center();
+                    $("#btnSimpanKeLocal").click(function () {
+                        wSimpanKeLocal.close();
+                        location.reload();
+                    });
+                }
+                else {
+                    idx = idx + 1;
+                    btnMulaiTestOnClick(tipe, idx)
+                }
+            }
+        });
+    }
+
+    function jawabanOnClick(namaRadio, nojawaban, namaRadio1, nojawaban1) {
+        var x;
+        var y;
+        var _jawaban;
+        var _no;
+        var url = '/Input/ExecSQL';
+        var _nik = $('#NIK').text();
+        var mnt = -1;
+        var dtk = -1;
+        var tipeBaru = _TipeSoalSaatIni.substr(5, 1);
+        var arrJawabanM;
+        var nmBtn;
+
+        if (tipeBaru != 'M') {
+            x = $("input[name='" + namaRadio + "']:checked").val();
+            y = $("input[name='" + namaRadio1 + "']:checked").val();
+
+            if (tipeBaru == 'J') {
+                _jawaban = x + ';' + y;
+                _no = namaRadio.substring(3);
+                _pertanyaanId = $('#' + namaRadio.substring(0, 1) + '1A_' + _no).text();
+            }
+            else {
+                _jawaban = nojawaban;
+                _no = namaRadio.substring(2);
+                _pertanyaanId = $('#' + namaRadio.substring(0, 1) + '1_' + _no).text();
+            }
+            nmBtn = "btn" + tipeBaru + "_" + _no;
+            SimpanData(_jawaban, tipeBaru + '_' + _no);
+            if (tipeBaru == 'H' || tipeBaru == 'I') {
+                $('#' + nmBtn).click();
+            }
+        }
+    }
+
+    function btnOnClick(tipe) {
+        var x, y, z;
+        var isian;
+        var validSemua;
+        var jmlJawaban;
+        var jmlSoal;
+
+        clearInterval(_myInterval);
+        _myInterval = null;
+        jmlSoal = parseInt(cariJumlahSoal(tipe));
+        waktuAkhir = new Date();
+        validSemua = true;
+        if (tipe == "Tipe G" || tipe == "Tipe H" || tipe == "Tipe I" || tipe == "Tipe J") {
+            if (tipe == 'Tipe J') {
+                for (var nI = 1; nI <= jmlSoal; nI++) {
+                    w = $("#" + tipe.substring(5) + "_" + nI.toString() + "1").val();
+                    jmlJawaban = parseInt(arrJumlahJawabanM[nI - 1][1]);
+                    for (var nJ = 0; nJ < jmlJawaban; nJ++) {
+                        isian = $("#" + tipe.substring(5) + "_" + nI.toString() + "_" + (nJ + 1).toString()).val();
+                        if (isian == "") {
+                            validSemua = false;
+                        }
+                    }
+                }
+                if (validSemua == true) semuaValid(tipe, jmlSoal);
+                else $('#msgInputView').text('aTidak dapat dilanjutkan, karena anda belum mengisi salah satu jawaban !');
+            }
+            else if (tipe == 'Tipe G') {
+                for (var nI = 1; nI <= jmlSoal; nI++) {
+                    y = $("input[name='" + tipe.substring(5) + "1_" + nI.toString() + "']:checked").val();
+                    z = $("input[name='" + tipe.substring(5) + "2_" + nI.toString() + "']:checked").val();
+                    if (typeof (y) == "undefined" || typeof (z) == "undefined") validSemua = false;
+                }
+                if (validSemua == true) semuaValid(tipe, jmlSoal);
+                else $('#msgInputView').text('bTidak dapat dilanjutkan, karena anda belum memilih dua jawaban ! Untuk Mengkoreksi lakukan Refresh !');
+            }
+            else {
+                for (var nI = 1; nI <= jmlSoal; nI++) {
+                    x = $("input[name='" + tipe.substring(5) + "_" + nI.toString() + "']:checked").val();
+                    if (typeof (x) == "undefined") validSemua = false;
+                }
+                if (validSemua == true) semuaValid(tipe, jmlSoal);
+                else $('#msgInputView').text('cTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+            }
+
+        }
+        else {
+            semuaValid(tipe, jmlSoal);
+        }
+    }
+
+    function btnOnClick1(tipe) {
+        var w, x, y, z;
+        var isian;
+        var validSemua;
+        validSemua = true;
+        var jmlJawaban;
+        w = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "1").val();
+        x = $("input[name='" + tipe.substring(5) + "_" + _noUrut.toString() + "']:checked").val();
+        y = $("input[name='" + tipe.substring(5) + "1_" + _noUrut.toString() + "']:checked").val();
+        z = $("input[name='" + tipe.substring(5) + "2_" + _noUrut.toString() + "']:checked").val();
+        if (tipe == "Tipe G" || tipe == "Tipe H" || tipe == "Tipe I" || tipe == "Tipe J") { //validasi utk tipe J - M
+            if (tipe == "Tipe J") {
+                jmlJawaban = parseInt(arrJumlahJawabanM[_noUrut - 1][1]);
+                for (var nI = 0; nI < jmlJawaban; nI++) {
+                    isian = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "_" + (nI + 1).toString()).val();
+                    if (isian == "") validSemua = false;
+                }
+                if (validSemua == true) semuaValid1(tipe, 'isian');
+                else $('#msgInputView').text('dTidak dapat dilanjutkan, karena anda belum mengisi salah satu jawaban !');
+            }
+            else if (tipe == "Tipe G") {
+                if (typeof (y) == "undefined" || typeof (z) == "undefined") validSemua = false;
+                if (validSemua == true) semuaValid1(tipe, 'radio');
+                else $('#msgInputView').text('eTidak dapat dilanjutkan, karena anda belum memilih dua jawaban !');
+            }
+            else {
+                if (typeof (x) == "undefined") validSemua = false;
+                if (validSemua == true) semuaValid1(tipe, 'radio');
+                else $('#msgInputView').text('fTidak dapat dilanjutkan, karena anda belum memilih salah satu jawaban !');
+            }
+        }
+        else {
+            semuaValid1(tipe, 'radio');
+        }
+    }
+
+    function semuaValid(tipe, dta) {
+        var w, x, y, z;
+        var isian;
+        var jmlJawaban;
+        var durasi;
+        $('#msgInputView').text('');
+        for (var nI = 1; nI <= dta; nI++) {
+            w = $("#" + tipe.substring(5) + "_" + nI.toString() + "_" + "1").val();
+            x = $("input[name='" + tipe.substring(5) + "_" + nI.toString() + "']:checked").val();
+            y = $("input[name='" + tipe.substring(5) + "1_" + nI.toString() + "']:checked").val();
+            z = $("input[name='" + tipe.substring(5) + "2_" + nI.toString() + "']:checked").val();
+            if (tipe == "Tipe J") {
+                if (typeof (w) != "undefined") {
+                    jmlJawaban = parseInt(arrJumlahJawabanM[nI - 1][1]);
+                    for (var nJ = 0; nJ < jmlJawaban; nJ++) {
+                        isian = $("#" + tipe.substring(5) + "_" + nI.toString() + "_" + (nJ + 1).toString()).val();
+                        _pertanyaanId = $("#" + tipe.substring(5) + "1_" + nI.toString()).text();
+                        SimpanData(isian, tipe.substring(5) + "_" + nI.toString() + "_" + (nJ + 1).toString());
+                    }
+                }
+            } else {
+                if (typeof (y) != "undefined") {
+                    _pertanyaanId = $('#' + tipe.substring(5) + '1A_' + nI.toString()).text();
+                    SimpanData(y + ";" + z, tipe.substring(5) + '_' + nI.toString());
+
+                } else if (typeof (x) != "undefined") {
+                    _pertanyaanId = $('#' + tipe.substring(5) + '1_' + nI.toString()).text();
+                    SimpanData(x, tipe.substring(5) + '_' + nI.toString());
+                }
+                else {
+                    SimpanData('0', tipe.substring(5) + '_' + nI.toString());
+                }
+            }
+        }
+
+        $('#TestChapter' + tipe.substring(5)).css('display', 'none');
+        TutupSemuaChapter();
+
+        if (tipe == 'Tipe J') {
+            SimpanDataKeServer().done(function (dt) {
+                $('#msgInputView').text('');
+                HapusContext().done(function () {
+                    $('#_tutupChapter').show();
+                    $(window).scrollTop(0);
+                    simpanSisaWaktu(jadwalNIKId, tipe, -1, -1);
+                    simpanWaktuSelesai(jadwalNIKId, tipe);
+                });
+            });
+        }
+        else {
+            tipeBaru = 'Tipe ' + String.fromCharCode((tipe.charCodeAt(5)) + 1);
+            simpanSisaWaktu(jadwalNIKId, tipe, -1, -1);
+            simpanWaktuSelesai(jadwalNIKId, tipe);
+            durasi = parseInt(cariDurasi(tipeBaru));
+            var dd = ambilSisaWaktu(jadwalNIKId, tipeBaru);
+            if (dd.length > 0) {
+                _sisaWaktu = parseInt(dd[0][0]) * 60 * 1000 + parseInt(dd[0][1]) * 1000
+                if (_sisaWaktu < 0) {
+                    btnOnClick(tipeBaru);
+                }
+                else {
+                    $('#_chapter' + tipeBaru.substring(5)).show();
+                    btnMulaiTestOnClick(tipeBaru);
+                }
+            }
+            else {
+                $('#_chapter' + tipeBaru.substring(5)).show();
+                $('#ContohChapter' + tipeBaru.substring(5)).show();
+                $('#msgSisaWaktu').text('');
+                $(window).scrollTop(0);
+            }
+        }
+    }
+
+    function semuaValid1(tipe, tipeIsian) {
+        var w, x, y, z;
+        var jmlJawaban;
+
+        $('#msgInputView').text('');
+        waktuAkhir = new Date();
+        $('#' + tipe.substring(5) + '_' + _noUrut.toString()).css('display', 'none');
+        w = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "1").val();
+        x = $("input[name='" + tipe.substring(5) + "_" + _noUrut.toString() + "']:checked").val();
+        y = $("input[name='" + tipe.substring(5) + "1_" + _noUrut.toString() + "']:checked").val();
+        z = $("input[name='" + tipe.substring(5) + "2_" + _noUrut.toString() + "']:checked").val();
+
+        if (tipeIsian == "isian") {//(typeof (w) != 'undefined') {
+            jmlJawaban = parseInt(arrJumlahJawabanM[_noUrut - 1][1]);
+
+            for (var nI = 0; nI < jmlJawaban; nI++) {
+                isian = $("#" + tipe.substring(5) + "_" + _noUrut.toString() + "_" + (nI + 1).toString()).val();
+                _pertanyaanId = $("#" + tipe.substring(5) + "1_" + _noUrut.toString()).text();
+                SimpanData(isian, tipe.substring(5) + "_" + _noUrut.toString() + "_" + (nI + 1).toString());
+            }
+            _noUrut = _noUrut + 1;
+            $('#TestChapter' + tipe.substring(5)).show();
+            $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+        }
+        else {
+            if (typeof (y) != "undefined") {
+                _pertanyaanId = $('#' + tipe.substring(5) + '1A_' + _noUrut.toString()).text();
+                SimpanData(y + ";" + z, tipe.substring(5) + '_' + _noUrut.toString());
+                _noUrut = _noUrut + 1;
+                $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+            }
+            else {
+                _pertanyaanId = $('#' + tipe.substring(5) + '1_' + _noUrut.toString()).text();
+                if (typeof (x) != "undefined") {
+                    SimpanData(x, tipe.substring(5) + '_' + _noUrut.toString());
+                }
+                else {
+                    SimpanData('0', tipe.substring(5) + '_' + _noUrut.toString());
+                }
+                _noUrut = _noUrut + 1;
+                $('#' + tipe.substring(5) + '_' + _noUrut.toString()).show();
+            }
+        }
+    }
+
+    function cariJumlahSoal(tipe) {
+        for (var nI = 0; nI < arrJmlSoal.length; nI++) {
+            if (arrJmlSoal[nI][0] == tipe) {
+                return arrJmlSoal[nI][1];
+            }
+        }
+    }
+
+    function cariDurasi(tipe) {
+        for (var nI = 0; nI < arrTipeSoal.length; nI++) {
+            if (arrTipeSoal[nI][0] == tipe) {
+                return arrTipeSoal[nI][4];
+            }
+        }
+    }
+
+    function SimpanData(value, key) {
+        var sts;
+        var idx;
+        var vlu;
+        sts = 0;
+        idx = 0;
+        do {
+            localStorage.setItem(key, value);
+            vlu = localStorage.getItem(key);
+            if (value == vlu) {
+                sts = 1;
+            }
+            else {
+                sts = 0;
+                idx = idx + 1;
+                if (idx > 5) {
+                    idx = 0;
+                    wSimpanKeLocal.open().center();
+                    $("#btnSimpanKeLocal").click(function () {
+                        wSimpanKeLocal.close();
+                        location.reload();
+                    });
+                }
+            }
+        }
+        while (sts == 0);
+    }
+
+    function SimpanDataKeServer() {
+        var no;
+        var scrpt = "";
+        var jmlJawaban;
+        jmlJawaban = 0;
+        for (var nI = 0; nI < localStorage.length; nI++) {
+            a = localStorage.key(nI);
+            if (a.substring(0, 1) != 'T') {//&& localStorage.getItem(a) != '0' ) {
+                b = localStorage.getItem(a);
+                b = b.replace("'", "");
+                if (a.substring(0, 1) != 'M') {
+                    no = a.substring(2);
+                }
+                else {
+                    no = a.substring(2); // M_12_1 -> 12_1
+                    no = no.substring(no.indexOf('_') + 1);
+                }
+                jmlJawaban = jmlJawaban + 1;
+                scrpt = scrpt + a + '~' + b + '~';
+            }
+        }
+
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec [dbo].[Assesment_SimpanJawabanSeluruhBOM4dan5] '" + jadwalNIKId + "', '" + scrpt + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function TutupSemuaChapter() {
+        $('#_chapterA').css('display', 'none');
+        $('#_chapterB').css('display', 'none');
+        $('#_chapterC').css('display', 'none');
+        $('#_chapterD').css('display', 'none');
+        $('#_chapterE').css('display', 'none');
+        $('#_chapterF').css('display', 'none');
+        $('#_chapterG').css('display', 'none');
+        $('#_chapterH').css('display', 'none');
+        $('#_chapterI').css('display', 'none');
+        $('#_chapterJ').css('display', 'none');
+        $('#_chapterK').css('display', 'none');
+
+    }
+
+    function htgDurasi(tipe) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select top 1 Durasi,Instruksi from [dbo].[Assesment_TipeSoalBOM4dan5] where NamaTipeSoal='" + tipe + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function htgJmlTipeSoal() {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select NamaTipeSoal from [dbo].[Assesment_TipeSoalBOM4dan5] order by NamaTipeSoal desc",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function htgJmlSoal(tipe) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select JumlahPertanyaan from [dbo].[Assesment_TipeSoalBOM4dan5] where NamaTipeSoal='" + tipe + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function htgJmlSoalSeluruh() {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select NamaTipeSoal,JumlahPertanyaan from [dbo].[Assesment_TipeSoalBOM4dan5] order by NamaTipeSoal",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ambilJadwal(reg) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select top 1 getdate(),MulaiAssesment,SelesaiAssesment,JadwalNIKId,Setuju,PaketId from [dbo].[Assesment_JadwalNIKBOM4dan5] where NIK='" + reg + "' order by MulaiAssesment desc",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function pertanyaanOnClick(namaRadio, nojawaban) {
+        var x = $("input[name='" + namaRadio + "']");
+        x[nojawaban].click();
+    }
+
+    function simpanSisaWaktu(jadwalID, soalID, mnt, dtk, idx1) {
+        var idx;
+        var sts,sts1;
+        var vlu;
+        sts = 0;
+        sts1 = 0;
+        do {
+            localStorage.setItem(soalID, mnt.toString() + ',' + dtk.toString())
+            vlu = localStorage.getItem(soalID);
+            if (vlu == mnt.toString() + ',' + dtk.toString()) {
+                sts = 1;
+                if (mnt == -1 && dtk == -1) {
+                    simpanSisaWaktuKeDataBase(jadwalID, soalID).done(function (data) {
+                        if (idx1 == null) { idx1 = 0;}
+                        if (data.length > 0) {
+                            if (mnt == parseInt(data[0][0]) && dtk == parseInt(data[0][1])) {
+                                sts1 = 1;
+                            }
+                            else {
+                                idx1 = idx1 + 1;
+                                if (idx1 > 5) {
+                                    wSimpanKeLocal.open().center();
+                                    $("#btnSimpanKeLocal").click(function () {
+                                        wSimpanKeLocal.close();
+                                        location.reload();
+                                    });
+                                }
+                                else {
+                                    simpanSisaWaktu(jadwalID, soalID, mnt, dtk, idx1);
+                                }
+                            }
+                        }
+                        else {
+                            idx1 = idx1 + 1;
+                            if (idx1 > 5) {
+                                wSimpanKeLocal.open().center();
+                                $("#btnSimpanKeLocal").click(function () {
+                                    wSimpanKeLocal.close();
+                                    location.reload();
+                                });
+                            }
+                            else {
+                                simpanSisaWaktu(jadwalID, soalID, mnt, dtk, idx1);
+                            }
+                        }
+                    });
+                }
+            }
+            else {
+                sts = 0;
+                idx = idx + 1;
+                if (idx > 5) {
+                    idx = 0;
+                    wSimpanKeLocal.open().center();
+                    $("#btnSimpanKeLocal").click(function () {
+                        wSimpanKeLocal.close();
+                        location.reload();
+                    });
+                }
+            }
+        }
+        while (sts == 0);
+    }
+
+    function simpanSisaWaktuKeDataBase(jadwalID, soalID) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec ModalManusiaEF..Assesment_SimpanSisaWaktuBOM4dan5 '" + jadwalID + "','" + soalID + "',-1,-1,'" + alamatIPLocal + "', '" + alamatIPPublic+"'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ambilSisaWaktu(jadwalID, soalID) {
+        var sisaMenit;
+        var sisaDetik;
+        var sisaWaktu;
+        var arr = [];
+
+        sisaWaktu = localStorage.getItem(soalID);
+        if (sisaWaktu != null) {
+            sisaMenit = parseInt(sisaWaktu.substring(0, sisaWaktu.indexOf(',')));
+            sisaDetik = parseInt(sisaWaktu.substring(sisaWaktu.indexOf(',') + 1));
+            arr = [[sisaMenit, sisaDetik]];
+        }
+        return arr;
+    }
+
+    function ambilSeluruhSisaWaktu(jadwalID) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            success: function (data) {
+            },
+            data: {
+                scriptSQL: "exec Assesment_AmbilSeluruhSisaWaktuBOM4dan5 '" + jadwalID + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function simpanWaktuMulai(jadwalID, soalID) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_SimpanWaktuMulaiBOM4dan5 '" + jadwalID + "', '" + soalID + "', '" + alamatIPLocal + "', '" + alamatIPPublic+"'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function simpanWaktuSelesai(jadwalID, soalID, idx) {
+        simpanWaktuSelesaiKeDataBase(jadwalID, soalID).done(function (data) {
+            if (idx == null) { idx = 0; }
+            if (data.length == 0) {
+                idx = idx + 1;
+                if (idx > 5) {
+                    idx = 0;
+                    wSimpanKeLocal.open().center();
+                    $("#btnSimpanKeLocal").click(function () {
+                        wSimpanKeLocal.close();
+                        location.reload();
+                    });
+                }
+                else {
+                    simpanWaktuSelesai(jadwalID, soalID, idx);
+                }
+            }
+        });
+    }
+
+    function simpanWaktuSelesaiKeDataBase(jadwalID, soalID) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_SimpanWaktuSelesaiBOM4dan5 '" + jadwalID + "', '" + soalID + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function pernyataanOnClick() {
+        var url = '/Input/ExecSQL';
+        var pernyataan;
+        if ($("#pernyataan").is(":checked") == true) {
+            pernyataan = 'SETUJU';
+        }
+        else {
+            pernyataan = 'TIDAK SETUJU';
+        }
+
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec Assesment_PernyataanSetujuBOM4dan5 '" + jadwalNIKId + "', '" + pernyataan + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function htgJmlJawabanJ() {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select B.NoUrut,count(*) from [dbo].[Assesment_JawabanBOM4dan5] A join [dbo].[Assesment_PertanyaanBOM4dan5] B on A.PertanyaanId=B.PertanyaanId join  [dbo].[Assesment_TipeSoalBOM4dan5] C on B.TipeSoalId=C.TipeSoalId where C.NamaTipeSoal='Tipe J' group by B.NoUrut order by B.NoUrut",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ambilSoalTerakhir(tipe) {
+        var noTerakhir = 0;
+        var jmlSoal, jmlSubSoal;
+        var c;
+        var tipeBaru = tipe.substr(5);
+        jmlSoal = parseInt(cariJumlahSoal(tipe));
+        if (tipeBaru != 'M') {
+            for (var nI = 1; nI <= jmlSoal; nI++) {
+                a = tipeBaru + '_' + nI.toString();
+                b = localStorage.getItem(a);
+                if (b == null) {
+                    return [[nI]];
+                    break;
+                }
+                if (tipeBaru == 'J') {
+                    if (b.indexOf('undefined') >= 0 || b.indexOf('0') >= 0) {
+                        return [[nI]];
+                        break;
+                    }
+                }
+            }
+            return [[jmlSoal]];
+        }
+        else {
+            for (var nI = 1; nI <= jmlSoal; nI++) {
+                jmlSubSoal = parseInt(arrJumlahJawabanM[nI - 1][1]);
+                for (var nJ = 1; nJ <= jmlSubSoal; nJ++) {
+                    a = tipeBaru + '_' + nI.toString() + '_' + nJ.toString();
+                    b = localStorage.getItem(a);
+                    if (b == null || b == '') {
+                        return [[nI]];
+                        break;
+                    }
+                }
+            }
+            return [[jmlSoal]];
+        }
+
+    }
+
+    function textAreaOnChange(noSoal, noUrut) {
+        var txt = $('#M_' + noSoal.toString() + '_' + noUrut.toString()).val();
+        localStorage.setItem("M_" + noSoal.toString() + "_" + noUrut.toString(), txt);
+    }
+
+    function ambilTipeSoal() {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            success: function (data) {
+                arrTipeSoal = data;
+            },
+            data: {
+                scriptSQL: "select NamaTipeSoal,Instruksi,JumlahPertanyaan,JumlahJawaban,Durasi from [dbo].[Assesment_TipeSoalBOM4dan5] order by NamaTipeSoal",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+
+
+    //disable mouse drag select start
+
+    document.onselectstart = new Function('return false');
+
+    //function dMDown(e) { return false; }
+
+    function dOClick() { return true; }
+
+    //document.onmousedown = dMDown;
+
+    document.onclick = dOClick;
+
+    $("#document").attr("unselectable", "on");
+
+    //disable mouse drag select end
+
+    //disable right click - context menu
+
+    document.oncontextmenu = new Function("return false");
+
+
+    //disable CTRL+A/CTRL+C through key board start
+
+    //use this function
+
+
+    function disableSelectCopy(e) {
+
+        // current pressed key
+
+        var pressedKey = String.fromCharCode(e.keyCode).toLowerCase();
+
+        if (e.ctrlKey && (pressedKey == "c" || pressedKey == "x" || pressedKey == "v" || pressedKey == "a")) {
+
+            return false;
+
+        }
+
+    }
+
+    document.onkeydown = disableSelectCopy;
+
+
+    //or use this function
+
+    $(function () {
+
+        $(document).keydown(function (objEvent) {
+
+            if (objEvent.ctrlKey || objEvent.metaKey) {
+
+                if (objEvent.keyCode == 65 || objEvent.keyCode == 97) {
+
+                    return false;
+
+                }
+
+                //}
+
+            }
+
+        });
+
+    });
+
+    function HapusContext() {
+        var url = '/Input/hapusContextAssesment';
+        return $.ajax({
+            url: url,
+            data: {
+                namaContext: 'Assesment' + _nik
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+
+    function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
+        //compatibility for firefox and chrome
+        var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+        var pc = new myPeerConnection({
+            iceServers: []
+        }),
+        noop = function() {},
+        localIPs = {},
+        ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+        key;
+
+        function iterateIP(ip) {
+            if (!localIPs[ip]) onNewIP(ip);
+            localIPs[ip] = true;
+        }
+
+         //create a bogus data channel
+        pc.createDataChannel("");
+
+        // create offer and set local description
+        pc.createOffer().then(function(sdp) {
+            sdp.sdp.split('\n').forEach(function(line) {
+                if (line.indexOf('candidate') < 0) return;
+                line.match(ipRegex).forEach(iterateIP);
+            });
+        
+            pc.setLocalDescription(sdp, noop, noop);
+        }).catch(function(reason) {
+            // An error occurred, so handle the failure to connect
+        });
+
+        //listen for candidate events
+        pc.onicecandidate = function(ice) {
+            if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+            ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+        };
+    }
+
+// Usage
+
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    .hdr {
+        font-size: medium;
+    }
+
+    ._hdr {
+        font-size: large;
+        color: black;
+        background-color: white;
+        border: 1px solid gray;
+        padding: 10px 10px 10px 10px;
+    }
+
+    ._isihdr {
+        font-size: small;
+    }
+
+    .hiddenCalendarControl .k-select {
+    }
+
+    input.largerCheckbox {
+        width: 40px;
+        height: 40px;
+    }
+
+    input.largerRadio {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .multiplechoice {
+        font-size: large;
+        font-weight: 500;
+        color: black;
+        width: 100%;
+        border: 1px solid gray;
+        margin: 10px 10px 10px 10px;
+    }
+
+    div.k-window {
+        position: fixed !important;
+    }
+
+    .jawaban {
+        cursor: pointer;
+    }
+
+    .btn-big {
+        background-color: #474EDD;
+        background-image: -webkit-linear-gradient(283deg, rgba(255, 255, 255, 0.1) 50%, transparent 55%),-webkit-linear-gradient(top, rgba(255, 255, 255, 0.15), transparent);
+        border-radius: 6px;
+        box-shadow: 0 0 0 1px #163772 inset,0 0 0 2px rgba(255, 255, 255, 0.15) inset,0 4px 0 0 #333797,0 4px 0 1px rgba(0, 0, 0, 0.4),0 4px 4px 1px rgba(0, 0, 0, 0.5);
+        color: white !important;
+        display: block;
+        font-family: "Lucida Grande", Arial, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+        height: 61px;
+        letter-spacing: -1px;
+        line-height: 61px;
+        margin: 50px;
+        position: relative;
+        text-align: center;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+        text-decoration: none !important;
+        -webkit-transition: all .2s linear;
+        /*width: 186px;*/
+    }
+
+        .btn-big:active {
+            background-color: #474EDD;
+            top: 4px;
+            box-shadow: 0 0 0 1px #163772 inset,0 0 0 2px rgba(255, 255, 255, 0.15) inset,0 0 0 0 #333797,0 0 0 1px rgba(0, 0, 0, 0.4),0 0px 8px 1px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-big:hover {
+            background-color: #5158E0;
+            poisiton: relative;
+            top: -1px;
+            box-shadow: 0 0 0 1px #163772 inset,0 0 0 2px rgba(255, 255, 255, 0.15) inset,0 5px 0 0 #333797,0 5px 0 1px rgba(0, 0, 0, 0.4),0 5px 8px 1px rgba(0, 0, 0, 0.5);
+        }
+
+    #document, #ctl00_MasterPageBodyTag {
+        user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+    }
+</style>
+

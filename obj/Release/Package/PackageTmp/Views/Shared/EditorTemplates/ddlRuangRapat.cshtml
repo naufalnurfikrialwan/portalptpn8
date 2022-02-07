@@ -1,0 +1,35 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Ruang Rapat Talun (Max : 18 org)",
+                Value = "Ruang Rapat Talun"
+            },
+            new SelectListItem() {
+                Text = "Ruang Rapat Malabar (Max : 12 org)",
+                Value = "Ruang Rapat Malabar"
+            },
+            new SelectListItem() {
+                Text = "Ruang Rapat Sedep (Max : 8 org)",
+                Value = "Ruang Rapat Sedep"
+            },
+            new SelectListItem() {
+                Text = "Ruang Rapat Rancabali (Max : 25 org)",
+                Value = "Ruang Rapat Rancabali"
+            },
+            new SelectListItem() {
+                Text = "Ruang Serba Guna (Max : 80 org)",
+                Value = "Ruang Serba Guna (RSG)"
+            },
+            new SelectListItem() {
+                Text = "Ruang Lainnya",
+                Value = "Ruang Lainnya"
+            }
+        })
+        .Events(e => { e.Change("ddlRuangRapatOnChange"); e.Select("ddlRuangRapatOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

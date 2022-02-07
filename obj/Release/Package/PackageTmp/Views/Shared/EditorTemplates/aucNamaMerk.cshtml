@@ -1,0 +1,19 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m=>m)
+        .Placeholder("Merk")
+        .DataTextField("Merk")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetMerk1", "ddl", new { Area = "Referensi" }).Data("filterMerk")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucNamaMerkOnSelect"); e.DataBound("aucNamaMerkOnDataBound"); })
+)
+
+
+
+
+
+
+

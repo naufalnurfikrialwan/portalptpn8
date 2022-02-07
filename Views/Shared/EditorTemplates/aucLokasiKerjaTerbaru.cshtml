@@ -1,0 +1,11 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .MinLength(2)
+        .Filter("contains")
+        .Placeholder("Pilih Lokasi Asal..")
+        .DataTextField("Nama")
+        .DataSource(ds => ds.Read(r => r.Action("GetLokasiKerjaTerbaru", "ddl", new { Area = "Referensi" }).Data("filterAsal").Type(HttpVerbs.Post)))
+        .HtmlAttributes(new { style = "width: 100%" })
+        .Events(e => { e.Select("aucLokasiKerjaAsalOnSelect"); e.DataBound("aucLokasiKerjaAsalOnDataBound"); })
+)
+

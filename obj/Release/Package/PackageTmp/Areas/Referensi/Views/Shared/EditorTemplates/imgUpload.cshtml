@@ -1,0 +1,11 @@
+﻿
+@(Html.Kendo().Upload()
+    .Name("files")
+    .Events(e => e.Success("UploadSuccess"))
+    .Multiple(false)
+    .HtmlAttributes(new { style="width: 100px; heigth: 100px    "})
+    .Async(a => a.Save("SaveFoto", "img")
+        .Remove("RemoveFoto", "img")
+        .AutoUpload(true)
+        )
+)

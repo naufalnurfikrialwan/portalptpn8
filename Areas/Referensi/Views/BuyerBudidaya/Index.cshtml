@@ -1,0 +1,286 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model BuyerBudidaya
+@{
+    ViewBag.Title = "Referensi Buyer Budidaya";
+}
+
+<h2>Referensi Buyer Budidaya</h2>
+
+<div id="refBuyerBudidaya" ng-app="_refBuyerBudidaya">
+    <div class="k-content" ng-controller="MyCtrl">
+        <div id="headerBuyerBudidaya">
+            <form kendo-validator="validator" ng-submit="validate($event)">
+                <table>
+                    <tr>
+                        <td><label for="ddlBudidaya">Budidaya:</label></td>
+                        <td>
+                            @(Html.Kendo().DropDownList()
+                                .Name("ddlBuyer")
+                                .AutoBind(true)
+                                .OptionLabel("Pilih Buyer...")
+                                .DataTextField("Nama")
+                                .DataValueField("BuyerId")
+                                .DataSource(o => o.Read(r => r.Action("GetBuyer", "ddl", new { Area = "Referensi" })).ServerFiltering(true))
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Buyer", style = "width: 300px" })
+                                .Events(e =>
+                                {
+                                    e.Select("ddlBuyerOnSelect"); e.DataBound("ddlBuyerOnDataBound");
+                                })
+                            )
+
+
+@*
+                            @(Html.Kendo().DropDownList()
+                                .Name("ddlBudidaya")
+                                .AutoBind(true)
+                                .OptionLabel("Pilih ..")
+                                .DataTextField("Nama")
+                                .DataValueField("MainBudidayaId")
+                                .DataSource(o => o.Read(r => r.Action("getBudidaya", "ddl")).ServerFiltering(true))
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Budidaya", style = "width: 300px" })
+                                .Events(e =>
+                                {
+                                    e.Select("ddlBudidayaOnSelect"); e.DataBound("ddlBudidayaOnDataBound");
+                                })
+                            )
+*@
+                            <span class="k-invalid-msg" data-for="ddlBudidaya"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="confirm">
+                                <button class="k-button k-primary" type="submit">Submit</button>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="detailBuyerBudidaya">
+    @(Html.Kendo()
+        .Grid<BuyerBudidaya>()
+        .Name("grdBuyerBudidaya")
+        .Columns(g =>
+        {
+            g.Bound(i => i.BuyerBudidayaId).Width(100).Hidden();
+            g.Bound(i => i.MainBudidayaId).Width(100).Hidden();
+            g.Bound(i => i.BuyerId).Width(100).Hidden();
+            g.Bound(i => i.Budidaya).ClientTemplate("#=Nama#");
+            g.Bound(i => i.Rekening).ClientTemplate("#=Rekening.Nama#");
+            g.Command(command =>
+            {
+                command.Edit();
+                command.Custom("Delete").Click("openWindow");
+            }).Width(180);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+        })
+        .AutoBind(false)
+        .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+        .Selectable()
+        .Pageable()
+        .HtmlAttributes(new { style = "Height: 350px" })
+        .Scrollable()
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DataBinding("grdOnDataBinding"); })
+        .DataSource(o => o
+            .Ajax()
+            //.ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.BuyerBudidayaId);
+                model.Field(p => p.BuyerBudidayaId).Editable(true);
+                model.Field(p => p.BuyerId).Editable(true);
+                model.Field(p => p.Buyer).DefaultValue(new Buyer());
+                model.Field(p => p.Rekening).DefaultValue(new Rekening());
+            })
+            .Read(read => read.Action("BuyerBudidayaRead", "BuyerBudidaya").Data("filterGrid").Type(HttpVerbs.Post))
+            .Create(create => create.Action("BuyerBudidayaCreate", "BuyerBudidaya").Type(HttpVerbs.Post))
+            .Update(update => update.Action("BuyerBudidayaUpdate", "BuyerBudidaya").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("BuyerBudidayaDestroy", "BuyerBudidaya").Type(HttpVerbs.Post))
+            .ServerOperation(false)
+            )
+
+    )
+</div>
+
+<div id="modalWindow">
+    <h2><span style="color: red">Hapus Data ?</span></h2>
+    <br />
+    <button style="background-color: red; color: white;" id="yes" class="k-button">Yes</button>
+    <button style="background-color: green; color: white;" id="no" class="k-button">No</button>
+</div>
+
+@* validator *@
+<script>
+    angular.module("_refBuyerBudidaya", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                    $("#grdBuyerBudidaya").data("kendoGrid").dataSource.read({ mainBudidayaId: $("#ddlBudidaya").val() });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+                    $("#grdBuyerBudidaya").data("kendoGrid").dataSource.data([]);
+                }
+            }
+        });
+</script>
+
+<script>
+    var buyerBudidayaId;
+    var ddlBudidaya;
+    var ddlBuyer;
+    var uid;
+    var wnd;
+
+    $(document).ready(function () {
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+    });
+
+    function openWindow(e) {
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.open().center();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+
+    function grdOnDataBinding(e)
+    {
+
+    }
+
+    function btnSubmit()
+    {
+    }
+
+    function filterGrid() {
+        return {
+            mainBudidayaId: $("#ddlBudidaya").val()
+        };
+    }
+
+    /* Grid BuyerBudidaya */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDataBound(e) {
+//        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        uid = model.uid;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=BuyerBudidayaId]").val(model.id).change();
+            e.container.find("input[name=BuyerId]").val(ddlBuyer.BuyerId).change();
+//            e.container.find("input[name=MainBudidayaId]").val(ddlMainBudidayaId).change();
+        }
+        buyerBudidayaId = model.id;
+    }
+
+
+    function grdOnChange(e) {
+    }
+
+    function ddlBuyerOnSelect(e) {
+        //ddlBudidaya = this.dataItem(e.item);
+        ddlBuyer = this.dataItem(e.item);
+
+    }
+
+    function ddlBuyerOnDataBound(e) {
+    }
+
+    function ddlBudidayaOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyerBudidaya').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        var data = grid.dataItem(row);
+        data.set("MainBudidayaId", ddlItem.MainBudidayaId);
+        data.set("Budidaya", ddlItem);
+    }
+
+    function ddlBudidayaOnDataBound()
+    {
+    }
+
+    function ddlRekeningOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyerBudidaya').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        var data = grid.dataItem(row);
+        data.set("RekeningId", ddlItem.RekeningId);
+        data.set("Rekening", ddlItem);
+
+    }
+
+    function ddlRekeningOnDataBound() {
+    }
+
+</script>
+
+<style>
+    .photo {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+    }
+
+    .required {
+        font-weight: bold;
+    }
+
+    .accept, .status {
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    #headerBuyerBudidaya {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: gainsboro;
+    }
+
+    #detailBuyerBudidaya {
+    }
+</style>

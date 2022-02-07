@@ -1,0 +1,20 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Rutin",
+                Value = "Rutin"
+            },
+            new SelectListItem() {
+                Text = "Non Rutin",
+                Value = "Non Rutin"
+            }
+        })
+)
+@Html.ValidationMessageFor(m => m)
+
+

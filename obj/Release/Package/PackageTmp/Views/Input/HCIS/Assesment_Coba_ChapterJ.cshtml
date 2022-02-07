@@ -1,0 +1,186 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe J'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="80%">
+    <tr>
+        <td>
+            <div id="_chapterJ" style="display: none;">
+                <div id="ContohChapterJ" style="display: none;">
+                    <label style="font-size: xx-large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER J</label>
+                    <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                    <label id="instruksiJ1" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                    <label style="font-size: x-large;">Contoh Soal 1 :</label>
+                    <table width="100%" style="text-align: center; color: black; font-size: x-large; font-weight: 500;">
+                        <tr>
+                            <td width="10%" style="background-color: yellow">P</td>
+                            <td style="background-color: darkcyan">Gambaran Diri</td>
+                            <td width="10%" style="background-color: red">K</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal1_ChapterJ_a" type="radio" name="ContohSoal1_ChapterJ" value="ContohSoal1_ChapterJ_a" disabled checked="checked"></td>
+                            <td>Bergembira</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal1_ChapterJ_a1" type="radio" name="ContohSoal1a_ChapterJ" value="ContohSoal1a_ChapterJ_a1" disabled></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal1_ChapterJ_b" type="radio" name="ContohSoal1_ChapterJ" value="ContohSoal1_ChapterJ_b" disabled></td>
+                            <td>Bersedih</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal1_ChapterJ_b1" type="radio" name="ContohSoal1a_ChapterJ" value="ContohSoal1a_ChapterJ_b1" disabled></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal1_ChapterJ_c" type="radio" name="ContohSoal1_ChapterJ" value="ContohSoal1_ChapterJ_c" disabled></td>
+                            <td>Humoris</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal1_ChapterJ_c1" type="radio" name="ContohSoal1a_ChapterJ" value="ContohSoal1a_ChapterJ_c1" disabled></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal1_ChapterJ_d" type="radio" name="ContohSoal1_ChapterJ" value="ContohSoal1_ChapterJ_d" disabled></td>
+                            <td>Pemarah</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal1_ChapterJ_d1" type="radio" name="ContohSoal1a_ChapterJ" value="ContohSoal1a_ChapterJ_d1" disabled checked="checked"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><label style="color: blue;">Seperti contoh tersebut, hanya pilih satu saja yang paling menggambarkan diri anda di kolom [P], dan yang paling tidak menggambarkan diri anda di kolom [K]</label></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <label style="font-size: x-large;">Contoh Soal 2 :</label>
+                    <table width="100%" style="text-align: center; color: black; font-size: x-large; font-weight: 500;">
+                        <tr>
+                            <td width="10%" style="background-color: yellow">P</td>
+                            <td style="background-color: darkcyan">Gambaran Diri</td>
+                            <td width="10%" style="background-color: red">K</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal2_ChapterJ_a" type="radio" name="ContohSoal2_ChapterJ" value="ContohSoal2_ChapterJ_a" disabled></td>
+                            <td>Rajin</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal2_ChapterJ_a1" type="radio" name="ContohSoal2a_ChapterJ" value="ContohSoal2a_ChapterJ_a1" disabled checked="checked"></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal2_ChapterJ_b" type="radio" name="ContohSoal2_ChapterJ" value="ContohSoal2_ChapterJ_b" disabled></td>
+                            <td>Pintar</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal2_ChapterJ_b1" type="radio" name="ContohSoal2a_ChapterJ" value="ContohSoal2a_ChapterJ_b1" disabled></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal2_ChapterJ_c" type="radio" name="ContohSoal2_ChapterJ" value="ContohSoa2_ChapterJ_c" disabled></td>
+                            <td>Ceroboh</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal2_ChapterJ_c1" type="radio" name="ContohSoal2a_ChapterJ" value="ContohSoal2a_ChapterJ_c1" disabled></td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow"><input class="largerRadio" id="ContohSoal2_ChapterJ_d" type="radio" name="ContohSoal2_ChapterJ" value="ContohSoal2_ChapterJ_d" disabled checked="checked"></td>
+                            <td>Rapi</td>
+                            <td style="background-color: red"><input class="largerRadio" id="ContohSoal2_ChapterJ_d1" type="radio" name="ContohSoal2a_ChapterJ" value="ContohSoal2a_ChapterJ_d1" disabled></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><label style="color: blue;">Seperti contoh tersebut, hanya pilih satu saja yang paling menggambarkan diri anda di kolom [P], dan yang paling tidak menggambarkan diri anda di kolom [K]</label></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <button type="button" id="btnMulaiTestChapterJ" onclick="btnMulaiTestOnClick('Tipe J')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter J</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="TestChapterJ" style="display: none;">
+                    @{
+                        Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                        Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                        Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe J").TipeSoalId;
+                        int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe J").JumlahPertanyaan;
+                        Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                        List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                        List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+                        <div style="border: 3px solid black; padding: 10px;">
+                            <label style="font-size: xx-large; font-weight: 1000; text-align: center;">SOAL CHAPTER J</label>
+                            <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                            <label id="instruksiJ2" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                            <label style="font-size: x-large; margin: 20px 20px 20px 20px">Apabila anda ingin melanjutkan ke soal berikutnya, Click <span style="color: red">"Soal Chapter J Berikutnya"</span> atau <span style="color: red">"Lanjut ke Chapter K"</span></label>
+                        </div>
+                        for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                        {
+                            paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                            pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                            pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                            jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                        <div id="J_@noUrut.ToString()" style="display: none;">
+                            <h2>Soal No @noUrut</h2>
+                            <table width="100%" style="text-align: center; color: black; font-size: x-large; font-weight: 500;">
+                                <tr>
+                                    <td width="10%" style="background-color: yellow">P</td>
+                                    <td style="background-color: darkcyan">GAMBARAN DIRI</td>
+                                    <td width="10%" style="background-color: red">K</td>
+                                </tr>
+                                @foreach (var mp1 in jawaban)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label id="J1A_@noUrut" style="display: none;">@mp1.PertanyaanId</label>
+                                            <input class="largerRadio" type="radio" name="J1_@noUrut" value="@mp1.NoUrut" onclick="jawabanOnClick('J1_@noUrut','@(mp1.NoUrut)','J2_@noUrut','@(mp1.NoUrut)')" />
+                                        </td>
+                                        <td style="color: black;">@(mp1.JawabanTeks.ToUpper())</td>
+                                        <td>
+                                            <label id="J2A_@noUrut" style="display: none;">@mp1.PertanyaanId</label>
+                                            <input class="largerRadio" type="radio" name="J2_@noUrut" value="@mp1.NoUrut" onclick="jawabanOnClick('J1_@noUrut','@(mp1.NoUrut)','J2_@noUrut','@(mp1.NoUrut)')" />
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                            <br />
+                            @if (noUrut < jumlahPertanyaan)
+                            {
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnJ_@noUrut" onclick="btnOnClick1('Tipe J')" class="btn-big" style="font-size: x-large; height: 60px; width: 350px;">Soal Chapter J Berikutnya</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                            else
+                            {
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnJ_@noUrut" onclick="btnOnClick('Tipe J')" class="btn-big" style="font-size: x-large; height: 60px; width: 250px;">Lanjut ke Chapter K</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                            <br />
+                        </div>
+                        }
+                        }
+
+                    </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<style>
+    #ContohChapterJ {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #TestChapterJ {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+</style>

@@ -1,0 +1,224 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Revenue (Room/Hall)</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2018)
+                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                    .AutoBind(true)
+                    .Name("Bulan")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                    .BindTo(new List<SelectListItem>()
+                    {
+                        new SelectListItem() {
+                            Text = "Januari",
+                            Value = "01"
+                        },
+                        new SelectListItem() {
+                            Text = "Februari",
+                            Value = "02"
+                        },
+                        new SelectListItem() {
+                            Text = "Maret",
+                            Value = "03"
+                        },
+                        new SelectListItem() {
+                            Text = "April",
+                            Value = "04"
+                        },
+                        new SelectListItem() {
+                            Text = "Mei",
+                            Value = "05"
+                        },
+                        new SelectListItem() {
+                            Text = "Juni",
+                            Value = "06"
+                        },
+                        new SelectListItem() {
+                            Text = "Juli",
+                            Value = "07"
+                        },
+                        new SelectListItem() {
+                            Text = "Agustus",
+                            Value = "08"
+                        },
+                        new SelectListItem() {
+                            Text = "September",
+                            Value = "09"
+                        },
+                        new SelectListItem() {
+                            Text = "Oktober",
+                            Value = "10"
+                        },
+                        new SelectListItem() {
+                            Text = "Nopember",
+                            Value = "11"
+                        },
+                        new SelectListItem() {
+                            Text = "Desember",
+                            Value = "12"
+                        }
+                        })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+@(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+.Items(tabstrip =>
+{
+    tabstrip.Add().Text("I. Table Pendapatan").Selected(true)
+    .Content(@<text>
+    @(Html.Kendo()
+        .Grid<Ptpn8.Agrowisata.Models.PendapatanTiket>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.AreaWisata).Width(100).Title("Area Wisata")
+                .ClientFooterTemplate("JUMLAH")
+                .ClientGroupFooterTemplate("JUMLAH")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.TarifParkir).Width(100).Title("Tarif Parkir").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.TarifMasuk).Width(100).Title("Tarif Masuk").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.Jumlah).Width(100).Title("Jumlah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .Group(g => g.Add(gg => gg.AreaWisata))
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.TarifParkir).Sum();
+                ag.Add(x => x.TarifMasuk).Sum();
+                ag.Add(x => x.Jumlah).Sum();
+            })
+        )
+    )
+    </text>);
+tabstrip.Add().Text("II. Chart Pendapatan").Selected(false)
+.Content(@<text>
+        <div class="demo-section k-content wide">
+            @(Html.Kendo().Chart<Ptpn8.Agrowisata.Models.ChartRevenueAreaWisata>()
+                .Name("chart")
+                .Title("Pendapatan Agrowisata PTPN VIII")
+                .Legend(legend => legend.Position(ChartLegendPosition.Top))
+                .DataSource(ds => ds
+                    .Read(read => read.Action("GetDataFrom", "Report").Type(HttpVerbs.Post).Data("filterReport2"))
+                )
+                .ChartArea(chartArea => chartArea
+                    .Background("transparent")
+                )
+                .Series(series =>
+                {
+                    series.Bar(model => model.Pendapatan).Name("Revenue").Color("coral");
+                })
+                .CategoryAxis(axis => axis
+                        .Categories(model => model.NamaKebun)
+                        )
+                .ValueAxis(axis => axis
+                    .Numeric().Labels(labels => labels.Format("{0:N0}"))
+                    .Line(line => line.Visible(false))
+                    .MajorGridLines(lines => lines.Visible(true))
+                )
+                .Tooltip(tooltip => tooltip
+                    .Visible(true)
+                    .Template("#= series.name #: #= value #")
+                )
+            )
+        </div>
+    </text>);
+})
+)
+</div>
+
+<script>
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+        $('#chart').data('kendoChart').dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Agrowisata.Models.PendapatanTiket',
+            scriptSQL: "Select B.Nama as AreaWisata, sum(A.TarifParkir) as TarifParkir, sum(A.TarifMasuk) as TarifMasuk, sum(A.TarifParkir+A.TarifMasuk) as Jumlah " +
+                       "from [SPDK_KanpusEF].[dbo].[Tiket] as A join [ReferensiEF].[dbo].[AreaWisata] as B " +
+                       "on A.AreaWisataId = B.AreaWisataId " +                      
+                       "where Month(A.TanggalMasuk)='" + $('#Bulan').val() + "' and Year(A.TanggalMasuk)='" + $('#Tahun').val() + "' Group By B.Nama"
+        }
+    }
+    function filterReport2(e) {
+        return {
+            strClassView: 'Ptpn8.Agrowisata.Models.ChartRevenueAreaWisata',
+            scriptSQL: "Select B.Nama as NamaKebun, sum(A.TarifParkir+A.TarifMasuk) as Pendapatan " +
+                       "from [SPDK_KanpusEF].[dbo].[Tiket] as A join [ReferensiEF].[dbo].[AreaWisata] as B " +
+                       "on A.AreaWisataId = B.AreaWisataId " +
+                       "where Month(A.TanggalMasuk)='" + $('#Bulan').val() + "' and Year(A.TanggalMasuk)='" + $('#Tahun').val() + "' Group By B.Nama"
+        }
+    }
+</script>
+
+
+
+
+
+

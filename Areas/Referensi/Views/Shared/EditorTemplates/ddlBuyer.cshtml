@@ -1,0 +1,37 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Buyer
+
+@(
+    Html.Kendo().AutoCompleteFor(m=>m)
+    .Name("ddlBuyer")
+    .Placeholder("Pilih Buyer...")
+    .DataTextField("Nama")
+    .HtmlAttributes(new { style = "width: 300px;" })
+    .DataSource(dataSource =>
+    {
+        dataSource.Read(read => read.Action("GetBuyer", "ddl")).ServerFiltering(false);
+    })
+    .Events(e => { e.Select("ddlBuyerOnSelect"); e.DataBound("ddlBuyerOnDataBound"); })
+)
+
+@*
+@(Html.Kendo().DropDownListFor(m=>m)
+        .Name("ddlBuyer")
+        .OptionLabel("Pilih Buyer...")
+        .DataTextField("Nama")
+        .DataValueField("BuyerId")
+        .HtmlAttributes(new { style = "width: 300px;" })
+        .AutoBind(true)
+        //.Template("<span class=\"k-state-default\"><img src=\"" + Url.Content("~/Content/Images/") + "#:BuyerId#.jpg\" alt=\"#:BuyerID#\" /></span>" +
+        //            "<span class=\"k-state-default\"><h3>#: Direktur #</h3><p>#: Nama #</p></span>")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetBuyer", "ddl")).ServerFiltering(false);
+        })
+        .Events(e => { e.Select("ddlBuyerOnSelect"); e.DataBound("ddlBuyerOnDataBound"); })
+)
+    *@
+@Html.ValidationMessageFor(m=>m)
+
+
+
+

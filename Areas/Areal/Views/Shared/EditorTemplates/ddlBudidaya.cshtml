@@ -1,0 +1,22 @@
+﻿@model Ptpn8.Areas.Referensi.Models.MainBudidaya
+
+@(Html.Kendo().DropDownList()
+    .Name("ddlBudidaya")
+    .AutoBind(true)
+    .OptionLabel("Pilih ..")
+    .DataTextField("Nama")
+    .DataValueField("MainBudidayaId")
+   @*.Template("<table width=\"300px;\"><tr><td width=\"50px;\"><span class=\"k-state-default\"><img src=\"" + Url.Content("~/Content/Images/") + "\\#:MainBudidayaId\\#.jpg\" alt=\"\\#:MainBudidayaId\\#\" /></span></td>" +
+        "<td><span class=\"k-state-default\"><h3>\\#: Nama \\#</h3></span></td></tr></table>")
+       *@
+    .DataSource(o => o.Read(r => r.Action("getBudidaya", "ddl", new { Area = "Referensi" })).ServerFiltering(true))
+    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Budidaya", style = "width: 300px" })
+    .Events(e =>
+    {
+        e.Select("ddlBudidayaOnSelect"); e.DataBound("ddlBudidayaOnDataBound");
+    })
+)
+
+
+
+

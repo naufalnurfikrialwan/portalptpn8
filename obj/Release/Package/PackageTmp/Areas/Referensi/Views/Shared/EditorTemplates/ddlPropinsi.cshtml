@@ -1,0 +1,18 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Propinsi
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlPropinsi")
+        .OptionLabel("Pilih propinsi...")
+        .DataTextField("Nama")
+        .DataValueField("PropinsiId")
+        .Value(Model.PropinsiId.ToString())
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("getPropinsi", "ddl")).ServerFiltering(true);
+
+        })
+        //.CascadeFrom("ddlNegara")
+        .Events(e => { e.Select("ddlPropinsiOnSelect"); e.DataBound("ddlPropinsiOnDataBound"); })
+)
+@Html.ValidationMessageFor(m => m)
+

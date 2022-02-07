@@ -1,0 +1,37 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "PERINGATAN 1",
+                Value = "PERINGATAN 1"
+            },
+            new SelectListItem() {
+                Text = "PERINGATAN 2",
+                Value = "PERINGATAN 2"
+            },
+            new SelectListItem() {
+                Text = "PERINGATAN 3",
+                Value = "PERINGATAN 3"
+            },
+            new SelectListItem() {
+                Text = "PENURUNAN PANGKAT & JABATAN",
+                Value = "PENURUNAN PANGKAT & JABATAN"
+            },
+            new SelectListItem() {
+                Text = "PEMBERHENTIAN DENGAN HORMAT",
+                Value = "PEMBERHENTIAN DENGAN HORMAT"
+            },
+            new SelectListItem() {
+                Text = "PEMBERHENTIAN DENGAN TDK HORMAT",
+                Value = "PEMBERHENTIAN DENGAN TDK HORMAT"
+            }
+        })
+        .Events(e => { e.Change("ddlHukumanOnSelect"); e.Select("ddlHukumanOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

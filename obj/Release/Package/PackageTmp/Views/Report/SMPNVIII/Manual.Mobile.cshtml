@@ -1,0 +1,165 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+
+
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Cari Dokumen</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Cari Dokumen:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().TextBox().Name("Dokumen")
+                                .HtmlAttributes(new { style = "width:100%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo()
+                .Grid<Ptpn8.SMPNVIII.Models.ReportDokumen>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NamaBagian).Width(100).Title("Bagian").HtmlAttributes(new { style = "text-align: right;" });
+                    g.Bound(i => i.Tanggal).Width(100).Title("Tanggal Dokumen").HtmlAttributes(new { style = "text-align: right;" });
+                    g.Bound(i => i.NomorDokumen).Width(100).Title("Nomor Dokumen").HtmlAttributes(new { style = "text-align: left;" });
+                    g.Bound(i => i.Nama).Width(200).Title("Nama Dokumen").HtmlAttributes(new { style = "text-align: left;" });
+                    g.Bound(i => i.Keterangan).Width(200).Title("No Revisi").HtmlAttributes(new { style = "text-align: left;" });
+                    g.Bound(i => i.File).Width(200).Title("File").HtmlAttributes(new { style = "text-align: right;" }).Hidden();
+                    g.Command(command =>
+                    {
+                        command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                      .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                    }).Width(120);
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(false)
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                )
+    )
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function onButtonClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var file = data.File;
+
+        //window.location.href = "/Content/Images/Document/" + file; //pass the desired url for the view
+        pdf.open().center();
+
+        var options = {
+            pdfOpenParams: {
+                navpanes: 1,
+                toolbar: 0,
+                statusbar: 0,
+                pagemode: 'none',
+                pagemode: "none",
+                page: 1,
+                preventDefault: 1,
+                zoom: "page-width",
+                enableHandToolOnLoad: true
+            } //,
+            //forcePDFJS: true,
+            //PDFJS_URL: "/PDF.js/web/viewer.html"
+        }
+
+
+        PDFObject.embed("/Content/Images/Document/SMPNVIII/" + file, "#testPDFObject", options)
+
+    }
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+            scriptSQL: "Select B.Nama as NamaBagian, A.* " +
+                       "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Bagian] as B on A.BagianId=B.BagianId " +
+                "where (A.NomorDokumen like '%" + $('#Dokumen').val() + "%' or A.Nama like '%" + $('#Dokumen').val() + "%' or A.IsiDokumen like '%" + $('#Dokumen').val() + "%') and A.Verifikasi=1  and (A.NomorDokumen like 'Manual%' or A.NomorDokumen like 'Kep%')  " +
+                       "order by A.Nama "
+        }
+    }
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>

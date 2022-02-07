@@ -1,0 +1,124 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe D'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+    <table align="center" width="80%">
+    <tr>
+        <td>
+            <div id="_chapterD" style="display: none;">
+                <div id="ContohChapterD" style="display: none;">
+                    <label style="font-size: xx-large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER D</label>
+                    <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                    <label id="instruksiD1" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                    <label style="font-size: x-large;">Contoh Soal 1 :</label>
+                    <table class="multiplechoice">
+                        <tr><td>Senang - Sedih = Gelap - ...............</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterD_a" type="radio" name="ContohSoal1_ChapterD" value="ContohSoal1_ChapterD_a" disabled>(a) Makan</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterD_b" type="radio" name="ContohSoal1_ChapterD" value="ContohSoal1_ChapterD_b" disabled checked="checked">(b) Terang</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterD_c" type="radio" name="ContohSoal1_ChapterD" value="ContohSoal1_ChapterD_c" disabled>(c) Melihat</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterD_d" type="radio" name="ContohSoal1_ChapterD" value="ContohSoal1_ChapterD_d" disabled>(d) Cair</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterD_e" type="radio" name="ContohSoal1_ChapterD" value="ContohSoal1_ChapterD_e" disabled>(e) Duka</td></tr>
+                        <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (b). Karena pada pasangan kata yang pertama, pola yang terbentuk adalah pola lawan kata (Senang lawan katanya sedih). Dengan demikian gelap lawannya adalah terang. Sehingga, jawabannya adalah Terang (b).</label></td></tr>
+                    </table>
+                    </br>
+                    <label style="font-size: x-large;">Contoh Soal 2 :</label>
+                    <table class="multiplechoice">
+                        <tr><td>Hutan – Pohon = Dinding - ...............</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterD_a" type="radio" name="ContohSoal2_ChapterD" value="ContohSoal2_ChapterD_a" disabled checked="checked">(a) Batu Bata</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterD_b" type="radio" name="ContohSoal2_ChapterD" value="ContohSoal2_ChapterD_b" disabled>(b) Air</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterD_c" type="radio" name="ContohSoal2_ChapterD" value="ContohSoal2_ChapterD_c" disabled>(c) Gas</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterD_d" type="radio" name="ContohSoal2_ChapterD" value="ContohSoal2_ChapterD_d" disabled>(d) Bensin</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterD_e" type="radio" name="ContohSoal2_ChapterD" value="ContohSoal2_ChapterD_e" disabled>(e) Udara</td></tr>
+                        <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (a). Karena pada pasangan kata yang pertama, pola yang terbentuk adalah pola terdiri dari (Hutan terdiri dari pohon-pohon). Dengan demikian dinding terdiri dari batu bata. Sehingga, jawabannya adalah Batu Bata (a).</label></td></tr>
+                    </table>
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <button type="button" id="btnMulaiTestChapterD" onclick="btnMulaiTestOnClick('Tipe D')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter D</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="TestChapterD" style="display: none;">
+                    @{
+                        Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                        Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe D").TipeSoalId;
+                        int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe D").JumlahPertanyaan;
+                        Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                        Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                        List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                        List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+                        <div style="border: 3px solid black; padding: 10px;">
+                            <label style="font-size: xx-large; font-weight: 1000; text-align: center;">SOAL CHAPTER D</label>
+                            <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                            <label id="instruksiD2" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                            <label style="font-size: x-large; margin: 20px 20px 20px 20px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.Anda dapat mengerjakan soal yang menurut anda lebih mudah terlebih dahulu</label>
+                            <label style="font-size: x-large; margin: 20px 20px 20px 20px">Apabila sudah selesai Click <span style="color: red">"Lanjut ke Chapter E"</span></label>
+                        </div>
+                        <div id="D">
+                            @for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                            {
+                                paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                                pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                                pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                                jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                                <table class="multiplechoice">
+                                    <tr>
+                                        @foreach (var mp1 in pertanyaanDetail)
+                                        {
+                                            <td width="4%"><label>(@noUrut)</label></td>
+                                            <td>@mp1.PertanyaanTeks</td>
+                                        }
+                                    </tr>
+
+                                    @foreach (var mp2 in jawaban)
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <label id="D1_@noUrut" style="display: none;">@mp2.PertanyaanId</label>
+                                                <input class="largerRadio" type="radio" name="D_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('D_@noUrut','@(mp2.NoUrut)')" /><span class="jawaban" onclick="pertanyaanOnClick('D_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut)) @mp2.JawabanTeks</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+
+                            <table width="100%">
+                                <tr>
+                                    <td align="center">
+                                        <button type="button" id="btnD" onclick="btnOnClick('Tipe D')" class="btn-big" style="font-size: x-large; height: 60px; width: 250px;">Lanjut ke Chapter E</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+<style>
+    #ContohChapterD {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #TestChapterD {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+</style>

@@ -1,0 +1,80 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Setuju",
+                Value = "Setuju"
+            },
+            new SelectListItem() {
+                Text = "Tolak",
+                Value = "Tolak"
+            },
+            new SelectListItem() {
+                Text = "Kaji & Saran",
+                Value = "Kaji & Saran"
+            },
+            new SelectListItem()
+            {
+                Text = "Bicarakan dengan Saya",
+                Value = "Bicarakan dengan Saya"
+            },
+            new SelectListItem()
+            {
+                Text = "Jawab",
+                Value = "Jawab"
+            },
+            new SelectListItem()
+            {
+                Text = "Selesaikan",
+                Value = "Selesaikan"
+            },
+            new SelectListItem() {
+                Text = "Perbaiki",
+                Value = "Perbaiki"
+            },
+            new SelectListItem() {
+                Text = "Edarkan",
+                Value = "Edarkan"
+            },
+            new SelectListItem() {
+                Text = "Untuk Perhatian",
+                Value = "Untuk Perhatian"
+            },
+            new SelectListItem()
+            {
+                Text = "Untuk Diketahui",
+                Value = "Untuk Diketahui"
+            },
+            new SelectListItem()
+            {
+                Text = "Sesuai Catatan",
+                Value = "Sesuai Catatan"
+            },
+            new SelectListItem()
+            {
+                Text = "Ingatkan",
+                Value = "Ingatkan"
+            },
+            new SelectListItem()
+            {
+                Text = "Simpan",
+                Value = "Simpan"
+            },
+            new SelectListItem()
+            {
+                Text = "Perbanyak...Kali",
+                Value = "Perbanyak...Kali"
+            }
+        })
+        .Events(e => { e.Change("ddlDisposisiOnSelect"); e.Select("ddlDisposisiOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+
+
+
+

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report Width="18.8976961092795cm" Culture="id-ID" Name="DHBBT" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.DHBB_CetakLampiran" SelectCommandType="StoredProcedure" Name="dsEvaluasiDHBB">
+      <Parameters>
+        <SqlDataSourceParameter DbType="String" Name="@NomorPengajuan">
+          <Value>
+            <String>= Parameters.NomorPengajuan.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="0.132291662986916cm" Name="Century">
+      <Style>
+        <Font Name="Gadugi" />
+      </Style>
+    </PageHeaderSection>
+    <DetailSection Height="4.9677081856173cm" Name="Arial">
+      <Style>
+        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+        <Font Name="Gadugi" />
+      </Style>
+      <Items>
+        <Table DataSourceName="dsEvaluasiDHBB" Width="18.8447801567205cm" Height="2.03197647519181cm" Left="0.0529166651947631cm" Top="2.16770838747836cm" Name="tblDTL_PermintaanBarangDariKebunId" StyleName="Normal.TableNormal">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.862284960096792cm" Height="0.199996756893862in" Left="0in" Top="0in" Value="= Fields.RowNumber" Name="textBox3" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="7.39743364110755cm" Height="0.199995952640707in" Left="0in" Top="0in" Value="= Fields.NamaBarang" Name="textBox4" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.968683315079469in" Height="0.199996660100031in" Left="0in" Top="0in" Value="= Fields.HargaSetelahPPN" Format="{0:N0}" Name="textBox32" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.963460196275014in" Height="0.199996152188184in" Left="0in" Top="0in" Value="= Fields.HargaDasarOverhead" Format="{0:N0}" Name="textBox36" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="0" RowSpan="1" ColumnSpan="7">
+                <ReportItem>
+                  <TextBox Width="14.9397814086034cm" Height="0.199996429472422in" Left="0in" Top="0in" Name="textBox15" StyleName="Normal.TableBody">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="3">
+                <ReportItem>
+                  <TextBox Width="0.697803994254805in" Height="0.199996218772018in" Left="5.85572481155396in" Top="0.62992125749588in" Value="= Fields.Satuan" Name="textBox6" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.9050072573125cm" Height="0.199995693590039in" Left="0cm" Top="0cm" Value="= Fields.Keterangan" Name="textBox8" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Name="Gadugi" Size="9pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.9050072573125cm" Height="0.199996170421677in" Left="0cm" Top="0cm" Name="textBox9" StyleName="Normal.TableBody">
+                    <Style VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="9pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="0.862283964094498cm" />
+              <Column Width="7.39743292640048cm" />
+              <Column Width="0.489475036882324in" />
+              <Column Width="0.104164203344607in" />
+              <Column Width="0.104166421349606in" />
+              <Column Width="0.963458255467624in" />
+              <Column Width="0.968679646526871in" />
+              <Column Width="3.90500669569429cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.19999569359004in" />
+              <Row Height="0.199996170421677in" />
+            </Rows>
+          </Body>
+          <Corner />
+          <Style>
+            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+            <BorderColor Top="228, 108, 10" Bottom="228, 108, 10" Left="228, 108, 10" Right="228, 108, 10" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Name="Gadugi" Size="8pt" />
+          </Style>
+          <RowGroups>
+            <TableGroup Name="detail">
+              <ChildGroups>
+                <TableGroup Name="group4" />
+              </ChildGroups>
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+            <TableGroup Name="group27">
+              <ChildGroups>
+                <TableGroup Name="group28" />
+              </ChildGroups>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="group5">
+              <ReportItem>
+                <TextBox Width="0.862284960096792cm" Height="1.01600005835502cm" Left="0in" Top="0in" Value="No." Name="textBox1" StyleName="">
+                  <Style BackgroundColor="219, 238, 244" TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    <Font Name="Gadugi" Size="10pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group3" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group47">
+              <ReportItem>
+                <TextBox Width="7.39743364110755cm" Height="1.01599603324112cm" Left="0in" Top="0in" Value="Nama Barang" Name="textBox74" StyleName="">
+                  <Style BackgroundColor="219, 238, 244" TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                    <Font Name="Gadugi" Size="10pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="chop" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group48">
+              <ReportItem>
+                <TextBox Width="0.697803994254805in" Height="1.01599732465157cm" Left="0in" Top="0in" Value="Satuan" Name="textBox75" StyleName="">
+                  <Style BackgroundColor="219, 238, 244" TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                    <Font Name="Gadugi" Size="10pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group" />
+                <TableGroup Name="group40" />
+                <TableGroup Name="group15" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group17">
+              <ReportItem>
+                <TextBox Width="0.963460196275014in" Height="1.01599698640019cm" Left="0in" Top="0in" Value="Harga Sebelum PPN" Name="textBox33" StyleName="">
+                  <Style BackgroundColor="219, 238, 244" TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                    <Font Name="Gadugi" Size="10pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group18" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group7">
+              <ReportItem>
+                <TextBox Width="0.968683315079469in" Height="1.01599956663436cm" Left="0in" Top="0in" Value="Harga Setelah PPN" Name="textBox18" StyleName="">
+                  <Style BackgroundColor="219, 238, 244" TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                    <Font Name="Gadugi" Size="10pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group46" />
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group2">
+              <ReportItem>
+                <TextBox Width="3.9050072573125cm" Height="1.01599720012337cm" Left="0cm" Top="0cm" Value="Keterangan" Name="textBox7" StyleName="">
+                  <Style BackgroundColor="219, 238, 244" TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                    <Font Name="Gadugi" Size="10pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group6" />
+              </ChildGroups>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+        <TextBox Width="18.8975963899169cm" Height="0.599999697208413cm" Left="-0.0000000000000001cm" Top="0.467708236082563cm" Value="DAFTAR HARGA BARANG BAHAN" Name="textBox2">
+          <Style TextAlign="Center">
+            <Font Name="Gadugi" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="18.8976958223508cm" Height="0.599999725818634cm" Left="0cm" Top="1.06790797759948cm" Value="PT Perkebunan Nusantara VIII" Name="textBox5">
+          <Style TextAlign="Center">
+            <Font Name="Gadugi" />
+          </Style>
+        </TextBox>
+      </Items>
+    </DetailSection>
+    <PageFooterSection Height="1.30000014812168cm" Name="pageFooterSection1">
+      <Items>
+        <PictureBox Image="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" Width="1.02362185716629in" Height="0.511811087528864in" Left="0in" Top="0in" MimeType="image/png" Name="pictureBox1" />
+      </Items>
+    </PageFooterSection>
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings PaperKind="Letter" Landscape="False" ContinuousPaper="False">
+    <Margins>
+      <MarginsU Left="1cm" Right="0.5cm" Top="2cm" Bottom="1cm" />
+    </Margins>
+  </PageSettings>
+  <ReportParameters>
+    <ReportParameter Name="NomorPengajuan">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

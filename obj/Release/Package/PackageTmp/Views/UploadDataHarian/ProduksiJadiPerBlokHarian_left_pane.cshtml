@@ -1,0 +1,498 @@
+﻿<div class="pane-content">
+    @if (ViewData["LAYER"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color: cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Layer</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @Html.Kendo().CheckBox().Name("chkKebun").Checked(true).HtmlAttributes(new { @style = "display: block;", @onchange = "chkKebunOnChange()" }).Label("Kebun")
+                        @Html.Kendo().CheckBox().Name("chkStreetMap").Checked(true).HtmlAttributes(new { @style = "display: block;", @onchange = "chkStreetMapOnChange()" }).Label("Street Map")
+                        @Html.Kendo().CheckBox().Name("chkCitra").Checked(false).HtmlAttributes(new { @style = "display: block;", @onchange = "chkCitraOnChange()" }).Label("Citra")
+                        @Html.Kendo().CheckBox().Name("chkKontur").Checked(false).HtmlAttributes(new { @style = "display: block;", @onchange = "chkKonturOnChange()" }).Label("Peta Kontur")
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["SUMBERDANA"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Sumber Dana</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @(Html.Kendo().DropDownList()
+                            .Name("ddlSumberDana")
+                            .AutoBind(true)
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .BindTo(new List<SelectListItem>() {
+                                        new SelectListItem() {
+                                            Text = "Seluruh",
+                                            Value = "SELURUH"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Rutin",
+                                            Value = "RUTIN"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Akselerasi",
+                                            Value = "AKSELERASI"
+                                        }
+                            })
+                            .Value("SELURUH")
+                            .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Sumber Dana", style = "width: 100%" })
+                        )
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["RENTANGWAKTU"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Rentang Waktu</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @(Html.Kendo().DropDownList()
+                    .Name("BulanAwal")
+                    .AutoBind(true)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .BindTo(new List<SelectListItem>() {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "1"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "2"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "3"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "4"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "5"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "6"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "7"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "8"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "9"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "Nopember",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                    })
+                    .Value(DateTime.Now.Month.ToString())
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan Awal", style = "width: 60%" })
+                        )
+                        -
+                        @(Html.Kendo().IntegerTextBox()
+                .Name("TahunAwal")
+                .Value(DateTime.Now.Year)
+                .HtmlAttributes(new { style = "width: 30%;" })
+                .Format("{0:0000}")
+                .Min(2016)
+                        )
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["BUDIDAYA"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Budidaya</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @(Html.Kendo().DropDownList()
+                            .Name("ddlBudidaya")
+                            .OptionLabel("Pilih Budidaya")
+                            .AutoBind(false)
+                            .DataValueField("MainBudidayaId")
+                            .DataTextField("Nama")
+                            .DataSource(o => o.Read(r => r.Action("GetDataFromModel", "UploadDataHarian").Data("filterBudidaya")).ServerFiltering(true))
+                            .HtmlAttributes(new { style = "width: 100%;" })
+                            .SelectedIndex(0)
+                            .Events(e =>
+                            {
+                                e.Select("ddlBudidayaOnSelect");
+                                //e.Change("ddlBudidayaOnChange");
+                            })
+
+                        )
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["KEBUN"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Kebun</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @(Html.Kendo().DropDownList()
+                            .Name("ddlKebun")
+                            .OptionLabel("Pilih Kebun")
+                            .AutoBind(false)
+                            .DataValueField("KebunId")
+                            .DataTextField("Nama")
+                            .DataSource(o => o.Read(r => r.Action("GetDataFromModel", "UploadDataHarian").Data("filterKebun")).ServerFiltering(true))
+                            .HtmlAttributes(new { style = "width: 100%;" })
+                            .Events(e =>
+                            {
+                                //e.Select("ddlKebunOnSelect");
+                                //e.Change("ddlKebunOnChange");
+                            })
+
+                        )
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["REKENINGKEGIATAN"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Rekening Kegiatan</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @(Html.Kendo().AutoComplete()
+                .Name("aucRekening")
+                .DataTextField("Text")
+                .HtmlAttributes(new { style = "width: 100%", @class = "allcaps" })
+                .MinLength(3)
+                .Placeholder("Pilih Rekg Kegiatan")
+                .Value("601")
+                .DataSource(o =>
+                {
+                    o.Read(r => r.Action("GetRekening1", "ddl", new { Area = "Referensi" }).Data("filterRekening")).ServerFiltering(true);
+                })
+                .Events(e =>
+                {
+                    e.Select("aucRekeningOnSelect");
+                    e.Change("aucRekeningOnChange");
+                })
+                        )
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["UNSUR"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Unsur</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @(Html.Kendo().DropDownList()
+                .Name("ddlTransaksi")
+                .AutoBind(true)
+                .DataTextField("Text")
+                .DataValueField("Value")
+                .BindTo(new List<SelectListItem>() {
+                                new SelectListItem() {
+                                    Text = "Seluruh",
+                                    Value = "SELURUH"
+                                },
+                                new SelectListItem() {
+                                    Text = "Upah(HK)",
+                                    Value = "HK"
+                                },
+                                new SelectListItem() {
+                                    Text = "Upah(Prestasi)  ",
+                                    Value = "PRESTASI"
+                                },
+                                new SelectListItem() {
+                                    Text = "Barang Bahan",
+                                    Value = "TUP"
+                                },
+                                new SelectListItem() {
+                                    Text = "Kas/Bank",
+                                    Value = "KAS"
+                                },
+                                new SelectListItem() {
+                                    Text = "Lain-Lain",
+                                    Value = "LL"
+                                },
+                                new SelectListItem() {
+                                    Text = "Protas",
+                                    Value = "PROTAS"
+                                }
+                })
+                .Value("SELURUH")
+                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Transaksi", style = "width: 100%" })
+                        )
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["REALISASIDIBANDINGKAN"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Realisasi Dibandingkan</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        <ul style="list-style: none; margin: 0px 0px 5px 0px; padding: 0">
+                            <li>
+                                @(Html.Kendo().RadioButton()
+                .Name("Perbandingan1").Checked(false)
+                .HtmlAttributes(new { @style = "display: block;", @onchange = "perbandinganOnChange()", @name = "perbandingan" })
+                .Value("INDUK").Label("Dengan Realisasi Induk"))
+                            </li>
+                            <li>
+                                @(Html.Kendo().RadioButton()
+                .Name("Perbandingan2")
+                .HtmlAttributes(new { @style = "display: block;", @onchange = "perbandinganOnChange()", @name = "perbandingan" })
+                .Value("RKAP").Label("Dengan RKAP"))
+                            </li>
+                            <li>
+                                @(Html.Kendo().RadioButton()
+                .Name("Perbandingan3")
+                .HtmlAttributes(new { @style = "display: block;", @onchange = "perbandinganOnChange()", @name = "perbandingan" })
+                .Value("PKB").Label("Dengan PKB").Checked(true))
+                            </li>
+                            <li>
+                                @(Html.Kendo().RadioButton()
+                .Name("Perbandingan4")
+                .HtmlAttributes(new { @style = "display: block;", @onchange = "perbandinganOnChange()", @name = "perbandingan" })
+                .Value("BALAI").Label("Dengan Std Balai"))
+                            </li>
+                        </ul>
+                        @(Html.Kendo().IntegerTextBox().Min(0).Max(100).Step(5).Name("txtBalai")
+                        .Value(100)
+                        .Events(e => { e.Spin("perbandinganOnChange"); e.Change("perbandinganOnChange"); })
+                        .HtmlAttributes(new { @style = "margin-left: 20px; width: 80px;" }))
+                        %
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+
+    @if (ViewData["TOOLS"].ToString() == "TRUE")
+    {
+        <table width="100%" style="background-color:cornflowerblue ; color: white; margin-top: 5px; border-radius: 5px;">
+            <tr>
+                <td>
+                    <div>
+                        <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Tools</span></label>
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        <div>
+                            <label>Cari Lokasi Kebun/Afdeling/Blok</label>
+                            @Html.Kendo().TextBox().Name("txtCari").Value("")
+                            @Html.Kendo().Button().Name("btnSearch").Content("Cari").Events(e => e.Click("btnSearchOnClick"))
+                        </div>
+                        <div>
+                        </div>
+                        <div>
+                            <label>Status Areal</label>
+                            @(Html.Kendo().DropDownList()
+                .Name("StatusAreal")
+                .OptionLabel("Pilih Status Areal")
+                .AutoBind(true)
+                .DataValueField("Nama")
+                .DataTextField("Deskripsi")
+                //.DataSource(o => o.Read(r => r.Action("getStatusAreal", "Home")).ServerFiltering(true))
+                .HtmlAttributes(new { style = "width: 100%;" })
+                .Events(e =>
+                {
+                    //e.Select("ddlStatusArealOnSelect");
+                    //e.Change("ddlStatusArealOnChange");
+                })
+                            )
+
+
+                        </div>
+
+                    </div>
+                    <div style="margin: 5px 5px 10px 5px ">
+                        @Html.Kendo().Button().Name("btnMapExport").Content("Ekspor Peta").Events(e => e.Click("btnMapExportOnClick"))
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    }
+
+
+    <table width="100%" style="background-color:gray ; color: white; margin-top: 5px; border-radius: 5px;">
+        <tr>
+            <td>
+                <div style="margin: 5px 5px 10px 5px; text-align:center ">
+                    <button type="button" id="btnProses" onclick="btnProsesOnClick()" class="k-button" style="width: 100%; color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<script>
+    function ddlBudidayaOnSelect(e) {
+        budidaya = $('#ddlBudidaya').data('kendoDropDownList').value();
+        $('#ddlKebun').data('kendoDropDownList').dataSource.read();
+    }
+
+    function ddlBudidayaOnChange(e) {
+        budidaya = $('#ddlBudidaya').data('kendoDropDownList').value();
+//        $('#ddlKebun').data('kendoDropDownList').dataSource.read();
+    }
+
+    function ddlKebunOnSelect(e) {
+        kebun = $('#ddlKebun').data('kendoDropDownList').value();
+        //loadDataKebun = true;
+//        resetGridData();
+    }
+
+    function ddlKebunOnChange(e) {
+        kebun = $('#ddlKebun').data('kendoDropDownList').value();
+        //loadDataKebun = true;
+//        resetGridData();
+    }
+
+    function btnProsesOnClick(e)
+    {
+
+        var year = $('#TahunAwal').val();
+        var month = $('#BulanAwal').data('kendoDropDownList').value();
+        var daysInMonth = new Date(year, month, 0).getDate();
+        var grid = $('#grdDetail').data('kendoGrid');
+        var txtSumberDana = '';
+        var txtBudidaya = $('#ddlBudidaya').data('kendoDropDownList').text();
+        var txtUnsur = '';
+        var txtBulan = 'Bulan ' + $('#BulanAwal').data('kendoDropDownList').text() + ' ' + $('#TahunAwal').val()
+
+        document.getElementById('judulgrid1').innerHTML = 'Produksi Kering Per Blok Budidaya ' + txtBudidaya + '.';
+        document.getElementById('judulgrid2').innerHTML = txtBulan;
+
+        $('#grdDetail').data('kendoGrid').dataSource.read([]);
+        $('#grdDetail').data('kendoGrid').dataSource.read();
+
+        if (daysInMonth == 28) {
+            grid.hideColumn("Tanggal29");
+            grid.hideColumn("Tanggal30");
+            grid.hideColumn("Tanggal31");
+        }
+        else if (daysInMonth == 29) {
+            grid.showColumn("Tanggal29")
+            grid.hideColumn("Tanggal30");
+            grid.hideColumn("Tanggal31");
+        }
+        else if (daysInMonth == 30) {
+            grid.showColumn("Tanggal29")
+            grid.showColumn("Tanggal30");
+            grid.hideColumn("Tanggal31");
+        }
+        else {
+            grid.showColumn("Tanggal29")
+            grid.showColumn("Tanggal30");
+            grid.showColumn("Tanggal31");
+
+        }
+
+    }
+
+    function perbandinganOnChange(e) {
+    }
+
+
+    function btnSearchOnClick(e) {
+        var map = $('#map').data('kendoMap');
+
+        if (activeLayer = "Kebun")
+        {
+            var lyr = map.layers[indexKebun];
+        }
+        else if (activeLayer = "Afdeling")
+        {
+            var lyr = map.layers[indexAfdeling];
+        }
+        else if (activeLayer = "Blok")
+        {
+            var lyr = map.layers[indexBlok];
+        }
+
+    }
+
+
+    function filterBudidaya()
+    {
+        return {
+            strClassView: "Ptpn8.Areas.Referensi.Models.MainBudidaya",
+            scriptSQL: "select * from [ReferensiEF].[dbo].[MainBudidaya] where lower(nama) in ('teh','karet','sawit')",
+            _menuId: menuID
+        };
+
+    }
+
+    function filterKebun()
+    {
+        return {
+            strClassView: "Ptpn8.Areas.Referensi.Models.Kebun",
+            scriptSQL: "select distinct A.KebunId,A.Nama,A.kd_kbn from [ReferensiEF].[dbo].[Kebun] A inner join [ReferensiEF].[dbo].[KebunBudidaya] B on A.KebunId=B.KebunId where B.MainBudidayaId='"+budidaya+"'",
+            _menuId: menuID
+        };
+    }
+
+</script>

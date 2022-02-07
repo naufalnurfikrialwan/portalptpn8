@@ -1,0 +1,234 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="33%" style="vertical-align:top;">
+                        <table width="100%">
+                            <tr>
+                                <td style="vertical-align:top">
+                                    <label style="color: black; background-color: lightgray; text-align: center;">Cari Daftar Harga Barang Bahan dan Tarif</label>
+                                    <table width="100%;" style="border: 1px solid lightgray; margin-bottom : 5px;">
+                                        <tr>
+                                            <td width="25%">
+                                                <label>Kode Barang:</label>
+                                            </td>
+                                            <td width="50%">
+                                                @(Html.Kendo().AutoComplete().Name("KodeBarang")
+                                                 .MinLength(2)
+                                                 .Filter("contains")
+                                                 .DataTextField("KodeBarang")
+                                                 .Events(ev => { ev.Change("aucKodeBarangOnSelect"); })
+                                                 .HtmlAttributes(new { style = "width: 80%", @class = "allcaps" })
+                                                 .DataSource(o =>
+                                                 {
+                                                     o.Read(r => r.Action("GetKodeBarang", "ddl", new { Area = "Referensi" }).Data("filterKodeBarang").Type(HttpVerbs.Post));
+                                                     o.ServerFiltering(true);
+                                                 })
+                                                )
+                                            </td>
+                                            <td width="50%">
+                                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="vertical-align:top"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.DaftarHargaBarangBahanDanTarif.Models.RekapDHBB>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.RekapDHBBId).Width(50).Hidden();
+            g.Bound(i => i.BarangId).Width(50).Hidden();
+            g.Bound(i => i.NamaBarang).Title("Nama Barang").Width(100);
+            g.Bound(i => i.KodeBarang).Title("Kode Barang").Width(50);
+            g.Bound(i => i.NamaSatuan).Title("Nama Satuan").Width(50);
+            g.Bound(i => i.Spesifikasi).Title("Spesifikasi").Width(80);
+            g.Bound(i => i.Merk).Title("Merk").Width(50)
+                 .ClientGroupFooterTemplate("Jumlah")
+                 .ClientFooterTemplate("TOTAL")
+                 .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.Harga).Title("Harga").Width(200).Width(80).Format("{0:N2}")
+                .HtmlAttributes(new { id = "jml#=RekapDHBBId#", @readonly = "true", style = "text-align: right;" })
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                .ClientFooterTemplate("<span id='jmlBiaya'>#= kendo.toString(rekapBiaya(),'n2') #</span>")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver; color:blue;" });
+            g.Bound(i => i.SudahTerima).Title("Selection").Width(80);
+        })
+        .AutoBind(false)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .Filterable()
+        //.ToolBar(tools => tools.Excel())
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='btnPrintHeaderOnClick()' href='#'></span><span class='k-font-icon k-i-trash'></span>Cetak</a>");
+        })
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+        })
+        //.Excel(excel => excel.AllPages(true))
+        .DataSource(o => o
+            .Ajax()
+            //.Sort(s => s.Add(x => x.NamaKebun))
+            //.Group(g => g.Add(gg => gg.NamaKebun))
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.RekapDHBBId);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.Harga).Sum();
+            })
+        )
+    )
+</div>
+
+
+<script>
+    var wnd, err, prt;
+    var kodeBarang;
+
+
+    function filterKodeBarang() {
+        return {
+            //id: IdBudidaya,
+            value: $('#KodeBarang').val()
+        };
+    }
+    function aucKodeBarangOnSelect(e) {
+        var kodeBarang = this.dataItem(e.item);
+        $('#KodeBarang').val(kodeBarang.KodeBarang);
+    }
+
+    function btnPrintHeaderOnClick() {
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: { RekapDHBBId: $('#RekapDHBBId').val() }
+        });
+        viewer.refreshReport();
+        prt.open().center();
+    }
+
+    angular.module("__areaFilter", ["kendo.directives"])
+         .controller("MyCtrl", function ($scope) {
+             $scope.validate = function (event) {
+                 event.preventDefault();
+                 if ($scope.validator.validate()) {
+                     kodeBarang = $('#KodeBarang').val();
+                     $('#grdDetail').data('kendoGrid').dataSource.read();
+                 } else {
+                     // not valid
+                 }
+             }
+         });
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.DaftarHargaBarangBahanDanTarif.Models.RekapDHBB',
+            scriptSQL: "select NEWID() as RekapDHBBId, C.NamaBarang,A.KodeBarang,A.NamaSatuan,A.Spesifikasi, A.Merk ,sum(((A.HargaDasar * (1 + (A.Overhead)))) + (A.HargaDasar * (1 + (A.Keuntungan))) * 0.1) as Harga, A.SudahTerima  "+
+                       "from SPDK_KanpusEF.dbo.DTL_UpdateDHBB as A " +
+                       "join SPDK_KanpusEF.dbo.HDR_UpdateDHBB as B " +
+                       "on A.HDR_UpdateDHBBId = B.HDR_UpdateDHBBId " +
+                       "join [ReferensiEF].dbo.Barang as C " +
+                       "on C.BarangId=A.BarangId " +
+                       "where A.HDR_UpdateDHBBId = B.HDR_UpdateDHBBId and A.KodeBarang like '%" + $('#KodeBarang').val() + "%'" +
+                       "group by  C.NamaBarang,A.KodeBarang,A.NamaSatuan,A.Spesifikasi, A.Merk ,A.SudahTerima " +
+                       "order by A.KodeBarang "
+        }
+    }
+
+    function rekapBiaya() {
+
+        var grid = $('#grdDetail').data('kendoGrid');
+        var newValue = 0;
+        for (var i = 0; i < grid.dataItems().length; i++) {
+            newValue += grid.dataItems()[i].Harga;
+        }
+        return newValue;
+    }
+
+    function grdOnChange(e) {
+
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+        if (model.isNew()) {
+            model.RekapDHBBId = model.uid;
+        }
+        rekapDHBBId = model.RekapDHBBId;
+
+        $(e.container).find("input[name='NamaBarang']").prop('disabled', true);
+        $(e.container).find("input[name='KodeBarang']").prop('disabled', true);
+        $(e.container).find("input[name='NamaSatuan']").prop('disabled', true);
+        $(e.container).find("input[name='Spesifikasi']").prop('disabled', true);
+        $(e.container).find("input[name='Merk']").prop('disabled', true);
+        $(e.container).find("input[name='NamaToko']").prop('disabled', true);
+        $(e.container).find("input[name='Alamat']").prop('disabled', true);
+        $(e.container).find("input[name='Harga']").prop('disabled', true);
+
+        gridStatus = 'sudah-diapa-apain';
+    }
+
+
+</script>
+
+<style>
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+
+

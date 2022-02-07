@@ -1,0 +1,100 @@
+﻿@model Ptpn8.Procurement.Models.View_HDRTerimaPermintaanBarangDariKebun
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Procurement/ReportsPengajuanTanaman.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Procurement.Models.View_HDRTerimaPermintaanBarangDariKebun>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.TahunBuku).Width(50).Hidden();
+            g.Bound(i => i.NomorInput).Width(50).Hidden();
+            g.Bound(i => i.NomorInputView).Width(50).Hidden();
+            g.Bound(i => i.HDR_TerimaPermintaanBarangDariKebunId).Width(50).Hidden();
+            //g.Bound(i => i.ListKebunNomorPermintaan).Width(50).Hidden();
+            g.Bound(i => i.Pejabat).Width(50).Hidden();
+            g.Bound(i => i.UserName).Width(50).Hidden();
+            g.Bound(i => i.VerKaur).Width(50).Hidden();
+            g.Bound(i => i.VerKabag).Width(50).Hidden();
+            g.Bound(i => i.TglVerKaur).Width(50).Hidden();
+            g.Bound(i => i.TglVerKabag).Width(50).Hidden();
+            g.Bound(i => i.UserNameKaur).Width(50).Hidden();
+            g.Bound(i => i.UserNameKabag).Width(50).Hidden();
+            g.Bound(i => i.Bidang).Width(50).Title("Bidang");
+            g.Bound(i => i.Keterangan).Width(70).Title("Nama kebun");
+            g.Bound(i => i.NomorPenerimaan).Width(70).Title("No Penerimaan");
+            g.Bound(i => i.TanggalPenerimaan).Width(70).Title("Tanggal Penerimaan").ClientTemplate("#= kendo.toString(TanggalPenerimaan,'dd/MM/yyyy')#");
+            g.Bound(i => i.TotalPrice).Width(100).Title("Jumlah").Width(80).Format("{0:N2}").HtmlAttributes(new { style = "text-align: right;" });
+        })
+        .ToolBar(toolbar =>
+        {
+
+            //toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        })
+        .AutoBind(true)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 600px" })
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBound("grdOnDataBound");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(i =>
+            {
+                i.Add(j => j.VerKaur).Ascending();
+                i.Add(j => j.TanggalPenerimaan).Descending();
+            })
+            .Model(model =>
+            {
+                model.Id(p => p.HDR_TerimaPermintaanBarangDariKebunId);
+                model.Field(f => f.Bidang).Editable(false);
+                model.Field(f => f.Keterangan).Editable(false);
+                model.Field(f => f.NomorPenerimaan).Editable(false);
+                model.Field(f => f.TanggalPenerimaan).Editable(false);
+                model.Field(f => f.TotalPrice).Editable(false);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+<style>
+    .hdr {
+        background: #2cb16e;
+        color: white;
+        font-size: large;
+        font-weight: 500;
+        padding-left: 5px;
+    }
+</style>
+
+

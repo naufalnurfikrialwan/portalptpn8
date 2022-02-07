@@ -1,0 +1,73 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Kasubdiv PTI",
+                Value = "Kasubdiv PTI"
+            },
+	    new SelectListItem() {
+                Text = "Kasubdiv CMO",
+                Value = "Kasubdiv CMO"
+            },
+            new SelectListItem() {
+                Text = "Kasubdiv OPTI",
+                Value = "Kasubdiv OPTI"
+            },
+            new SelectListItem() {
+                Text = "Kasubag HPS",
+                Value = "Kasubag HPS"
+            },
+            new SelectListItem()
+            {
+                Text = "Kasubag PTI & OPTI",
+                Value = "Kasubag PTI & OPTI"
+            },
+            new SelectListItem()
+            {
+                Text = "Kasubag PTI & HPS",
+                Value = "Kasubag PTI & HPS"
+            },
+	    new SelectListItem()
+            {
+                Text = "Kasubag PTI & CMO",
+                Value = "Kasubag PTI & CMO"
+            },
+            new SelectListItem()
+            {
+                Text = "Kasubag OPTI & HPS",
+                Value = "Kasubag OPTI & HPS"
+            },
+	    new SelectListItem()
+            {
+                Text = "Kasubag OPTI & CMO",
+                Value = "Kasubag OPTI & CMO"
+            },
+            new SelectListItem()
+            {
+                Text = "Kasubag CMO & HPS",
+                Value = "Kasubag CMO & HPS"
+            },
+            new SelectListItem()
+            {
+                Text = "Kasubag PTI, OPTI & HPS",
+                Value = "Kasubag PTI, OPTI & HPS"
+            }
+            ,
+            new SelectListItem()
+            {
+                Text = "Kasubag PTI, OPTI, HPS & CMO",
+                Value = "Kasubag PTI, OPTI, HPS & CMO"
+            }
+        })
+        .Events(e => { e.Change("ddlKasubagOnChange"); e.Select("ddlKasubagOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+
+
+
+

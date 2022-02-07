@@ -1,0 +1,233 @@
+﻿﻿@model Ptpn8.UserManagement.Models.ExternalLoginConfirmationViewModel
+@{
+    ViewBag.Title = "Login/Registrasi";
+}
+<h2>@ViewBag.Title</h2>
+<h3>Anda akan menggunakan akun @ViewBag.LoginProvider</h3>
+
+@using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <p class="text-info">
+        Anda telah berhasil menggunakan akun <strong>@ViewBag.LoginProvider </strong> di Portal PTPN-VIII.
+        Dikarenakan anda belum melakukan registrasi pada Portal PTPN-VIII, silahkan isi item-item di bawah ini.
+    </p>
+
+    <table width="70%">
+        <tr>
+            <td width="15%">
+                @Html.LabelFor(m => m.Email)
+            </td>
+            <td width="55%">
+                <div>
+                    @Html.Kendo().TextBoxFor(m => m.Email).HtmlAttributes(new { style = "width: 100%;" })
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="12%">
+            </td>
+            <td width="20%">
+                <div style="vertical-align:middle; color: green;">
+                    Masukan alamat Email anda dengan format alamat email, contoh xyz@gmail.com
+                </div>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.NoIndukKaryawan)
+            </td>
+            <td>
+                @Html.Kendo().TextBoxFor(m => m.NoIndukKaryawan).Name("NoIndukKaryawan").HtmlAttributes(new { style = "width: 100%;" })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <div style="vertical-align:middle;color: green;">
+                    Isikan No Induk Karyawan (NIK) anda
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Nama)
+            </td>
+            <td>
+                @Html.Kendo().TextBoxFor(m => m.Nama).Name("Nama").HtmlAttributes(new { style = "width: 100%;" })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <div style="vertical-align:middle;color: green;">
+                    Isikan Nama Lengkap anda
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Jabatan)
+            </td>
+            <td>
+                @Html.Kendo().TextBoxFor(m => m.Jabatan).Name("Jabatan").HtmlAttributes(new { style = "width: 100%;" })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <div style="vertical-align:middle;color: green;">
+                    Isikan Jabatan anda saat ini
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Telepon)
+            </td>
+            <td>
+                @Html.Kendo().TextBoxFor(m => m.Telepon).Name("Telepon").HtmlAttributes(new { style = "width: 100%;" })
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <div style="vertical-align:middle;color: green;">
+                    Isikan 1 (satu) Nomor telepon/HP yang aktif saat ini
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Foto)
+            </td>
+            <td>
+                @Html.HiddenFor(m=>m.UserName)
+                @Html.HiddenFor(m => m.FileFoto)
+                @Html.HiddenFor(m => m.Foto)
+                @(Html.Kendo().Upload()
+                            .Name("files")
+                            .Events(e => e.Success("UploadSuccess"))
+                            .Multiple(false)
+                            .HtmlAttributes(new { style = "width: 100%;" })
+                            .Async(a => a.Save("SaveFoto", "img", new { Area = "Referensi" })
+                            .Remove("RemoveFoto", "img", new { Area = "Referensi" })
+                            .AutoUpload(true)
+                        )
+                )
+                <div id="gbr"></div>
+
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <div style="vertical-align:middle;color: green;">
+                    Klik Select files Pilih dan Upload foto anda, format foto JPEG
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.LokasiKerjaId)
+            </td>
+            <td>
+                @Html.HiddenFor(m => m.LokasiKerjaId)
+                @(Html.Kendo().TreeView()
+                        .Name("treeLokasiKerja")
+                        .DataTextField("Nama")
+                        .Events(e => e.Select("treeLokasiKerjaOnSelect"))
+                        .BindTo((IEnumerable<TreeViewItemModel>)ViewBag.treeOrganisasi)
+                )
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+            </td>
+            <td>
+                <div style="vertical-align:middle;color: green;">
+                    Pilih lokasi kerja anda saat ini
+                </div>
+            </td>
+        </tr>
+
+    </table>
+
+
+    @*<div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+    </div>*@
+
+
+    <div class="form-group">
+        <table width="100%">
+            <tr>
+                <td style="text-align: center;">
+                    <input type="submit" class="k-button" value="Register" style="width: 120px; height: 50px; color: white; background-color: green; font-size: x-large" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    @*<div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>*@
+}
+
+@*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}*@
+ 
+
+
+<script type="text/javascript">
+    function treeLokasiKerjaOnSelect(e) {
+        $('#LokasiKerjaId').val(e.node.dataset.id);
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        //var filecontent = files[0].;
+        $('#FileFoto').val(filename);
+        var loc = $(location).attr('origin') + '/Content/Images/Upload/' + filename;
+        var img = $("<img />").attr('src', '/Content/Images/Upload/' + filename);
+        $('#gbr').empty();
+        $("#gbr").append(img);
+    }
+
+</script>
+
+<style type="text/css">
+    #register {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: gainsboro;
+    }
+</style>

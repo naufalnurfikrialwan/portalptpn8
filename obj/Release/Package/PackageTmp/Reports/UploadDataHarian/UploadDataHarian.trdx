@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report Width="29.2968704975522cm" Culture="id-ID" Name="EvaluasiUploadData" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.EvaluasiUploadData1" SelectCommandType="StoredProcedure" Name="ds" ParameterValues="{&quot;@bln&quot;:&quot;2&quot;,&quot;@thn&quot;:&quot;2017&quot;}">
+      <Parameters>
+        <SqlDataSourceParameter DbType="AnsiString" Name="@bln">
+          <Value>
+            <String>= Parameters.bln.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+        <SqlDataSourceParameter DbType="AnsiString" Name="@thn">
+          <Value>
+            <String>= Parameters.thn.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="0.132291472252043cm" Name="Century">
+      <Style>
+        <Font Name="Gadugi" />
+      </Style>
+    </PageHeaderSection>
+    <DetailSection Height="3.49687463570387cm" Name="detailSection1">
+      <Items>
+        <Table DataSourceName="ds" Width="35.3968708037112cm" Height="1.82916614246488cm" Left="0.0999999495347355cm" Top="1.66770843794362cm" Name="tblDTL_ShippingInstruction" StyleName="Normal.TableNormal">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.21708402909747cm" Height="0.617499975816398cm" Left="0cm" Top="0cm" Value="= Fields.kebun" Name="textBox59" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      <Font Size="7.8pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000008070563cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl01_1=1,'Aset,','')+iif(Fields.tgl01_2=1,'Memorial,','')+iif(Fields.tgl01_3=1,'Produksi,','')+iif(Fields.tgl01_4=1,'RKAP,','')+iif(Fields.tgl01_5=1,'EAP,','')+iif(Fields.tgl01_6=1,'LHKH,','')+iif(Fields.tgl01_7=1,'Kulir,','')+iif(Fields.tgl01_8=1,'Premi,','')+iif(Fields.tgl01_9=1,'PremiPanen,','')+iif(Fields.tgl01_10=1,'SPK,','')+iif(Fields.tgl01_11=1,'Kas,','')+iif(Fields.tgl01_12=1,'TUP.','')&#xD;&#xA;" Format="{0:N0}" Name="textBox64" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      <Font Size="8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000005286197cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl02_1=1,'Aset,','')+iif(Fields.tgl02_2=1,'Memorial,','')+iif(Fields.tgl02_3=1,'Produksi,','')+iif(Fields.tgl02_4=1,'RKAP,','')+iif(Fields.tgl02_5=1,'EAP,','')+iif(Fields.tgl02_6=1,'LHKH,','')+iif(Fields.tgl02_7=1,'Kulir,','')+iif(Fields.tgl02_8=1,'Premi,','')+iif(Fields.tgl02_9=1,'PremiPanen,','')+iif(Fields.tgl02_10=1,'SPK,','')+iif(Fields.tgl02_11=1,'Kas,','')+iif(Fields.tgl02_12=1,'TUP.','')&#xD;&#xA;" Format="{0}" Name="textBox65" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      <Font Size="8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999947938104cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl03_1=1,'Aset,','')+iif(Fields.tgl03_2=1,'Memorial,','')+iif(Fields.tgl03_3=1,'Produksi,','')+iif(Fields.tgl03_4=1,'RKAP,','')+iif(Fields.tgl03_5=1,'EAP,','')+iif(Fields.tgl03_6=1,'LHKH,','')+iif(Fields.tgl03_7=1,'Kulir,','')+iif(Fields.tgl03_8=1,'Premi,','')+iif(Fields.tgl03_9=1,'PremiPanen,','')+iif(Fields.tgl03_10=1,'SPK,','')+iif(Fields.tgl03_11=1,'Kas,','')+iif(Fields.tgl03_12=1,'TUP.','')&#xD;&#xA;" Name="textBox4" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.000000020543cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl04_1=1,'Aset,','')+iif(Fields.tgl04_2=1,'Memorial,','')+iif(Fields.tgl04_3=1,'Produksi,','')+iif(Fields.tgl04_4=1,'RKAP,','')+iif(Fields.tgl04_5=1,'EAP,','')+iif(Fields.tgl04_6=1,'LHKH,','')+iif(Fields.tgl04_7=1,'Kulir,','')+iif(Fields.tgl04_8=1,'Premi,','')+iif(Fields.tgl04_9=1,'PremiPanen,','')+iif(Fields.tgl04_10=1,'SPK,','')+iif(Fields.tgl04_11=1,'Kas,','')+iif(Fields.tgl04_12=1,'TUP.','')&#xD;&#xA;" Name="textBox7" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="6" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999937521678cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl05_1=1,'Aset,','')+iif(Fields.tgl05_2=1,'Memorial,','')+iif(Fields.tgl05_3=1,'Produksi,','')+iif(Fields.tgl05_4=1,'RKAP,','')+iif(Fields.tgl05_5=1,'EAP,','')+iif(Fields.tgl05_6=1,'LHKH,','')+iif(Fields.tgl05_7=1,'Kulir,','')+iif(Fields.tgl05_8=1,'Premi,','')+iif(Fields.tgl05_9=1,'PremiPanen,','')+iif(Fields.tgl05_10=1,'SPK,','')+iif(Fields.tgl05_11=1,'Kas,','')+iif(Fields.tgl05_12=1,'TUP.','')&#xD;&#xA;" Name="textBox10" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="7" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999950617547cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl06_1=1,'Aset,','')+iif(Fields.tgl06_2=1,'Memorial,','')+iif(Fields.tgl06_3=1,'Produksi,','')+iif(Fields.tgl06_4=1,'RKAP,','')+iif(Fields.tgl06_5=1,'EAP,','')+iif(Fields.tgl06_6=1,'LHKH,','')+iif(Fields.tgl06_7=1,'Kulir,','')+iif(Fields.tgl06_8=1,'Premi,','')+iif(Fields.tgl06_9=1,'PremiPanen,','')+iif(Fields.tgl06_10=1,'SPK,','')+iif(Fields.tgl06_11=1,'Kas,','')+iif(Fields.tgl06_12=1,'TUP.','')&#xD;&#xA;" Name="textBox14" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="8" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999968434482cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl07_1=1,'Aset,','')+iif(Fields.tgl07_2=1,'Memorial,','')+iif(Fields.tgl07_3=1,'Produksi,','')+iif(Fields.tgl07_4=1,'RKAP,','')+iif(Fields.tgl07_5=1,'EAP,','')+iif(Fields.tgl07_6=1,'LHKH,','')+iif(Fields.tgl07_7=1,'Kulir,','')+iif(Fields.tgl07_8=1,'Premi,','')+iif(Fields.tgl07_9=1,'PremiPanen,','')+iif(Fields.tgl07_10=1,'SPK,','')+iif(Fields.tgl07_11=1,'Kas,','')+iif(Fields.tgl07_12=1,'TUP.','')&#xD;&#xA;" Name="textBox20" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="9" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.0000000138806cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl08_1=1,'Aset,','')+iif(Fields.tgl08_2=1,'Memorial,','')+iif(Fields.tgl08_3=1,'Produksi,','')+iif(Fields.tgl08_4=1,'RKAP,','')+iif(Fields.tgl08_5=1,'EAP,','')+iif(Fields.tgl08_6=1,'LHKH,','')+iif(Fields.tgl08_7=1,'Kulir,','')+iif(Fields.tgl08_8=1,'Premi,','')+iif(Fields.tgl08_9=1,'PremiPanen,','')+iif(Fields.tgl08_10=1,'SPK,','')+iif(Fields.tgl08_11=1,'Kas,','')+iif(Fields.tgl08_12=1,'TUP.','')&#xD;&#xA;" Name="textBox23" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="10" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000004852783cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl09_1=1,'Aset,','')+iif(Fields.tgl09_2=1,'Memorial,','')+iif(Fields.tgl09_3=1,'Produksi,','')+iif(Fields.tgl09_4=1,'RKAP,','')+iif(Fields.tgl09_5=1,'EAP,','')+iif(Fields.tgl09_6=1,'LHKH,','')+iif(Fields.tgl09_7=1,'Kulir,','')+iif(Fields.tgl09_8=1,'Premi,','')+iif(Fields.tgl09_9=1,'PremiPanen,','')+iif(Fields.tgl09_10=1,'SPK,','')+iif(Fields.tgl09_11=1,'Kas,','')+iif(Fields.tgl09_12=1,'TUP.','')&#xD;&#xA;" Name="textBox28" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="11" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999995074564cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl10_1=1,'Aset,','')+iif(Fields.tgl10_2=1,'Memorial,','')+iif(Fields.tgl10_3=1,'Produksi,','')+iif(Fields.tgl10_4=1,'RKAP,','')+iif(Fields.tgl10_5=1,'EAP,','')+iif(Fields.tgl10_6=1,'LHKH,','')+iif(Fields.tgl10_7=1,'Kulir,','')+iif(Fields.tgl10_8=1,'Premi,','')+iif(Fields.tgl10_9=1,'PremiPanen,','')+iif(Fields.tgl10_10=1,'SPK,','')+iif(Fields.tgl10_11=1,'Kas,','')+iif(Fields.tgl10_12=1,'TUP.','')&#xD;&#xA;" Name="textBox33" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="12" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000002721731cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl11_1=1,'Aset,','')+iif(Fields.tgl11_2=1,'Memorial,','')+iif(Fields.tgl11_3=1,'Produksi,','')+iif(Fields.tgl11_4=1,'RKAP,','')+iif(Fields.tgl11_5=1,'EAP,','')+iif(Fields.tgl11_6=1,'LHKH,','')+iif(Fields.tgl11_7=1,'Kulir,','')+iif(Fields.tgl11_8=1,'Premi,','')+iif(Fields.tgl11_9=1,'PremiPanen,','')+iif(Fields.tgl11_10=1,'SPK,','')+iif(Fields.tgl11_11=1,'Kas,','')+iif(Fields.tgl11_12=1,'TUP.','')&#xD;&#xA;" Name="textBox36" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="13" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000002789692cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl12_1=1,'Aset,','')+iif(Fields.tgl12_2=1,'Memorial,','')+iif(Fields.tgl12_3=1,'Produksi,','')+iif(Fields.tgl12_4=1,'RKAP,','')+iif(Fields.tgl12_5=1,'EAP,','')+iif(Fields.tgl12_6=1,'LHKH,','')+iif(Fields.tgl12_7=1,'Kulir,','')+iif(Fields.tgl12_8=1,'Premi,','')+iif(Fields.tgl12_9=1,'PremiPanen,','')+iif(Fields.tgl12_10=1,'SPK,','')+iif(Fields.tgl12_11=1,'Kas,','')+iif(Fields.tgl12_12=1,'TUP.','')&#xD;&#xA;" Name="textBox39" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="14" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999973971917cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl13_1=1,'Aset,','')+iif(Fields.tgl13_2=1,'Memorial,','')+iif(Fields.tgl13_3=1,'Produksi,','')+iif(Fields.tgl13_4=1,'RKAP,','')+iif(Fields.tgl13_5=1,'EAP,','')+iif(Fields.tgl13_6=1,'LHKH,','')+iif(Fields.tgl13_7=1,'Kulir,','')+iif(Fields.tgl13_8=1,'Premi,','')+iif(Fields.tgl13_9=1,'PremiPanen,','')+iif(Fields.tgl13_10=1,'SPK,','')+iif(Fields.tgl13_11=1,'Kas,','')+iif(Fields.tgl13_12=1,'TUP.','')&#xD;&#xA;" Name="textBox42" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="15" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999995165763cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl14_1=1,'Aset,','')+iif(Fields.tgl14_2=1,'Memorial,','')+iif(Fields.tgl14_3=1,'Produksi,','')+iif(Fields.tgl14_4=1,'RKAP,','')+iif(Fields.tgl14_5=1,'EAP,','')+iif(Fields.tgl14_6=1,'LHKH,','')+iif(Fields.tgl14_7=1,'Kulir,','')+iif(Fields.tgl14_8=1,'Premi,','')+iif(Fields.tgl14_9=1,'PremiPanen,','')+iif(Fields.tgl14_10=1,'SPK,','')+iif(Fields.tgl14_11=1,'Kas,','')+iif(Fields.tgl14_12=1,'TUP.','')&#xD;&#xA;" Name="textBox45" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="16" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999985435915cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl15_1=1,'Aset,','')+iif(Fields.tgl15_2=1,'Memorial,','')+iif(Fields.tgl15_3=1,'Produksi,','')+iif(Fields.tgl15_4=1,'RKAP,','')+iif(Fields.tgl15_5=1,'EAP,','')+iif(Fields.tgl15_6=1,'LHKH,','')+iif(Fields.tgl15_7=1,'Kulir,','')+iif(Fields.tgl15_8=1,'Premi,','')+iif(Fields.tgl15_9=1,'PremiPanen,','')+iif(Fields.tgl15_10=1,'SPK,','')+iif(Fields.tgl15_11=1,'Kas,','')+iif(Fields.tgl15_12=1,'TUP.','')&#xD;&#xA;" Name="textBox49" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="17" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999976802961cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl16_1=1,'Aset,','')+iif(Fields.tgl16_2=1,'Memorial,','')+iif(Fields.tgl16_3=1,'Produksi,','')+iif(Fields.tgl16_4=1,'RKAP,','')+iif(Fields.tgl16_5=1,'EAP,','')+iif(Fields.tgl16_6=1,'LHKH,','')+iif(Fields.tgl16_7=1,'Kulir,','')+iif(Fields.tgl16_8=1,'Premi,','')+iif(Fields.tgl16_9=1,'PremiPanen,','')+iif(Fields.tgl16_10=1,'SPK,','')+iif(Fields.tgl16_11=1,'Kas,','')+iif(Fields.tgl16_12=1,'TUP.','')&#xD;&#xA;" Name="textBox52" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="18" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000003230999cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl17_1=1,'Aset,','')+iif(Fields.tgl17_2=1,'Memorial,','')+iif(Fields.tgl17_3=1,'Produksi,','')+iif(Fields.tgl17_4=1,'RKAP,','')+iif(Fields.tgl17_5=1,'EAP,','')+iif(Fields.tgl17_6=1,'LHKH,','')+iif(Fields.tgl17_7=1,'Kulir,','')+iif(Fields.tgl17_8=1,'Premi,','')+iif(Fields.tgl17_9=1,'PremiPanen,','')+iif(Fields.tgl17_10=1,'SPK,','')+iif(Fields.tgl17_11=1,'Kas,','')+iif(Fields.tgl17_12=1,'TUP.','')&#xD;&#xA;" Name="textBox55" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="19" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999993324566cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl18_1=1,'Aset,','')+iif(Fields.tgl18_2=1,'Memorial,','')+iif(Fields.tgl18_3=1,'Produksi,','')+iif(Fields.tgl18_4=1,'RKAP,','')+iif(Fields.tgl18_5=1,'EAP,','')+iif(Fields.tgl18_6=1,'LHKH,','')+iif(Fields.tgl18_7=1,'Kulir,','')+iif(Fields.tgl18_8=1,'Premi,','')+iif(Fields.tgl18_9=1,'PremiPanen,','')+iif(Fields.tgl18_10=1,'SPK,','')+iif(Fields.tgl18_11=1,'Kas,','')+iif(Fields.tgl18_12=1,'TUP.','')&#xD;&#xA;" Name="textBox58" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="20" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000002478744cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl19_1=1,'Aset,','')+iif(Fields.tgl19_2=1,'Memorial,','')+iif(Fields.tgl19_3=1,'Produksi,','')+iif(Fields.tgl19_4=1,'RKAP,','')+iif(Fields.tgl19_5=1,'EAP,','')+iif(Fields.tgl19_6=1,'LHKH,','')+iif(Fields.tgl19_7=1,'Kulir,','')+iif(Fields.tgl19_8=1,'Premi,','')+iif(Fields.tgl19_9=1,'PremiPanen,','')+iif(Fields.tgl19_10=1,'SPK,','')+iif(Fields.tgl19_11=1,'Kas,','')+iif(Fields.tgl19_12=1,'TUP.','')&#xD;&#xA;" Name="textBox62" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="21" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999980022231cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl20_1=1,'Aset,','')+iif(Fields.tgl20_2=1,'Memorial,','')+iif(Fields.tgl20_3=1,'Produksi,','')+iif(Fields.tgl20_4=1,'RKAP,','')+iif(Fields.tgl20_5=1,'EAP,','')+iif(Fields.tgl20_6=1,'LHKH,','')+iif(Fields.tgl20_7=1,'Kulir,','')+iif(Fields.tgl20_8=1,'Premi,','')+iif(Fields.tgl20_9=1,'PremiPanen,','')+iif(Fields.tgl20_10=1,'SPK,','')+iif(Fields.tgl20_11=1,'Kas,','')+iif(Fields.tgl20_12=1,'TUP.','')&#xD;&#xA;" Name="textBox67" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="22" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999995932328cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl21_1=1,'Aset,','')+iif(Fields.tgl21_2=1,'Memorial,','')+iif(Fields.tgl21_3=1,'Produksi,','')+iif(Fields.tgl21_4=1,'RKAP,','')+iif(Fields.tgl21_5=1,'EAP,','')+iif(Fields.tgl21_6=1,'LHKH,','')+iif(Fields.tgl21_7=1,'Kulir,','')+iif(Fields.tgl21_8=1,'Premi,','')+iif(Fields.tgl21_9=1,'PremiPanen,','')+iif(Fields.tgl21_10=1,'SPK,','')+iif(Fields.tgl21_11=1,'Kas,','')+iif(Fields.tgl21_12=1,'TUP.','')&#xD;&#xA;" Name="textBox70" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="23" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999983091097cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl22_1=1,'Aset,','')+iif(Fields.tgl22_2=1,'Memorial,','')+iif(Fields.tgl22_3=1,'Produksi,','')+iif(Fields.tgl22_4=1,'RKAP,','')+iif(Fields.tgl22_5=1,'EAP,','')+iif(Fields.tgl22_6=1,'LHKH,','')+iif(Fields.tgl22_7=1,'Kulir,','')+iif(Fields.tgl22_8=1,'Premi,','')+iif(Fields.tgl22_9=1,'PremiPanen,','')+iif(Fields.tgl22_10=1,'SPK,','')+iif(Fields.tgl22_11=1,'Kas,','')+iif(Fields.tgl22_12=1,'TUP.','')&#xD;&#xA;" Name="textBox73" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="25" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999991873633cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl24_1=1,'Aset,','')+iif(Fields.tgl24_2=1,'Memorial,','')+iif(Fields.tgl24_3=1,'Produksi,','')+iif(Fields.tgl24_4=1,'RKAP,','')+iif(Fields.tgl24_5=1,'EAP,','')+iif(Fields.tgl24_6=1,'LHKH,','')+iif(Fields.tgl24_7=1,'Kulir,','')+iif(Fields.tgl24_8=1,'Premi,','')+iif(Fields.tgl24_9=1,'PremiPanen,','')+iif(Fields.tgl24_10=1,'SPK,','')+iif(Fields.tgl24_11=1,'Kas,','')+iif(Fields.tgl24_12=1,'TUP.','')&#xD;&#xA;" Name="textBox76" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="24" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999994939283cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl23_1=1,'Aset,','')+iif(Fields.tgl23_2=1,'Memorial,','')+iif(Fields.tgl23_3=1,'Produksi,','')+iif(Fields.tgl23_4=1,'RKAP,','')+iif(Fields.tgl23_5=1,'EAP,','')+iif(Fields.tgl23_6=1,'LHKH,','')+iif(Fields.tgl23_7=1,'Kulir,','')+iif(Fields.tgl23_8=1,'Premi,','')+iif(Fields.tgl23_9=1,'PremiPanen,','')+iif(Fields.tgl23_10=1,'SPK,','')+iif(Fields.tgl23_11=1,'Kas,','')+iif(Fields.tgl23_12=1,'TUP.','')&#xD;&#xA;" Name="textBox79" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="26" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000003201411cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl25_1=1,'Aset,','')+iif(Fields.tgl25_2=1,'Memorial,','')+iif(Fields.tgl25_3=1,'Produksi,','')+iif(Fields.tgl25_4=1,'RKAP,','')+iif(Fields.tgl25_5=1,'EAP,','')+iif(Fields.tgl25_6=1,'LHKH,','')+iif(Fields.tgl25_7=1,'Kulir,','')+iif(Fields.tgl25_8=1,'Premi,','')+iif(Fields.tgl25_9=1,'PremiPanen,','')+iif(Fields.tgl25_10=1,'SPK,','')+iif(Fields.tgl25_11=1,'Kas,','')+iif(Fields.tgl25_12=1,'TUP.','')&#xD;&#xA;" Name="textBox82" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="27" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000000795369cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl26_1=1,'Aset,','')+iif(Fields.tgl26_2=1,'Memorial,','')+iif(Fields.tgl26_3=1,'Produksi,','')+iif(Fields.tgl26_4=1,'RKAP,','')+iif(Fields.tgl26_5=1,'EAP,','')+iif(Fields.tgl26_6=1,'LHKH,','')+iif(Fields.tgl26_7=1,'Kulir,','')+iif(Fields.tgl26_8=1,'Premi,','')+iif(Fields.tgl26_9=1,'PremiPanen,','')+iif(Fields.tgl26_10=1,'SPK,','')+iif(Fields.tgl26_11=1,'Kas,','')+iif(Fields.tgl26_12=1,'TUP.','')&#xD;&#xA;" Name="textBox85" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="28" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="0.999999949123733cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl27_1=1,'Aset,','')+iif(Fields.tgl27_2=1,'Memorial,','')+iif(Fields.tgl27_3=1,'Produksi,','')+iif(Fields.tgl27_4=1,'RKAP,','')+iif(Fields.tgl27_5=1,'EAP,','')+iif(Fields.tgl27_6=1,'LHKH,','')+iif(Fields.tgl27_7=1,'Kulir,','')+iif(Fields.tgl27_8=1,'Premi,','')+iif(Fields.tgl27_9=1,'PremiPanen,','')+iif(Fields.tgl27_10=1,'SPK,','')+iif(Fields.tgl27_11=1,'Kas,','')+iif(Fields.tgl27_12=1,'TUP.','')&#xD;&#xA;" Name="textBox88" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="29" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000000744494cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl28_1=1,'Aset,','')+iif(Fields.tgl28_2=1,'Memorial,','')+iif(Fields.tgl28_3=1,'Produksi,','')+iif(Fields.tgl28_4=1,'RKAP,','')+iif(Fields.tgl28_5=1,'EAP,','')+iif(Fields.tgl28_6=1,'LHKH,','')+iif(Fields.tgl28_7=1,'Kulir,','')+iif(Fields.tgl28_8=1,'Premi,','')+iif(Fields.tgl28_9=1,'PremiPanen,','')+iif(Fields.tgl28_10=1,'SPK,','')+iif(Fields.tgl28_11=1,'Kas,','')+iif(Fields.tgl28_12=1,'TUP.','')&#xD;&#xA;" Name="textBox91" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="30" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.0000000102328cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl29_1=1,'Aset,','')+iif(Fields.tgl29_2=1,'Memorial,','')+iif(Fields.tgl29_3=1,'Produksi,','')+iif(Fields.tgl29_4=1,'RKAP,','')+iif(Fields.tgl29_5=1,'EAP,','')+iif(Fields.tgl29_6=1,'LHKH,','')+iif(Fields.tgl29_7=1,'Kulir,','')+iif(Fields.tgl29_8=1,'Premi,','')+iif(Fields.tgl29_9=1,'PremiPanen,','')+iif(Fields.tgl29_10=1,'SPK,','')+iif(Fields.tgl29_11=1,'Kas,','')+iif(Fields.tgl29_12=1,'TUP.','')&#xD;&#xA;" Name="textBox94" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="31" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.00000006386545cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl30_1=1,'Aset,','')+iif(Fields.tgl30_2=1,'Memorial,','')+iif(Fields.tgl30_3=1,'Produksi,','')+iif(Fields.tgl30_4=1,'RKAP,','')+iif(Fields.tgl30_5=1,'EAP,','')+iif(Fields.tgl30_6=1,'LHKH,','')+iif(Fields.tgl30_7=1,'Kulir,','')+iif(Fields.tgl30_8=1,'Premi,','')+iif(Fields.tgl30_9=1,'PremiPanen,','')+iif(Fields.tgl30_10=1,'SPK,','')+iif(Fields.tgl30_11=1,'Kas,','')+iif(Fields.tgl30_12=1,'TUP.','')&#xD;&#xA;" Name="textBox97" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="32" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.0000000210439cm" Height="0.617499928413135cm" Left="0cm" Top="0cm" Value="= iif(Fields.tgl31_1=1,'Aset,','')+iif(Fields.tgl31_2=1,'Memorial,','')+iif(Fields.tgl31_3=1,'Produksi,','')+iif(Fields.tgl31_4=1,'RKAP,','')+iif(Fields.tgl31_5=1,'EAP,','')+iif(Fields.tgl31_6=1,'LHKH,','')+iif(Fields.tgl31_7=1,'Kulir,','')+iif(Fields.tgl31_8=1,'Premi,','')+iif(Fields.tgl31_9=1,'PremiPanen,','')+iif(Fields.tgl31_10=1,'SPK,','')+iif(Fields.tgl31_11=1,'Kas,','')+iif(Fields.tgl31_12=1,'TUP.','')&#xD;&#xA;" Name="textBox100" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Top">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="False" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.17979182570271cm" Height="0.617500032624371cm" Left="0cm" Top="0cm" Value="= Fields.RowNumber" Name="textBox11" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <Font Size="7.8pt" Bold="True" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="1.17979158273407cm" />
+              <Column Width="3.21708226079761cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="1.00000015290752cm" />
+              <Column Width="1.00000015290752cm" />
+              <Column Width="1.00000015290752cm" />
+              <Column Width="1.00000015290752cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+              <Column Width="0.99999995511209cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.617499928413135cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <Style>
+            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+            <BorderColor Top="228, 108, 10" Bottom="228, 108, 10" Left="228, 108, 10" Right="228, 108, 10" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Name="Gadugi" Size="8pt" />
+          </Style>
+          <RowGroups>
+            <TableGroup Name="detail">
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="group">
+              <ReportItem>
+                <TextBox Width="1.17979175649149cm" Height="1.21166648522799cm" Left="0cm" Top="0cm" Value="No" Name="textBox8" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <Font Name="Tahoma" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="lineNumber">
+              <ReportItem>
+                <TextBox Width="3.2170834354881cm" Height="1.21166648522799cm" Left="0cm" Top="0cm" Value="Kebun" Name="textBox48" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    <Font Name="Tahoma" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="gradeId">
+              <ReportItem>
+                <TextBox Width="30.9999994655883cm" Height="0.645520633240417cm" Left="0cm" Top="0cm" Value="Tanggal" Name="textBox53" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    <Font Name="Tahoma" Size="9pt" Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group7">
+                  <ReportItem>
+                    <TextBox Width="1.00000008070563cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="1" Name="textBox25" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group8">
+                  <ReportItem>
+                    <TextBox Width="1.00000005286197cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="2" Name="textBox26" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group1">
+                  <ReportItem>
+                    <TextBox Width="0.999999947938104cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="3" Name="textBox3" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group3">
+                  <ReportItem>
+                    <TextBox Width="1.000000020543cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="4" Name="textBox6" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group5">
+                  <ReportItem>
+                    <TextBox Width="0.999999937521678cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="5" Name="textBox9" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group9">
+                  <ReportItem>
+                    <TextBox Width="0.999999950617547cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="6" Name="textBox12" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group11">
+                  <ReportItem>
+                    <TextBox Width="0.999999968434482cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="7" Name="textBox19" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group13">
+                  <ReportItem>
+                    <TextBox Width="1.0000000138806cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="8" Name="textBox22" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group15">
+                  <ReportItem>
+                    <TextBox Width="1.00000004852783cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="9" Name="textBox27" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group17">
+                  <ReportItem>
+                    <TextBox Width="0.999999995074564cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="10" Name="textBox32" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group19">
+                  <ReportItem>
+                    <TextBox Width="1.00000002721731cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="11" Name="textBox35" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group21">
+                  <ReportItem>
+                    <TextBox Width="1.00000002789692cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="12" Name="textBox38" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group23">
+                  <ReportItem>
+                    <TextBox Width="0.999999973971917cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="13" Name="textBox41" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group25">
+                  <ReportItem>
+                    <TextBox Width="0.999999995165763cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="14" Name="textBox44" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group27">
+                  <ReportItem>
+                    <TextBox Width="0.999999985435915cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="15" Name="textBox47" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group29">
+                  <ReportItem>
+                    <TextBox Width="0.999999976802961cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="16" Name="textBox51" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group31">
+                  <ReportItem>
+                    <TextBox Width="1.00000003230999cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="17" Name="textBox54" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group33">
+                  <ReportItem>
+                    <TextBox Width="0.999999993324566cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="18" Name="textBox57" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group35">
+                  <ReportItem>
+                    <TextBox Width="1.00000002478744cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="19" Name="textBox61" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group37">
+                  <ReportItem>
+                    <TextBox Width="0.999999980022231cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="20" Name="textBox66" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group39">
+                  <ReportItem>
+                    <TextBox Width="0.999999995932328cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="21" Name="textBox69" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group41">
+                  <ReportItem>
+                    <TextBox Width="0.999999983091097cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="22" Name="textBox72" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group45">
+                  <ReportItem>
+                    <TextBox Width="0.999999994939283cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="23" Name="textBox78" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group43">
+                  <ReportItem>
+                    <TextBox Width="0.999999991873633cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="24" Name="textBox75" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group47">
+                  <ReportItem>
+                    <TextBox Width="1.00000003201411cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="25" Name="textBox81" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group49">
+                  <ReportItem>
+                    <TextBox Width="1.00000000795369cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="26" Name="textBox84" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group51">
+                  <ReportItem>
+                    <TextBox Width="0.999999949123733cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="27" Name="textBox87" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group53">
+                  <ReportItem>
+                    <TextBox Width="1.00000000744494cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="28" Name="textBox90" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group55">
+                  <ReportItem>
+                    <TextBox Width="1.0000000102328cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="29" Name="textBox93" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group57">
+                  <ReportItem>
+                    <TextBox Width="1.00000006386545cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="30" Name="textBox96" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group59">
+                  <ReportItem>
+                    <TextBox Width="1.0000000210439cm" Height="0.566145580811333cm" Left="0cm" Top="0cm" Value="31" Name="textBox99" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <Font Name="Tahoma" Size="9pt" Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+        <TextBox Width="1.5cm" Height="0.396674741996429cm" Left="0.0999999495347355cm" Top="0.767708690269944cm" Value="Bulan" Name="textBox15">
+          <Style>
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="29.2967703744674cm" Height="0.399999439716339cm" Left="0cm" Top="0.367509453405674cm" Value="EVALUASI UPLOAD DATA" Name="textBox1">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="10pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.5cm" Height="0.396674741996429cm" Left="0.0999999495347355cm" Top="1.16458367923067cm" Value="Tahun" Name="textBox29">
+          <Style>
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.39958330988884cm" Height="0.396674741996429cm" Left="1.6874998044471cm" Top="0.767708690269944cm" Value=":" Name="textBox13">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.39958330988884cm" Height="0.396674741996429cm" Left="1.6874998044471cm" Top="1.16458367923067cm" Value=":" Name="textBox17">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="4.50000015139579cm" Height="0.396674742791163cm" Left="2.09999974767368cm" Top="0.767708690269944cm" Value="= Parameters.bln.Value" Name="textBox2">
+          <Style>
+            <Font Name="Tahoma" />
+          </Style>
+        </TextBox>
+        <TextBox Width="4.50000015139579cm" Height="0.399799938207471cm" Left="2.09999974767368cm" Top="1.16770848840889cm" Value="= Parameters.thn.Value" Name="textBox5">
+          <Style>
+            <Font Name="Tahoma" />
+          </Style>
+        </TextBox>
+      </Items>
+    </DetailSection>
+    <PageFooterSection Height="0.132291659712791cm" Name="pageFooterSection1" />
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings PaperKind="Legal" Landscape="False" ContinuousPaper="False">
+    <Margins>
+      <MarginsU Left="2cm" Right="2cm" Top="4.9cm" Bottom="0cm" />
+    </Margins>
+  </PageSettings>
+  <ReportParameters>
+    <ReportParameter Name="thn" Text="2017">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+    <ReportParameter Name="bln" Text="2">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

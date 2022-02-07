@@ -1,0 +1,633 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Dashboard Kelengkapan Dokumen Perjanjian Kerjasama</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                .Items(tabstrip =>
+                {
+                    tabstrip.Add().Text("I. Rekap").Selected(true)
+                    .Content(@<text>
+                        @(Html.Kendo()
+                                .Grid<Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen>(Guid.Empty.ToString())
+                                .Name("grdDetail")
+                                .Columns(g =>
+                                {
+                                            g.Bound(i => i.Kerjasama_DokumenId).Title("Kerjasama_DokumenId").Width(120).Hidden();
+                                            g.Bound(i => i.PIC).Width(70).Title("PIC").HtmlAttributes(new { style = "text-align: left" }).Locked();
+                                            g.Bound(i => i.StatusPerjanjian).Width(80).Title("Status").HtmlAttributes(new { style = "text-align: left" }).Locked();
+                                            g.Bound(i => i.NomorPerjanjian).Width(170).Title("Nomor Perjanjian").HtmlAttributes(new { style = "text-align: left" }).Locked();
+                                            g.Bound(i => i.TanggalPerjanjian).Width(80).Title("Tanggal Perjanjian").HtmlAttributes(new { style = "text-align: left" }).Format("{0:dd/MM/yyyy}").Locked().Hidden();
+                                            g.Bound(i => i.BentukKerjasama).Width(90).Title("Bentuk Kerjasama").HtmlAttributes(new { style = "text-align: left" }).Locked();
+                                            g.Bound(i => i.NamaMitra).Width(120).Title("Nama Mitra").HtmlAttributes(new { style = "text-align: left" }).Locked();
+                                            g.Bound(i => i.Perihal).Width(170).Locked().Title("Perihal").HtmlAttributes(new { style = "text-align: left" }).Locked();
+                                            g.Group(i =>
+                                            {
+                                                i.Title("Kelengkapan Dokumen");
+                                                i.Columns(c =>
+                                                {
+                                                    c.Bound(j => j.Minat).Title("Minat").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Minat,StatusPerjanjian) #");
+                                                    c.Bound(j => j.Tanggapan).Title("Tanggapan").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tanggapan,StatusPerjanjian) #");
+                                                    c.Bound(j => j.Legal).Title("Legal").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Legal,StatusPerjanjian) #");
+                                                    c.Bound(j => j.BASurvei).Title("BA Survei").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(BASurvei,StatusPerjanjian) #");
+                                                    c.Bound(j => j.Peta).Title("Peta").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Peta,StatusPerjanjian) #");
+                                                    c.Bound(j => j.MOM).Title("MOM").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(MOM,StatusPerjanjian) #");
+                                                    c.Bound(j => j.SaranPendapat).Title("Saran Pendapat").Width(120).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(SaranPendapat,StatusPerjanjian) #");
+                                                    c.Bound(j => j.MemoKajian).Title("MemoKajian").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(MemoKajian,StatusPerjanjian) #");
+                                                    c.Bound(j => j.CRSA).Title("CRSA").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(CRSA,StatusPerjanjian,StatusPerjanjian) #");
+                                        //c.Bound(j => j.RisalahRakor).Title("RisalahRakor").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(RisalahRakor,StatusPerjanjian) #");
+                                        c.Bound(j => j.IjinDireksi).Title("IjinDireksi").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(IjinDireksi,StatusPerjanjian) #");
+                                                    c.Bound(j => j.MoU).Title("PKS/MoU").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(MoU,StatusPerjanjian) #");
+                                        //c.Bound(j => j.PKS).Title("PKS").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(PKS,StatusPerjanjian) #");
+                                        c.Bound(j => j.Invoice).Title("Termin Pembayaran").Width(100).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Invoice,StatusPerjanjian) #");
+                                        //c.Bound(j => j.BuktiPembayaran).Title("Bukti Pembayaran").Width(130).HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(BuktiPembayaran,StatusPerjanjian) #");
+                                                });
+                                            });
+                                        })
+                                .ToolBar(toolbar =>
+                                {
+                                            toolbar.Excel();
+                                        })
+                                .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                                .Excel(excel => excel.AllPages(true))
+                                .AutoBind(true)
+                                .Resizable(resizeable => resizeable.Columns(true))
+                                .Scrollable()
+                                .Sortable()
+                                .Groupable()
+                                .Selectable(selectable => selectable.Type(GridSelectionType.Cell))
+                                .Groupable()
+                                .HtmlAttributes(new { style = "Height: 450px" })
+                                .DataSource(o => o
+                                    .Ajax()
+                                    .Group(g => g.Add(gg => gg.StatusPerjanjian))
+                                    .ServerOperation(false)
+                                    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                                )
+                        )
+                    </text>);
+                            tabstrip.Add().Text("II. Rincian Dokumen").Selected(false)
+                            .Content(@<text>
+                                @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen>(Guid.Empty.ToString())
+                                        .Name("grdDetail2")
+                                        .Columns(g =>
+                                        {
+                                                    g.Bound(i => i.Tanggal).Width(100).Title("Tanggal").HtmlAttributes(new { style = "text-align: left; font-weight : 700" }).Format("{0:dd/MM/yyyy}");
+                                                    g.Bound(i => i.Keterangan).Title("Keterangan").Width(300);
+                                                    g.Bound(i => i.NamaFile).Title("File").Width(120).Hidden();
+                                                    g.Command(command =>
+                                                    {
+                                                        command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                    }).Width(120);
+                                                })
+                                        .ToolBar(toolbar =>
+                                        {
+                                                    toolbar.Excel();
+                                                })
+                                        .Excel(excel => excel.AllPages(true))
+                                        .AutoBind(false)
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Selectable()
+                                        .Sortable()
+                                        .Filterable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                                    e.DataBound("grdOnDataBound");
+                                                })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Read(read => read.Action("detailRead", "Report").Data("filterReport2").Type(HttpVerbs.Post))
+
+                                        )
+                                )
+                            </text>);
+                                    tabstrip.Add().Text("III. Perjanjian Dalam Proses (Suspect-Prospect)").Selected(false)
+                                    .Content(@<text>
+                                        @(Html.Kendo()
+                                                .Grid<Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen_Kabag>(Guid.Empty.ToString())
+                                                .Name("grdDetail3")
+                                                .Columns(g =>
+                                                {
+                                                            g.Bound(i => i.PIC).Width(100).Title("PIC").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Mitra).Width(150).Title("Mitra").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.BentukKerjasama).Width(120).Title("Bentuk Kerjasama").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Perihal).Width(150).Title("Perihal").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.ProsentaseProses).Width(120).Title("% Proses").Format("{0:N0}").HtmlAttributes(new { style = "text-align: center; color: blue; font-weight : 700" });
+                                                        })
+                                                .ToolBar(toolbar =>
+                                                {
+                                                            toolbar.Excel();
+                                                        })
+                                                .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                                                .Excel(excel => excel.AllPages(true))
+                                                .AutoBind(true)
+                                                .Resizable(resizeable => resizeable.Columns(true))
+                                                .Scrollable()
+                                                .Sortable()
+                                                .Groupable()
+                                                .Selectable(
+                                                    selectable => selectable
+                                                    .Type(GridSelectionType.Cell)
+                                                )
+                                                .Groupable()
+                                                .HtmlAttributes(new { style = "Height: 450px" })
+                                                .DataSource(o => o
+                                                    .Ajax()
+                                                    .Group(g => g.Add(gg => gg.PIC))
+                                                    .ServerOperation(false)
+                                                    .Read(read => read.Action("detailRead", "Report").Data("filterReport3").Type(HttpVerbs.Post))
+
+                                                )
+                                        )
+                                    </text>);
+                                    tabstrip.Add().Text("IV. Deposit").Selected(false)
+                                    .Content(@<text>
+                                        @(Html.Kendo()
+                                            .Grid<Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen_Deposit>(Guid.Empty.ToString())
+                                            .Name("grdDetail4")
+                                            .Columns(g =>
+                                            {
+                                                g.Bound(i => i.Mitra).Width(150).Title("Nama Mitra").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Bidang).Width(120).Title("Bidang").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Perihal).Width(180).Title("Perihal").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.No_PKS).Width(100).Title("No PKS").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Tanggal_PKS).Width(100).Title("Tanggal PKS").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Lokasi).Width(150).Title("Lokasi").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Tanggal_MulaiKontrak).Width(100).Title("Mulai Kontrak").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Tanggal_AkhirKontrak).Width(100).Title("Berakhir Kontrak").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.No_Invoice).Width(100).Title("No Invoice").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Tanggal_Invoice).Width(100).Title("Tanggal Invoice").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Bound(i => i.Termin_Pembayaran).Width(100).Title("Termin Pembayaran").HtmlAttributes(new { style = "text-align: left" });
+                                                g.Group(i =>
+                                                {
+                                                    i.Title("Rencana Penerimaan Pembayaran");
+                                                    i.Columns(c =>
+                                                    {
+                                                        c.Bound(j => j.Tanggal_RencanaPembayaran).Title("Tanggal").Width(100).Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: right" });
+                                                        c.Bound(j => j.Nominal_RencanaPembayaran).Title("Nominal").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right" });
+                                                    });
+                                                });
+                                                g.Group(i =>
+                                                {
+                                                    i.Title("Realisasi Pembayaran");
+                                                    i.Columns(c =>
+                                                    {
+                                                        c.Bound(j => j.Tanggal_RealisasiPembayaran).Title("Tanggal").Width(100).Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: right" });
+                                                        c.Bound(j => j.Nominal_RealisasiPembayaran).Title("Nominal").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right" });
+                                                    });
+                                                });
+                                                
+                                            })
+                                            .ToolBar(toolbar =>
+                                            {
+                                                toolbar.Excel();
+                                            })
+                                            .Events(e => { e.DataBound("grdDepositOnDataBound"); })
+                                            .Excel(excel => excel.AllPages(true))
+                                            .AutoBind(true)
+                                            .Resizable(resizeable => resizeable.Columns(true))
+                                            .Scrollable()
+                                            .Sortable()
+                                            .Groupable()
+                                            .Selectable(
+                                                selectable => selectable
+                                                .Type(GridSelectionType.Cell)
+                                            )
+                                            .Groupable()
+                                            .HtmlAttributes(new { style = "Height: 450px" })
+                                            .DataSource(o => o
+                                                .Ajax()
+                                                .Group(g => g.Add(gg => gg.No_PKS))
+                                                .ServerOperation(false)
+                                                .Read(read => read.Action("detailRead", "Report").Data("filterReport4").Type(HttpVerbs.Post))
+
+                                            )
+
+                                    )
+                                </text>);
+                                    tabstrip.Add().Text("V. Tagihan").Selected(false)
+                                        .Content(@<text>
+                                                @(Html.Kendo()
+                                                        .Grid<Ptpn8.Kerjasama.Models.Dashboard_Tagihan>(Guid.Empty.ToString())
+                                                        .Name("grdDetail5")
+                                                        .Columns(g =>
+                                                        {
+                                                            g.Bound(i => i.Mitra).Width(150).Title("Nama Mitra").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Bidang).Width(120).Title("Bidang").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Perihal).Width(180).Title("Perihal").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.No_PKS).Width(100).Title("No PKS").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Tanggal_PKS).Width(100).Title("Tanggal PKS").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Lokasi).Width(150).Title("Lokasi").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Tanggal_MulaiKontrak).Width(100).Title("Mulai Kontrak").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Tanggal_AkhirKontrak).Width(100).Title("Berakhir Kontrak").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.No_Invoice).Width(100).Title("No Invoice").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Tanggal_Invoice).Width(100).Title("Tanggal Invoice").Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: left" });
+                                                            g.Bound(i => i.Termin_Pembayaran).Width(100).Title("Termin Pembayaran").HtmlAttributes(new { style = "text-align: left" })
+                                                            .ClientFooterTemplate("Total Unit/Kebun")
+                                                            .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                                                            g.Group(i =>
+                                                            {
+                                                                i.Title("Rencana Penerimaan Pembayaran");
+                                                                i.Columns(c =>
+                                                                {
+                                                                    c.Bound(j => j.Tanggal_RencanaPembayaran).Title("Tanggal").Width(100).Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: right" });
+                                                                    c.Bound(j => j.Nominal_RencanaPembayaran).Title("Nominal").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right" })
+                                                                    .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                    .FooterHtmlAttributes(new { style = "text-align: center; background: silver;text-align: right;" });
+                                                                });
+                                                            });
+                                                            g.Group(i =>
+                                                            {
+                                                                i.Title("Realisasi Pembayaran");
+                                                                i.Columns(c =>
+                                                                {
+                                                                    c.Bound(j => j.Tanggal_RealisasiPembayaran).Title("Tanggal").Width(100).Format("{0:dd-MM-yyyy}").HtmlAttributes(new { style = "text-align: right" });
+                                                                    c.Bound(j => j.Nominal_RealisasiPembayaran).Title("Nominal").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right" })
+                                                                    .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                                    .FooterHtmlAttributes(new { style = "text-align: center; background: silver;text-align: right;" });
+                                                                });
+                                                            });
+                                                        })
+                                                        .ToolBar(toolbar =>
+                                                        {
+                                                            toolbar.Excel();
+                                                        })
+                                                        //.Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                                                        .Excel(excel => excel.AllPages(true))
+                                                        .AutoBind(true)
+                                                        .Resizable(resizeable => resizeable.Columns(true))
+                                                        .Scrollable()
+                                                        .Sortable()
+                                                        .Groupable()
+                                                        .Selectable(
+                                                            selectable => selectable
+                                                            .Type(GridSelectionType.Cell)
+                                                        )
+                                                        .Groupable()
+                                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                                        .DataSource(o => o
+                                                            .Ajax()
+                                                            .Group(g => g.Add(gg => gg.Perihal))
+                                                            .ServerOperation(false)
+                                                            .Read(read => read.Action("detailRead", "Report").Data("filterReport5").Type(HttpVerbs.Post))
+                                                            .Aggregates(ag =>
+                                                            {
+                                                                ag.Add(x => x.Nominal_RencanaPembayaran).Sum();
+                                                                ag.Add(x => x.Nominal_RealisasiPembayaran).Sum();
+                                                            })
+                                                        )
+                                                )
+                                            </text>);
+                                                })
+    )
+</div>
+
+<script>
+    var kerjasama_DokumenId, bagian;
+    var kode, colIdx, pilihan;
+    var UserName = "@HttpContext.Current.User.Identity.Name";
+
+        $(document).ready(function () {
+            document.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
+            }, false);
+            pdf = $("#pdfWindow").kendoWindow({
+                title: "PDF Viewer",
+                modal: true,
+                visible: false,
+                resizable: false,
+                width: 900,
+                height: 550
+            }).data("kendoWindow");
+
+
+            gridStatus = 'belum-ngapa-ngapain';
+        })
+
+        function onButtonClick(e) {
+            e.preventDefault();
+            var grid = this;
+            var row = $(e.currentTarget).closest("tr");
+
+            var data = grid.dataItem(row);
+            var file = data.NamaFile;
+
+            pdf.open().center();
+
+            var options = {
+                pdfOpenParams: {
+                    navpanes: 1,
+                    toolbar: 0,
+                    statusbar: 0,
+                    pagemode: 'none',
+                    pagemode: "none",
+                    page: 1,
+                    zoom: "page-width",
+
+                    enableHandToolOnLoad: true
+                }
+            }
+
+
+            PDFObject.embed("/Files/Kerjasama/" + file, "#testPDFObject", options)
+        }
+
+        function grdOnDataBound(e) {
+
+    }
+
+    function grdDepositOnDataBound(e) {
+        var rows = e.sender.tbody.children();
+        for (var j = 0; j < rows.length; j++) {
+            var row = $(rows[j]);
+            var dataItem = e.sender.dataItem(row);
+
+            var tanggalRealisasiPembayaran = dataItem.Tanggal_RealisasiPembayaran;
+            var nominalRealisasiPembayaran = dataItem.Nominal_RealisasiPembayaran;
+
+            var dateStringReservasi = new Date();
+            dateStringRealisasiPembayaran = tanggalRealisasiPembayaran.getFullYear() + "/" + (tanggalRealisasiPembayaran.getMonth() + 1) + "/" + (tanggalRealisasiPembayaran.getDate());
+            var today = new Date();
+            today = today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + (today.getDate());
+
+            //var tglRealisasiPembayaranPisah = dateStringReservasi.split('/');
+            //var todayPisah = today.split('/');
+            //var objek_tgl = new Date();
+            //var pisahReservasi = objek_tgl.setFullYear(parseInt(tglReservasiPisah[0]), parseInt(tglReservasiPisah[1] - 1), parseInt(tglReservasiPisah[2]));
+            //var pisahToday = objek_tgl.setFullYear(parseInt(todayPisah[0]), parseInt(todayPisah[1] - 1), parseInt(todayPisah[2]));
+            //var jumlahHari = (((((pisahToday - pisahReservasi) / 1000) / 60) / 60) / 24);
+
+
+            if (nominalRealisasiPembayaran != 0) {
+                row.addClass("Deposit_SudahBayar");
+            } else if (dateStringRealisasiPembayaran < today && nominalRealisasiPembayaran == 0) {
+                row.addClass("Deposit_LebihJatuhTempo");
+            } else if (dateStringRealisasiPembayaran >= today && nominalRealisasiPembayaran == 0) {
+                row.addClass("Deposit_BelumJatuhTempo");
+            }
+        }
+    }
+
+        function grdCariOnDataBound(e) {
+        }
+
+        function grdCariOnChange(e) {
+            var selected = $.map(this.select(), function (item) {
+                return $(item).text();
+            });
+
+            e.preventDefault();
+            var grid = this;
+            var row = $(e.currentTarget).closest("tr");
+            //colIdx = $("td", row).index(row);
+            var data = grid.dataItem(row);
+            var x = grid.select();
+            var r = x.closest("tr");
+            var xx = grid.dataItem(r);
+            kerjasama_DokumenId = xx.Kerjasama_DokumenId;
+            kode = selected.toString();
+            if (kode.indexOf("Minat") > -1) { pilihan = "Minat" }
+            else if (kode.indexOf("Tanggapan") > -1) { pilihan = "Tanggapan" }
+            else if (kode.indexOf("Legal") > -1) { pilihan = "Legal" }
+            else if (kode.indexOf("BA Survei") > -1) { pilihan = "BA Survei" }
+            else if (kode.indexOf("MOM") > -1) { pilihan = "MOM" }
+            else if (kode.indexOf("Saran Pendapat") > -1) { pilihan = "Saran Pendapat" }
+            else if (kode.indexOf("Memo Kajian") > -1) { pilihan = "Memo Kajian" }
+            else if (kode.indexOf("Peta") > -1) { pilihan = "Peta" }
+            else if (kode.indexOf("MoU") > -1) { pilihan = "MoU" }
+            else if (kode.indexOf("Risalah Rakor") > -1) { pilihan = "Risalah Rakor" }
+            else if (kode.indexOf("Ijin Direksi") > -1) { pilihan = "Ijin Direksi" }
+            else if (kode.indexOf("CRSA") > -1) { pilihan = "CRSA" }
+            else if (kode.indexOf("PKS") > -1) { pilihan = "PKS" }
+            else if (kode.indexOf("Invoice") > -1) { pilihan = "Invoice" }
+            else if (kode.indexOf("Bukti Pembayaran") > -1) { pilihan = "Bukti Pembayaran" }
+            else pilihan = "";
+
+
+            $("#tabstrip").data("kendoTabStrip").select(1);
+            var grid = $('#grdDetail2').data('kendoGrid');
+            grid.dataSource.read();
+        }
+
+        //fungsi menampilkan rincian PK dan IK
+        function filterReport2(e) {
+            if (pilihan == "Minat") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMinat] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Tanggapan") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianTanggapan] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Legal") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianLegal] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "BA Survei") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianBASurvei] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "MOM") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMOM] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Saran Pendapat") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianSaranPendapat] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Memo Kajian") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMemoKajian] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Peta") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianPeta] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "PKS/MoU") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianMoU] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Risalah Rakor") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianRisalahRakor] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Ijin Direksi") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianIjinDireksi] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "CRSA") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianCRSA] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "PKS") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianPKS] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Invoice") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianInvoice] '" + kerjasama_DokumenId + "'"
+                }
+            }
+            else if (pilihan == "Bukti Pembayaran") {
+                return {
+                    strClassView: 'Ptpn8.Kerjasama.Models.Rincian_KelengkapanDokumen',
+                    scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_RincianBuktiPembayaran] '" + kerjasama_DokumenId + "'"
+                }
+            }
+        }
+
+        //fungsi dashboard
+        function filterReport(e) {
+            return {
+                strClassView: 'Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen',
+                scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_KelengkapanDokumen] '" + UserName + "'"
+            }
+        }
+
+    function filterReport3(e) {
+        return {
+            strClassView: 'Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen_Kabag',
+            scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_KelengkapanDokumenKabag] '" + UserName + "'"
+        }
+    }
+
+    //fungsi dashboard
+    function filterReport4(e) {
+        return {
+            strClassView: 'Ptpn8.Kerjasama.Models.Dashboard_KelengkapanDokumen_Deposit',
+            scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_Deposit] '" + UserName + "'"
+        }
+    }
+
+    function filterReport5(e) {
+        return {
+            strClassView: 'Ptpn8.Kerjasama.Models.Dashboard_Tagihan',
+            scriptSQL: "exec [KerjasamaEF].[dbo].[Kerjasama_Tagihan] '" + UserName + "'"
+        }
+    }
+
+    function WarnaKolom(str, sts) {
+        if (str != null && sts == "Baru") {
+            if (str.indexOf('0') > -1 && str.indexOf('MoU') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: grey;'>" + str + "</div>";
+            else if (str.indexOf('0') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str + "</div>";
+            else
+                return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>";
+        }
+        else if (str != null && (sts == null || sts == 'Perpanjangan')) {
+            if (str.indexOf('0') > -1 && (str.indexOf('CRSA') > -1 || str.indexOf('Risalah Rakor') > -1 || str.indexOf('MoU') > -1))
+                return "<div class='breakWord20' style='color: white; background-color: grey;'>" + str + "</div>";
+            else if (str.indexOf('0') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str + "</div>";
+            else
+                return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>";
+        }
+        else return "<div class='breakWord20' style='color: black'>" + str + "</div>";
+    }
+
+
+
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <script type='text/javascript'>
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+    </script>
+</div>
+
+<style>
+    .tigaBulanDariJatuhTempo {
+        background-color: orange;
+    }
+
+    .jatuhTempo {
+        background-color: lightcoral;
+    }
+
+    .lebihJatuhTempo {
+        background-color: lightcoral;
+    }
+
+    .Deposit_SudahBayar {
+        background-color: limegreen;
+    }
+
+    .Deposit_BelumJatuhTempo {
+        background-color: white;
+    }
+
+    .Deposit_LebihJatuhTempo {
+        background-color: lightcoral;
+    }
+</style>
+
+
+
+
+

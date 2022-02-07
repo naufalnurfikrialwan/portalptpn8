@@ -1,0 +1,1523 @@
+﻿@model Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+
+<script src="~/Scripts/PerjanjianKerjasama/UploadPerjanjianKerjasamaLengkap.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+
+<!--header-->
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                @(Html.Kendo().TextBoxFor(m => m.Kerjasama_DokumenId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.BagianId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }).Value(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId))
+                @(Html.Kendo().TextBoxFor(m => m.NomorInput).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.StatusOtoritas).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.PasswordFile).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.Verifikasi).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserName).Value(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).Email).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))               
+                @(Html.Kendo().TextBoxFor(m => m.NomorPerjanjian).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.JangkaWaktuKerjasama).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.NilaiNominal).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TanggalMulai).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TanggalBerakhir).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.BentukKompensasi).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="50%;" align="center">
+
+                    <tr>
+                        <td width="16%">
+                            <label style="text-align:left">Tahun/Nomor Input</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @(Html.Kendo().NumericTextBoxFor(m => m.TahunBuku).Min(2019).Format("D4")
+                                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                                        .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                            )
+                            -
+                            @(Html.Kendo().DropDownListFor(m => m.NomorInputView)
+                                        .OptionLabel("Pilih No Input")
+                                        .AutoBind(false)
+                                        .DataValueField("NomorInput")
+                                        .DataTextField("NomorInputView")
+                                        .DataSource(o =>
+                                        {
+                                            o.Read(r => r.Action("getNomorInput", "Input").Data("filterNomorInput").Type(HttpVerbs.Post));
+                                        })
+                                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 64%" })
+                                        .SelectedIndex(0)
+                                        .Events(e =>
+                                        {
+                                            e.Change("NomorInputViewOnSelect");
+                                            e.Select("NomorInputViewOnSelect");
+                                            e.DataBound("NomorInputViewOnDataBound");
+                                        })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Tanggal</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().DateTimePickerFor(m => m.TanggalPenandatangananPerjanjian).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 20%" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Status Perjanjian</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().DropDownList()
+                                        .AutoBind(true)
+                                        .Name("StatusPerjanjian")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>()
+                                        {
+                                                        new SelectListItem() {
+                                                            Text = "Baru",
+                                                            Value = "Baru"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Perpanjangan",
+                                                            Value = "Perpanjangan"
+                                                        }
+                                        })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Bentuk Kerjasama</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("BentukKerjasama")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "SEWA",
+                                        Value = "SEWA"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "KSO",
+                                        Value = "KSO"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "KSU",
+                                        Value = "KSU"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PINJAM PAKAI",
+                                        Value = "PINJAM PAKAI"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PMDK",
+                                        Value = "PMDK"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "KONTRAK",
+                                        Value = "KONTRAK"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "MAKLOON",
+                                        Value = "MAKLOON"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "RISET",
+                                        Value = "RISET"
+                                    }
+                                })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">PIC</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.PIC).HtmlAttributes(new { style = "width:81%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Nama Mitra</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.NamaMitra).HtmlAttributes(new { style = "width:81%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                                        <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Bidang</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("Bidang")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "PERTANIAN/PERKEBUNAN",
+                                        Value = "PERTANIAN/PERKEBUNAN"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "AGROWISATA",
+                                        Value = "AGROWISATA"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "OPTIMALISASI LAHAN",
+                                        Value = "OPTIMALISASI LAHAN"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PERTAMBANGAN",
+                                        Value = "PERTAMBANGAN"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PERIKANAN",
+                                        Value = "PERIKANAN"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PROPERTI",
+                                        Value = "PROPERTI"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "ENERGI",
+                                        Value = "ENERGI"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "LAIN-LAIN",
+                                        Value = "LAIN-LAIN"
+                                    }
+                                })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Lokasi</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.LokasiPerjanjian).HtmlAttributes(new { style = "width:81%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Jangka Waktu</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.JangkaWaktu).HtmlAttributes(new { style = "width:81%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Estimasi Benefit</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.EstimasiBenefit).HtmlAttributes(new { style = "width:81%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Perihal</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.Perihal).HtmlAttributes(new { style = "width:81%", @class = "allcaps" }))
+                        </td>
+                    </tr>                  
+                    
+                    <tr>
+                        <td width="16%" class="_nonkey"></td>
+                        <td width="2%"></td>
+                        <td width="50%" align="center">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                                <button type="button" id="btnDeleteHeader" onclick="btnDeleteHeaderOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Hapus Permintaan</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@*detail*@
+<div id="_detail" class="_detail">
+
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                        .Items(tabstrip =>
+                        {
+                            tabstrip.Add().Text("1. Minat").Selected(true)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN MINAT</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_Minat>(Guid.Empty.ToString())
+                                        .Name("grdDetail")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_MinatId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_SuratMinat).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Surat");
+                                            g.Bound(i => i.Perihal).Width(200).Title("Perihal");
+                                            g.Bound(i => i.NomorSurat).Width(100).Title("Nomor Surat");
+                                            g.Bound(i => i.Nama_Penandatangan_SuratMinat).Width(150).Title("Nama Penandatangan").Hidden();
+                                            g.Bound(i => i.NamaFilePDF_Minat).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange");
+                                            e.Edit("grdOnEdit");
+                                            e.DataBound("grdOnBound");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_SuratMinat))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_MinatId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+                                </text>);
+                            tabstrip.Add().Text("2. Tanggapan").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN TANGGAPAN</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_Tanggapan>(Guid.Empty.ToString())
+                                        .Name("grdDetail2")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_TanggapanId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_SuratTanggapan).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Surat");
+                                            g.Bound(i => i.Perihal).Width(200).Title("Perihal");
+                                            g.Bound(i => i.NomorSurat).Width(100).Title("Nomor Surat");
+                                            g.Bound(i => i.Nama_Penandatangan_SuratTanggapan).Width(150).Title("Nama Penandatangan").Hidden();
+                                            g.Bound(i => i.NamaFilePDF_Tanggapan).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData2")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick2")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow2")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData2()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange2");
+                                            e.Edit("grdOnEdit2");
+                                            e.DataBound("grdOnBound2");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_SuratTanggapan))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_TanggapanId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead2").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+                                </text>);
+                            tabstrip.Add().Text("3. Legal").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN LEGAL</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_Legal>(Guid.Empty.ToString())
+                                        .Name("grdDetail3")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_LegalId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_DokumenLegal).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Dokumen").Hidden();
+                                            g.Bound(i => i.Jenis_DokumenLegal).Width(200).Title("Jenis Dokumen");
+                                            g.Bound(i => i.Penerbit_DokumenLegal).Width(150).Title("Penerbit").Hidden();
+                                            g.Bound(i => i.NamaFilePDF_Legal).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData3")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick3")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow3")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData3()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange3");
+                                            e.Edit("grdOnEdit3");
+                                            e.DataBound("grdOnBound3");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_DokumenLegal))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_LegalId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead3").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+                                </text>);
+                            tabstrip.Add().Text("4. BA Survei").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN BERITA ACARA SURVEI</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_BASurvei>(Guid.Empty.ToString())
+                                        .Name("grdDetail4")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_BASurveiId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_BASurvei).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal BA");
+                                            g.Bound(i => i.Perihal).Width(200).Title("Perihal");
+                                            g.Bound(i => i.Nomor_BASurvei).Width(100).Title("Nomor BA");
+                                            g.Bound(i => i.Penandatangan_BASurvei).Width(100).Title("Penandatangan").Hidden();
+                                            g.Bound(i => i.NamaFilePDF_BASurvei).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData4")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick4")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow4")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData4()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange4");
+                                            e.Edit("grdOnEdit4");
+                                            e.DataBound("grdOnBound4");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_BASurvei))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_BASurveiId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead4").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+
+                                </text>);
+                            tabstrip.Add().Text("5. Peta/SHP").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN PETA</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_Peta>(Guid.Empty.ToString())
+                                        .Name("grdDetail8")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_PetaId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.NamaFileSHP_Peta).Width(150);
+                                            g.Bound(i => i.NamaFileSHP_PetaPDF).Width(150);
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("UploadPetaPDF").Text(" Upload Peta PDF/JPG").Click("uploadData81")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("SearchPetaPDF").Text(" Lihat Peta PDF/JPG").Click("onButtonClick81")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });                                              
+                                            }).Width(200).Title("PDF");
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload SHP").Click("uploadData8")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat SHP").Click("onButtonClick8")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow8")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200).Title("SHP");
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData8()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange8");
+                                            e.Edit("grdOnEdit8");
+                                            e.DataBound("grdOnBound8");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.NamaFileSHP_Peta))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_PetaId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead8").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+
+                                </text>);
+                            tabstrip.Add().Text("6. Saran Pendapat").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN SARAN DAN PENDAPAT</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_SaranPendapat>(Guid.Empty.ToString())
+                                        .Name("grdDetail6")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_SaranPendapatId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_SaranPendapat).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Saran & Pendapat");
+                                            g.Bound(i => i.Pembuat_SaranPendapat).Width(150).Title("Pengirim");
+                                            g.Bound(i => i.NamaFilePDF_SaranPendapat).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData6")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick6")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow6")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData6()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange6");
+                                            e.Edit("grdOnEdit6");
+                                            e.DataBound("grdOnBound6");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_SaranPendapat))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_SaranPendapatId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead6").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+
+                                </text>);
+                            tabstrip.Add().Text("7. MoM").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN MINUTES OF MEETING</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_MOM>(Guid.Empty.ToString())
+                                        .Name("grdDetail5")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_MOMId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_MOM).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal MoM");
+                                            g.Bound(i => i.Perihal).Width(200).Title("Perihal");
+                                            g.Bound(i => i.Peserta).Width(150).Title("Peserta").Hidden();
+                                            g.Bound(i => i.NamaFilePDF_MOM).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData5")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick5")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow5")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData5()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange5");
+                                            e.Edit("grdOnEdit5");
+                                            e.DataBound("grdOnBound5");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_MOM))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_MOMId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead5").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+
+                                </text>);
+                            
+                            tabstrip.Add().Text("8. Memo Kajian").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN MEMO KAJIAN</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_MemoKajian>(Guid.Empty.ToString())
+                                        .Name("grdDetail7")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_MemoKajianId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_MemoKajian).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Memo Kajian");
+                                            g.Bound(i => i.Perihal_MemoKajian).Width(150).Title("Perihal");
+                                            g.Bound(i => i.Tujuan_MemoKajian).Width(150).Title("Tujuan Memo");
+                                            g.Bound(i => i.Pengirim_MemoKajian).Width(100).Title("Pengirim Memo Kajian").Hidden();
+                                            g.Bound(i => i.Nomor_MemoKajian).Width(100).Title("Nomor Memo Kajian");
+                                            g.Bound(i => i.NamaFilePDF_MemoKajian).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData7")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick7")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow7")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData7()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange7");
+                                            e.Edit("grdOnEdit7");
+                                            e.DataBound("grdOnBound7");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_MemoKajian))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_MemoKajianId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead7").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+
+                                </text>);
+                            tabstrip.Add().Text("9. CRSA").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN CRSA</p>
+                                    @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_CRSA>(Guid.Empty.ToString())
+                                        .Name("grdDetail12")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_CRSAId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.Tanggal_CRSA).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal CRSA");
+                                            g.Bound(i => i.Perihal_CRSA).Width(200).Title("Perihal");
+                                            g.Bound(i => i.Nomor_CRSA).Width(200).Title("Nomor");
+                                            g.Bound(i => i.NamaFilePDF_CRSA).Width(150).Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData12")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick12")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow12")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData12()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange12");
+                                            e.Edit("grdOnEdit12");
+                                            e.DataBound("grdOnBound12");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_CRSA))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_CRSAId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead12").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+
+                                </text>);
+                            tabstrip.Add().Text("10. Ijin Direksi").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN IJIN DIREKSI</p>
+                                    @(Html.Kendo()
+                                                .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_IjinDireksi>(Guid.Empty.ToString())
+                                                .Name("grdDetail11")
+                                                .Columns(g =>
+                                                {
+                                                    g.Bound(i => i.Kerjasama_Dokumen_IjinDireksiId).Width(50).Hidden();
+                                                    g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                                    g.Bound(i => i.Tanggal_IjinDireksi).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Ijin Direksi");
+                                                    g.Bound(i => i.NomorSurat_Perihal).Width(150).Title("Perihal");
+                                                    g.Bound(i => i.NomorSurat_IjinDireksi).Width(150).Title("No. Surat");
+                                                    g.Bound(i => i.NamaFilePDF_IjinDireksi).Width(150).Hidden();
+                                                    g.Command(command =>
+                                                    {
+                                                        command.Custom("Upload").Text(" Upload File").Click("uploadData11")
+                                                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                        command.Custom("Search").Text(" Lihat File").Click("onButtonClick11")
+                                                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                        command.Custom("Delete").Text("Hapus Baris").Click("openWindow11")
+                                                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                                    }).Width(200);
+                                                })
+                                                .ToolBar(toolbar =>
+                                                {
+                                                    toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                                    "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData11()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                                    "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                                    toolbar.Excel();
+                                                })
+                                                .AutoBind(false)
+                                                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                                .Navigatable()
+                                                .Resizable(resizeable => resizeable.Columns(true))
+                                                .Scrollable()
+                                                .Sortable()
+                                                .Groupable()
+                                                .Events(e =>
+                                                {
+                                                    e.Change("grdOnChange11");
+                                                    e.Edit("grdOnEdit11");
+                                                    e.DataBound("grdOnBound11");
+                                                })
+                                                .HtmlAttributes(new { style = "Height: 450px" })
+                                                .DataSource(o => o
+                                                    .Ajax()
+                                                    .ServerOperation(false)
+                                                    .Sort(s => s.Add(x => x.Tanggal_IjinDireksi))
+                                                    .Model(model =>
+                                                    {
+                                                        model.Id(p => p.Kerjasama_Dokumen_IjinDireksiId);
+                                                    })
+                                                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead11").Type(HttpVerbs.Post))
+                                                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                                )
+                                    )
+
+                                </text>);
+                            tabstrip.Add().Text("11. PKS/MoU").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN PPT RAKOR</p>
+                                        @(Html.Kendo()
+                                        .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_MoU>(Guid.Empty.ToString())
+                                        .Name("grdDetail9")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(i => i.Kerjasama_Dokumen_MoUId).Width(50).Hidden();
+                                            g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                            g.Bound(i => i.NamaFilePDF_MoU).Width(150).Hidden();
+                                            g.Bound(i => i.Tanggal_MoU).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal PKS/MoU");
+                                            g.Bound(i => i.Nomor_MoU).Width(150).Title("No. PKS/MoU");
+                                            g.Bound(i => i.NamaPerusahaan).Width(150).Title("Nama Perusahaan").Hidden();
+                                            g.Command(command =>
+                                            {
+                                                command.Custom("Upload").Text(" Upload File").Click("uploadData9")
+                                                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                command.Custom("Search").Text(" Lihat File").Click("onButtonClick9")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                command.Custom("Delete").Text("Hapus Baris").Click("openWindow9")
+                                                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                            }).Width(200);
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData9()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .AutoBind(false)
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Navigatable()
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange9");
+                                            e.Edit("grdOnEdit9");
+                                            e.DataBound("grdOnBound9");
+                                        })
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.NamaFilePDF_MoU))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.Kerjasama_Dokumen_MoUId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead9").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                        )
+                                    )
+
+                                </text>);                                        
+                            tabstrip.Add().Text("12. Termin Pembayaran").Selected(false)
+                                .Content(@<text>
+                                    <p style="font-weight:700;color:green;text-align:center">DOKUMEN INVOICE</p>
+                                    @(Html.Kendo()
+                                    .Grid<Ptpn8.Kerjasama.Models.ViewKerjasama_Dokumen_Invoice>(Guid.Empty.ToString())
+                                    .Name("grdDetail14")
+                                    .Columns(g =>
+                                    {
+                                        g.Bound(i => i.Kerjasama_Dokumen_InvoiceId).Width(50).Hidden();
+                                        g.Bound(i => i.Kerjasama_DokumenId).Width(50).Hidden();
+                                        g.Group(i => i
+                                            .Title("Invoice")
+                                            .Columns(c =>
+                                            {
+                                                c.Bound(q => q.Tanggal_Invoice).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Invoice");
+                                                c.Bound(q => q.Tanggal_Mulai).Width(150).Title("Tgl. Mulai");
+                                                c.Bound(q => q.Tanggal_Berakhir).Width(150).Title("Tgl. Berakhir");
+                                                c.Bound(q => q.Nomor_Invoice).Width(150).Title("No. Invoice");
+                                                c.Bound(q => q.Termin).Width(100).Title("Termin");
+                                                c.Bound(q => q.Invoice_NilaiKompensasi).Width(90).Title("Kompensasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.Invoice_PPN10).Width(90).Title("PPN 10%").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.Invoice_PBB).Width(90).Title("PPB").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.Invoice_PPH).Width(90).Title("PPH").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.Invoice_GantiRugiTanaman).Width(90).Title("Ganti Rugi Tanaman").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.Invoice_Revenue_ProfitSharing).Width(90).Title("Rev. / Profit Sharing").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.Invoice_Total).Width(90).Title("Jumlah Invoice").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.NamaFilePDF_Invoice).Width(150).Hidden();
+                                                c.Command(command =>
+                                                {
+                                                    command.Custom("Upload").Text(" Upload Invoice").Click("uploadData14")
+                                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                    command.Custom("Search").Text(" Lihat Invoice").Click("onButtonClick14")
+                                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                }).Width(200);
+                                            })
+                                        );
+                                        g.Group(i => i
+                                            .Title("Rencana Penerimaan Pembayaran")
+                                            .Columns(c =>
+                                            {
+                                                c.Bound(q => q.Tanggal_RencanaPembayaran).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal");
+                                                c.Bound(q => q.Nominal_RencanaPembayaran).Width(150).Title("Nominal").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                            })
+                                            );
+                                        g.Group(i => i
+                                            .Title("Bukti Pembayaran")
+                                            .Columns(c =>
+                                            {
+                                                c.Bound(q => q.Tanggal_BuktiBayar).Width(100).Format("{0:dd/MM/yyyy}").Title("Tanggal Bukti Bayar");
+                                                c.Bound(q => q.Nomor_BuktiBayar).Width(150).Title("No. Bukti Bayar");
+                                                c.Bound(q => q.BuktiBayar_NilaiKompensasi).Width(90).Title("Kompensasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.BuktiBayar_PPN10).Width(90).Title("PPN 10%").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.BuktiBayar_PBB).Width(90).Title("PPB").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.BuktiBayar_PPH).Width(90).Title("PPH").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.BuktiBayar_GantiRugiTanaman).Width(90).Title("Ganti Rugi Tanaman").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.BuktiBayar_Revenue_ProfitSharing).Width(90).Title("Rev. / Profit Sharing").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.BuktiBayar_Total).Width(90).Title("Jumlah Dibayar").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;color: blue; font-weight : 700" });
+                                                c.Bound(q => q.NamaFilePDF_BuktiPembayaran).Width(150).Hidden();
+                                                c.Command(command =>
+                                                {
+                                                    command.Custom("Upload2").Text(" Upload Bukti Bayar").Click("uploadData15")
+                                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                    command.Custom("Search2").Text(" Lihat Invoice").Click("onButtonClick15")
+                                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                }).Width(200);
+                                            })
+                                        );
+                                        g.Bound(i => i.Keterangan).Width(150).Title("Keterangan");
+                                        g.Command(command =>
+                                        {
+                                            command.Custom("Delete").Text("Hapus Baris").Click("openWindow14")
+                                                .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                        }).Width(200);
+                                    })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                        "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData14()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                        "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                        toolbar.Excel();
+                                    })
+                                    .AutoBind(false)
+                                    .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                    .Navigatable()
+                                    .Resizable(resizeable => resizeable.Columns(true))
+                                    .Scrollable()
+                                    .Sortable()
+                                    .Groupable()
+                                    .Events(e =>
+                                    {
+                                        e.Change("grdOnChange14");
+                                        e.Edit("grdOnEdit14");
+                                        e.DataBound("grdOnBound14");
+                                    })
+                                    .HtmlAttributes(new { style = "Height: 450px" })
+                                    .DataSource(o => o
+                                        .Ajax()
+                                        .ServerOperation(false)
+                                        .Sort(s => s.Add(x => x.Tanggal_Invoice))
+                                        .Batch(true)
+                                        .Model(model =>
+                                        {
+                                            model.Id(p => p.Kerjasama_Dokumen_InvoiceId);
+                                        })
+                                        .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead14").Type(HttpVerbs.Post))
+                                        .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                        .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                        .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                    )
+                                )
+                    </text>);
+                                    })
+    )
+
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+                    // Each report viewer must have an id - it will be used by the initialization script
+                    // to find the element and initialize the report viewer.
+                    .Id("reportViewer")
+                    // The URL of the service which will serve reports.
+                    // The URL corresponds to the name of the controller class (ReportsController).
+                    // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                    .ServiceUrl(Url.Content("/api/reports/"))
+                    // The URL for custom report vie    wer template. The template can be edited -
+                    // new functionalities can be added and unneeded ones can be removed.
+                    // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                    //
+                    // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                    .ReportSource(new UriReportSource() { Uri = "../Reports/Remise/RemiseKanpus.trdx" })
+                    // Specifies whether the viewer is in interactive or print preview mode.
+                    // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                    // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                    .ViewMode(ViewMode.Interactive)
+                    // Sets the scale mode of the viewer.
+                    // Three modes exist currently:
+                    // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                    // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                    // Specific - Uses the scale to zoom in and out the report.
+                    .ScaleMode(ScaleMode.Specific)
+                    // Zoom in and out the report using the scale
+                    // 1.0 is equal to 100%, i.e. the original size of the report
+                    .Scale(1.0)
+                    // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                    // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                    .PersistSession(false)
+                    // Sets the print mode of the viewer.
+                    .PrintMode(PrintMode.ForcePDFPlugin)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+
+</script>
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    .rowStyle {
+        color: crimson;
+        background-color: darkseagreen;
+        font-weight: 500;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+
+    .breakWord20 {
+        word-break: break-all !important;
+        word-wrap: break-word !important;
+        vertical-align: top;
+    }
+
+    .k-grid-header .k-header {
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+
+    .rowStyleBelumDibuka {
+        color: white;
+        background-color: red;
+        font-weight: 500;
+    }
+
+    .rowStyleSudahDibukaTidakEdit {
+        color: white;
+        background-color: blue;
+        font-weight: 500;
+    }
+
+    .rowStyleSudahDibukaEdit {
+        color: black;
+        background-color: yellow;
+        font-weight: 500;
+    }
+</style>
+
+<div id="uploadFile">
+    
+    @(Html.Kendo().Upload()
+            .Name("files")
+            .Async(a => a
+                .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/Minat"})
+                .AutoUpload(true)
+            )
+            .Events(e => { e.Success("uplOnSuccess");e.Upload("onUpload"); })
+            .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile2">
+    
+    @(Html.Kendo().Upload()
+            .Name("files2")
+            .Async(a => a
+                .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/Tanggapan" })
+                .AutoUpload(true)
+                .SaveField("files")
+            )
+
+            .Events(e => { e.Success("uplOnSuccess2");e.Upload("onUpload2"); })
+            .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile3">
+    
+    @(Html.Kendo().Upload()
+            .Name("files3")
+            .Async(a => a
+                .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/Legal" })
+                .AutoUpload(true)
+                .SaveField("files")
+            )
+            .Events(e => { e.Success("uplOnSuccess3");e.Upload("onUpload3"); })
+            .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile4">
+    
+    @(Html.Kendo().Upload()
+            .Name("files4")
+            .Async(a => a
+                .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/BASurvei" })
+                .AutoUpload(true)
+                .SaveField("files")
+            )
+            .Events(e => { e.Success("uplOnSuccess4");e.Upload("onUpload4"); })
+            .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile5">
+    @(Html.Kendo().Upload()
+        .Name("files5")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/MOM" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess5"); e.Upload("onUpload5"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile6">
+    @(Html.Kendo().Upload()
+        .Name("files6")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/SaranPendapat" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess6"); e.Upload("onUpload6"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile7">
+    @(Html.Kendo().Upload()
+        .Name("files7")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/MemoKajian" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess7"); e.Upload("onUpload7"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile8">
+    @(Html.Kendo().Upload()
+        .Name("files8")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/Peta" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess8"); e.Upload("onUpload8"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile81">
+    @(Html.Kendo().Upload()
+                .Name("files81")
+                .Async(a => a
+                    .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/Peta" })
+                    .AutoUpload(true)
+                    .SaveField("files")
+                )
+                .Events(e => { e.Success("uplOnSuccess81"); e.Upload("onUpload81"); })
+                .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile9">
+    @(Html.Kendo().Upload()
+        .Name("files9")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/MoU" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess9"); e.Upload("onUpload9"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile10">
+    @(Html.Kendo().Upload()
+        .Name("files10")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/RisalahRakor" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess10"); e.Upload("onUpload10"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile11">
+    @(Html.Kendo().Upload()
+        .Name("files11")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/IjinDireksi" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess11"); e.Upload("onUpload11"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile12">
+    @(Html.Kendo().Upload()
+        .Name("files12")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/CRSA" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess12"); e.Upload("onUpload12"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile13">
+    @(Html.Kendo().Upload()
+        .Name("files13")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/PKS" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess13"); e.Upload("onUpload13"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile14">
+    @(Html.Kendo().Upload()
+        .Name("files14")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/Invoice" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess14"); e.Upload("onUpload14"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="uploadFile15">
+    @(Html.Kendo().Upload()
+        .Name("files15")
+        .Async(a => a
+            .Save("SaveFile", "Input", new { fn = "~/Files/Kerjasama/BuktiPembayaran" })
+            .AutoUpload(true)
+            .SaveField("files")
+        )
+        .Events(e => { e.Success("uplOnSuccess15"); e.Upload("onUpload15"); })
+        .Multiple(false)
+    )
+</div>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+

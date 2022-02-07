@@ -1,0 +1,19 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Public Holiday",
+                Value = "Public Holiday"
+            },
+            new SelectListItem() {
+                Text = "Non Public Holiday",
+                Value = "Non Public Holiday"
+            }
+        })
+        .Events(e => { e.Change("ddlPublicHolidayOnChange"); e.Select("ddlPublicHolidayOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

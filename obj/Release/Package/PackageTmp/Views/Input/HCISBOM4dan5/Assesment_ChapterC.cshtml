@@ -1,0 +1,241 @@
+﻿@{
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoalBOM4dan5] where NamaTipeSoal='Tipe C'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="80%">
+    <tr>
+        <td>
+            <div id="_ChapterC" style="display: none;">
+                <div id="ContohChapterC" style="display: none;">
+                    <label style="font-size: xx-large; font-weight: 1000; text-align: center;">CONTOH SOAL Chapter C</label>
+                    <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                    <label id="instruksiC1" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                    <label style="font-size: x-large;">Contoh Soal 1 :</label>
+                    <table class="multiplechoice" width="50%" style="background-color: white;">
+                        <tr>
+                            <td width="10%"></td>
+                            <td>
+                                <img width="50%" src="~/Content/Images/Assesment/BOM4dan5/ContohSoalTipeC_1.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal1_ChapterC_a" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_a" disabled>(a)
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_1a.jpg" />
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal1_ChapterC_b" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_b" disabled>(b)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_1b.jpg" />
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal1_ChapterC_c" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_c" disabled checked="checked">(c)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_1c.jpg" />
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal1_ChapterC_d" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_d" disabled>(d)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_1d.jpg" />
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal1_ChapterC_e" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_e" disabled>(e)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_1e.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><label style="color: blue;">Jawaban soal tersebut adalah (c). Karena apabila kita melihat dari kiri ke kanan bahwa lingkaran hitam tersebut memiliki pola bergerak searah jarum jam, serta lingkaran hitam tersebut juga semakin membesar. Maka gambar selanjutnya adalah gambar yang memiliki lingkaran hitam disamping kanan bawah. Sehingga, jawaban yang tepat adalah (c).</label></td>
+                        </tr>
+                    </table>
+                    <label style="font-size: x-large;">Contoh Soal 2 :</label>
+                    <table class="multiplechoice" style="background-color: white">
+                        <tr>
+                            <td width="10%"></td>
+                            <td>
+                                <img width="50%" src="~/Content/Images/Assesment/BOM4dan5/ContohSoalTipeC_2.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal2_ChapterC_a" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_a" disabled>(a)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_2a.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal2_ChapterC_b" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_b" disabled>(b)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_2b.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal2_ChapterC_c" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_c" disabled checked="checked">(c)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_2c.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal2_ChapterC_d" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_d" disabled>(d)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_2d.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="largerRadio" id="ContohSoal2_ChapterC_e" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_e" disabled>(e)
+
+                            </td>
+                            <td>
+                                <img src="~/Content/Images/Assesment/BOM4dan5/ContohJawabTipeC_2e.jpg" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><label style="color: blue;">Jawaban soal tersebut adalah (c). Karena apabila kita melihat dari kiri ke kanan bahwa polanya adalah setiap berpindah ke kanan sudutnya selalu bertambah 1 sudut, serta motif isinya berpola mulai dari arsiran, gelap dan putih. Maka dari itu sudut yang dihasilkan pada gambar selanjutnya adalah 7 sudut dengan motif arsiran. Sehingga, jawabannya adalah (c).</label></td>
+                        </tr>
+                    </table>
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <button type="button" id="btnMulaiTestChapterC" onclick="btnMulaiTestOnClick('Tipe C')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter C</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="TestChapterC" style="display: none;">
+                    @{
+                        Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIKBOM4dan5.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                        Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoalBOM4dan5.CRUD.GetRecord("Tipe C").TipeSoalId;
+                        int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoalBOM4dan5.CRUD.GetRecord("Tipe C").JumlahPertanyaan;
+                        Ptpn8.Models.ModalManusia.PaketDetailBOM4dan5 paketDetail;
+                        Ptpn8.Models.ModalManusia.PertanyaanBOM4dan5 pertanyaan;
+                        List<Ptpn8.Models.ModalManusia.PertanyaanDetailBOM4dan5> pertanyaanDetail;
+                        List<Ptpn8.Models.ModalManusia.JawabanBOM4dan5> jawaban;
+                        string src1;
+                        string src2;
+                        Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5 mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5)HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name];
+                        if (mdlLoadPerChapter == null)
+                        {
+                            mdlLoadPerChapter = new Ptpn8.Models.ModalManusia.View_LoadSoalBOM4dan5();
+                        }
+                        <div style="border: 3px solid black; padding: 10px;">
+                            <label style="font-size: xx-large; font-weight: 1000; text-align: center;">SOAL Chapter C</label>
+                            <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                            <label id="instruksiE2" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                            <label style="font-size: x-large; margin: 20px 20px 20px 20px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.Anda dapat mengerjakan soal yang menurut anda lebih mudah terlebih dahulu</label>
+                            <label style="font-size: x-large; margin: 20px 20px 20px 20px">Apabila sudah selesai Click <span style="color: red">"Lanjut ke Chapter D"</span></label>
+                        </div>
+                        <div id="E">
+                            @{
+                                mdlLoadPerChapter.JumlahLoadChapterC = 0;
+                            }
+                            @for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                            {
+                                paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetailBOM4dan5.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                                pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaanBOM4dan5.CRUD.GetRecord(tipeSoalId, noUrut);
+                                pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetailBOM4dan5.CRUD.GetRecord(paketDetail.PertanyaanId, paketId, noUrut);
+                                jawaban = Ptpn8.Models.ModalManusia.CRUDJawabanBOM4dan5.CRUD.GetRecord(paketDetail.PertanyaanId, paketId, noUrut);
+
+                                //src1 = "/Content/Images/Assesment/SoalTipeC_" + noUrut.ToString() + ".jpg";
+                                src1 = "/Content/Images/Assesment/BOM4dan5/" + pertanyaanDetail.FirstOrDefault().FileFoto.ToString();
+                                <table class="multiplechoice" style="background-color: white; border-color: gray;" width="50%">
+                                    <tr>
+                                        @foreach (var mp1 in pertanyaanDetail)
+                                        {
+                                            <td width="10%"><label>(@noUrut)</label></td>
+                                            <td width="10%"></td>
+                                            <td><img src="@src1" /></td>
+                                        }
+                                    </tr>
+
+                                    @foreach (var mp2 in jawaban)
+                                    {
+                                        //src2 = "/Content/Images/Assesment/JawabTipeC_" + noUrut.ToString() + Convert.ToChar(96 + mp2.NoUrut) + ".jpg";
+                                        src2 = "/Content/Images/Assesment/BOM4dan5/" + mp2.FileFoto;
+
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <label id="C1_@noUrut" style="display: none;">@mp2.PertanyaanId</label>
+                                                <input class="largerRadio" type="radio" name="C_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('C_@noUrut','@(mp2.NoUrut)')" /><span class="jawaban" onclick="pertanyaanOnClick('C_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut))</span>
+                                            </td>
+                                            <td><img class="jawaban" onclick="pertanyaanOnClick('C_@noUrut','@(mp2.NoUrut - 1)')" src="@src2" /></td>
+                                        </tr>
+                                    }
+                                </table>
+                                mdlLoadPerChapter.JumlahLoadChapterC = mdlLoadPerChapter.JumlahLoadChapterC + 1;
+                                HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name] = mdlLoadPerChapter;
+                            }
+
+                            <table width="100%">
+                                <tr>
+                                    <td align="center">
+                                        <button type="button" id="btnC" onclick="btnOnClick('Tipe C')" class="btn-big" style="font-size: x-large; height: 60px; width: 250px;">Lanjut ke Chapter D</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<style>
+    #ContohChapterC {
+        background-color: white;
+        color: black;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    #TestChapterC {
+        background-color: white;
+        color: black;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+</style>

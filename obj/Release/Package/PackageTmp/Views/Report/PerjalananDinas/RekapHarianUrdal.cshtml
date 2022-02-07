@@ -1,0 +1,107 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rekapitulasi Perjalanan Dinas Kandir</div>
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().TextBox().Name("KodeKebun").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tanggal:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DatePicker().Name("TanggalAwal").Format("yyyy-MM-dd")
+                                            .Value(DateTime.Now)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>sd Tanggal:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DatePicker().Name("TanggalAkhir").Format("yyyy-MM-dd")
+                                            .Value(DateTime.Now)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.PerjalananDinas.Models.RekapKanpus>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NomorAlokasi).Width(100).Title("No Alokasi");
+            g.Bound(i => i.Berangkat).Width(80).Format("{0:dd-MM-yyyy}").Title("Berangkat");
+            g.Bound(i => i.Kembali).Width(80).Format("{0:dd-MM-yyyy}").Title("Kembali");
+            g.Bound(i => i.JenisTujuan).Width(100).Title("Jenis Tujuan");
+            g.Bound(i => i.Tujuan).Width(100).Title("Tujuan");
+            g.Bound(i => i.KendaraanDinas).Width(50).Title("Kendaraan").ClientTemplate("#= KendaraanDinas ? 'Mobil Dinas':'Umum' #");
+            g.Bound(i => i.NamaDriver).Width(100).Title("Sopir");
+            g.Bound(i => i.NopolKendaraan).Width(100).Title("Nopol Kendaraan");
+            g.Bound(i => i.NIK).Width(100).Title("NIK");
+            g.Bound(i => i.Nama).Width(100).Title("Nama");
+            g.Bound(i => i.Jabatan).Width(100).Title("Jabatan");
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Group(g => g.Add(gg => gg.NomorAlokasi))
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+        )
+    )
+
+</div>
+
+<script>
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.PerjalananDinas.Models.RekapKanpus',
+            scriptSQL: "Select C.NomorAlokasi, A.Berangkat, A.Kembali, A.JenisTujuan, (case when (A.Tujuan != '') then A.Tujuan else A.TujuanDalamWilayah end) as Tujuan, A.KendaraanDinas,C.NamaDriver, C.NopolKendaraan, B.NIK, B.Nama, B.Jabatan as Jabatan " +
+                       "from [SPDK_KanpusEF].[dbo].[HDR_PermintaanPerjalananDinasKanpus] as A join [SPDK_KanpusEF].[dbo].[DTL_PermintaanPerjalananDinasKanpus] as B " +
+                       "on A.HDR_PermintaanPerjalananDinasKanpusId = B.HDR_PermintaanPerjalananDinasKanpusId " +
+                       "join [SPDK_KanpusEF].[dbo].[AlokasiUrdal] as C on C.AlokasiUrdalId = B.HDR_PermintaanPerjalananDinasKanpusId " +
+                       "where A.Berangkat>='" + $('#TanggalAwal').val() + "' and A.Berangkat<='" + $('#TanggalAkhir').val() + "' and verkaur=1"
+        }
+    }
+</script>
+

@@ -1,0 +1,153 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+<script src="~/Scripts/SPPOnline/ArusSPP.js"></script>
+
+@*header*@
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.Models.SPPOnline.ArusSPP>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.kdbagian).Width(50).Title("Kode Bagian");
+                    g.Bound(i => i.nospp).Width(50).Title("No SPP");
+                    //g.Bound(i => i.tglspp).Width(50).Title("Tanggal SPP").Format("{0:dd/MM/yyyy}");
+                    //g.Bound(i => i.tglkirim1).Width(50).Title("Tanggal Kirim 1").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamkirim1).Width(50).Title("Jam Kirim 1");
+                    //g.Bound(i => i.tglterima1).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamterima1).Width(50).Hidden();
+                    //g.Bound(i => i.tglkembali1).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamkembali1).Width(50).Hidden();
+                    //g.Bound(i => i.tglver1).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamver1).Width(50).Hidden();
+                    //g.Bound(i => i.tglkembali2).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamkembali2).Width(50).Hidden();
+                    //g.Bound(i => i.tglkirim2).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamkirim2).Width(50).Hidden();
+                    //g.Bound(i => i.tglterima2).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamterima2).Width(50).Hidden();
+                    //g.Bound(i => i.tglkembali3).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.jamkembali3).Width(50).Hidden();
+                    //g.Bound(i => i.tglver2).Width(50).Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.stskirim1).Width(50).Hidden();
+                    g.Bound(i => i.ststerima1).Width(50).Hidden();
+                    g.Bound(i => i.stsver1).Width(50).Hidden();
+                    g.Bound(i => i.stssp).Width(50).Hidden();
+                    g.Bound(i => i.stskirim2).Width(50).Hidden();
+                    g.Bound(i => i.ststerima2).Width(50).Hidden();
+                    g.Bound(i => i.stsbk).Width(50).Hidden();
+                    g.Bound(i => i.stsver2).Width(50).Hidden();
+                    g.Bound(i => i.bel1).Width(50).Title("Bel 1").ClientTemplate("<input id='#=nospp#' type='checkbox' #= bel1 ? checked='checked' :'' # onclick='handleClickBel1(this)'/>");
+                    g.Bound(i => i.bel2).Width(50).Title("Bel 2").ClientTemplate("<input id='#=nospp#' type='checkbox' #= bel2 ? checked='checked' :'' # onclick='handleClickBel2(this)'/>");
+                    g.Bound(i => i.bel3).Width(50).Title("Bel 3").ClientTemplate("<input id='#=nospp#' type='checkbox' #= bel3 ? checked='checked' :'' # onclick='handleClickBel3(this)'/>");
+                    g.Bound(i => i.ket1).Width(50).Title("Ket 1");
+                    g.Bound(i => i.ket2).Width(50).Title("Ket 2");
+                    
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                })
+                .AutoBind(true)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .HtmlAttributes(new { style = "Height: 500px" })
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+                    e.DataBinding("grdOnDataBinding");
+                })
+                .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(j => j.Add(i => i.nospp))
+            .Model(model =>
+            {
+                model.Id(p => p.nospp);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            )
+
+    )
+</div>
+<script>
+function handleClickBel1(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.bel1 = true;
+        }
+        else {
+            model.bel1 = false;
+        }
+            
+        model.dirty = true;
+    }
+
+function handleClickPermintaanBel2(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.bel2 = true;
+        }
+        else {
+            model.bel2 = false;
+        }
+            
+        model.dirty = true;
+    }
+
+function handleClickPermintaanBel3(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.bel3 = true;
+        }
+        else {
+            model.bel3 = false;
+        }
+            
+        model.dirty = true;
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

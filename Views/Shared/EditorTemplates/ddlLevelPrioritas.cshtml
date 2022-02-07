@@ -1,0 +1,23 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "A (High)",
+                Value = "A (High)"
+            },
+            new SelectListItem() {
+                Text = "B (Medium)",
+                Value = "B (Medium)"
+            },
+            new SelectListItem() {
+                Text = "C (Low)",
+                Value = "C (Low)"
+            }
+        })
+        .Events(e => { e.Change("ddlLevelPrioritasOnChange"); e.Select("ddlLevelPrioritasOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

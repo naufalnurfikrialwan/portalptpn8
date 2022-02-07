@@ -1,0 +1,216 @@
+﻿@model Ptpn8.Models.View_CV.View_KeteranganPerorangan
+<script src="~/Scripts/CV/CV_Summary.js"></script>
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div class="_headersawit">
+
+    <table width="50%;" align="center">
+        <tr>
+            <td width="100%;">
+                <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%;" align="center" style="font-size: small;">
+        <tr>
+            <td width="5%"><label style="text-align: right; font-size: 12px;">NIK:</label></td>
+            <td width="20%">
+                <label id="NIK" style="text-align: left; color: green; font-size: 24px;">@HttpContext.Current.User.Identity.Name</label>
+            </td>
+            <td width="30%" align="left"></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Nama Lengkap:</label></td>
+            <td><label id="NamaLengkap" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 18px; color: darkcyan ;">Lengkapi Isian Di Bawah Ini :</label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 11px; color: darkcyan ;">(Menggambarkan misi pribadi dan keahlian atau kompetensi yang dikuasai)</label></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <div class="_headersawit">
+                @(Html.Kendo().TextBox().Name("SummaryId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("KeteranganPeroranganId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+
+
+                <table width="100%;" align="center" style="font-size: small;">
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Kompetensi:</label></td>
+                        <td>@(Html.Kendo().Editor().Name("Kompetensi").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                        <td>Isi dengan Summary Kompetensi (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Value Pribadi:</label></td>
+                        <td>@(Html.Kendo().Editor().Name("ValuePribadi").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                        <td>Isi dengan Summary Kompetensi (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Dream Pribadi:</label></td>
+                        <td>@(Html.Kendo().Editor().Name("DreamPribadi").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                        <td>Isi dengan tempat lahir (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button type="submit" id="btnSimpan" class="k-button" style="background-color: yellow; font-size: 18px; width: 150px; height: 60px; ">Simpan</button>
+
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><label></label></td>
+                        <td></td>
+
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+</div>
+
+<script>
+    var nik, keteranganperoranganid;
+    $(document).ready(function () {
+        CV_KeteranganPeroranganOnSelect();
+    });
+
+    function CV_KeteranganPeroranganOnSelect(e) {
+        GetCV_KeteranganPerorangan().done(function (data) {
+            if (data != 0) {
+                var dta = data[0];
+                keteranganperoranganid=dta.KeteranganPeroranganId;
+                $('#NIK').text(dta.NIK);
+                $('#NamaLengkap').text(dta.NamaLengkap);
+                GetCV_Summary(dta.NIK).done(function (data) {
+                    if (data != 0) {
+                        dta = data[0];
+                        $('#SummaryId').val(dta.SummaryId);
+                        $('#Kompetensi').data('kendoEditor').value(dta.Kompetensi);
+                        $('#ValuePribadi').data('kendoEditor').value(dta.ValuePribadi);
+                        $('#DreamPribadi').data('kendoEditor').value(dta.DreamPribadi);
+                    }
+                });
+            }
+        });
+    }
+
+    function GetCV_KeteranganPerorangan() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_KeteranganPerorangan',
+                scriptSQL: "SELECT top 1 KeteranganPeroranganId,NIK,NamaLengkap FROM [SPDK_KanpusEF].[dbo].[CV_KeteranganPerorangan] " +
+                    "WHERE NIK='" + nik + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetCV_Summary() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_Summary',
+                scriptSQL: "SELECT top 1 SummaryId,Kompetensi,ValuePribadi,DreamPribadi FROM [SPDK_KanpusEF].[dbo].[CV_Summary] " +
+                    "WHERE keteranganperoranganid='" + keteranganperoranganid + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData() {
+        var url = '/Input/ExecSQL';
+        var SummaryId = $('#SummaryId').val();
+        
+        var KeteranganPeroranganId = keteranganperoranganid;
+        var Kompetensi = $('#Kompetensi').val();
+        var ValuePribadi = $('#ValuePribadi').val();
+        var DreamPribadi = $('#DreamPribadi').val();
+
+        if (SummaryId == "") {
+            SummaryId = guid();      
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "insert into [SPDK_KanpusEF].[dbo].[CV_Summary] " +
+                        "values ( " +
+                        "'" + SummaryId + "','" + KeteranganPeroranganId + "','" + Kompetensi + "','" + ValuePribadi + "','" + DreamPribadi + "' )",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+        }
+        else {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec [SPDK_KanpusEF].[dbo].[SimpanCV_Summary] " +
+                        "'" + SummaryId + "','" + KeteranganPeroranganId + "','" + Kompetensi + "','" + ValuePribadi + "','" + DreamPribadi + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+        }
+    }
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+

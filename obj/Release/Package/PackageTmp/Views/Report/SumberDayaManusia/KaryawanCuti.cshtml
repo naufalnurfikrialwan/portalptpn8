@@ -1,0 +1,166 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Report Cuti Karyawan</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4")
+                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" }).Value(DateTime.Now.Year)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                    .AutoBind(true)
+                    .Name("Bulan")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .SelectedIndex(DateTime.Now.Month - 1)
+                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                    .BindTo(new List<SelectListItem>()
+                    {
+                        new SelectListItem() {
+                            Text = "Januari",
+                            Value = "01"
+                        },
+                        new SelectListItem() {
+                            Text = "Februari",
+                            Value = "02"
+                        },
+                        new SelectListItem() {
+                            Text = "Maret",
+                            Value = "03"
+                        },
+                        new SelectListItem() {
+                            Text = "April",
+                            Value = "04"
+                        },
+                        new SelectListItem() {
+                            Text = "Mei",
+                            Value = "05"
+                        },
+                        new SelectListItem() {
+                            Text = "Juni",
+                            Value = "06"
+                        },
+                        new SelectListItem() {
+                            Text = "Juli",
+                            Value = "07"
+                        },
+                        new SelectListItem() {
+                            Text = "Agustus",
+                            Value = "08"
+                        },
+                        new SelectListItem() {
+                            Text = "September",
+                            Value = "09"
+                        },
+                        new SelectListItem() {
+                            Text = "Oktober",
+                            Value = "10"
+                        },
+                        new SelectListItem() {
+                            Text = "Nopember",
+                            Value = "11"
+                        },
+                        new SelectListItem() {
+                            Text = "Desember",
+                            Value = "12"
+                        }
+                        })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.SumberDayaManusia.Models.KaryawanCuti>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.kodeunit).Width(100).Title("Kode Unit");
+            g.Bound(i => i.NamaKebun).Width(100).Title("Nama Kebun");
+            g.Bound(i => i.register).Width(200).Title("Register");
+            g.Bound(i => i.nama).Width(200).Title("Nama Karyawan");
+            g.Group(i => i
+                .Title("Jenis Cuti")
+                .Columns(c =>
+                {
+                    c.Bound(q => q.tahunan).Width(100).Title("Tahunan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: center; font-weight : 500; color: orange" });
+                    c.Bound(q => q.panjang).Width(100).Title("Panjang").Format("{0:N0}").HtmlAttributes(new { style = "text-align: center; font-weight : 500; color: blue" });
+                    c.Bound(q => q.hamil).Width(100).Title("Hamil").Format("{0:N0}").HtmlAttributes(new { style = "text-align: center; font-weight : 500; color: green" });
+                    c.Bound(q => q.mbt).Width(100).Title("MBT").Format("{0:N0}").HtmlAttributes(new { style = "text-align: center; font-weight : 500; color: grey" });
+                    c.Bound(q => q.jumlah).Width(100).Title("Jumlah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: center; font-weight : 700; color: red" });
+                })
+            );
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .DataSource(o => o
+            .Ajax()
+            .Group(g => g.Add(gg => gg.kodeunit))
+            .Sort(g => g.Add(gg => gg.register))
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+        )
+    )
+</div>
+
+<script>
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.KaryawanCuti',
+            scriptSQL: "EXEC SDM_Cuti '" + $('#Bulan').val() + "','" + $('#Tahun').val() + "'"
+        }
+    }
+</script>
+
+
+
+
+
+

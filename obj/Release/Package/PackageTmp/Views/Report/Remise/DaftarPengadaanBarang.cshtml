@@ -1,0 +1,229 @@
+﻿
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Remise/DaftarPengadaanBarang.js"></script>
+@(
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Daftar Pengadaan Barang Bahan</div>
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().TextBox().Name("KebunId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBox().Name("KodeKebun").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Kebun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete()
+                    .Name("NamaKebun")
+                    .MinLength(2)
+                    .Filter("contains")
+                    .Placeholder("Cari Kebun")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 64%", @readonly=true })
+                    .Events(e =>
+                    {   
+                        e.DataBound("NamaKebunOnSelect");
+                        e.Change("NamaKebunOnSelect");
+                    })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Bulan:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DropDownList()
+                    .Name("Bulan")
+                    .AutoBind(true)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .BindTo(new List<SelectListItem>() {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "1"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "2"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "3"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "4"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "5"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "6"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "7"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "8"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "9"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "Nopember",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                    })
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 200px" })
+                    .SelectedIndex(0)
+                )            
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Tahun:</label>
+            </td>
+            <td>
+                @(Html.Kendo()
+                    .NumericTextBox().Name("Tahun").Min(2016).Format("D4").Value(System.DateTime.Now.Year)
+                    .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                    <button type="button" id="btnPrintHeader" onclick="btnPrintHeaderOnClick()" class="k-button" style="color: white; background-color: gray; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Cetak</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Remise.Models.DaftarPengadaanBarangBahan>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.Norek).Title("Rekg").Width(50);
+            g.Bound(i => i.Uraian).Title("Uraian").Width(150);
+            g.Bound(i => i.NoAU53).Title("No Bukti AU-53").Width(150);
+            g.Bound(i => i.Tanggal).Title("Tanggal").Width(100).Format("{0:dd-MM-yyyy}");
+            g.Bound(i => i.JenisBarang).Width(150).Title("Jenis Barang");
+            g.Bound(i => i.Satuan).Title("Satuan").Width(100);
+            g.Bound(i => i.Qty).Title("Qty").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.HargaSatuan).Title("Harga Satuan").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Nilai).Title("Nilai").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.PPN).Title("PPN").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.Jumlah).Title("Jumlah").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+        })
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.Nilai).Sum();
+                ag.Add(x => x.PPN).Sum();
+                ag.Add(x => x.Jumlah).Sum();
+            })
+            .Group(gr=>gr.Add(x=>x.NoAU53))
+        )
+    )
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+            // Each report viewer must have an id - it will be used by the initialization script
+            // to find the element and initialize the report viewer.
+            .Id("reportViewer")
+            // The URL of the service which will serve reports.
+            // The URL corresponds to the name of the controller class (ReportsController).
+            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+            .ServiceUrl(Url.Content("/api/reports/"))
+            // The URL for custom report vie    wer template. The template can be edited -
+            // new functionalities can be added and unneeded ones can be removed.
+            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+            //
+            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+            .ReportSource(new UriReportSource() { Uri = "../Reports/Remise/DaftarPengadaanBarang.trdx" })
+            // Specifies whether the viewer is in interactive or print preview mode.
+            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+            .ViewMode(ViewMode.Interactive)
+            // Sets the scale mode of the viewer.
+            // Three modes exist currently:
+            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+            // Specific - Uses the scale to zoom in and out the report.
+            .ScaleMode(ScaleMode.Specific)
+            // Zoom in and out the report using the scale
+            // 1.0 is equal to 100%, i.e. the original size of the report
+            .Scale(1.0)
+            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+            .PersistSession(false)
+            // Sets the print mode of the viewer.
+            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+
+

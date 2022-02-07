@@ -1,0 +1,172 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Penerimaan TBS Dari Pihak-III</div>
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().TextBox().Name("KodeKebun").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Kebun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete()
+                    .Name("NamaKebun")
+                    .MinLength(2)
+                    .Filter("contains")
+                    .Placeholder("Cari Kebun")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 64%" })
+                    .Events(e =>
+                    {
+                        e.DataBound("NamaKebunOnSelect");
+                        e.Change("NamaKebunOnSelect");
+                    })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Tanggal:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DatePicker().Name("TanggalAwal").Format("dd/MM/yyyy")
+                                            .Value(DateTime.Now)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>sd Tanggal:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DatePicker().Name("TanggalAkhir").Format("dd/MM/yyyy")
+                                            .Value(DateTime.Now)
+
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.UploadDataHarian.Models.timbangan>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.TglTimbang1).Width(80).Format("{0:dd-MM-yyyy}").Title("Tanggal");
+            g.Bound(i => i.NamaPemasok).Width(200).Title("Pemasok").Hidden();
+            g.Bound(i => i.NoTiket).Width(100).Title("No Tiket");
+            g.Bound(i => i.NamaTransporter).Width(100).Title("Pengangkut");
+            g.Bound(i => i.NoPolisi).Width(100).Title("No Polisi");
+            g.Bound(i => i.KgNetto).Title("Kg TBS").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.KgClaim).Title("Kg Claim").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                 .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.KgTotal).Title("Jml Kg TBS").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                 .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.JmlTBS).Title("Jml Tandan").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                 .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.KgBrondol).Title("Kg Brondolan").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                 .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                 .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.KgBrondol).ClientTemplate("").Title("Harga TBS (Rp/Kg)").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.KgBrondol).ClientTemplate("").Title("Harga Brondolan (Rp/Kg)").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.KgBrondol).ClientTemplate("").Title("Nilai (Rp)").Width(100).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+        })
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        //.HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Group(g=>g.Add(x=>x.NamaPemasok))
+            .Aggregates(ag=> {
+                ag.Add(ag1 => ag1.KgNetto).Sum();
+                ag.Add(ag1 => ag1.KgClaim).Sum();
+                ag.Add(ag1 => ag1.KgTotal).Sum();
+                ag.Add(ag1 => ag1.JmlTBS).Sum();
+                ag.Add(ag1 => ag1.KgBrondol).Sum();
+            })
+        )
+    )
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        var h1 = parseInt($(".content-header").css("height"));
+        var h2 = parseInt($(".hdr").css("height")) + parseInt($("._headerteh").css("height"));
+        var h3 = parseInt($(".k-grid-toolbar").css("height"));
+        var h4 = parseInt($(".k-grid-header-wrap").css("height"));
+        var h5 = parseInt($(".__footer").css("height")) + 20;
+        if ((window.screen.height - (h1 + h2 + h3 + h4 + h5)) >= 400)
+            $("#grdDetail").css("height", window.screen.height - (h1 + h2 + h3 + h4 + h5));
+        else
+            $("#grdDetail").css("height", 500);
+    })
+
+    function filterKebun() {
+        return {
+            key: "NamaKebun",
+            value: $("#NamaKebun").val()
+        };
+    }
+
+    function NamaKebunOnSelect(e)
+    {
+        var kebun = this.dataItem(e.item);
+        if (typeof (kebun) != 'undefined') {
+            $('#KodeKebun').val(kebun.kd_kbn);
+            $('#NamaKebun').val(kebun.Nama);
+        }
+    }
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.UploadDataHarian.Models.timbangan',
+            scriptSQL: "set dateformat DMY; select * from [SPDK_KanpusEF].[dbo].[Timbangan] where KodeUnit='" + $('#KodeKebun').val() + "' and TglTimbang1>='" +
+                $('#TanggalAwal').val() + "' and TglTimbang1<='" + $('#TanggalAkhir').val()+ "' and KodeAsal='04' order by TglTimbang1" 
+        }
+
+    }
+</script>

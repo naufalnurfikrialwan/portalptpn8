@@ -1,0 +1,55 @@
+﻿@using Ptpn8.Models
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", new { Area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <table class="k-link" width="100%">
+            <tr>
+                <td><img src="@Url.Content("~/Content/Images/View/"+CRUDApplicationUser.CRUD.Get1Record(User.Identity.Name).Id+".jpg")" alt="" width="100%" /></td>
+                <td>
+                    <table>
+                        <tr><td><strong>@Html.ActionLink(HttpContext.Current.User.Identity.Name, "Index", "Manage", new { Area = "UserManagement" }, htmlAttributes: new { title = "Manage" })</strong></td></tr>
+                        <tr><td><strong>@ViewBag.LokasiKerja</strong></td></tr>
+                        <tr><td><a style="color:red; font-weight: 500;" href="javascript:document.getElementById('logoutForm').submit()">Log Off</a></td></tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    }
+}
+else
+{
+    <div>
+        <button type="button" id="btnLoginRegister" class="loginReg"></button>
+    </div>
+
+    @*<ul class="k-link" style="list-style: none;">
+        <li>@Html.ActionLink("Register", "Register", "Account", new { Area = "UserManagement" }, htmlAttributes: new { id = "registerLink" })</li>
+
+
+        <li>
+            
+            @Html.ActionLink("Login/Register", "Login", "Account", new { Area = "" }, htmlAttributes: new { id = "loginLink" })
+
+        </li>
+
+    </ul>*@
+}
+<script>
+    $(document).ready(function () {
+        $('#btnLoginRegister').click(function (e) {
+            location.href = '@Url.Content("~/Account/Login")';
+        });
+    });
+</script>
+<style>
+    .loginReg {
+        height:50px; 
+        width: 100px; 
+        background-image: url('../../Content/Images/loginregister.jpg'); 
+        border: none;
+        box-shadow: 2px 2px 1px #888888;
+    }
+</style>

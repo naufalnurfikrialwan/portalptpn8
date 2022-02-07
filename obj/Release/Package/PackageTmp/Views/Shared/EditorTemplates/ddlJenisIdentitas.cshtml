@@ -1,0 +1,43 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "KTP",
+                Value = "01"
+            },
+            new SelectListItem() {
+                Text = "Passport",
+                Value = "02"
+            },
+            new SelectListItem() {
+                Text = "SIM A",
+                Value = "03"
+            },
+            new SelectListItem() {
+                Text = "SIM B",
+                Value = "05"
+            },
+             new SelectListItem() {
+                Text = "SIM C",
+                Value = "08"
+            },
+            new SelectListItem() {
+                Text = "Kartu Keluarga",
+                Value = "10"
+            },
+            new SelectListItem() {
+                Text = "KITAS",
+                Value = "12"
+            },
+            new SelectListItem() {
+                Text = "KITAP",
+                Value = "13"
+            }
+        })
+        .Events(e => { e.Change("ddlJenisIdentitasOnChange"); e.Select("ddlJenisIdentitasOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

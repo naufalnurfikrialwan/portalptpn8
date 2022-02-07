@@ -1,0 +1,146 @@
+﻿@using Ptpn8.UserManagement.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Login/Register";
+}
+
+
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "LoginForm" }))
+{
+    @Html.AntiForgeryToken()
+    <table width="100%" height="550px" style="background-image: url('../../Content/Images/kebunteh.png');background-repeat: no-repeat;background-size: contain;width:100%;background-size:cover;">
+        <tr>
+            <td>
+                <table width="25%" height="410px" align="center" style="background:#fbfbfb;border-radius:8px;box-shadow:1px 2px 8px rgba(0,0,0,0.65);margin:6rem auto 8.1rem auto;">
+                    <tr>
+                        <td align="center" style="font-family:Raleway,sans-serif;letter-spacing:4px;padding-bottom:23px;padding-top:13px">
+                            <h2>LOGIN</h2>
+                            <br />
+                            <div class="underline-title"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="100%">
+                            <label style="font-family:Raleway, sans-serif;font-size: 11pt;margin-left:8px">Email</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @(Html.Kendo().TextBoxFor(m => m.Email).HtmlAttributes(new { style = "background: #fbfbfb;border: none;outline: none;padding - top: 14px;width:100%; " }))
+
+                            <div class="form-border"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="100%">
+                            <label style="font-family:Raleway, sans-serif;font-size: 11pt;margin-left:8px">Password</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @(Html.Kendo().TextBoxFor(m => m.Password).HtmlAttributes(new { type = "password", style = "background: #fbfbfb;border: none;outline: none;padding - top: 14px;width:100%; " }))
+                            @(Html.Kendo().TextBoxFor(m => m.KonfirmasiPassword).HtmlAttributes(new { type = "password", style = "width: 50%; display: none;" }))
+                            <div class="form-border"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: #2dbd6e;font-family:Raleway, sans-serif;font-size: 8pt;text-align: left">
+                            @(Html.Kendo().CheckBoxFor(m => m.RememberMe).Checked(false).Label("Remember Me"))
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="center">
+                            <button type="button" id="submit-btn" onclick="btnLoginOnClick()">Login</button>
+                            <input id="submit" type="submit" value="Log in" class="btn btn-default" style="display:none;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: smaller; padding-bottom: 20px;">
+                            @Html.ActionLink("Register as a new user", "Register", "Account", null, new { style = "font-size: small;color: #2dbd6e;text-align:center" })
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </td>
+        </tr>
+
+    </table>
+}
+
+<script>
+
+    function btnLoginOnClick() {
+        var userName = $('#Email').val();
+        var passWord = $("#Password").val();
+        var sts, msg;
+        periksaEmail(userName, passWord).done(function (data) {
+            sts = data[0];
+            msg = data[1];
+            if (sts) {
+                if (msg == "OK")
+                    $('#submit').click();
+                else {
+                    $('#KonfirmasiPassword').val('NULL');
+                    $('#submit').click();
+                }
+            }
+        });
+    }
+
+    function periksaEmail(userName, passWord) {
+        var url = '/Account/periksaEmail';
+        return $.ajax({
+            url: url,
+            //contentType: 'application/json; charset=utf-8',
+            data: {
+                _userName: userName,
+                _passWord: passWord
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+</script>
+
+<style>
+    .areaLoginBaru {
+    }
+
+    .underline-title {
+        background: -webkit-linear-gradient(right, #a6f77b, #2ec06f);
+        height: 2px;
+        margin: -1.1rem auto 0 auto;
+        width: 89px;
+    }
+
+    .form-border {
+        background: -webkit-linear-gradient(right, #a6f77b, #2ec06f);
+        height: 1px;
+        width: 90%;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
+    #submit-btn {
+        background: -webkit-linear-gradient(right, #a6f77b, #2dbd6e);
+        border: none;
+        border-radius: 21px;
+        box-shadow: 0px 1px 8px #24c64f;
+        cursor: pointer;
+        color: white;
+        font-family: "Raleway SemiBold", sans-serif;
+        height: 42.3px;
+        margin: 0 auto;
+        margin-top: 20px;
+        transition: 0.25s;
+        width: 153px;
+    }
+
+        #submit-btn:hover {
+            box-shadow: 0px 1px 18px #24c64f;
+        }
+</style>

@@ -1,0 +1,582 @@
+﻿<div class="k-content">
+    @*<label id='judulgroup1' style='font-size: medium; text-align:center;'></label>*@
+
+    @(Html.Kendo().TabStrip().Name("tabStrip")
+        .Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+        .Items(items =>
+        {
+        if (ViewData["PETA"].ToString() == "TRUE")
+        {
+            items.Add().Text("Peta").Selected(true).Content(
+                @<text>
+                    <div id="map" style="width:100%;height:490px;">
+                        @(Html.Kendo().Map()
+                    .Name("map")
+                    .HtmlAttributes(new { @style = "height: 100%;" })
+                    .Center(-6.878055, 107.596070)
+                    .Zoom(9)
+                    .Layers(layers =>
+                    {
+                        layers.Add()
+                            .Type(MapLayerType.Tile)
+                            .Key("streetmap")
+                            .UrlTemplate("https://#= subdomain #.tile.openstreetmap.org/#= zoom #/#= x #/#= y #.png")
+                            .Subdomains("a", "b", "c")
+                            .Attribution("&copy; <a href='http://osm.org/copyright'>OpenStreetMap contributors</a>");
+                    })
+                    .Layers(layers =>
+                    {
+                        layers.Add()
+                        .Style(style => style.Fill(fill => fill.Opacity(1)))
+                        .Type(MapLayerType.Tile)
+                        .UrlTemplate("https://tile.thunderforest.com/cycle/#= zoom #/#= x #/#= y #.png")
+                        .Key("kontur");
+                    })
+
+                    .Layers(layers =>
+                    {
+                        layers.Add()
+                        .Style(style => style.Fill(fill => fill.Opacity(1)))
+                        .Key("citra")
+                        .Type(MapLayerType.Bing)
+                        .ImagerySet(MapLayersImagerySet.AerialWithLabels)
+                        .Key("AqaPuZWytKRUA8Nm5nqvXHWGL8BDCXvK8onCl2PkC581Zp3T_fYAQBiwIphJbRAK");
+                    })
+
+                    .Layers(layers =>
+                    {
+                        layers.Add()
+                            .Style(style => style.Fill(fill => fill.Opacity(1)))
+                            .Key("Kebun") // Index : 3
+                            .Type(MapLayerType.Shape)
+                            .AutoBind(false)
+                            .DataSource(dataSource => dataSource
+                                .GeoJson()
+                                .Read(read => read.Action("GeoJsonMarker", "ArealDanEvaluasiKinerja").Type(HttpVerbs.Post).Data("KebunGeoJsonData"))
+                            );
+
+                        layers.Add()
+                            .Style(style => style.Fill(fill => fill.Opacity(1)))
+                            .Key("Afdeling") // Index : 4
+                            .AutoBind(false)
+                            .Type(MapLayerType.Shape)
+                            .DataSource(dataSource => dataSource
+                                .GeoJson()
+                                .Read(read => read.Action("GeoJsonMarker", "ArealDanEvaluasiKinerja").Type(HttpVerbs.Post).Data("AfdelingGeoJsonData"))
+                            );
+
+                        layers.Add()
+                            .Style(style => style.Fill(fill => fill.Opacity(1)))
+                            .Key("Blok") // Index : 5
+                            .AutoBind(false)
+                            .Type(MapLayerType.Shape)
+                            .DataSource(dataSource => dataSource
+                                .GeoJson()
+                                .Read(read => read.Action("GeoJsonMarker", "ArealDanEvaluasiKinerja").Type(HttpVerbs.Post).Data("BlokGeoJsonData"))
+                            );
+                    })
+
+                .Events(events => events
+                    .ShapeCreated("onShapeCreated")
+                    .ShapeMouseEnter("onShapeMouseEnter")
+                    .ShapeMouseLeave("onShapeMouseLeave")
+                    .ShapeClick("onShapeClick")
+                    .MarkerClick("onMarkerClick")
+                    .Click("onMapClick"))
+                        )
+                    </div>
+
+                </text>);
+    }
+
+    if (ViewData["GRID"].ToString() == "TRUE")
+    {
+        items.Add().Text("Data").Content(
+            @<text>
+                <div>
+                    <label id="judulgrid1" style="text-align:center; font-size:medium"></label>
+                    <label id="judulgrid2" style="text-align:center; font-size:medium"></label>
+                    <label id=" rid2" style="text-align:center; font-size:small"></label>
+                </div>
+                <div id="data" style="width:100%;height:490px;">
+                    @(Html.Kendo()
+                        .Grid<Ptpn8.ArealDanEvaluasiKinerja.Models.KegiatanView>()
+                        .Name("grdDetail")
+                        .ToolBar(tools => { tools.Excel(); })
+                        .Excel(excel => excel
+                            .FileName("BiayaProduksi.xlsx")
+                            .Filterable(true)
+                        )
+                        .Events(ev=>ev.ExcelExport("excelExport"))
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.LokasiId).Width(50).Hidden();
+                            g.Bound(i => i.KodeLokasi).Width(50).Hidden();
+                            g.Bound(i => i.Nama).Width(150).Title("Lokasi").ClientTemplate("#=WarnaNamaKebun(Nama,Warna)#").Locked(true);
+                            g.Bound(i => i.LuasTM).Width(100).Title("Luas TM (Ha)").Format("{0:n4}")
+                                .HtmlAttributes(new { style = "text-align: right;" })
+                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n4') #")
+                                .ClientFooterTemplate("#= kendo.toString(sum,'n4') #")
+                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                            g.Group(i => i
+                              //.Title("Realisasi Sumber Dana Akselerasi")
+                              .HeaderTemplate("<label style='font-size: medium; text-align:center;'>Produksi Sendiri</label>")
+                              .Columns(h =>
+                              {
+                                  h.Bound(q => q.Produksi).HeaderTemplate("Realisasi (Kg)").Format("{0:n0}")
+                                        .Width(80)
+                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                  h.Bound(q => q.PembandingProduksi)
+                                        .HeaderTemplate("<label id='judulgroup2' style='font-size: medium; text-align:center;'></label>")
+                                        .Format("{0:n0}")
+                                        .Width(80)
+                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                              }));
+
+                            g.Group(i => i
+                              //.Title("Realisasi Sumber Dana Rutin")
+                              .HeaderTemplate("<label style='font-size: medium; text-align:center;'>Realisasi Biaya</label>")
+                              .Columns(h =>
+                              {
+                                  h.Bound(q => q.Jml_Biaya)
+                                        .HeaderTemplate("(Rp000)").Format("{0:n0}")
+                                        .ClientTemplate("#= kendo.toString(Jml_Biaya/1000,'n0') #")
+                                        .Width(80)
+                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                        .ClientGroupFooterTemplate("#= kendo.toString(sum/1000,'n0') #")
+                                        .ClientFooterTemplate("#= kendo.toString(sum/1000,'n0') #")
+                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                  h.Bound(q => q.Jml_Biaya)
+                                        .ClientTemplate("#= kendo.toString(Jml_Biaya/Produksi,'n2') #")
+                                        .HeaderTemplate("(Rp/Kg)").Format("{0:n2}")
+                                        .Width(80)
+                                        .HtmlAttributes(new { style = "text-align: right;" });
+                              }));
+
+                            g.Group(i => i
+                              //.Title("Realisasi Sumber Dana Akselerasi")
+                              .HeaderTemplate("<label id='judulgroup1' style='font-size: medium; text-align:center;'></label>")
+                              .Columns(h =>
+                              {
+                                  h.Bound(q => q.Jml_PembandingBiaya).HeaderTemplate("(Rp000)").Format("{0:n0}")
+                                        .ClientTemplate("#= kendo.toString(Jml_PembandingBiaya/1000,'n0') #")
+                                        .Width(80)
+                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                        .ClientGroupFooterTemplate("#= kendo.toString(sum/1000,'n0') #")
+                                        .ClientFooterTemplate("#= kendo.toString(sum/1000,'n0') #")
+                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                  h.Bound(q => q.A_Biaya)
+                                        .HeaderTemplate("(Rp/Kg)").Format("{0:n2}")
+                                        .ClientTemplate("#= kendo.toString(Jml_PembandingBiaya/PembandingProduksi,'n2') #")
+                                        .Width(80)
+                                        .HtmlAttributes(new { style = "text-align: right;" });
+                              }));
+
+
+                        })
+                        .AutoBind(false)
+                        .Navigatable()
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Groupable()
+                        .HtmlAttributes(new { style = "height: 100%" })
+                    .DataSource(o => o
+                        .Ajax()
+                        .ServerOperation(false)
+                        .Sort(s => s.Add(x => x.NoUrut))
+                        //.Filter(f=>f.Add(x=>x.LuasTM>0))
+                        .Batch(true)
+                        .Model(model =>
+                        {
+                            model.Id(p => p.LokasiId);
+                        })
+                        .Read(read => read.Action("grdRead", "ArealDanEvaluasiKinerja").Data("filterGRD").Type(HttpVerbs.Post))
+                        .Aggregates(ag =>
+                        {
+                            ag.Add(x => x.Produksi).Sum();
+                            ag.Add(x => x.PembandingProduksi).Sum();
+                            ag.Add(x => x.LuasTM).Sum();
+                            ag.Add(x => x.Jml_Biaya).Sum();
+                            ag.Add(x => x.Jml_PembandingBiaya).Sum();
+                            ag.Add(x => x.R_Fisik).Sum();
+                            ag.Add(x => x.R_Biaya).Sum();
+                            ag.Add(x => x.A_Fisik).Sum();
+                            ag.Add(x => x.A_Biaya).Sum();
+                            ag.Add(x => x.R_PembandingFisik).Sum();
+                            ag.Add(x => x.R_PembandingBiaya).Sum();
+                            ag.Add(x => x.A_PembandingFisik).Sum();
+                            ag.Add(x => x.A_PembandingBiaya).Sum();
+                        }))
+                    )
+                </div>
+            </text>);
+            }
+
+            if(ViewData["CHART"].ToString()=="TRUE")
+            {
+                items.Add().Text("Chart").Content(@<text>
+                <div id="chart" style="width:100%;height:490px;">
+                    @(Html.Kendo().Chart<Ptpn8.ArealDanEvaluasiKinerja.Models.KegiatanView>()
+                        .Name("chartDetail")
+                        .ChartArea(ca=>ca.Height(535))
+                        .Title("")
+                        .AutoBind(false)
+                        .Legend(legend => legend
+                            .Position(ChartLegendPosition.Top)
+                        )
+                        .DataSource(ds => ds
+                            .Read(read => read.Action("chartRead", "ArealDanEvaluasiKinerja").Type(HttpVerbs.Post).Data("filterGRD"))
+                        )
+                        .Series(series =>
+                        {
+                            series.Column(model => model.Produksi).Name("Realisasi Produksi Sendiri").Color("red");
+                            series.Column(model => model.PembandingProduksi).Name("RKAP/PKB Produksi Sendiri").Color("blue");
+                        })
+                        .CategoryAxis(axis => axis
+                        .Categories(model => model.Nama)
+                        .Labels(labels => labels.Rotation(-90))
+                        .MajorGridLines(lines => lines.Visible(false)))
+                        .ValueAxis(axis => axis.Numeric()
+                        .Labels(labels => labels.Format("{0:N0}"))
+                        .MajorUnit(100000)
+                        .Line(line => line.Visible(false)))
+                        .Tooltip(tooltip => tooltip
+                        .Visible(true)
+                        .Format("{0:N0}")
+                        )
+                    )
+                </div>
+            </text>);
+            }
+        })
+    )
+</div>
+
+<script>
+    function KebunGeoJsonData() {
+        var _blnAwal = $('#BulanAwal').val();
+        var _blnAkhir = $('#BulanAkhir').val();
+        var _thnAwal = $('#TahunAwal').val();
+        var _thnAkhir = $('#TahunAkhir').val();
+        var parameterMap = $('#grdDetail').data('kendoGrid').dataSource.transport.parameterMap;
+
+        var data = {};
+        $.extend(data,
+            parameterMap({ Id: "" }),
+            parameterMap({ model: dataKebun }),
+            parameterMap({ warna: warnaKebun }),
+            parameterMap({ layer: "Kebun" }),
+            parameterMap({ sumberDana: "SELURUH" }),
+            parameterMap({ unsur: "PRODUKSI" }),
+            parameterMap({ perbandingan: $("input[name=perbandingan]:checked").val() }),
+            parameterMap({ _menuId: menuID })
+            );
+
+        return data;
+    }
+
+    function AfdelingGeoJsonData() {
+        var _blnAwal = $('#BulanAwal').val();
+        var _blnAkhir = $('#BulanAkhir').val();
+        var _thnAwal = $('#TahunAwal').val();
+        var _thnAkhir = $('#TahunAkhir').val();
+        var parameterMap = $('#grdDetail').data('kendoGrid').dataSource.transport.parameterMap;
+
+        var data = {};
+        $.extend(data,
+            parameterMap({ Id: lokasiKebunID }),
+            parameterMap({ model: dataAfdeling }),
+            parameterMap({ warna: warnaAfdeling }),
+            parameterMap({ layer: "Afdeling" }),
+            parameterMap({ sumberDana: "SELURUH" }),
+            parameterMap({ unsur: "PRODUKSI" }),
+            parameterMap({ perbandingan: $("input[name=perbandingan]:checked").val() }),
+            parameterMap({ _menuId: menuID })
+            );
+
+        return data;
+    }
+
+    function BlokGeoJsonData() {
+        var _blnAwal = $('#BulanAwal').val();
+        var _blnAkhir = $('#BulanAkhir').val();
+        var _thnAwal = $('#TahunAwal').val();
+        var _thnAkhir = $('#TahunAkhir').val();
+        var parameterMap = $('#grdDetail').data('kendoGrid').dataSource.transport.parameterMap;
+
+        var data = {};
+        $.extend(data,
+            parameterMap({ Id: lokasiAfdelingID }),
+            parameterMap({ model: dataBlok }),
+            parameterMap({ warna: warnaBlok  }),
+            parameterMap({ layer: "Blok" }),
+            parameterMap({ sumberDana: "SELURUH" }),
+            parameterMap({ unsur: "PRODUKSI" }),
+            parameterMap({ perbandingan: $("input[name=perbandingan]:checked").val() }),
+            parameterMap({ _menuId: menuID })
+            );
+
+        return data;
+    }
+
+    function onShapeCreated(e) {
+        var shape = e.shape;
+        shape.options.fill.set("color", shape.dataItem.properties.COLOR);
+    }
+
+    function onShapeMouseEnter(e) {
+        e.shape.options.set("fill.opacity", 0.7);
+        var oe = e.originalEvent;
+        var x = oe.pageX || oi.clientX;
+        var y = oe.pageY || oi.clientY;
+        var name = e.shape.dataItem.properties.NAMA_KEBUN;
+        $('#NamaLokasi').val(name);
+
+        popup.element.html("<h4>" + name + "</h4>" +
+                    "<table width='200px'>" +
+                    "<tr>" +
+                        "<td width='100%' style='text-align: left; font-weight: 500;'>" + kendo.toString(e.shape.dataItem.properties.VALUE1, 'n0') + "</td>" +
+                    "</tr>" +
+                    "<tr>" +
+                        "<td style='text-align: left; font-weight: 500;'>" + kendo.toString(e.shape.dataItem.properties.VALUE2, 'n0') + "</td>" +
+                    "</tr>" +
+                    "</table>"
+                    );
+            popup.open(x, y);
+    }
+
+    function onShapeMouseLeave(e) {
+        e.shape.options.set("fill.opacity", 1);
+        if (!$(e.originalEvent.relatedTarget).is(".k-popup, .k-animation-container")) {
+            if (!chkPopUp) {
+                popup.close();
+                popup.element.kendoStop(true, true);
+            }
+        }
+    }
+
+    function onShapeClick(e) {
+        var map = $('#map').data('kendoMap');
+        var loc1 = new kendo.dataviz.map.Location(e.shape.dataItem.properties.TOPLEFT_Y, e.shape.dataItem.properties.TOPLEFT_X);
+        var loc2 = new kendo.dataviz.map.Location(e.shape.dataItem.properties.BOTTOMRIGHT_Y, e.shape.dataItem.properties.BOTTOMRIGHT_X);
+        var extent = new kendo.dataviz.map.Extent(loc1, loc2);
+        shapeKlik = true;
+        if (activeLayer == "Kebun") {
+            activeLayer = "Afdeling";
+            warnaKebun = "lightgray";
+            lokasiKebunID = e.shape.dataItem.properties.ID;
+
+            readDataAfdeling().done(function (dta) {
+                dataAfdeling = [];
+                for (var i = 0; i < dta.length; i++) {
+                    dataAfdeling.push(JSON.stringify(dta[i]));
+                }
+
+                map.layers[indexKebun].dataSource.read().done(function () {
+                    var lyr = map.layers[indexAfdeling];
+                    lyr.dataSource.read().done(function () {
+                        $('#grdDetail').data('kendoGrid').dataSource.read().done(function () {
+                            $('#grdLegend').data('kendoGrid').dataSource.read().done(function () {
+                                $('#chartDetail').data('kendoChart').dataSource.read();
+                                map.extent(extent);
+                                mapExtent = extent;
+                                lyr.show();
+                                resetGridData();
+                            });
+                        });
+                    });
+                    
+                });
+            });
+        }
+        else if (activeLayer == "Afdeling") {
+            activeLayer = "Blok";
+            warnaAfdeling = "lightgray";
+            lokasiAfdelingID = e.shape.dataItem.properties.ID;
+            readDataBlok().done(function (dta) {
+                dataBlok = [];
+                for (var i = 0; i < dta.length; i++) {
+                    dataBlok.push(JSON.stringify(dta[i]));
+                }
+
+                map.layers[indexAfdeling].dataSource.read().done(function () {
+                    var lyr = map.layers[indexBlok];
+                    lyr.dataSource.read().done(function () {
+                        $('#grdDetail').data('kendoGrid').dataSource.read().done(function () {
+                            $('#grdLegend').data('kendoGrid').dataSource.read().done(function () {
+                                $('#chartDetail').data('kendoChart').dataSource.read();
+                                map.extent(extent);
+                                mapExtent = extent;
+                                lyr.show();
+                                resetGridData();
+                            });
+                        });
+                    });
+
+                });
+            });
+        } else if (activeLayer == "Blok") {
+            lokasiBlokID = e.shape.dataItem.properties.ID;
+        }
+    }
+
+    function onMarkerClick(e) {
+
+    }
+
+    function onMapClick(e) {
+        var map = $('#map').data('kendoMap');
+        if (activeLayer == "Kebun") {
+        }
+        else if (activeLayer == "Afdeling" && !shapeKlik) {
+            activeLayer = "Kebun";
+            warnaKebun = "";
+            map.layers[indexKebun].dataSource.read().done(function () {
+                $('#grdDetail').data('kendoGrid').dataSource.read().done(function () {
+                    $('#grdLegend').data('kendoGrid').dataSource.read().done(function () {
+                        $('#chartDetail').data('kendoChart').dataSource.read();
+                        map.layers[indexAfdeling].hide();
+                        map.extent(mapExtent);
+                        map.zoom(12);
+                        resetGridData();
+                    });
+                });
+            });
+        }
+        else if (activeLayer == "Blok" && !shapeKlik) {
+            activeLayer = "Afdeling";
+            warnaAfdeling = "";
+            map.layers[indexAfdeling].dataSource.read().done(function () {
+                $('#grdDetail').data('kendoGrid').dataSource.read().done(function () {
+                    $('#grdLegend').data('kendoGrid').dataSource.read().done(function () {
+                        $('#chartDetail').data('kendoChart').dataSource.read();
+                        map.layers[indexBlok].hide();
+                        map.extent(mapExtent);
+                        map.zoom(14);
+                        resetGridData();
+                    });
+                });
+            });
+        }
+        shapeKlik = false;
+    }
+
+    function resetGridData() {
+
+        var map = $('#map').data('kendoMap');
+
+        if (activeLayer == "Kebun") {
+            $('.LayerKebun').css('display', 'block');
+            $('.LayerAfdeling').css('display', 'none');
+            $('.LayerBlok').css('display', 'none');
+        }
+        else if (activeLayer == "Afdeling") {
+            $('.LayerKebun').css('display', 'none');
+            $('.LayerAfdeling').css('display', 'block');
+            $('.LayerBlok').css('display', 'none');
+        }
+        else {
+            $('.LayerKebun').css('display', 'none');
+            $('.LayerAfdeling').css('display', 'none');
+            $('.LayerBlok').css('display', 'block');
+        }
+    }
+
+    function filterGRD(e)
+    {
+        var _blnAwal = $('#BulanAwal').val();
+        var _blnAkhir = $('#BulanAkhir').val();
+        var _thnAwal = $('#TahunAwal').val();
+        var _thnAkhir = $('#TahunAkhir').val();
+        var parameterMap = $('#grdDetail').data('kendoGrid').dataSource.transport.parameterMap;
+
+        if (activeLayer == "Kebun")
+        {
+            var data = {};
+            $.extend(data,
+                parameterMap({ Id: "" }),
+                parameterMap({ model: dataKebun }),
+                parameterMap({ warna: warnaKebun }),
+                parameterMap({ layer: "Kebun" }),
+                parameterMap({ sumberDana: "SELURUH" }),
+                parameterMap({ unsur: "PRODUKSI" }),
+                parameterMap({ perbandingan: $("input[name=perbandingan]:checked").val() }),
+                parameterMap({ _menuId: menuID })
+                );
+            return data;
+        }
+        else if (activeLayer == "Afdeling")
+        {
+            var data = {};
+            $.extend(data,
+                parameterMap({ Id: lokasiKebunID }),
+                parameterMap({ model: dataAfdeling }),
+                parameterMap({ warna: warnaAfdeling }),
+                parameterMap({ layer: "Afdeling" }),
+                parameterMap({ sumberDana: "SELURUH" }),
+                parameterMap({ unsur: "PRODUKSI" }),
+                parameterMap({ perbandingan: $("input[name=perbandingan]:checked").val() }),
+                parameterMap({ _menuId: menuID })
+                );
+            return data;
+        }
+        else
+        {
+            var data = {};
+            $.extend(data,
+                parameterMap({ Id: lokasiAfdelingID }),
+                parameterMap({ model: dataBlok }),
+                parameterMap({ warna: warnaBlok }),
+                parameterMap({ layer: "Blok" }),
+                parameterMap({ sumberDana: "SELURUH" }),
+                parameterMap({ unsur: "PRODUKSI" }),
+                parameterMap({ perbandingan: $("input[name=perbandingan]:checked").val() }),
+                parameterMap({ _menuId: menuID })
+                );
+            return data;
+        }
+    }
+
+    function WarnaNamaKebun(nama,warna)
+    {
+        if(warna.toLowerCase()=="yellow")
+        {
+            return "<div style='color:black; background-color: "+warna+"'>" + nama + "</div>"
+        }
+        else
+        {
+            return "<div style='color:white; background-color: "+warna+"'>" + nama + "</div>"
+        }
+    }
+
+    function excelExport(e)
+    {
+        var sheet = e.workbook.sheets[0];
+
+        sheet.rows[0].cells[0].value = 'Lokasi';
+        sheet.rows[0].cells[1].value = 'Luas TM (Ha)';
+        sheet.rows[1].cells[0].value = 'Realisasi Produksi Sendiri (Kg)';
+        sheet.rows[1].cells[1].value = $("input[name=perbandingan]:checked").val()+ ' Produksi Sendiri (Kg)';
+        sheet.rows[1].cells[2].value = 'Realisasi Biaya (Rp)';
+        sheet.rows[1].cells[3].value = 'Realisasi Biaya per Satuan (Rp/Kg)';
+        sheet.rows[1].cells[4].value = $("input[name=perbandingan]:checked").val() + ' Biaya (Rp)';
+        sheet.rows[1].cells[5].value = $("input[name=perbandingan]:checked").val() + ' Biaya per Satuan (Rp/Kg)';
+
+        for (var rowIndex = 2; rowIndex < sheet.rows.length-1; rowIndex++) {
+            var row = sheet.rows[rowIndex];
+
+            row.cells[5].value = row.cells[2].value!=0?row.cells[4].value / row.cells[2].value:0;
+            row.cells[5].format = '#.##';
+            row.cells[7].value = row.cells[3].value != 0 ? row.cells[6].value / row.cells[3].value : 0;
+            row.cells[7].format = '#.##';
+        }
+
+    }
+</script>

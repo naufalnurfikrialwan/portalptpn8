@@ -1,0 +1,19 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@model BankOrganisasi
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlNamaBank")
+        .AutoBind(true)
+        .OptionLabel("Pilih ..")
+        .DataTextField("NamaBank")
+        .DataValueField("BankOrganisasiId")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetBankOrganisasi", "ddl", new { Area = "Referensi"})).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("ddlNamaBankOnSelect"); e.DataBound("ddlNamaBankOnDataBound"); })
+)
+
+
+
+

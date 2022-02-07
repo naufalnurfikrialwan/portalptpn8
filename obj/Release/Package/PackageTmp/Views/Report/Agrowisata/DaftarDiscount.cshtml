@@ -1,0 +1,70 @@
+﻿@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@*<script src="~/Scripts/Agrowisata/DaftarInap.js"></script>*@
+
+@*header*@
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Cek Diskon Yang Masih Berlaku</div>
+            </td>
+        </tr>
+    </table>
+</div>
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Agrowisata.Models.Discount>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.DiscountId).Hidden();
+            g.Bound(i => i.Keterangan).Title("Keterangan").Width(250);
+            g.Bound(i => i.JenisDiscount).Title("Jenis Discount").Width(100);
+            g.Bound(i => i.KodeDiscount).Title("Kode Discount").Width(100);
+            g.Bound(i => i.JumlahDiscount).Title("Jumlah Discount").Width(100);
+            g.Bound(i => i.Tanggal_Awal_Diskon).Width(70).Title("Tgl Awal").Format("{0:dd/MM/yyyy}");
+            g.Bound(i => i.Tanggal_Akhir_Diskon).Width(70).Title("Tgl Akhir").Format("{0:dd/MM/yyyy}");
+        })
+        .AutoBind(true)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(j => j.Add(i => i.Keterangan))
+            .Model(model =>
+            {
+                model.Id(p => p.DiscountId);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+<script>
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Agrowisata.Models.Discount',
+            scriptSQL: "Select * " +
+                       "from [SPDK_KanpusEF].[dbo].[Discount] where tanggal_awal_diskon < getdate() and tanggal_akhir_diskon > getdate()"
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+

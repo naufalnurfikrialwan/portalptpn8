@@ -1,0 +1,307 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rekap Pendapatan Lain-Lain PT Perkebunan Nusantara VIII</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+            .Items(tabstrip =>
+            {
+                tabstrip.Add().Text("I. Rekap").Selected(true)
+                .Content(@<text>
+                    @(Html.Kendo()
+                        .Grid<Ptpn8.MonitoringPendapatanLain.Models.ReportPembayaranKandir>(Guid.Empty.ToString())
+                        .Name("grdDetail")
+                        .Columns(g =>
+                        {
+
+                            g.Bound(i => i.JenisPendapatan).Width(100).Title("Jenis Pendapatan");
+                            g.Bound(i => i.NamaUnit).Width(180).Title("Unit");
+                            g.Group(i => i
+                            .Title("Perjanjian")
+                            .Columns(c =>
+                            {
+                                c.Bound(q => q.No_perjanjian).Width(150).Title("No Perjanjian");
+                                c.Bound(q => q.NamaMitra).Width(200).Title("Nama Mitra")
+                                .ClientFooterTemplate("JUMLAH")
+                                .ClientGroupFooterTemplate("Jumlah Per Segmen")
+                                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                            })
+                            );
+                            g.Group(i => i
+                            .Title("Pengiriman")
+                            .Columns(c =>
+                            {
+                                c.Bound(q => q.Pengiriman_Kg).Width(100).Title("QTY Dikirim").Format("{0:N2}").HtmlAttributes(new { style = "text-align: right" })
+                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                c.Bound(q => q.BeritaAcara_Kg).Width(100).Title("QTY Berita Acara").Format("{0:N2}").HtmlAttributes(new { style = "text-align: right" })
+                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                c.Bound(q => q.Tagihan_NilaiSebelumPPN).Width(150).Title("Tagihan/Sewa").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right" })
+                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                c.Bound(q => q.Tagihan_PPN).Width(150).Title("PPN").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right" })
+                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                c.Bound(q => q.Tagihan_Jumlah).Width(150).Title("Jumlah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right; font-weight : 700; color :blue" })
+                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver; font-weight : 800; color :blue" });
+                            })
+                            );
+                            g.Group(i => i
+                            .Title("Pembayaran")
+                            .Columns(c =>
+                            {
+                                c.Bound(q => q.Tanggal_Pembayaran).Title("Tgl. Pembayaran").Format("{0:dd/MM/yyyy}").Width(120).Hidden();
+                                c.Bound(q => q.JumlahPembayaran).Width(100).Title("Jml. Pembayaran").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right; font-weight : 700; color :green" })
+                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;font-weight : 800; color :green" });
+                                c.Bound(q => q.SaldoPiutang).Width(100).Title("Saldo Piutang").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right; font-weight : 700; color :red" })
+                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver; font-weight : 800; color :red" });                         
+                            })
+                            );
+                            
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Excel();
+                        })
+                        .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                        .Excel(excel => excel.AllPages(true))
+                        .AutoBind(false)
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Groupable()
+                        .Selectable(
+                            selectable => selectable
+                            .Type(GridSelectionType.Cell)
+                        )
+                        .Groupable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Sort(s => s.Add(x => x.Tanggal_Pembayaran).Descending())
+                            .Group(s => s.Add(x => x.NamaMitra))
+                            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                            .Aggregates(ag =>
+                            {
+                                ag.Add(x => x.Pengiriman_Kg).Sum();
+                                ag.Add(x => x.BeritaAcara_Kg).Sum();
+                                ag.Add(x => x.Tagihan_NilaiSebelumPPN).Sum();
+                                ag.Add(x => x.Tagihan_PPN).Sum();
+                                ag.Add(x => x.Tagihan_Jumlah).Sum();
+                                ag.Add(x => x.JumlahPembayaran).Sum();
+                                ag.Add(x => x.SaldoPiutang).Sum();
+                            })
+                        )
+                    )
+                </text>);
+                    })
+    )
+</div>
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+                    // Each report viewer must have an id - it will be used by the initialization script
+                    // to find the element and initialize the report viewer.
+                    .Id("reportViewer")
+                    // The URL of the service which will serve reports.
+                    // The URL corresponds to the name of the controller class (ReportsController).
+                    // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                    .ServiceUrl(Url.Content("/api/reports/"))
+                    // The URL for custom report vie    wer template. The template can be edited -
+                    // new functionalities can be added and unneeded ones can be removed.
+                    // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                    //
+                    // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                    .ReportSource(new UriReportSource() { Uri = "../Reports/eFakturPajak/FakturPajakSementara.trdx" })
+                    // Specifies whether the viewer is in interactive or print preview mode.
+                    // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                    // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                    .ViewMode(ViewMode.Interactive)
+                    // Sets the scale mode of the viewer.
+                    // Three modes exist currently:
+                    // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                    // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                    // Specific - Uses the scale to zoom in and out the report.
+                    .ScaleMode(ScaleMode.Specific)
+                    // Zoom in and out the report using the scale
+                    // 1.0 is equal to 100%, i.e. the original size of the report
+                    .Scale(1.0)
+                    // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                    // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                    .PersistSession(false)
+                    // Sets the print mode of the viewer.
+                    .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+
+<script>
+    var bagian;
+    var kode, colIdx, pilihan;
+    var UserName = "@HttpContext.Current.User.Identity.Name";
+
+    $(document).ready(function () {
+        
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+        prt = $("#printWindow").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+        prt2 = $("#printWindow2").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function btnProsesOnClick() {
+        $('#grdDetail').data('kendoGrid').dataSource.read();
+    }
+
+    function grdCariOnDataBound(e) {
+    }
+
+    function grdCariOnChange(e) {
+        var selected = $.map(this.select(), function (item) {
+            return $(item).text();
+        });
+
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        //colIdx = $("td", row).index(row);
+        var data = grid.dataItem(row);
+        var x = grid.select();
+        var r = x.closest("tr");
+        var xx = grid.dataItem(r);
+        bagian = xx.NamaBagian;
+        kode = selected.toString();
+
+
+        $("#tabstrip").data("kendoTabStrip").select(1);
+        var grid = $('#grdDetail2').data('kendoGrid');
+        grid.dataSource.read();
+        //filterReport3(kode);
+        var chart = $('#chart').data('kendoChart');
+        chart.dataSource.read();
+    }
+   
+    function btnPrintHeaderOnClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var fakturPajakSementara_HDRId = data.FakturPajakSementara_HDRId;
+
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: { FakturPajakSementara_HDRId: fakturPajakSementara_HDRId }
+        });
+        viewer.refreshReport();
+        prt.open().center();
+    }
+
+    //fungsi dashboard
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.ReportPembayaranKandir',
+            scriptSQL: "exec [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_ReportPembayaranKandir] "
+        }
+    }
+
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <script type='text/javascript'>
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+    </script>
+</div>
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+
+
+

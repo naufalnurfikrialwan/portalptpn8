@@ -1,0 +1,16 @@
+﻿@(Html.Kendo().MultiSelect()
+          .Name("daftarBudidaya")
+          .DataTextField("Nama")
+          .DataValueField("MainBudidayaId")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("GetBudidaya", "ddl", new { Area = "Referensi" });
+              });
+          })
+          .Height(300)
+          .HtmlAttributes(new { style = "width: 400px" })
+//          .ItemTemplate("<span class=\"k-state-default\"><img src=\"" + Url.Content("~/Content/web/Customers/") + "#:data.CustomerID#.jpg\" alt=\"#:data.CustomerID#\" /></span>" +
+//"<span class=\"k-state-default\"><h3>#: data.ContactName #</h3><p>#: data.CompanyName #</p></span>")
+)

@@ -1,0 +1,16 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlJenisKenaikanGolongan")
+        .DataTextField("NAMA")
+        .DataValueField("NAMA")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterJenisKenaikanGolongan").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlJenisKenaikanGolonganOnSelect"); e.Change("ddlJenisKenaikanGolonganOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

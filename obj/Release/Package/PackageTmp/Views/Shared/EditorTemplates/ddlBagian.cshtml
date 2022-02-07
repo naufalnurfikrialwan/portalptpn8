@@ -1,0 +1,73 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "DIREKSI",
+                Value = "DIREKSI"
+            },
+            new SelectListItem() {
+                Text = "SEKRETARIS PERUSAHAAN",
+                Value = "SEKRETARIS PERUSAHAAN"
+            },
+            new SelectListItem() {
+                Text = "SATUAN PENGAWASAN INTERN",
+                Value = "SATUAN PENGAWASAN INTERN"
+            },
+            new SelectListItem() {
+                Text = "TEKNOLOGI INFORMASI DAN MANAJEMEN KINERJA",
+                Value = "TEKNOLOGI INFORMASI DAN MANAJEMEN KINERJA"
+            },
+            new SelectListItem() {
+                Text = "TANAMAN",
+                Value = "TANAMAN"
+            },
+            new SelectListItem() {
+                Text = "TEKNIK DAN PENGOLAHAN",
+                Value = "TEKNIK DAN PENGOLAHAN"
+            },
+            new SelectListItem() {
+                Text = "PEMASARAN",
+                Value = "PEMASARAN"
+            },
+            new SelectListItem() {
+                Text = "SUMBER DAYA MANUSIA",
+                Value = "SUMBER DAYA MANUSIA"
+            },
+            new SelectListItem() {
+                Text = "HUKUM DAN PKBL",
+                Value = "HUKUM DAN PKBL"
+            },
+            new SelectListItem() {
+                Text = "PENGADAAN",
+                Value = "PENGADAAN"
+            },
+            new SelectListItem() {
+                Text = "KEBUN",
+                Value = "KEBUN"
+            },
+            new SelectListItem() {
+                Text = "INDUSTRI HILIR",
+                Value = "INDUSTRI HILIR"
+            },
+            new SelectListItem() {
+                Text = "KEUANGAN",
+                Value = "KEUANGAN"
+            },
+            new SelectListItem() {
+                Text = "AKUNTANSI",
+                Value = "AKUNTANSI"
+            },
+            new SelectListItem() {
+                Text = "OPTIMALISASI ASET",
+                Value = "OPTIMALISASI ASET"
+            }
+        })
+        .Events(e => { e.Change("ddlBagianOnChange"); e.Select("ddlBagianOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

@@ -1,0 +1,61 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Januari",
+                Value = "Januari"
+            },
+            new SelectListItem() {
+                Text = "Februari",
+                Value = "Februari"
+            },
+            new SelectListItem() {
+                Text = "Maret",
+                Value = "Maret"
+            },
+            new SelectListItem() {
+                Text = "April",
+                Value = "April"
+            },
+            new SelectListItem() {
+                Text = "Mei",
+                Value = "Mei"
+            },
+            new SelectListItem() {
+                Text = "Juni",
+                Value = "Juni"
+            },
+            new SelectListItem() {
+                Text = "Juli",
+                Value = "Juli"
+            },
+            new SelectListItem() {
+                Text = "Agustus",
+                Value = "Agustus"
+            },
+            new SelectListItem() {
+                Text = "September",
+                Value = "September"
+            },
+            new SelectListItem() {
+                Text = "Oktober",
+                Value = "Oktober"
+            },
+            new SelectListItem() {
+                Text = "November",
+                Value = "November"
+            },
+            new SelectListItem() {
+                Text = "Desember",
+                Value = "Desember"
+            }
+        })
+        .Events(e => { e.Change("ddlBulanOnChange"); e.Select("ddlBulanOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

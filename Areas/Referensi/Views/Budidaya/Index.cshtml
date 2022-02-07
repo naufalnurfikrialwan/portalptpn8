@@ -1,0 +1,225 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model MainBudidaya
+
+@{
+    ViewBag.Title = "Referensi Budidaya";
+}
+
+<h2>Referensi Budidaya</h2>
+
+<div id="budidayaDetail">
+    <div>
+        @(Html.Kendo()
+            .Grid<MainBudidaya>()
+            .Name("grdBudidaya")
+
+        .Columns(g =>
+        {
+            g.Bound(i => i.MainBudidayaId).Width(200).Hidden();
+            g.Bound(i => i.Nama).Width(200);
+            g.Bound(i => i.kd_bud).Width(100).Title("Id-SPDK");
+            g.Bound(i => i.Foto).Width(120).Title("Foto").ClientTemplate(
+                    @"<div class='photo'><img src='" + Url.Content("~/Content/Images/View/") + "#:MainBudidayaId#.jpg' alt='#: MainBudidayaId #' /></div>");
+            g.Command(command => {
+                command.Edit();
+                //command.Destroy();
+                command.Custom("Delete").Click("openWindow");
+            }).Width(180);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+        })
+        .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+        .AutoBind(true)
+        .Selectable()
+        .Pageable()
+        .Scrollable()
+        .ClientDetailTemplateId("daftarLainnya")
+        .HtmlAttributes(new { style="height: 440px;" })
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); })
+        .DataSource(o => o
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(p => p.MainBudidayaId);
+                model.Field(p => p.MainBudidayaId).Editable(true);
+            })
+
+            .Create(create => create.Action("BudidayaCreate", "Budidaya", new { @onclick = "grdCreateOnClick" }).Type(HttpVerbs.Post))
+            .Read(read => read.Action("BudidayaRead", "Budidaya").Type(HttpVerbs.Post))
+            .Update(update => update.Action("BudidayaUpdate", "Budidaya").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("BudidayaDestroy", "Budidaya").Type(HttpVerbs.Post))
+            )
+        )
+    </div>
+</div>
+
+<div id="modalWindow">
+    <h2><span style="color: red">Hapus 1 Record ?</span></h2>
+    <br />
+    <button style="background-color: red; color: white;" id="yes" class="k-button">Yes</button>
+    <button style="background-color: green; color: white;" id="no" class="k-button">No</button>
+</div>
+
+<script id="daftarLainnya" type="text/kendo-tmpl">
+    @(Html.Kendo().TabStrip()
+            .Name("tabstrip_#=MainBudidayaId#")
+            .SelectedIndex(0)
+            .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+            .Items(items =>
+            {
+
+            items.Add().Text("Sub Budidaya").Content(@<text>
+        @(Html.Kendo().Grid<SubBudidaya>()
+                      .Name("grdSubBudidaya_#=MainBudidayaId#")
+                      .Columns(column =>
+                      {
+                          column.Bound(o => o.MainBudidayaId).Width(100).Hidden();
+                          column.Bound(o => o.SubBudidayaId).Width(100).Hidden();
+                          column.Bound(o => o.Nama).Width(200);
+                          column.Bound(o => o.Merk).Width(200);
+                          column.Bound(o => o.kd_jnsprod).Width(100).Title("Id-SPDK");
+                          column.Command(command => {
+                              command.Edit();
+                              //command.Destroy();
+                              command.Custom("Delete").Click("openWindow");
+                          }).Width(180);
+                      })
+                      .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                      .Events(e => { e.Edit("grdSubBudidayaOnEdit"); e.DataBound("grdSubBudidayaOnDataBound"); })
+                                .ToolBar(toolbar =>
+                                {
+                                    toolbar.Create();
+                                })
+                                .DataSource(datasource => datasource
+                                    .Ajax()
+                                    .Model(model =>
+                                    {
+                                        model.Id(p => p.SubBudidayaId);
+                                        model.Field(p => p.MainBudidayaId).Editable(true);
+                                        model.Field(p => p.SubBudidayaId).Editable(true);
+                                    })
+                                    .Read(read => read.Action("SubBudidayaRead", "Budidaya", new { BudidayaId = "#=MainBudidayaId#" }).Type(HttpVerbs.Post))
+                                    .Create(create => create.Action("SubBudidayaCreate", "Budidaya").Type(HttpVerbs.Post))
+                                    .Update(update => update.Action("SubBudidayaUpdate", "Budidaya").Type(HttpVerbs.Post))
+                                    .Destroy(destroy => destroy.Action("SubBudidayaDestroy", "Budidaya").Type(HttpVerbs.Post))
+                                )
+                                .ToClientTemplate()
+        )
+            </text>
+                );
+            })
+            .ToClientTemplate()
+    )
+
+</script>
+
+<script>
+
+    var mainBudidayaId;
+    var uid;
+    var wnd;
+
+    $(document).ready(function () {
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+    });
+
+    function openWindow(e) {
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.open().center();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        var grid = $('#grdBudidaya').data('kendoGrid');
+        var dataItem = grid.dataSource.get(mainBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("FileFoto", filename);
+    }
+    /* Grid Organisasi */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDetailExpand(e) {
+        mainBudidayaId = this.dataItem(e.masterRow).MainBudidayaId;
+    }
+
+    function grdOnDataBound(e) {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=MainBudidayaId]").val(model.id).change(); // trigger change in order to notify the model binding
+        }
+        mainBudidayaId = model.id;
+        uid = model.uid;
+        this.expandRow(this.tbody.find("tr[data-uid='" + uid + "']"));
+    }
+
+    function grdOnChange(e) {
+    }
+
+    /* Grid Sub Budidaya */
+    function grdSubBudidayaOnDataBound(e) {
+
+    }
+
+    function grdSubBudidayaOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=SubBudidayaId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=MainBudidayaId]").val(mainBudidayaId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    function grdBuyerBudidayaOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=BuyerBudidayaId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=MainBudidayaId]").val(mainBudidayaId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+
+</script>
+
+<style>
+    .photo {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+    }
+    #budidayaDetail {
+    }
+</style>

@@ -1,0 +1,19 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Pilih Jabatan")
+        .DataTextField("NAMA")
+        .MinLength(3)
+        .Filter("contains")
+        .Delay(1000)
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterKodeJabatan").Type(HttpVerbs.Post)).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucKodeJabatanOnSelect"); e.Change("aucKodeJabatanOnSelect"); })
+)
+
+
+
+
+
+

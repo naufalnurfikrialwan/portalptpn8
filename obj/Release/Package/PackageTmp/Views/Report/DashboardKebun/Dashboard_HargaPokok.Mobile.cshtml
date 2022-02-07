@@ -1,0 +1,273 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<script src="~/Scripts/DashboardKebun/Dashboard_HargaPokok.js"></script>
+
+<div id="_header">
+    <table width="50%">
+        <tr>
+            <td width="100px">
+                <label>Tahun:</label>
+            </td>
+            <td>
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2016).Format("D4").Value(2018)
+                                        .HtmlAttributes(new { style = "width:100px", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Bulan:</label>
+            </td>
+            <td>
+                @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("Bulan")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:200px", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "Januari",
+                                        Value = "01"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Februari",
+                                        Value = "02"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Maret",
+                                        Value = "03"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "April",
+                                        Value = "04"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Mei",
+                                        Value = "05"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Juni",
+                                        Value = "06"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Juli",
+                                        Value = "07"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Agustus",
+                                        Value = "08"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "September",
+                                        Value = "09"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Oktober",
+                                        Value = "10"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Nopember",
+                                        Value = "11"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Desember",
+                                        Value = "12"
+                                    }
+                                    })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<p></p>
+<div id="_detail" style="width:100%;">
+    <table width="100%" style="border: 1px solid #C6C6C6;">
+        <tr width="100%" style="border: 1px solid #C6C6C6;">
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_BiayaProduksi>()
+                                    .Name("chart1")
+                                    .Title("Harga Pokok (Rp/Kg)")
+                                    .AutoBind(false)
+                                    .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                                    .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport1")))
+                                    .Series(series =>
+                                    {
+                                        series.Column(model => model.RealHPPSBI).Name("Realisasi").CategoryField("NamaBudidaya").Color("blue");
+                                        series.Column(model => model.RKAPHPPSBI).Name("RKAP").CategoryField("NamaBudidaya").Color("red");
+                                    })
+                                    .CategoryAxis(axis => axis
+                                        .Labels(labels => labels.Rotation(-90))
+                                        .MajorGridLines(lines => lines.Visible(false)))
+                                    .ValueAxis(axis => axis.Numeric()
+                                        .Labels(labels => labels.Format("{0:N0}"))
+                                        .MajorUnit(10000)
+                                        .Line(line => line.Visible(false))
+                                        .Max(30000)
+                                        )
+                                    .Tooltip(tooltip => tooltip
+                                        .Visible(true)
+                                        .Format("{0:N0}"))
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="50%" style="border: 1px solid #C6C6C6;">
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_BiayaProduksi>()
+                            .Name("chart2")
+                            .Title("Harga Pokok TEH (Rp/Kg)")
+                            .AutoBind(false)
+                            .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                            .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport2")))
+                            .Series(series =>
+                            {
+                                series.Column(model => model.RealHPPSBI).Name("Realisasi").CategoryField("NamaKebun").Color("blue");
+                                series.Column(model => model.RKAPHPPSBI).Name("RKAP").CategoryField("NamaKebun").Color("red");
+                            })
+                            .CategoryAxis(axis => axis
+                                .Labels(labels => labels.Rotation(-90))
+                                .MajorGridLines(lines => lines.Visible(false)))
+                            .ValueAxis(axis => axis.Numeric()
+                                .Labels(labels => labels.Format("{0:N0}"))
+                                //.MajorUnit(10000)
+                                .Line(line => line.Visible(false))
+                                //.Max(40000)
+                                )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Format("{0:N0}"))
+                )
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_BiayaProduksi>()
+                                .Name("chart3")
+                                .Title("Harga Pokok KARET (Rp/Kg)")
+                                .AutoBind(false)
+                                .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                                .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport3")))
+                                .Series(series =>
+                                {
+                                    series.Column(model => model.RealHPPSBI).Name("Realisasi").CategoryField("NamaKebun").Color("blue");
+                                    series.Column(model => model.RKAPHPPSBI).Name("RKAP").CategoryField("NamaKebun").Color("red");
+                                })
+                                .CategoryAxis(axis => axis
+                                    .Labels(labels => labels.Rotation(-90))
+                                    .MajorGridLines(lines => lines.Visible(false)))
+                                .ValueAxis(axis => axis.Numeric()
+                                    .Labels(labels => labels.Format("{0:N0}"))
+                                    //.MajorUnit(10000)
+                                    .Line(line => line.Visible(false))
+                                    //.Max(30000)
+                                    )
+                                .Tooltip(tooltip => tooltip
+                                    .Visible(true)
+                                    .Format("{0:N0}"))
+                )
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.Kendo().Chart<Ptpn8.Models.DashboardKebun.View_BiayaProduksi>()
+                            .Name("chart4")
+                            .Title("Harga Pokok SAWIT (Rp/Kg)")
+                            .AutoBind(false)
+                            .Legend(legend => legend.Position(ChartLegendPosition.Right))
+                            .DataSource(ds => ds.Read(read => read.Action("GetDataFrom", "Report").Data("filterReport4")))
+                            .Series(series =>
+                            {
+                                series.Column(model => model.RealHPPSBI).Name("Realisasi").CategoryField("NamaKebun").Color("blue");
+                                series.Column(model => model.RKAPHPPSBI).Name("RKAP").CategoryField("NamaKebun").Color("red");
+                            })
+                            .CategoryAxis(axis => axis
+                                .Labels(labels => labels.Rotation(-90))
+                                .MajorGridLines(lines => lines.Visible(false)))
+                            .ValueAxis(axis => axis.Numeric()
+                                .Labels(labels => labels.Format("{0:N0}"))
+                                //.MajorUnit(10000)
+                                .Line(line => line.Visible(false))
+                                //.Max(30000)
+                                )
+                            .Tooltip(tooltip => tooltip
+                                .Visible(true)
+                                .Format("{0:N0}"))
+                )
+
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    function filterReport1(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_BiayaProduksi',
+            scriptSQL: "exec Dashboard_ViewBiayaProduksi '','GABUNG'," + $('#Tahun').val() + "," + $('#Bulan').data('kendoDropDownList').value(),
+            _menuId: menuId
+        }
+    }
+
+    function filterReport2(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_BiayaProduksi',
+            scriptSQL: "exec Dashboard_ViewBiayaProduksiPerKebun '02',''," + $('#Tahun').val() + "," + $('#Bulan').data('kendoDropDownList').value(),
+            _menuId: menuId
+        }
+    }
+
+    function filterReport3(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_BiayaProduksi',
+            scriptSQL: "exec Dashboard_ViewBiayaProduksiPerKebun '00',''," + $('#Tahun').val() + "," + $('#Bulan').data('kendoDropDownList').value(),
+            _menuId: menuId
+        }
+    }
+
+    function filterReport4(e) {
+        return {
+            strClassView: 'Ptpn8.Models.DashboardKebun.View_BiayaProduksi',
+            scriptSQL: "exec Dashboard_ViewBiayaProduksiPerKebun '01',''," + $('#Tahun').val() + "," + $('#Bulan').data('kendoDropDownList').value(),
+            _menuId: menuId
+        }
+    }
+
+    function btnProsesOnClick(e) {
+
+        $('#chart1').data('kendoChart').options.title.text = "Harga Pokok (Rp/Kg) SD " + $('#Bulan').data('kendoDropDownList').text() + " " + $('#Tahun').val();
+        $('#chart2').data('kendoChart').options.title.text = "Harga Pokok TEH (Rp/Kg) SD " + $('#Bulan').data('kendoDropDownList').text() + " " + $('#Tahun').val();
+        $('#chart3').data('kendoChart').options.title.text = "Harga Pokok KARET (Rp/Kg) SD " + $('#Bulan').data('kendoDropDownList').text() + " " + $('#Tahun').val();
+        $('#chart4').data('kendoChart').options.title.text = "Harga Pokok SAWIT (Rp/Kg) SD " + $('#Bulan').data('kendoDropDownList').text() + " " + $('#Tahun').val();
+
+        $('#chart1').data('kendoChart').dataSource.read();
+        $('#chart2').data('kendoChart').dataSource.read();
+        $('#chart3').data('kendoChart').dataSource.read();
+        $('#chart4').data('kendoChart').dataSource.read();
+
+        $('#chart1').data('kendoChart').refresh();
+        $('#chart2').data('kendoChart').refresh();
+        $('#chart3').data('kendoChart').refresh();
+        $('#chart4').data('kendoChart').refresh();
+    }
+</script>
+
+
+
+
+
+

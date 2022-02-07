@@ -1,0 +1,186 @@
+﻿@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+
+<!--header-->
+<<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Evaluasi Pengadaan Barang dan Jasa di Unit/Kebun</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2020).Format("D4").Value(2020)
+                                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                                            .AutoBind(true)
+                                            .Name("Bulan")
+                                            .DataTextField("Text")
+                                            .DataValueField("Value")
+                                            .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                            .BindTo(new List<SelectListItem>()
+                                            {
+                                                new SelectListItem() {
+                                                    Text = "Januari",
+                                                    Value = "01"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Februari",
+                                                    Value = "02"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Maret",
+                                                    Value = "03"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "April",
+                                                    Value = "04"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Mei",
+                                                    Value = "05"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Juni",
+                                                    Value = "06"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Juli",
+                                                    Value = "07"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Agustus",
+                                                    Value = "08"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "September",
+                                                    Value = "09"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Oktober",
+                                                    Value = "10"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Nopember",
+                                                    Value = "11"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Desember",
+                                                    Value = "12"
+                                                }
+                                                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+    .Grid<Ptpn8.Procurement.Models.EvaluasiPengadaanBarangdanJasa>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NamaUnit).Width(50).Hidden();
+                    g.Bound(i => i.Nama).Title("Nama Barang/Jasa").Width(300)
+                        .ClientFooterTemplate("Total Unit/Kebun")
+                        .ClientGroupFooterTemplate("Jumlah Per Unit/Kebun")
+                        .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                    g.Bound(i => i.NilaiTransaksi).Title("Nilai Transaksi").Width(150).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .FooterHtmlAttributes(new { style = "text-align: center; background: silver;text-align: right;" });
+                    g.Bound(i => i.TanggalTransaksi).Width(150).Title("Tanggal Transaksi").Format("{0:dd-MM-yyyy}");
+                    g.Bound(i => i.NamaPenyedia).Width(200).Title("Nama Penyedia");
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(false)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                    .Ajax()
+                    .Group(g => g.Add(gg => gg.NamaUnit))
+                    .ServerOperation(false)
+                    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                    .Aggregates(ag =>
+                            {
+                                ag.Add(x => x.NilaiTransaksi).Sum();
+                            })
+                )
+    )
+    
+</div>
+
+@*footer*@
+
+<script>
+    function btnProsesOnClick() {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Procurement.Models.EvaluasiPengadaanBarangdanJasa',
+            scriptSQL: "EXEC [SPDK_KanpusEF].dbo.[Procurement_EvaluasiKebun] '" + $('#Bulan').val() + "','" + $('#Tahun').val() + "'"
+        }
+    }
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+</style>
+
+

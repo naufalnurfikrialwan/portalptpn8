@@ -1,0 +1,12 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Jenis Alokasi")
+        .DataTextField("NamaAlokasi")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetAlokasi", "ddl", new { Area = "Referensi" }).Data("filterAlokasi")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucNamaAlokasiOnSelect"); e.DataBound("aucNamaAlokasiOnDataBound"); })
+)

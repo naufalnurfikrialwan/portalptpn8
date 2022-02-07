@@ -1,0 +1,12 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Kelompok Transfer")
+        .DataTextField("NamaKelompok")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetKelompokTransferUang1", "ddl", new { Area = "Referensi" }).Data("filterKelompokTransferUang")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucKelompokTransferUangOnSelect"); e.DataBound("aucKelompokTransferUangOnDataBound"); })
+)

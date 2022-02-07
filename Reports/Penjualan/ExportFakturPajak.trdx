@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="HDR" Width="123.521810935924cm" Name="FakturPajak" Zoom="0.6666667" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportHDR_FakturPajak" SelectCommandType="StoredProcedure" Name="HDR" ParameterValues="{&quot;@MainBudidayaId&quot;:&quot;3D662350-146F-48B0-A181-5A840330C451&quot;}">
+      <Parameters>
+        <SqlDataSourceParameter DbType="String" Name="@MainBudidayaId">
+          <Value>
+            <String>= Parameters.MainBudidayaId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="1.72291684150696cm" Name="pageHeaderSection1">
+      <Items>
+        <TextBox Width="3.28834399255191cm" Height="0.593849982591672cm" Left="22.7458348241614cm" Top="0cm" Value="MASA_PAJAK" Name="textBox12" />
+        <TextBox Width="1.56855005908072cm" Height="0.554907688486166cm" Left="0cm" Top="0.606650615348203cm" Value="LT" Name="textBox6" />
+        <TextBox Width="1.56855005908072cm" Height="0.555750278161399cm" Left="0cm" Top="1.16175843186256cm" Value="OF" Name="textBox8" />
+        <TextBox Width="7.97668165787786cm" Height="0.555750337766043cm" Left="1.56895013577679cm" Top="1.16175843186256cm" Value="KODE_OBJEK" Name="textBox9" />
+        <TextBox Width="7.97688109660319cm" Height="0.554907754721826cm" Left="1.56874988960723cm" Top="0.606650615348203cm" Value="NPWP" Name="textBox7" />
+        <TextBox Width="7.97688196326028cm" Height="0.600000083446503cm" Left="1.56874988960723cm" Top="0cm" Value="KD_JENIS_TRANSAKSI" Name="textBox2" />
+        <TextBox Width="9.91126070944377cm" Height="0.600000083446503cm" Left="9.54583260368972cm" Top="0cm" Value="FG_PENGGANTI" Name="textBox5" />
+        <TextBox Width="9.91125505733415cm" Height="0.554908173431965cm" Left="9.54583502602241cm" Top="0.606650615348203cm" Value="NAMA" Name="textBox29" />
+        <TextBox Width="9.91125838963099cm" Height="0.555750337766043cm" Left="9.54583260368972cm" Top="1.16175843186256cm" Value="NAMA" Name="textBox41" />
+        <TextBox Width="3.29979681968689cm" Height="0.55575031042099cm" Left="19.457292104558cm" Top="1.16175843186256cm" Value="HARGA_SATUAN" Name="textBox42" />
+        <TextBox Width="3.29979681968689cm" Height="0.554907769709849cm" Left="19.457292104558cm" Top="0.606650615348203cm" Value="JALAN" Name="textBox30" />
+        <TextBox Width="3.28834319114685cm" Height="0.600000259705177cm" Left="19.457292104558cm" Top="0cm" Value="NOMOR_FAKTUR" Name="textBox13" />
+        <TextBox Width="1.56855004715979cm" Height="0.600000100930529cm" Left="0cm" Top="0cm" Value="FK" Name="textBox1" />
+        <TextBox Width="3.27689124171074cm" Height="0.567408621311188cm" Left="22.7572876131494cm" Top="0.594149763746864cm" Value="BLOK" Name="textBox31" />
+        <TextBox Width="3.27689124171074cm" Height="0.55575031042099cm" Left="22.7572876131494cm" Top="1.16175843186256cm" Value="JUMLAH_BARANG" Name="textBox43" />
+        <TextBox Width="3.27689123153687cm" Height="0.55575031042099cm" Left="26.034388847984cm" Top="1.16175843186256cm" Value="HARGA_TOTAL" Name="textBox44" />
+        <TextBox Width="3.28834403069881cm" Height="0.561158397371576cm" Left="26.034388847984cm" Top="0.600399785825417cm" Value="NOMOR" Name="textBox32" />
+        <TextBox Width="3.28834390640259cm" Height="0.600099979067842cm" Left="26.034388847984cm" Top="0cm" Value="TAHUN_PAJAK" Name="textBox14" />
+        <TextBox Width="3.53436913600693cm" Height="0.600099980831146cm" Left="29.3229283378104cm" Top="0cm" Value="TANGGAL_FAKTUR" Name="textBox15" />
+        <TextBox Width="3.53436917256445cm" Height="0.561158418655396cm" Left="29.3229283378104cm" Top="0.600400189547533cm" Value="RT" Name="textBox33" />
+        <TextBox Width="3.54582201925846cm" Height="0.561158418655396cm" Left="29.3114755488224cm" Top="1.16175843186256cm" Value="DISKON" Name="textBox45" />
+        <TextBox Width="3.53436911614803cm" Height="0.567408844456065cm" Left="32.8575057744879cm" Top="1.15550800606189cm" Value="DPP" Name="textBox46" />
+        <TextBox Width="3.53437084515885cm" Height="0.554907992854726cm" Left="32.857499314934cm" Top="0.600400189547533cm" Value="RW" Name="textBox34" />
+        <TextBox Width="3.53436923027039cm" Height="0.600099980831146cm" Left="32.8573022985414cm" Top="0cm" Value="NPWP" Name="textBox17" />
+        <TextBox Width="7.13064832538782cm" Height="0.554908008128428cm" Left="36.3920702920576cm" Top="1.16175843186256cm" Value="PPN" Name="textBox47" />
+        <TextBox Width="7.13085992981822cm" Height="0.554907977581024cm" Left="36.3920702920576cm" Top="0.606650615348203cm" Value="KECAMATAN" Name="textBox35" />
+        <TextBox Width="22.8964119834332cm" Height="0.54240718558433cm" Left="43.523130299799cm" Top="1.16800885766323cm" Value="TARIF_PPNBM" Name="textBox48" />
+        <TextBox Width="22.8964136523632cm" Height="0.561158403381693cm" Left="43.523130299799cm" Top="0.606650615348203cm" Value="KELURAHAN" Name="textBox36" />
+        <TextBox Width="5.65782649809444cm" Height="0.561158432438934cm" Left="77.0000007065137cm" Top="0.606650590896606cm" Value="NOMOR_TELEPON" Name="textBox40" />
+        <TextBox Width="3.51066433654605cm" Height="0.561158433929098cm" Left="73.4891427515984cm" Top="0.606650590896606cm" Value="KODE_POS" Name="textBox39" />
+        <TextBox Width="3.53437089920044cm" Height="0.561158433929098cm" Left="69.9545523958132cm" Top="0.606650590896606cm" Value="PROPINSI" Name="textBox38" />
+        <TextBox Width="3.53437089920044cm" Height="0.554908006638265cm" Left="66.4199684995819cm" Top="0.606650590896606cm" Value="KABUPATEN" Name="textBox37" />
+        <TextBox Width="3.53436923027039cm" Height="0.54240718558433cm" Left="66.4199684995819cm" Top="1.16175842285156cm" Value="PPNBM" Name="textBox49" />
+        <TextBox Width="7.13084857155738cm" Height="0.600099980831146cm" Left="36.3918668161111cm" Top="0cm" Value="NAMA" Name="textBox18" />
+        <TextBox Width="22.8966299933758cm" Height="0.600099980831146cm" Left="43.5229171345217cm" Top="0cm" Value="ALAMAT_LENGKAP" Name="textBox19" />
+        <TextBox Width="3.53436923027039cm" Height="0.600099980831146cm" Left="66.4197488747508cm" Top="0cm" Value="JUMLAH_DPP" Name="textBox20" />
+        <TextBox Width="3.53436923027039cm" Height="0.600099980831146cm" Left="69.9543456900898cm" Top="0cm" Value="JUMLAH_PPN" Name="textBox21" />
+        <TextBox Width="3.51066266761599cm" Height="0.600099980831146cm" Left="73.4891427515984cm" Top="0cm" Value="JUMLAH_PPN_BM" Name="textBox22" />
+        <TextBox Width="5.65780222072589cm" Height="0.600099980831146cm" Left="77.0000265447291cm" Top="0cm" Value="ID_KETERANGAN_TAMBAHAN" Name="textBox23" />
+        <TextBox Width="4.49980434459839cm" Height="0.600099980831146cm" Left="82.6580143634236cm" Top="0cm" Value="FG_UANG_MUKA" Name="textBox24" />
+        <TextBox Width="4.49980449676514cm" Height="0.600099980831146cm" Left="87.158023800428cm" Top="0cm" Value="UANG_MUKA_DPP" Name="textBox25" />
+        <TextBox Width="4.49980449676514cm" Height="0.600099980831146cm" Left="91.6580073992171cm" Top="0cm" Value="UANG_MUKA_PPN" Name="textBox26" />
+        <TextBox Width="4.49980449676514cm" Height="0.600099980831146cm" Left="96.15799745756cm" Top="0cm" Value="UANG_MUKA_PPNBM" Name="textBox27" />
+        <TextBox Width="10.9606438047652cm" Height="0.600099980831146cm" Left="100.658000435011cm" Top="0cm" Value="REFERENSI" Name="textBox28" />
+      </Items>
+    </PageHeaderSection>
+    <DetailSection Height="0.599999747673682cm" Name="detailSection1">
+      <Items>
+        <TextBox Width="1.56855013696412cm" Height="0.599999725818634cm" Left="0cm" Top="0cm" Value="OF" Name="textBox3" />
+        <TextBox Width="9.91125591286505cm" Height="0.599999725818634cm" Left="9.54583502602241cm" Top="0cm" Value="= Trim(Fields.NamaGrade)+' '+Trim(Fields.NamaMerk)" Name="textBox4" />
+        <TextBox Width="7.9768819007878cm" Height="0.599899537284525cm" Left="1.56874988960723cm" Top="0cm" Value="= RowNumber()" Name="textBox69" />
+        <TextBox Width="3.32318287531539cm" Height="0.59999985125459cm" Left="19.457292104558cm" Top="0cm" Value="= Format(&quot;{0:0}&quot;,Fields.Price)" Format="{0}" Name="textBox70" />
+        <TextBox Width="3.25350118702146cm" Height="0.59999985125459cm" Left="22.7806760427764cm" Top="0cm" Value="=Format(&quot;{0:0}&quot;,(Fields.Gross-Fields.Tare))" Format="{0}" Name="textBox71" />
+        <TextBox Width="3.25350932567924cm" Height="0.59999948155537cm" Left="26.0577659733917cm" Top="0cm" Value="= Format(&quot;{0:0}&quot;,(Fields.Price * (Fields.Gross- Fields.Tare)))" Format="{0}" Name="textBox72" />
+        <TextBox Width="3.53436593502372cm" Height="0.599999706463552cm" Left="29.3229283378104cm" Top="0cm" Value="0" Name="textBox73" />
+        <TextBox Width="3.53416899461159cm" Height="0.599899987100888cm" Left="32.8575057744879cm" Top="0cm" Value="= Format(&quot;{0:0}&quot;,(Fields.Price * (Fields.Gross- Fields.Tare)))" Format="{0}" Name="textBox74" />
+        <TextBox Width="7.13064833271392cm" Height="0.599900046705532cm" Left="36.3920702920576cm" Top="0cm" Value="= Format(&quot;{0:0}&quot;,((Fields.Price * (Fields.Gross- Fields.Tare))*0.1))" Format="{0}" Name="textBox75" />
+        <TextBox Width="3.53437900543213cm" Height="0.599999766068196cm" Left="66.4197424151969cm" Top="0cm" Value="0.0" Name="textBox77" />
+        <TextBox Width="22.8964087419148cm" Height="0.599999766068196cm" Left="43.523130299799cm" Top="0cm" Value="0" Name="textBox76" />
+      </Items>
+    </DetailSection>
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings PaperKind="A4" Landscape="False">
+    <Margins>
+      <MarginsU Left="2cm" Right="2cm" Top="2cm" Bottom="2cm" />
+    </Margins>
+  </PageSettings>
+  <Groups>
+    <Group Name="group">
+      <GroupHeader>
+        <GroupHeaderSection Height="1.07648384278859cm" Name="groupHeaderSection">
+          <Items>
+            <TextBox Width="1.56855005908072cm" Height="0.538141708863814cm" Left="0cm" Top="0cm" Value="FK" Name="textBox10" />
+            <TextBox Width="7.97668101541291cm" Height="0.538141768468459cm" Left="1.56895013577679cm" Top="0cm" Value="= Substr(Fields.NoSeriFakturPajak,0,2)" Name="textBox11" />
+            <TextBox Width="9.91125677474253cm" Height="0.538141768468459cm" Left="9.54583260368972cm" Top="0cm" Value="= Substr(Fields.NoSeriFakturPajak,2,1)" Name="textBox50" />
+            <TextBox Width="3.3231844418696cm" Height="0.538141566607401cm" Left="19.4572904896695cm" Top="0cm" Value="= Substr(Fields.NoSeriFakturPajak,3,14)" Name="textBox51" />
+            <TextBox Width="3.27689123153687cm" Height="0.538141566607401cm" Left="22.7806744278879cm" Top="0cm" Value="= Fields.Tanggal_Faktur.Month" Name="textBox52" />
+            <TextBox Width="3.25350926146378cm" Height="0.532733305140809cm" Left="26.0577659733917cm" Top="0cm" Value="= Fields.Tanggal_Faktur.Year" Name="textBox53" />
+            <TextBox Width="3.54581867535918cm" Height="0.532733151908624cm" Left="29.3114755488224cm" Top="0cm" Value="= Fields.Tanggal_Faktur" Format="{0:d}" Name="textBox54" />
+            <TextBox Width="3.53436923027039cm" Height="0.532733167182326cm" Left="32.8573022985414cm" Top="0cm" Value="= Fields.NPWP" Name="textBox16" />
+            <TextBox Width="7.13084857155738cm" Height="0.532733196239566cm" Left="36.3918668161111cm" Top="0cm" Value="= Fields.NamaSesuaiNPWP" Name="textBox55" />
+            <TextBox Width="22.8966251487104cm" Height="0.532733196239566cm" Left="43.5229171345217cm" Top="0.00540866518870729cm" Value="= Fields.AlamatSesuaiNPWP" Name="textBox56" />
+            <TextBox Width="3.53437891960117cm" Height="0.532733225296807cm" Left="66.4199814186896cm" Top="0cm" Value="= Format(&quot;{0:0}&quot;,sum(Fields.Total))" Format="{0}" Name="textBox57" />
+            <TextBox Width="3.53439330577788cm" Height="0.532733151908624cm" Left="69.9545523958132cm" Top="0.00540866518870729cm" Value="= Format(&quot;{0:0}&quot;,sum(Fields.PPn))" Format="{0}" Name="textBox58" />
+            <TextBox Width="5.63410846140327cm" Height="0.53273329365876cm" Left="77.0237201882758cm" Top="0.00540866518870729cm" Value="" Name="textBox60" />
+            <TextBox Width="4.49980449676514cm" Height="0.53273329365876cm" Left="82.6580272825313cm" Top="0.00540866518870729cm" Value="0" Name="textBox61" />
+            <TextBox Width="4.49980449676514cm" Height="0.53273329365876cm" Left="87.158023800428cm" Top="0cm" Value="0" Name="textBox62" />
+            <TextBox Width="4.49980449676514cm" Height="0.53273329365876cm" Left="91.6580073992171cm" Top="0.00540866518870729cm" Value="0" Name="textBox63" />
+            <TextBox Width="1.56854995815019cm" Height="0.532733465980919cm" Left="0cm" Top="0.538341842618017cm" Value="FAPR" Name="textBox66" />
+            <TextBox Width="7.97668170555602cm" Height="0.532733525585563cm" Left="1.56895013577679cm" Top="0.538342044479075cm" Value="PT PERKEBUNAN NUSANTARA VIII" Name="textBox67" />
+            <TextBox Width="9.91125758218676cm" Height="0.538141787052155cm" Left="9.54583260368972cm" Top="0.538342044479075cm" Value="JL. SINDANG SIRNA NO. 4 KOTA BANDUNG" Name="textBox68" />
+            <TextBox Width="10.9606438047652cm" Height="0.53273329365876cm" Left="100.658000435011cm" Top="0.00540866518870729cm" Value="= Fields.No_Faktur +' '+ Fields.ListNo_PO" Name="textBox65" />
+            <TextBox Width="4.49980449676514cm" Height="0.53273329365876cm" Left="96.1580039171138cm" Top="0.00540866518870729cm" Value="0" Name="textBox64" />
+            <TextBox Width="3.51066413468499cm" Height="0.532733165692162cm" Left="73.4891427515984cm" Top="0.00540866518870729cm" Value="0" Name="textBox59" />
+          </Items>
+        </GroupHeaderSection>
+      </GroupHeader>
+      <GroupFooter>
+        <GroupFooterSection Height="0cm" Name="groupFooterSection" />
+      </GroupFooter>
+      <Groupings>
+        <Grouping Expression="= Fields.HDR_FakturId" />
+      </Groupings>
+      <Sortings>
+        <Sorting Expression="= Fields.No_Faktur" Direction="Asc" />
+      </Sortings>
+    </Group>
+  </Groups>
+  <ReportParameters>
+    <ReportParameter Name="MainBudidayaId">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

@@ -1,0 +1,135 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script> 
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+
+
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Cari Dokumen</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Cari Barang:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().TextBox().Name("Barang")
+                        .HtmlAttributes(new { style = "width:100%" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo()
+        .Grid<Ptpn8.DaftarHargaBarangBahanDanTarif.Models.DashboardDHBB_Cari>
+    (Guid.Empty.ToString())
+    .Name("grdDetail")
+    .Columns(g =>
+    {
+        g.Bound(i => i.NamaBarang).Width(300).Title("Nama Barang").HtmlAttributes(new { style = "text-align: left;" });
+        g.Bound(i => i.Satuan).Width(80).Title("Satuan").HtmlAttributes(new { style = "text-align: left;" });
+        g.Bound(i => i.Spesifikasi).Width(200).Title("Spesifikasi").HtmlAttributes(new { style = "text-align: left;" });
+        g.Bound(i => i.Merk).Width(100).Title("Merk").HtmlAttributes(new { style = "text-align: left;" });
+        g.Bound(i => i.KelompokBarang).Width(200).Title("Kelompok Barang").HtmlAttributes(new { style = "text-align: left;" });
+        //g.Bound(i => i.Harga).Width(100).Title("Harga").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+        //g.Bound(i => i.Overhead).Width(100).Title("Overhead").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+        g.Bound(i => i.HargaOverhead).Width(200).Title("Harga").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right; color: green; font-weight : 700" });
+        g.Bound(i => i.PPN).Width(100).Title("PPN").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+        g.Bound(i => i.HargaOverheadPPN).Width(200).Title("Harga + PPN").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right; color: blue; font-weight : 700" });
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Excel();
+    })
+    .Excel(excel => excel.AllPages(true))
+    .AutoBind(false)
+    .Resizable(resizeable => resizeable.Columns(true))
+    .Scrollable()
+    .Sortable()
+    .Groupable()
+    .Filterable()
+    .HtmlAttributes(new { style = "Height: 450px" })
+    .DataSource(o => o
+    .Ajax()
+    .ServerOperation(false)
+    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+    )
+    )
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.DaftarHargaBarangBahanDanTarif.Models.DashboardDHBB_Cari',
+            scriptSQL:
+                "SELECT b.NamaBarang,b.satuan, b.spesifikasi, b.merk, b.kelompokbarang, case when a.Overhead='1' then (a.HargaDasar*0.1)+a.HargaDasar else a.HargaDasar end as Harga, case when a.Overhead='1' then a.HargaDasar+(a.HargaDasar*0.1) else a.HargaDasar end as HargaOverhead, case when a.Overhead='1' then (a.HargaDasar+(a.HargaDasar*0.1))*0.1 else a.HargaDasar*0.1 end as PPN, case when a.Overhead='1' then ((a.HargaDasar+(a.HargaDasar*0.1))*0.1)+a.HargaDasar+(a.HargaDasar*0.1) else (a.HargaDasar*0.1)+a.HargaDasar end as HargaOverheadPPN "+
+                "FROM [SPDK_KanpusEF].[dbo].[DHBB_HargaBarang] AS a join [SPDK_KanpusEF].[dbo].[DHBB_Barang] as b on a.DHBB_BarangId = b.DHBB_BarangId "+
+                "WHERE TanggalSurvey = (SELECT MAX(TanggalSurvey) FROM [SPDK_KanpusEF].[dbo].[DHBB_HargaBarang] WHERE DHBB_BarangId = b.DHBB_BarangId and verifikasi=1) and b.NamaBarang like '%" + $('#Barang').val()+"%' "+
+                "order by NamaBarang "
+        }
+    }
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>    
+    <div id="testPDFObject" style="height:100%"></div>   
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>

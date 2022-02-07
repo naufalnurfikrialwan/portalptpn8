@@ -1,0 +1,200 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <table width="100%">
+                    <tr>
+                        <td width="33%" style="vertical-align:top;">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Cari Permintaan Barang</label>
+                                        <table width="100%;" style="border: 1px solid lightgray; margin-bottom : 5px;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Triwulan:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().DropDownList().Name("BulanPeruntukan")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .DataTextField("Text")
+                                                        .DataValueField("Value")
+                                                         .BindTo(new List<SelectListItem>()
+                                                         {
+                                                             new SelectListItem() {
+                                                               Text = "Triwulan I",
+                                                               Value = "1"
+                                                             },
+                                                             new SelectListItem() {
+                                                               Text = "Triwulan II",
+                                                               Value = "2"
+                                                             },
+                                                             new SelectListItem() {
+                                                               Text = "Triwulan III",
+                                                               Value = "3"
+                                                             },
+                                                             new SelectListItem() {
+                                                               Text = "Triwulan IV",
+                                                               Value = "4"
+                                                             }
+                                                         })
+                                                        .HtmlAttributes(new { style = "width: 100%", @class = "allcaps" })   
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="80px">
+                                                    Tahun :
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().NumericTextBox().Min(2016).Format("D4").Name("TahunPeruntukan")
+                                                        .HtmlAttributes(new { style = "width:30%", @class = "allcaps" })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="vertical-align:top"></td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Procurement.Models.DashboardEvaluasiPermintaanBarang>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.DashboardEvaluasiPermintaanBarangId).Width(50).Hidden();
+            g.Bound(i => i.Bidang).Width(50).Hidden();
+            g.Bound(i => i.NamaKebun).Title("Nama Kebun").Width(80);
+            g.Bound(i => i.NomorPermintaan).Title("Nomor Permintaan").Width(200);
+            g.Bound(i => i.TanggalPermintaan).Title("Tanggal Permintaan").Width(200).ClientTemplate("#= kendo.toString(TanggalPermintaan,'dd/MM/yyyy')#");
+            g.Bound(i => i.SudahDiterima).Title("Sudah Diterima").Width(200)
+                 .ClientGroupFooterTemplate("Jumlah")
+                 .ClientFooterTemplate("TOTAL")
+                 .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.Biaya).Title("Biaya").Width(200).Width(80).Format("{0:N2}")
+                .HtmlAttributes(new { id = "jml#=DashboardEvaluasiPermintaanBarangId#", @readonly = "true", style = "text-align: right;" })
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                .ClientFooterTemplate("<span id='jmlBiaya'>#= kendo.toString(rekapBiaya(),'n2') #</span>")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver; color:blue;" });
+        })
+        .AutoBind(false)
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .Filterable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Excel(excel => excel.AllPages(true))
+        .DataSource(o => o
+            .Ajax()
+            .Sort(s => s.Add(x => x.NamaKebun))
+            .Group(g => g.Add(gg => gg.NamaKebun))
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.DashboardEvaluasiPermintaanBarangId);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.Biaya).Sum();
+            })
+        )
+    )
+</div>
+
+<script>
+    var wnd, err, prt;
+    var tahun, triwulan;
+    var lokasiKerjaId;
+    var bulanFormat;
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    triwulan = $('#BulanPeruntukan').data('kendoDropDownList').value();
+                    tahun = $('#TahunPeruntukan').val();
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Procurement.Models.DashboardEvaluasiPermintaanBarang',
+            scriptSQL: "use SPDK_KanpusEF; exec DashboardEvaluasiPermintaanBarangDariKebun " + triwulan + "," + tahun
+        }
+
+    }
+
+    function rekapBiaya() {
+
+        var grid = $('#grdDetail').data('kendoGrid');
+        var newValue = 0;
+        for (var i = 0; i < grid.dataItems().length; i++) {
+            newValue += grid.dataItems()[i].Biaya;
+        }
+        return newValue;
+    }
+
+</script>
+
+<style>
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+

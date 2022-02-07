@@ -1,0 +1,399 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Remise/GajiSDMKemandoranKebun.js"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Daftar Gaji Karpel Kemandoran</div>
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().TextBox().Name("KebunId").Value(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId.ToString()).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @if (Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId.ToString().ToUpper() == "203BB8F7-5983-4C65-936F-9C3D83486434" || Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId.ToString().ToUpper() == "203BB8F7-5983-4C65-936F-9C3D83486433")
+    {
+        @(Html.Kendo().TextBox().Name("Kd_Kbn").Value("  ").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+        <table width="50%">
+            <tr>
+                <td width="5%">
+                    <label>Kebun:</label>
+                </td>
+                <td width="20%">
+                    @*@(Html.Kendo().TextBox().Name("NamaKebun").Value(Ptpn8.Areas.Referensi.Models.CRUD.CRUDKebun.CRUD.Get1Record(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId).Nama).HtmlAttributes(new { @readonly = "true", style = "width: 55%;" }))*@
+                    @(Html.Kendo().AutoComplete()
+                            .Name("NamaKebun")
+                            .MinLength(2)
+                            .Filter("contains")
+                            .Placeholder("Cari Kebun")
+                            .DataTextField("Nama")
+                            .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                            .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 64%" })
+                            .Events(e =>
+                            {
+                                e.DataBound("NamaKebunOnSelect");
+                                e.Change("NamaKebunOnSelect");
+                            })
+                        )
+                </td>
+            </tr>
+        </table>
+
+    }
+    else
+    {
+        @(Html.Kendo().TextBox().Name("Kd_Kbn").Value(Ptpn8.Areas.Referensi.Models.CRUD.CRUDUnit.CRUD.Get1Record(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId).KodeKebun).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+        <table width="50%">
+            <tr>
+                <td width="5%">
+                    <label>Kebun:</label>
+                </td>
+                <td width="20%">
+                    @(Html.Kendo().TextBox().Name("NamaKebun").Value(Ptpn8.Areas.Referensi.Models.CRUD.CRUDUnit.CRUD.Get1Record(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId).NamaUnit).HtmlAttributes(new { @readonly = "true", style = "width: 55%;" }))
+                    @*@(Html.Kendo().AutoComplete()
+                            .Name("NamaKebun")
+                            .MinLength(2)
+                            .Filter("contains")
+                            .Placeholder("Cari Kebun")
+                            .DataTextField("Nama")
+                            .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                            .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 64%" })
+                            .Events(e =>
+                            {
+                                e.DataBound("NamaKebunOnSelect");
+                                e.Change("NamaKebunOnSelect");
+                            })
+                        )*@
+                </td>
+            </tr>
+        </table>
+    }
+
+        <table width="50%">
+            <tr>
+                <td width="5%">
+                    <label>Tahun:</label>
+                </td>
+                <td width="20%">
+                    @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2019)
+                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                    )
+                </td>
+            </tr>
+
+            <tr>
+                <td width="5%">
+                    <label>Bulan:</label>
+                </td>
+                <td width="20%">
+                    @(Html.Kendo().DropDownList()
+                    .AutoBind(true)
+                    .Name("Bulan")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                    .BindTo(new List<SelectListItem>()
+                    {
+                        new SelectListItem() {
+                            Text = "Januari",
+                            Value = "01"
+                        },
+                        new SelectListItem() {
+                            Text = "Februari",
+                            Value = "02"
+                        },
+                        new SelectListItem() {
+                            Text = "Maret",
+                            Value = "03"
+                        },
+                        new SelectListItem() {
+                            Text = "April",
+                            Value = "04"
+                        },
+                        new SelectListItem() {
+                            Text = "Mei",
+                            Value = "05"
+                        },
+                        new SelectListItem() {
+                            Text = "Juni",
+                            Value = "06"
+                        },
+                        new SelectListItem() {
+                            Text = "Juli",
+                            Value = "07"
+                        },
+                        new SelectListItem() {
+                            Text = "Agustus",
+                            Value = "08"
+                        },
+                        new SelectListItem() {
+                            Text = "September",
+                            Value = "09"
+                        },
+                        new SelectListItem() {
+                            Text = "Oktober",
+                            Value = "10"
+                        },
+                        new SelectListItem() {
+                            Text = "Nopember",
+                            Value = "11"
+                        },
+                        new SelectListItem() {
+                            Text = "Desember",
+                            Value = "12"
+                        }
+                        })
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td align="left">
+                    <div class="confirm">
+                        <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+</div>
+<div id="_detail">
+    @(Html.Kendo()
+                        .Grid<Ptpn8.GajiSDM.Models.GajiSDM>
+            (Guid.Empty.ToString())
+            .Name("grdDetail")
+            .Columns(g =>
+            {
+                g.Bound(i => i.GajiMasterID).Width(100).Hidden();
+                g.Bound(i => i.kdunit).Width(100).Title("Kode Unit").Hidden();
+                g.Bound(i => i.tanggal).Width(80).Format("{0:dd-MM-yyyy}").Title("Tanggal").Hidden();
+                g.Bound(i => i.kodeafd).Width(80).Title("Kode Afd.").Hidden();
+                g.Bound(i => i.namaafdeling).Width(150).Title("Afdeling").Hidden();
+                //g.Bound(i => i.regmdr).Width(120).Title("Register Mandor");
+                g.Bound(i => i.namamandor).Width(120).Title("Mandor").Hidden();
+                g.Bound(i => i.register).Width(120).Title("Register");
+                g.Bound(i => i.nama).Width(300).Title("Nama Lengkap");
+                g.Bound(i => i.jabatan).Width(300).Title("Jabatan");
+                g.Bound(i => i.golongan).Width(100).Title("Golongan");
+                g.Bound(i => i.sts).Width(100).Title("Status").Hidden();
+
+                //g.Bound(i => i.PDP).Width(100).Title("PDP");
+                //g.Bound(i => i.pdpth).Width(100).Title("pdpth");
+                //g.Bound(i => i.Jab).Width(100).Title("Jab");
+                //g.Bound(i => i.Pen).Width(100).Title("Pen");
+                //g.Bound(i => i.Diri).Width(100).Title("Diri");
+
+                g.Bound(i => i.GajiPokok).Width(100).Title("Upah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                g.Bound(i => i.Rapel).Width(100).Title("Rapel").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                g.Bound(i => i.Premi).Width(100).Title("Premi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //g.Group(gg => gg.Title("Tunjangan")
+                //.Columns(c =>
+                //{
+                //    c.Bound(i => i.TTetap).Width(100).Title("Tetap").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.TSansos).Width(100).Title("Sansos").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.TJabatan).Width(100).Title("Jabatan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.TBPJS).Width(100).Title("BPJS TK").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.TBPJSKes).Width(100).Title("BPJS Kes").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.TDapenbun).Width(100).Title("Dapenbun").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.TPPIP).Width(100).Title("PPIP").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.TPPH21).Width(100).Title("Pph-21").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //    c.Bound(i => i.JumlahTunjangan).Width(100).Title("Jumlah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                //        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                //})
+                //);
+
+                g.Group(gg => gg.Title("Potongan")
+                .Columns(c =>
+                {
+                    c.Bound(i => i.PBPJS).Width(100).Title("BPJS TK+Kes").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                    //c.Bound(i => i.PBPJSKes).Width(100).Title("BPJS Kes").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    //    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                    c.Bound(i => i.PDapenbun).Width(100).Title("IDP").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                    //c.Bound(i => i.PPPIP).Width(100).Title("PPIP").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    //    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                    //c.Bound(i => i.PPPH21).Width(100).Title("Pph-21").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                    //    .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                    c.Bound(i => i.PKebun).Width(100).Title("Kebun").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                    c.Bound(i => i.PKoperasi).Width(100).Title("Koperasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                    c.Bound(i => i.JumlahPotongan).Width(100).Title("Jumlah").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                })
+                );
+                g.Bound(i => i.JumlahDiterima).Width(100).Title("Jumlah Diterima").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" }).ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #").FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+
+
+                //g.Bound(i => i.TKhusus).Width(100).Title("Tunjangan Khusus").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.TSansos).Width(100).Title("Tunjangan Sansos").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.TStruktural).Width(100).Title("Tunjangan Struktural").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.TKomunikasi).Width(100).Title("Tunj. Komunikasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.TPeralihan).Width(100).Title("Tunj. Peralihan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.TTransportasi).Width(100).Title("Tunj. Transportasi").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.UpahHarian).Width(100).Title("Upah Harian").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.UpahBorong).Width(100).Title("Upah Borong").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.UpahRecovery).Width(100).Title("Upah Recovery").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+
+
+                //g.Bound(i => i.JmlHasil).Width(100).Title("Jml Hasil").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.Kerja).Width(100).Title("Kerja").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.Borong).Width(100).Title("Borong").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.Recovery).Width(100).Title("Recovery").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.Libur).Width(100).Title("Libur").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.Sakit).Width(100).Title("Sakit").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.PermisiDibayar).Width(100).Title("Permisi Dibayar").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.CutiHamil).Width(100).Title("Cuti Hamil").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.CutiTahunan).Width(100).Title("Cuti Tahunan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.IjinTdkDibayar).Width(100).Title("Ijin Tdk Dibayar").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.Mangkir).Width(100).Title("Mangkir").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.CutiPanjang).Width(100).Title("Cuti Panjang").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                //g.Bound(i => i.CutiMBT).Width(100).Title("Cuti MBT").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Excel();
+            })
+            .Excel(excel => excel.AllPages(true).FileName("GajiKemandoran"))
+            .AutoBind(false)
+            .Navigatable()
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .Sortable()
+            .Groupable()
+            .HtmlAttributes(new { style = "Height: 450px" })
+            .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.GajiPokok).Sum();
+                ag.Add(x => x.Rapel).Sum();
+                ag.Add(x => x.Premi).Sum();
+                ag.Add(x => x.PBPJS).Sum();
+                ag.Add(x => x.PBPJSKes).Sum();
+                ag.Add(x => x.PDapenbun).Sum();
+                ag.Add(x => x.PPPIP).Sum();
+                ag.Add(x => x.PPPH21).Sum();
+                ag.Add(x => x.PKebun).Sum();
+                ag.Add(x => x.PKoperasi).Sum();
+                ag.Add(x => x.JumlahPotongan).Sum();
+                ag.Add(x => x.JumlahDiterima).Sum();
+            })
+            .Group(gr=>
+            {
+                gr.Add(x => x.namaafdeling);
+                gr.Add(x => x.namamandor);
+            })
+            )
+    )
+
+</div>
+
+
+
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+<script>
+    var usrName = "@HttpContext.Current.User.Identity.Name";
+
+    function NamaKebunOnSelect(e) {
+        var kebun = this.dataItem(e.item);
+        if (typeof (kebun) != 'undefined') {
+            $('#Kd_Kbn').val(kebun.kd_kbn);
+            $('#NamaKebun').val(kebun.Nama);
+        }
+    }
+
+    function filterKebun() {
+        return {
+            key: "NamaKebun",
+            value: $("#NamaKebun").val()
+        };
+    }
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.GajiSDM.Models.GajiSDM',
+            scriptSQL:
+            "declare @@NamaAfdeling as table (kodeafd varchar(20), namaafdeling varchar(200)); " +
+            "delete @@NamaAfdeling; " +
+            "insert into @@NamaAfdeling select kodeafdeling,namaafdeling from [SPDK_KBN_KONSOL].[dbo].[Ref_Afdeling] where kodekebun='" + $('#Kd_Kbn').val() + "'; " +
+            "declare @@REFDIK as table (reg varchar(20), nama varchar(200), jabatan varchar(100), golongan varchar(20)); " +
+	        "delete @@REFDIK; " +
+	        "insert into @@REFDIK select A.reg, A.nama, A.nama_jab,substring('IA IB IC ID IIAIIBIICIID',cast(A.gol as int)*3-2,3)+'/'+cast(A.MK as varchar(2)) as golongan from [SPDK_KanpusEF].dbo.Ref_Dik as A where A.gol<9 and Year(A.TANGGAL)='" + $('#Tahun').val() + "' and Month(A.TANGGAL)= '" + $('#Bulan').val() + "' and A.KD_KBN = '" + $('#Kd_Kbn').val() + "'; " +
+            "select distinct A.GajiMasterID, A.kdunit, A.tanggal, A.kodeafd, C.namaafdeling, A.regmdr, A.register, b.nama, b.jabatan, case when len(A.register)=14 then B.golongan else 'PKWT' end as golongan, A.sts, A.PDP, A.pdpth, A.Jab, A.Pen, A.Diri, " +
+            "case when len(A.register)=14 then A.GajiPokok + A.TTetap + A.UpahHarian + A.UpahBorong + A.UpahRecovery else A.GajiPokok + A.TTetap + A.UpahHarian + A.UpahBorong + A.UpahRecovery end + A.Kulir + A.PremiBrondolan + A.Premi_Scrap + A.Paguyuban as GajiPokok, " +
+            "A.Rapel, A.Premi+A.lembur+A.Premi_Pikul as Premi, " +
+            "case when len(A.register)=14 then A.TTetap else 0 end as TTetap, A.TSansos, A.TJabatan+A.TTransportasi as TJabatan, " +
+            "case when A.regmdr = '' then A.TBPJS+A.TJamsostek else 0 end as TBPJS, " +
+            "case when A.regmdr = '' then A.TBPJSKes else 0 end as TBPJSKes, " +
+            "case when A.regmdr = '' then A.TDapenbun else 0 end as TDapenbun, " +
+            "case when A.regmdr = '' then 0 else 0 end as TPPIP, A.TPPH21, " +
+                "(A.TTetap+A.TSansos+A.TJabatan+A.TTransportasi+case when A.regmdr='' then A.TBPJS+A.TJamsostek else 0 end+case when A.regmdr='' then A.TBPJSKes else 0 end+case when A.regmdr='' then A.TDapenbun else 0 end+case when A.regmdr='' then 0 else 0 end+A.TPPH21) as JumlahTunjangan, " +
+
+            "case when A.regmdr='' then 0 else (A.PBPJS_JKK + A.PBPJS_JHT + A.PBPJS_JKM+A.PBPJSKes + A.PBPJS_JP) - (A.TBPJS_JKK + A.TBPJS_JHT + A.TBPJS_JKM+A.TBPJSKes + A.TBPJS_JP) end as PBPJS, " +
+            "case when A.regmdr='' then A.PBPJSKes else 0 end as PBPJSKes, " +
+            "(A.PDapenbun+A.PPPIP-A.TDapenbun-A.TPPIP) as PDapenbun, 0, A.PPPH21, A.PDHK+A.PKebun+A.PTeh+A.Pbank+A.PSPBun+A.PIKBI+A.PSakitBkpj+A.PDenda+A.Phukuman+A.AdjustBPJSKes+A.Paguyuban+A.PPremi_Pikul+A.PMangkir as PKebun, A.PKoperasi, " +
+            "(case when A.regmdr='' then 0 else (A.PBPJS_JKK + A.PBPJS_JHT + A.PBPJS_JKM+A.PBPJSKes + A.PBPJS_JP) - (A.TBPJS_JKK + A.TBPJS_JHT + A.TBPJS_JKM+A.TBPJSKes + A.TBPJS_JP) end+0+(A.PDapenbun+A.PPPIP - A.TDapenbun-A.TPPIP)+A.PPPH21+A.PDHK+A.PKebun+A.Pbank+A.PSPBun+A.PIKBI+A.PSakitBkpj+A.PDenda+A.Phukuman+A.AdjustBPJSKes+A.Paguyuban+A.PPremi_Pikul+A.PMangkir+A.PKoperasi) as JumlahPotongan, " +
+
+            "(A.GajiPokok+A.UpahHarian+A.UpahBorong+A.UpahRecovery)+(A.Rapel+A.Premi+A.lembur+A.Premi_Pikul)+(A.Kulir + A.PremiBrondolan + A.Premi_Scrap + A.Paguyuban)+" +
+            "(A.TTetap+A.TSansos+A.TJabatan+A.TTransportasi+case when A.regmdr='' then A.TBPJS+A.TJamsostek else 0 end+case when A.regmdr='' then A.TBPJSKes else 0 end+case when A.regmdr='' then A.TDapenbun else 0 end+case when A.regmdr='' then 0 else 0 end+A.TPPH21)-" +
+            "(case when A.regmdr='' then 0 else (A.PBPJS_JKK + A.PBPJS_JHT + A.PBPJS_JKM+A.PBPJSKes + A.PBPJS_JP) - (A.TBPJS_JKK + A.TBPJS_JHT + A.TBPJS_JKM+A.TBPJSKes + A.TBPJS_JP) end+case when A.regmdr='' then 0 else 0 end+(A.PDapenbun+A.PPPIP - A.TDapenbun-A.TPPIP)+A.PPPH21+A.PDHK+A.PKebun+A.PTeh+A.Pbank+A.PSPBun+A.PIKBI+A.PSakitBkpj+A.PDenda+A.Phukuman+A.AdjustBPJSKes+A.Paguyuban+A.PPremi_Pikul+A.PMangkir+A.PKoperasi) as JumlahDiterima, " +
+            "(select top 1 nama from [SPDK_KanpusEF].dbo.Ref_Dik where Ref_Dik.reg=A.regmdr) as namamandor " +
+            "from [SPDK_KanpusEF].[dbo].[GajiMaster] as A inner join @@REFDIK as B on A.register=b.reg " +
+            "inner join @@NamaAfdeling as C on A.kodeafd=C.kodeafd " +
+	        "where Year(A.TANGGAL)='" + $('#Tahun').val() + "' and Month(A.TANGGAL)= '" + $('#Bulan').val() + "' and A.kdunit ='" + $('#Kd_Kbn').val() + "' and A.regmdr!='' " +
+            "order by A.kodeafd,golongan desc, B.nama"
+
+            //"A.TTetap, A.TKhusus, A.TSansos, A.TStruktural, A.TJabatan, A.TJamSostek, A.TDapenbun, A.TPPIP, " +
+            //    "A.TKomunikasi, A.TPeralihan, A.TTransportasi, A.UpahHarian, A.UpahBorong, A.UpahRecovery, A.TPPH21, A.Rapel, A.Premi, A.PJamsostek, A.PDapenbun+case when A.regmdr='' then 0 else A.TDapenbun end as PDapenbun, A.PPPIP+case when A.regmdr='' then 0 else A.TPPIP end as PPPIP, A.PPPH21, A.PKebun, A.PKoperasi, A.JmlHasil, A.Kerja, A.Borong, " +
+            //    "A.Recovery, A.Libur, A.Sakit, A.PermisiDibayar, A.CutiHamil, A.CutiTahunan, A.IjinTdkDibayar, A.Mangkir, A.CutiPanjang, A.CutiMBT, A.TBPJS+A.TJamsostek as TBPJS, A.PBPJS+A.PJamsostek as PBPJS, A.TBPJSKes, A.PBPJSKes, " +
+            //    "A.TTetap+A.TKhusus+A.TSansos+A.TStruktural+A.TJabatan+A.TJamSostek+A.TDapenbun+A.TPPIP+A.TKomunikasi+A.TPeralihan+A.TTransportasi+A.TBPJS+A.TPPIP+A.TPPH21 as JumlahTunjangan, " +
+            //    "(A.PDapenbun+case when A.regmdr='' then 0 else A.TDapenbun end)+(A.PPPIP+case when A.regmdr='' then 0 else A.TPPIP end)+A.PPPH21+A.PKebun+A.PKoperasi+(A.TBPJS+A.TJamsostek+A.PBPJS+A.PJamsostek)+(A.TBPJSKes+A.PBPJSKes) as JumlahPotongan, " +
+            //    "(A.GajiPokok+A.UpahHarian+A.UpahBorong+A.UpahRecovery+A.Rapel+A.Premi)+(A.TTetap+A.TKhusus+A.TSansos+A.TStruktural+A.TJabatan+A.TJamSostek+A.TDapenbun+A.TPPIP+A.TKomunikasi+A.TPeralihan+A.TTransportasi+A.TBPJS+A.TPPIP+A.TPPH21)-((A.PDapenbun+case when A.regmdr='' then 0 else A.TDapenbun end)+(A.PPPIP+case when A.regmdr='' then 0 else A.TPPIP end)+A.PPPH21+A.PKebun+A.PKoperasi+(A.TBPJS+A.TJamsostek+A.PBPJS+A.PJamsostek)+(A.TBPJSKes+A.PBPJSKes)) as JumlahDiterima " +
+
+        }
+    }
+</script>
+
+
+
+
+

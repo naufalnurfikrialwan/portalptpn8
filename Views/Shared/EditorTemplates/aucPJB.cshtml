@@ -1,0 +1,13 @@
+﻿@model Ptpn8.Penjualan.Models.View_HDRPJB
+@(Html.Kendo()
+    .AutoCompleteFor(m => m.No_PJB)
+    .ValuePrimitive(true)
+    .Placeholder("Pilih Nomor PJB")
+    .DataTextField("No_PJB")
+    .MinLength(2)
+    .Filter("contains")
+    .DataSource(o => { o.Read(r => r.Action("GetDataFrom", "Input").Data("filterPJB").Type(HttpVerbs.Post)); })
+    .Events(e => { e.Change("aucNoPJBOnSelect"); e.Select("aucNoPJBOnDataBound"); })
+)
+
+

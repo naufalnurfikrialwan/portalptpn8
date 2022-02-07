@@ -1,0 +1,416 @@
+﻿@model Ptpn8.Areas.NDNK.Models.HDRKonsepKirimNota
+@using Ptpn8.Areas.Referensi.Models.CRUD
+@using Ptpn8.Areas.NDNK.Models
+
+<div class="hdr"><span>@CRUDLokasiKerja.CRUD.LoginLokasiKerja(User.Identity.Name).PosisiLokasiKerja</span><span>:[@StatusTahunBuku.CRUDStatusTahunBuku.CRUD.TahunBuku(CRUDLokasiKerja.CRUD.LoginLokasiKerja(User.Identity.Name).PosisiLokasiKerjaId)]</span></div>
+<div class="hdr">@ViewBag.Title</div>
+
+<div id="_header" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <div class="_header">
+                <table width="100%;">
+                    <tr>
+                        <td width="10%">
+                            <label>No Input:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().TextBoxFor(m => m.HDRKonsepKirimNotaId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                            @(Html.Kendo().TextBoxFor(m => m.StatusDK).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                            @(Html.Kendo().TextBoxFor(m => m.KebunPengirimId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                            @(Html.Kendo().TextBoxFor(m => m.KebunPengirim).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                            @(Html.Kendo().TextBoxFor(m => m.Status).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                            @(Html.Kendo().TextBoxFor(m => m.Pembuat).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                            @(Html.Kendo().TextBoxFor(m => m.Nomor).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                            @(Html.Kendo().DropDownListFor(m => m.Nomor)
+                                    .Name("ddlInput")
+                                    .OptionLabel("Pilih No Input")
+                                    .AutoBind(false)
+                                    .DataValueField("Nomor")
+                                    .DataTextField("NomorNota")
+                                    .DataSource(o => o.Read(r => r.Action("getNomorInput", "KonsepKirimNotaDebet")).ServerFiltering(true))
+                                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 100%" })
+                                    .SelectedIndex(0)
+                                    .Events(e =>
+                                    {
+                                        e.Select("ddlInputOnSelect"); e.DataBound("ddlInputOnDataBound");
+                                    })
+                            )
+                        </td>
+                        <td width="60%"></td>
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td class="_key"><label for="dtpTanggal">Tanggal:</label></td>
+                        <td class="_key">
+                            @(Html.Kendo().DateTimePickerFor(m => m.Tanggal)
+                                .Name("dtpTanggal")
+                                .Format("dd/MM/yyyy HH:mm")
+                                .HtmlAttributes(new { style="width: 100%"})
+                            )
+                            <span class="k-invalid-msg" data-for="dtpTanggal"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_key">
+                            <label for="ddlKebunPenerima">Kebun Penerima:</label>
+                        </td>
+                        <td class="_key">
+                            @(Html.Kendo().DropDownListFor(m => m.KebunPenerimaId)
+                                .Name("ddlKebun")
+                                .AutoBind(true)
+                                .OptionLabel("Pilih Kebun...")
+                                .DataTextField("Nama")
+                                .DataValueField("KebunId")
+                                .DataSource(o => o.Read(r => r.Action("getKebun", "ddl", new { Area = "Referensi" }).Data("ExcludeKebun")).ServerFiltering(true))
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 100%" })
+                                .Events(e =>
+                                {
+                                    e.Select("ddlKebunPenerimaOnSelect"); e.DataBound("ddlKebunPenerimaOnDataBound");
+                                })
+                            )
+                            <span class="k-invalid-msg" data-for="ddlKebunPenerima"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="_nonkey">
+                            <label for="txtKeterangan">Keterangan:</label>
+                        </td>
+                        <td>
+                            @Html.Kendo().TextBoxFor(m=>m.Keterangan).HtmlAttributes(new { style="width: 100%;"})
+                            <span class="k-invalid-msg" data-for="txtKeterangan"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Submit</button>
+                                <button id="btnDeleteHeader" class="delete k-button" type="button" onclick="btnDeleteHeaderOnClick()">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Areas.NDNK.Models.DTLKonsepKirimNota>()
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.DTLKonsepKirimNotaId).Width(50).Hidden();
+            g.Bound(i => i.HDRKonsepKirimNotaId).Width(50).Hidden();
+            g.Bound(i => i.RekeningId).Width(50).Hidden();
+            g.Bound(i => i.Rekening).Width(150).ClientTemplate("#=Rekening.Text#");
+            g.Bound(i => i.Uraian).Width(200).ClientTemplate("<textarea rows='3' style='text-overflow:ellipsis; display:block; width:100%; height:100%; font-family:Arial; font-size:12px;' readonly='readonly'>#= Uraian #</textarea>");
+            g.Bound(i => i.JumlahFisik).Width(60).Format("{0:N0}").HtmlAttributes(new { style="text-align: right;" });
+            g.Bound(i => i.JumlahNilai).Width(60).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Command(command =>
+            {
+                command.Edit().Text("Edit").HtmlAttributes(new { @class = "edit k-button" });
+                command.Custom("Delete").Text("Hapus").Click("openWindow").HtmlAttributes(new { @class = "delete k-button" });
+            }).Width(200);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create().Text("Tambah Data").HtmlAttributes(new { @class = "submit k-button" });
+        })
+        .AutoBind(false)
+        .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+        .Pageable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Filterable()
+        .ColumnMenu()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DataBinding("grdOnDataBinding"); })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.DTLKonsepKirimNotaId);
+                model.Field(p => p.DTLKonsepKirimNotaId).Editable(true);
+                model.Field(p => p.HDRKonsepKirimNotaId).Editable(true);
+                model.Field(p => p.Rekening).DefaultValue(new Ptpn8.Areas.Referensi.Models.Rekening());
+            })
+            .Read(read => read.Action("DTLKonsepKirimNotaRead", "KonsepKirimNotaDebet").Type(HttpVerbs.Post))
+            .Create(create => create.Action("DTLKonsepKirimNotaCreate", "KonsepKirimNotaDebet").Type(HttpVerbs.Post))
+            .Update(update => update.Action("DTLKonsepKirimNotaUpdate", "KonsepKirimNotaDebet").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("DTLKonsepKirimNotaDestroy", "KonsepKirimNotaDebet").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+<div id="_footer">
+
+</div>
+
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data ?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+
+        </tr>
+    </table>
+</div>
+
+<script type="text/javascript">
+    var uid;
+    var wnd;
+    var statusDataHeader;
+    var hDRKonsepKirimNotaId;
+    var dTLKonsepKirimNotaId;
+    var ddlKebun;
+    var ddlRekening;
+
+    $('.k-window.titlebar').css('style', 'display: none');
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+    disableHeader();
+
+    $(document).ready(function () {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+    });
+
+    function openWindow(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.open().center();
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+
+    angular.module("__header", ["kendo.directives"])
+    .controller("MyCtrl", function ($scope) {
+        $scope.validate = function (event) {
+            event.preventDefault();
+            if ($scope.validator.validate()) {
+                    simpanHeader();
+            } else {
+                $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+                $("#grdDetail").data("kendoGrid").dataSource.data([]);
+            }
+        }
+    });
+
+    function simpanHeader(e) {
+     
+        var url = '/NDNK/KonsepKirimNotaDebet/simpanHeader';
+        $.ajax({
+            url: url,
+            data: {
+                hDRKonsepKirimNotaId: $('#HDRKonsepKirimNotaId').val(),
+                kebunPengirimId: $('#KebunPengirimId').val(),
+                kebunPenerimaId: ddlKebun.KebunId,
+                nomor: $('#ddlInput').val(),
+                tanggal: $('#dtpTanggal').val(),
+                pembuat: $('#Pembuat').val(),
+                status: $('#Status').val(), 
+                keterangan: $('#Keterangan').val(), 
+                statusDK: $('#StatusDK').val()
+            }, //parameters go here in object literal form
+            type: 'POST',
+            datatype: 'json',
+            success: function (data) {
+                if (data) {
+                    hDRKonsepKirimNotaId = $('#HDRKonsepKirimNotaId').val();
+                    $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                    $('#_detail').removeClass('disabledbutton');
+                    $('#ddlInput').data('kendoDropDownList').dataSource.read();
+                    $("#grdDetail").data("kendoGrid").dataSource.read({
+                        hDRKonsepKirimNotaId: $('#HDRKonsepKirimNotaId').val()
+                    });
+                    $('#ddlInput').data('kendoDropDownList').dataSource.read();
+                }
+                else {
+                    alert("Data Header Tidak Valid!");
+                    $('#_detail').addClass('disabledbutton');
+                    $("#grdDetail").data("kendoGrid").dataSource.data([]);
+                }
+            },
+            error: function () { alert("Error!"); }
+        });
+    }
+
+    function ddlInputOnSelect(e) {
+        var _ddlInput = this.dataItem(e.item)
+        $('#HDRKonsepKirimNotaId').val(_ddlInput.HDRKonsepKirimNotaId);
+        $('#KebunPengirimId').val(_ddlInput.KebunPengirimId);
+        $('#ddlInput').val(_ddlInput.KebunPenerimaId);
+        $('#Nomor').val(_ddlInput.Nomor);
+        $('#dtpTanggal').data('kendoDateTimePicker').value(new Date(parseInt(_ddlInput.Tanggal.substr(6))));
+        $('#Pembuat').val(_ddlInput.Pembuat);
+        $('#Status').val(_ddlInput.Status);
+        $('#StatusDK').val(_ddlInput.StatusDK);
+        $('#Keterangan').val(_ddlInput.Keterangan);
+        $('#ddlKebun').data('kendoDropDownList').value(_ddlInput.KebunPenerimaId);
+        ddlKebun = _ddlInput.KebunPenerima;
+        cekData(_ddlInput.NomorNota);
+    }
+
+    function cekData(nomorNota)
+    {
+        if (nomorNota.indexOf("Data Baru")>-1)   // Data Baru
+        {
+            statusDataHeader = 'baru'
+            enableHeader();
+            $('#btnSubmitHeader').removeClass('disabledbutton');
+            $('#btnDeleteHeader').removeClass('disabledbutton');
+            $('#btnSubmitHeader').attr('disabled', false);
+            $('#btnDeleteHeader').attr('disabled', true);
+            $('#_detail').addClass('disabledbutton');
+            $("#grdDetail").data("kendoGrid").dataSource.data([]);
+        }
+        else // Data Lama
+        {
+            statusDataHeader = 'edit'
+            disableHeader();
+            $('#btnSubmitHeader').removeClass('disabledbutton');
+            $('#btnDeleteHeader').removeClass('disabledbutton');
+            $('#btnSubmitHeader').attr('disabled', false);
+            $('#btnDeleteHeader').attr('disabled', false);
+            $('#_detail').addClass('disabledbutton');
+            $("#grdDetail").data("kendoGrid").dataSource.data([]);
+        }
+    }
+
+    function disableHeader() {
+        $("._key").find('span').addClass('disabledbutton');
+        $("._key").addClass('disabledbutton');
+        $('#btnSubmitHeader').addClass('disabledbutton');
+        $('#btnDeleteHeader').addClass('disabledbutton');
+        $('#detailPenerimaan').addClass('disabledbutton');
+    }
+
+    function enableHeader() {
+        $("._key").find('span').removeClass('disabledbutton');
+        $("._key").removeClass('disabledbutton');
+        $('#btnSubmitHeader').removeClass('disabledbutton');
+        $('#btnDeleteHeader').removeClass('disabledbutton');
+    }
+
+    function ddlInputOnDataBound(e) {
+    }
+
+    function ddlKebunPenerimaOnSelect(e)
+    {
+        var ddlItem = this.dataItem(e.item);
+        ddlKebun = ddlItem;
+    }
+    
+    function ddlKebunPenerimaOnDataBound(e)
+    {
+    }
+
+    function grdOnChange(e)
+    {
+
+    }
+
+    function grdOnEdit(e)
+    {
+        var model = e.model;
+        uid = model.uid;
+        this.expandRow(this.tbody.find("tr[data-uid='" + uid + "']"));
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=DTLKonsepKirimNotaId]").val(model.id).change();
+            e.container.find("input[name=HDRKonsepKirimNotaId]").val(hDRKonsepKirimNotaId).change();
+        }
+        dTLKonsepKirimNotaId = model.id;
+    }
+
+    function grdOnDataBinding(e)
+    {
+
+    }
+
+    function btnDeleteHeaderOnClick() {
+        wnd.open().center();
+        $("#yes").click(function () {
+            HapusHeader();
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+    function HapusHeader() {
+        var url = '/NDNK/KonsepKirimNotaDebet/deleteHeader';
+        $.ajax({
+            url: url,
+            data: { hDRKonsepKirimNotaId: $('#HDRKonsepKirimNotaId').val() }, //parameters go here in object literal form
+            type: 'GET',
+            datatype: 'json',
+            success: function (data) {
+                $('#ddlInput').data('kendoDropDownList').dataSource.read();
+                $('#ddlInput').data('kendoDropDownList').select(0);
+                $("#grdDetail").data("kendoGrid").dataSource.data([]);
+                disableHeader();
+            },
+            error: function () { alert("Error!") }
+        });
+    }
+
+    function ExcludeKebun()
+    {
+        return { kebunId: $('#KebunPengirimId').val() };
+    }
+
+    function filterRekening()
+    {
+        return {
+            value: $("#ddlRekening").val()
+        };
+
+    }
+
+    function ddlRekeningOnSelect(e)
+    {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdDetail').data('kendoGrid');
+        var dataItem = grid.dataSource.get(dTLKonsepKirimNotaId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        var data = grid.dataItem(row);
+        ddlRekening = ddlItem;
+        data.set("Rekening", ddlItem);
+        row.find("input[name=RekeningId]").val(ddlItem.RekeningId).change();
+    }
+    
+    function ddlRekeningOnDataBound()
+    {
+
+    }
+
+
+</script>
+
+<style type="text/css">
+
+</style>

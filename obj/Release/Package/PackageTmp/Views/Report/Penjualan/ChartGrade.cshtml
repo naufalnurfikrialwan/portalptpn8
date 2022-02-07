@@ -1,0 +1,192 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Volume Penjualan Per Buyer</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2016).Format("D4").Value(2018)
+                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Budidaya:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete()
+                    .Name("Budidaya")
+                    .MinLength(2)
+                    .Filter("contains")
+                    .Placeholder("Budidaya")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                    .HtmlAttributes(new { style = "width: 95%" })
+                .Events(e =>
+                {
+                    e.Change("BudidayaOnSelect");
+                    e.Select("BudidayaOnSelect");
+                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:600px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+        .HtmlAttributes(new { style = "Height: 870px" })
+.Items(tabstrip =>
+{
+    tabstrip.Add().Text("I. Volume Penjualan Per Budidaya (Kg)").Selected(true)
+    .Content(@<text>
+        @(Html.Kendo().Chart<Ptpn8.Penjualan.Models.ChartBudidaya>()
+            .HtmlAttributes(new { style = "Height: 800px" })
+                .Name("chart")
+                .AutoBind(false)
+                .Title("Volume Penjualan (Kg)")
+                .Legend(legend => legend.Position(ChartLegendPosition.Top))
+                .DataSource(ds => ds
+                    .Read(read => read.Action("GetDataFrom", "Report").Type(HttpVerbs.Post).Data("filterReport"))
+                )
+                .ChartArea(chartArea => chartArea
+                    .Background("transparent")
+                )
+                .Series(series =>
+                {
+                    series.Bar(model => model.JumlahVolume).Name("Volume Penjualan").Color("red");
+                })
+                .CategoryAxis(axis => axis
+                        .Categories(model => model.NamaBudidaya)
+                        .MajorGridLines(lines => lines.Visible(false))
+                        )
+                .ValueAxis(axis => axis
+                    .Numeric().Labels(labels => labels.Format("{0:N0}"))
+                    .Line(line => line.Visible(false))
+                    .MajorGridLines(lines => lines.Visible(true))
+                )
+                .Tooltip(tooltip => tooltip
+                    .Visible(true)
+                    .Template("#= series.name #: #= value #")
+                )
+        )
+
+    </text>);
+    tabstrip.Add().Text("II. Volume Penjualan Per Grade (Kg)").Selected(false)
+    .Content(@<text>
+
+            @(Html.Kendo().Chart<Ptpn8.Penjualan.Models.ChartGrade>()
+                .Name("chart2")
+                .HtmlAttributes(new { style = "Height: 800px" })
+                .AutoBind(false)
+                .Title("Volume Penjualan (Kg)")
+                .Legend(legend => legend.Position(ChartLegendPosition.Top))
+                .DataSource(ds => ds
+                    .Read(read => read.Action("GetDataFrom", "Report").Type(HttpVerbs.Post).Data("filterReport2"))
+                )
+                .ChartArea(chartArea => chartArea
+                    .Background("transparent")
+                )
+                .Series(series =>
+                {
+                    series.Bar(model => model.JumlahVolume).Name("Volume Penjualan").Color("blue");
+                })
+                .CategoryAxis(axis => axis
+                        .Categories(model => model.NamaGrade)
+                        .MajorGridLines(lines => lines.Visible(false))
+                        )
+                .ValueAxis(axis => axis
+                    .Numeric().Labels(labels => labels.Format("{0:N0}"))
+                    .Line(line => line.Visible(false))
+                    .MajorGridLines(lines => lines.Visible(true))
+                )
+                .Tooltip(tooltip => tooltip
+                    .Visible(true)
+                    .Template("#= series.name #: #= value #")
+                )
+            )
+
+    </text>);
+})
+    )
+</div>
+
+<script>
+var budidayaId;
+
+function filterBudidaya(e) {
+    return {
+        value: $("#Budidaya").val()
+    };
+}
+
+function btnProsesOnClick() {
+    $('#chart').data('kendoChart').dataSource.read();
+    $('#chart2').data('kendoChart').dataSource.read();
+}
+
+function BudidayaOnSelect(e) {
+    var mainBudidaya = this.dataItem(e.item);
+    $('#MainBudidayaId').val(mainBudidaya.MainBudidayaId);
+    budidayaId = mainBudidaya.MainBudidayaId;
+}
+
+function filterReport(e) {
+    return {
+        strClassView: 'Ptpn8.Penjualan.Models.ChartBudidaya',
+        scriptSQL: "declare @@dashboard as table (NamaBudidaya nvarchar(max),JumlahVolume decimal(18,2)) " +
+                    "insert @@dashboard " +
+                    "Select distinct C.Nama as NamaBudidaya, Sum((A.Gross-A.Tare)) as JumlahVolume  " +
+                    "from [SPDK_KanpusEF].[dbo].[DTL_Faktur] as A join [SPDK_KanpusEF].[dbo].[HDR_Faktur] as B on A.HDR_FakturId=B.HDR_FakturId " +
+                    "join [ReferensiEF].[dbo].[MainBudidaya] as C on B.MainBudidayaId = C.MainBudidayaId " +
+                    "where B.TahunBuku=" + $('#Tahun').val() + " " +
+                    "group by C.Nama " +
+                    "select * from @@dashboard"
+    }
+}
+
+function filterReport2(e) {
+    return {
+        strClassView: 'Ptpn8.Penjualan.Models.ChartGrade',
+        scriptSQL: "declare @@dashboard as table (NamaGrade nvarchar(max),JumlahVolume decimal(18,2)) " +
+                    "insert @@dashboard " +
+                    "Select distinct C.Nama as NamaGrade, Sum((A.Gross-A.Tare)) as JumlahVolume  " +
+                    "from [SPDK_KanpusEF].[dbo].[DTL_Faktur] as A join [SPDK_KanpusEF].[dbo].[HDR_Faktur] as B on A.HDR_FakturId=B.HDR_FakturId " +
+                    "join [ReferensiEF].[dbo].[Grade] as C on A.GradeId = C.GradeId " +
+                    "where B.MainBudidayaId = '" + budidayaId + "' and B.TahunBuku=" + $('#Tahun').val() + " " +
+                    "group by C.Nama " +
+                    "select * from @@dashboard"
+    }
+}
+
+</script>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,155 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+<script src="~/Scripts/UserManagement/AccessHistory.js"></script>
+
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td><div style="text-align:center">@ViewBag.Title</div></td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="10%">
+                        <label style="text-align:left">Lokasi Kerja:</label>
+                    </td>
+                    <td>
+                        @(Html.Kendo().AutoComplete().Name("aucLokasiKerja")
+                            .MinLength(2)
+                            .Filter("contains")
+                            .DataTextField("Nama")
+                            .Events(ev => { ev.Change("aucLokasiKerjaOnSelect"); })
+                            .HtmlAttributes(new { style = "width: 55%", @class = "allcaps" })
+                            .DataSource(o =>
+                            {
+                                o.Read(r => r.Action("GetLokasiKerja1", "ddl", new { Area = "Referensi" }).Data("filterLokasiKerja").Type(HttpVerbs.Post));
+                                o.ServerFiltering(true);
+                            })
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td width="10%" style="font-size:medium; font-weight: 500;">Bulan-Tahun</td>
+                    <td>
+                        @(Html.Kendo().DropDownList()
+                            .Name("ddlBulan")
+                            .AutoBind(true)
+                            .OptionLabel("Pilih Bulan...")
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .HtmlAttributes(new { style = "width: 100px;" })
+                            .Events(e => { e.Change("ddlBulanChange"); e.Select("ddlBulanSelect"); })
+                            .Value(((DateTime.Now.Month)).ToString())
+                            .BindTo(new List<SelectListItem>()
+                            {
+                                new SelectListItem() {Text = "Januari",Value = "1"},
+                                new SelectListItem() {Text = "Februari",Value = "2"},
+                                new SelectListItem() {Text = "Maret",Value = "3"},
+                                new SelectListItem() {Text = "April",Value = "4"},
+                                new SelectListItem() {Text = "Mei",Value = "5"},
+                                new SelectListItem() {Text = "Juni",Value = "6"},
+                                new SelectListItem() {Text = "Juli",Value = "7"},
+                                new SelectListItem() {Text = "Agustus",Value = "8"},
+                                new SelectListItem() {Text = "September",Value = "9"},
+                                new SelectListItem() {Text = "Oktober",Value = "10"},
+                                new SelectListItem() {Text = "November",Value = "11"},
+                                new SelectListItem() {Text = "Desember",Value = "12"},
+                            })
+                        )
+                        -
+                        @(Html.Kendo().IntegerTextBox()
+                            .Name("txtTahun")
+                            .Value(DateTime.Now.Year)
+                            .HtmlAttributes(new { style = "width: 60px;" })
+                            .Events(e => { e.Change("txtTahunChange"); })
+                            .Format("{0:0000}")
+                        )
+                    </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="confirm">
+                            <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<div id="_detail" class="_detail">
+    <div>
+        @(Html.Kendo().Grid<Ptpn8.UserManagement.Models.ApplicationUser>()
+            .Name("grdDetail")
+            .Columns(g =>
+            {
+                g.Bound(i => i.Id).Width(200).Hidden();
+                g.Bound(i => i.Foto).Width(70).Title("Foto").ClientTemplate(
+                        @"<div class='photo'><img src='" + Url.Content("~/Content/Images/View/") + "#:UserName#.jpg' alt='#: UserName #' /></div>");
+                g.Bound(i => i.Nama).Width(120);
+                g.Bound(i => i.Jabatan).Width(120);
+                g.ForeignKey(i => i.LokasiKerjaId, Ptpn8.Areas.Referensi.Models.CRUD.CRUDLokasiKerja.CRUD.getFlatData(), "LokasiKerjaId", "Text").Title("Lokasi Kerja").Width(200);
+            })
+            .AutoBind(false)
+            .Groupable()
+            .ColumnMenu(o => o.Columns(true))
+            .Pageable()
+            .Scrollable()
+            .Sortable()
+            .Filterable()
+            .ClientDetailTemplateId("detailRiwayatAkses")
+            .HtmlAttributes(new { style = "height:600px;" })
+            .Events(e => { e.DetailExpand("grdOnDetailExpand"); })
+            .DataSource(o => o
+                .Ajax()
+                .Model(model =>
+                {
+                    model.Id(p => p.Id);
+                    model.Field(p => p.Id).Editable(true);
+                    model.Field(i => i.NoIndukKaryawan).Editable(false);
+                    model.Field(i => i.Nama).Editable(false);
+                    model.Field(i => i.Jabatan).Editable(false);
+                    model.Field(i => i.LokasiKerjaId).Editable(false);
+                })
+                .Read(read => read.Action("detailRead", "Input").Data("filterReadMaster").Type(HttpVerbs.Post))
+                )
+        )
+    </div>
+</div>
+
+<script id="detailRiwayatAkses" type="text/kendo-tmpl">
+    @(Html.Kendo().Grid<Ptpn8.Models.RiwayatAkses>()
+        .Name("grdRiwayatAkses_#=Id#")
+        .AutoBind(true)
+        .Columns(column =>
+        {
+            column.Bound(o => o.RiwayatAksesId).Width(100).Hidden();
+            column.Bound(o => o.UserName).Width(100).Hidden();
+            column.Bound(o => o.TanggalAkses).Width(100).Format("{0:dd-MM-yyyy hh:mm}").HtmlAttributes(new { style = "font-size: medium; color: white; background: green;" });
+            column.Bound(o => o.PageYangDiakses).Width(200).HtmlAttributes(new { style = "font-size: medium; color: white; background: green;" });
+        })
+        .Events(ev=>ev.DataBound("riwayatOnBound"))
+        .DataSource(datasource => datasource
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(p => p.RiwayatAksesId);
+            })
+            .Read(read => read.Action("detailRead", "Input", new {id = "#=Id#"}).Data("filterRiwayat").Type(HttpVerbs.Post))
+            )
+            .ToClientTemplate()
+    )
+</script>
+
+<script type="text/javascript">
+</script>
+

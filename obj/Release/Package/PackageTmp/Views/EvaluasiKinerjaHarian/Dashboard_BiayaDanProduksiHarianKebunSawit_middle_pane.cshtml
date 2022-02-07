@@ -1,0 +1,87 @@
+﻿<div class="k-content">
+    @*<label id='judulgroup1' style='font-size: medium; text-align:center;'></label>*@
+
+    <div>
+        <label id="judulgrid1" style="text-align:center; font-size:medium"></label>
+        <label id="judulgrid2" style="text-align:center; font-size:medium"></label>
+        <label id=" rid2" style="text-align:center; font-size:small"></label>
+    </div>
+    <div id="data" style="width:100%;height:535px;">
+        @(Html.Kendo()
+                        .Grid<Ptpn8.ArealDanEvaluasiKinerja.Models.MonitorBiayaDanProduksiHarianSeluruhKebun>()
+                        .Name("grdDetail")
+                        .ToolBar(tools => { tools.Excel(); })
+                        .Excel(excel => excel
+                            .FileName("BiayadanProduksiHarian.xlsx")
+                            .Filterable(true)
+                            .ProxyURL(Url.Action("Excel_Export_Save", "EvaluasiKinerjaHarian"))
+                        )
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.KebunId).Width(50).Hidden();
+                            g.Bound(i => i.Kebun).Width(250).Title("Kebun").Locked(true);
+                            g.Bound(i => i.Tgl).Width(100).Title("Tgl").Locked(true);
+                            g.Group(i => i
+                               .Title("Produksi TBS (Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_2).Width(75).Title("TBS Sendiri").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                                   c.Bound(q => q.Field_3).Width(75).Title("TBS Plasma").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                                   c.Bound(q => q.Field_4).Width(75).Title("Brondolan").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                                   c.Bound(q => q.Field_5).Width(75).Title("Jumlah TBS").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                               })
+                           );
+                            g.Bound(i => i.Field_6).Width(75).Title("Jumlah Tandan (Buah)").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                            g.Bound(i => i.Field_7).Width(75).Title("TBS Dikirim (Kg)").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                            g.Bound(i => i.Field_8).Width(75).Title("TBS TIdak Terkirim (Kg)").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                            g.Group(i => i
+                               .Title("Produksi Jadi (Kg)")
+                               .Columns(c =>
+                               {
+                                   c.Bound(q => q.Field_11).Width(75).Title("Sendiri").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                                   c.Bound(q => q.Field_12).Width(75).Title("Plasma/Pihak Ke III").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                                   c.Bound(q => q.Field_13).Width(75).Title("Jumlah CPO").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                                   c.Bound(q => q.Field_14).Width(75).Title("Jumlah Kernel").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                                   c.Bound(q => q.Field_14).Width(75).Title("Jumlah Produksi Jadi").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                               })
+                           );
+                            g.Bound(i => i.Field_16).Width(75).Title("Rendemen (%)").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                            g.Bound(i => i.Field_17).Width(75).Title("Jumlah HKE").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                            g.Bound(i => i.Field_18).Width(75).Title("Luas Areal Dipanen (Ha)").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}"); 
+                            g.Bound(i => i.Field_19).Width(75).Title("Kapasitas(kg/hk)").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+                        })
+                        .AutoBind(false)
+                        .Navigatable()
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .HtmlAttributes(new { style = "Height: 550px" })
+                        .DataSource(o => o
+                        .Ajax()
+                        .ServerOperation(false)
+                        .Sort(s => { s.Add(x => x.Kebun); s.Add(x => x.Tgl); })
+                        .Batch(true)
+                        .Model(model =>
+                        {
+                            model.Id(p => p.KebunId);
+                        })
+                        .Read(read => read.Action("GetDataFromGRID", "EvaluasiKinerjaHarian").Data("filterGRD").Type(HttpVerbs.Post))
+                        ))
+    </div>
+</div>
+
+<script>
+
+    function filterGRD(e)
+    {
+        var _blnAwal = $('#dtpTanggalTransaksi').val();
+        var _thnAwal = $('#TahunAwal').val();
+        var _bdy = '55C355B8-E57A-48B5-A2B0-1E71B4CCF5AB';
+        var _scriptSQL = "use SPDK_KanpusEF; SET DATEFORMAT DMY exec TransposeMonitorBiayadanProduksiHarian '" + _blnAwal + "','" + _bdy + "'";
+
+        return {
+            strClassView: "Ptpn8.ArealDanEvaluasiKinerja.Models.MonitorBiayaDanProduksiHarianSeluruhKebun",
+            scriptSQL: _scriptSQL,
+            _menuId: menuID
+        };
+    }
+</script>

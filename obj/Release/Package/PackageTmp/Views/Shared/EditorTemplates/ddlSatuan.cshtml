@@ -1,0 +1,17 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlSatuan")
+        .OptionLabel("Pilih Satuan...")
+        .DataTextField("Nama")
+        .DataValueField("SatuanId")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("getSatuan", "ddl", new { Area = "Referensi" })).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlSatuanOnSelect"); e.DataBound("ddlSatuanOnDataBound"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

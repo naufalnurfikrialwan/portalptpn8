@@ -1,0 +1,430 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model Bagian
+@{
+    ViewBag.Title = "Referensi Bagian";
+}
+
+<h2>Referensi Bagian</h2>
+<div id="refBagian" ng-app="_refBagian">
+    <div class="k-content" ng-controller="MyCtrl">
+        <div id="headerBagian">
+            <form kendo-validator="validator" ng-submit="validate($event)">
+                <table>
+                    <tr>
+                        <td><label for="ddlOrganisasi">Organisasi:</label></td>
+                        <td>
+                            @(Html.Kendo().DropDownList()
+                        .Name("ddlOrganisasi")
+                        .AutoBind(true)
+                        .OptionLabel("Pilih Perusahaan...")
+                        .DataTextField("Nama")
+                        .DataValueField("OrganisasiId")
+                        .DataSource(o => o.Read(r => r.Action("getOrganisasi", "ddl", new { Area="Referensi"})).ServerFiltering(true))
+                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Organisasi", style = "width: 300px" })
+                        .Events(e =>
+                        {
+                            e.Select("ddlOrganisasiOnSelect"); e.DataBound("ddlOrganisasiOnDataBound");
+                        })
+                            )
+                            <span class="k-invalid-msg" data-for="ddlOrganisasi"></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ddlDireksi">Direktorat:</label></td>
+                        <td>
+                            @(Html.Kendo().DropDownList()
+                        .Name("ddlDireksi")
+                        .AutoBind(true)
+                        .OptionLabel("Pilih Direktorat...")
+                        .DataTextField("Nama")
+                        .DataValueField("DireksiId")
+                        .DataSource(o => o.Read(r => r.Action("getDireksi", "ddl", new { Area = "Referensi" }).Data("filterDireksi")).ServerFiltering(true))
+                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Direktorat", style = "width: 300px" })
+                        .Events(e =>
+                        {
+                            e.Select("ddlDireksiOnSelect"); e.DataBound("ddlDireksiOnDataBound");
+                        })
+                        .CascadeFrom("ddlOrganisasi")
+                        .Enable(false)
+                            )
+                            <span class="k-invalid-msg" data-for="ddlDireksi"></span>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="confirm">
+                                <button class="k-button k-primary" type="submit">Submit</button>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="detailBagian">
+    @(Html.Kendo()
+        .Grid<Bagian>()
+        .Name("grdBagian")
+        .Columns(g =>
+        {
+            g.Bound(i => i.DireksiId).Hidden();
+            g.Bound(i => i.BagianId).Hidden();
+            g.Bound(i => i.Nomenklatur).Width(100);
+            g.Bound(i => i.kd_kbn).Width(80).Title("Id-SPDK");
+            g.Bound(i => i.Nama).Width(200);
+            g.Bound(i => i.Telepon).Width(100);
+            g.Bound(i => i.Faksimili).Width(100);
+            g.Bound(i => i.Email).Width(100);
+            g.Command(command => {
+                command.Edit();
+                //command.Destroy();
+                command.Custom("Delete").Click("openWindow");
+            }).Width(180);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+        })
+        .AutoBind(false)
+        .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+        .Selectable()
+        .Pageable()
+        .HtmlAttributes(new { style="Height:350px;"})
+        .Scrollable()
+        .ClientDetailTemplateId("daftarLainnya")
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); e.DataBinding("grdOnDataBinding"); })
+        .DataSource(o => o
+            .Ajax()
+            //.ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.BagianId);
+                model.Field(p => p.BagianId).Editable(true);
+                model.Field(p => p.DireksiId).Editable(true);
+            })
+            .Read(read => read.Action("bagianRead", "Bagian").Data("filterGrid").Type(HttpVerbs.Post))
+            .Create(create => create.Action("bagianCreate", "Bagian").Type(HttpVerbs.Post))
+            .Update(update => update.Action("bagianUpdate", "Bagian").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("bagianDestroy", "Bagian").Type(HttpVerbs.Post))
+            .ServerOperation(false)
+            )
+
+    )
+</div>
+
+<div id="modalWindow">
+    <h2><span style="color: red">Hapus 1 Record ?</span></h2>
+    <br />
+    <button style="background-color: red; color: white;" id="yes" class="k-button">Yes</button>
+    <button style="background-color: green; color: white;" id="no" class="k-button">No</button>
+</div>
+
+<script id="daftarLainnya" type="text/kendo-tmpl">
+    @(Html.Kendo().TabStrip()
+            .Name("tabstrip_#=BagianId#")
+            .SelectedIndex(0)
+            .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+            .Items(items =>
+            {
+                items.Add().Text("Urusan").Content(@<text>
+        @(Html.Kendo().Grid<Urusan>()
+                      .Name("grdUrusan_#=BagianId#")
+                      .Columns(column =>
+                      {
+                          column.Bound(o => o.BagianId).Width(100).Hidden();
+                          column.Bound(o => o.UrusanId).Width(100).Hidden();
+                          column.Bound(o => o.Nomenklatur).Width(100);
+                          column.Bound(o => o.kd_kbn).Title("Id-SPDK").Width(80);
+                          column.Bound(o => o.Nama).Width(200);
+                          column.Bound(o => o.Telepon).Width(150);
+                          column.Bound(o => o.Faksimili).Width(150);
+                          column.Bound(o => o.Email).Width(200);
+                          column.Command(command => {
+                              command.Edit();
+                              //command.Destroy();
+                              command.Custom("Delete").Click("openWindow");
+                          }).Width(180);
+                      })
+                      .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                      .Events(e => { e.Edit("grdUrusanOnEdit"); e.DataBound("grdUrusanOnDataBound"); })
+                                .ToolBar(toolbar =>
+                                {
+                                    toolbar.Create();
+                                })
+                                .DataSource(datasource => datasource
+                                    .Ajax()
+                                    .Model(model =>
+                                    {
+                                        model.Id(p => p.UrusanId);
+                                        model.Field(p => p.BagianId).Editable(true);
+                                        model.Field(p => p.UrusanId).Editable(true);
+                                    })
+                                    .Read(read => read.Action("UrusanRead", "Bagian", new { bagianId = "#=BagianId#" }).Type(HttpVerbs.Post))
+                                    .Create(create => create.Action("UrusanCreate", "Bagian").Type(HttpVerbs.Post))
+                                    .Update(update => update.Action("UrusanUpdate", "Bagian").Type(HttpVerbs.Post))
+                                    .Destroy(destroy => destroy.Action("UrusanDestroy", "Bagian").Type(HttpVerbs.Post))
+                                )
+                                .ToClientTemplate()
+        )
+                </text>
+                );
+            })
+            .ToClientTemplate()
+    )
+
+</script>
+
+@* validator *@
+<script>
+    angular.module("_refBagian", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                    $("#grdBagian").data("kendoGrid").dataSource.read({ direksiId: $("#ddlDireksi").val() });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+                    $("#grdBagian").data("kendoGrid").dataSource.data([]);
+                }
+            }
+        });
+</script>
+
+<script>
+    var bagianId;
+    var ddlOrganisasi;
+    var ddlDireksi;
+    var ddlPropinsi;
+    var ddlKota;
+    var ddlKecamatan;
+    var ddlKelurahan;
+    var uid;
+    var wnd;
+
+    $(document).ready(function () {
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+    });
+
+
+
+    function openWindow(e) {
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.open().center();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+
+    function grdOnDataBinding(e)
+    {
+
+    }
+
+    function btnSubmit()
+    {
+        if (ddlDireksi.Nama == "Pilih Direktorat...") {
+            $("#grdBagian").data("kendoGrid").dataSource.data([]);
+        }
+        else {
+            $("#grdBagian").data("kendoGrid").dataSource.read({ direksiId: $("#ddlDireksi").val() });
+        }
+    }
+
+    function filterGrid() {
+        return {
+            direksiId: $("ddlDireksi").val()
+        };
+    }
+
+    /* Grid Organisasi */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDetailExpand(e) {
+        bagianId = this.dataItem(e.masterRow).BagianId;
+    }
+
+    function grdOnDataBound(e) {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=BagianId]").val(model.id).change();
+            e.container.find("input[name=DireksiId]").val(ddlDireksi.DireksiId).change();
+        }
+        bagianId = model.id;
+        ddlPropinsi = model.Propinsi;
+        ddlKota = model.Kota;
+        ddlKecamatan = model.Kecamatan;
+        ddlKelurahan = model.Kelurahan;
+        uid = model.uid;
+        this.expandRow(this.tbody.find("tr[data-uid='" + uid + "']"));
+    }
+
+
+    function grdOnChange(e) {
+    }
+
+    function ddlPropinsiOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBagian').data('kendoGrid');
+        var dataItem = grid.dataSource.get(bagianId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Propinsi", ddlItem);
+        data.set("PropinsiId", ddlItem.PropinsiId)
+    }
+
+    function ddlKotaOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBagian').data('kendoGrid');
+        var dataItem = grid.dataSource.get(bagianId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kota", ddlItem);
+        data.set("KotaId", ddlItem.KotaId);
+    }
+
+    function ddlKecamatanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBagian').data('kendoGrid');
+        var dataItem = grid.dataSource.get(bagianId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kecamatan", ddlItem);
+        data.set("KecamatanId", ddlItem.KecamatanId);
+    }
+
+    function ddlKelurahanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBagian').data('kendoGrid');
+        var dataItem = grid.dataSource.get(bagianId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kelurahan", ddlItem);
+        data.set("KelurahanId", ddlItem.KelurahanId);
+    }
+
+    function ddlOrganisasiOnSelect(e) {
+        ddlOrganisasi = this.dataItem(e.item);
+    }
+
+    function ddlDireksiOnSelect(e) {
+        ddlDireksi = this.dataItem(e.item);
+    }
+
+    function ddlPropinsiOnDataBound(e) {
+        var ddl = $('#ddlPropinsi').data('kendoDropDownList');
+        ddl.search(ddlPropinsi.Nama);
+    }
+
+    function ddlKotaOnDataBound(e) {
+        var ddl = $('#ddlKota').data('kendoDropDownList');
+        ddl.search(ddlKota.Nama);
+    }
+
+    function ddlKecamatanOnDataBound(e) {
+        var ddl = $('#ddlKecamatan').data('kendoDropDownList');
+        ddl.search(ddlKecamatan.Nama);
+    }
+
+    function ddlKelurahanOnDataBound(e) {
+        var ddl = $('#ddlKelurahan').data('kendoDropDownList');
+        ddl.search(ddlKelurahan.Nama);
+    }
+
+    function ddlOrganisasiOnDataBound(e) {
+        var ddl = $('#ddlOrganisasi').data('kendoDropDownList');
+        ddl.search("PT Perkebunan Nusantara VIII");
+        ddlOrganisasi = this.dataItem(e.item);
+    }
+
+    function ddlDireksiOnDataBound(e) {
+    }
+
+    function filterDireksi() {
+
+        return {
+            organisasiId: $("#ddlOrganisasi").val()
+        };
+    }
+
+    function filterKota() {
+        return {
+            propinsiId: $("#ddlPropinsi").val()
+        };
+    }
+
+    function filterKecamatan() {
+
+        return {
+            kotaId: $("#ddlKota").val()
+        };
+    }
+
+    function filterKelurahan() {
+
+        return {
+            kecamatanId: $("#ddlKecamatan").val()
+        };
+    }
+
+    function grdUrusanOnDataBound(e) {
+
+    }
+
+    function grdUrusanOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=UrusanId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=BagianId]").val(bagianId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+</script>
+
+<style>
+    #headerBagian {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: gainsboro; 
+    }
+
+    #detailBagian {
+        
+    }
+</style>

@@ -1,0 +1,18 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@model SubBudidaya
+
+@(Html.Kendo().DropDownListFor(m => m.SubBudidayaId)
+        .Name("ddlSubBudidaya")
+        .AutoBind(true)
+        .OptionLabel("Pilih Sub ..")
+        .DataTextField("Nama")
+        .DataValueField("SubBudidayaId")
+        .DataSource(o => o.Read(r => r.Action("getSubBudidaya", "ddl", new { Area = "Referensi" }).Data("filterSubBudidaya")).ServerFiltering(true))
+        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Sub Budidaya", style = "width: 200px" })
+        .Events(e =>
+        {
+            e.Select("ddlSubBudidayaOnSelect"); e.DataBound("ddlSubBudidayaOnDataBound");
+        })
+        .CascadeFrom("ddlMainBudidaya")
+        .Enable(false)
+)

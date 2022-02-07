@@ -1,0 +1,29 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Dibawah 5 Tahun",
+                Value = "Dibawah 5 Tahun"
+            },
+            new SelectListItem() {
+                Text = "6 - 10 Tahun",
+                Value = "6 - 10 Tahun"
+            },
+            new SelectListItem() {
+                Text = "11 - 25 Tahun",
+                Value = "11 - 25 Tahun"
+            },
+            new SelectListItem() {
+                Text = "Diatas 25 Tahun",
+                Value = "Diatas 25 Tahun"
+            }
+        })
+        .Events(e => { e.Change("ddlJangkaWaktuKerjasamaOnChange"); e.Select("ddlJangkaWaktuKerjasamaOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

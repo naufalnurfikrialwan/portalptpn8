@@ -1,0 +1,115 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe A'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="80%">
+        <tr>
+            <td>
+                <div class="_hdr" id="_chapterA" style="display: none;">
+                    <div id="ContohChapterA" style="display: none;">
+                        <label style="font-size: xx-large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER A</label>
+                        <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                        <label id="instruksiA1" style="font-size: x-large; font-weight: 600; margin: 20px 20px 20px 20px">Pada bagian ini akan tercantum instruksi soal dan cara pengerjaan untuk contoh soal chapter A. Silahkan baca dan pahami instruksi ini sebelum Anda lanjut ke soal ujian chapter A. Tes ini memiliki waktu yang terbatas.</label>
+                        <label style="font-size: x-large;">Contoh Soal 1 :</label>
+                        <table class="multiplechoice">
+                            <tr><td>Pada bagian ini Anda akan melihat contoh soal chapter A. Pastikan anda memahami dengan seksama contoh soal tersebut beserta jawabannya. Berikut adalah pilihan jawaban untuk contoh soal chapter A:</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterA_a" type="radio" name="ContohSoal1_ChapterA" value="ContohSoal1_ChapterA_a" disabled>(a) Pilihan jawaban A</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterA_b" type="radio" name="ContohSoal1_ChapterA" value="ContohSoal1_ChapterA_b" disabled checked="checked">(b) Pilihan jawaban B</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterA_c" type="radio" name="ContohSoal1_ChapterA" value="ContohSoal1_ChapterA_c" disabled>(c) Pilihan jawaban C</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterA_d" type="radio" name="ContohSoal1_ChapterA" value="ContohSoal1_ChapterA_d" disabled>(d) Pilihan jawaban D</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterA_e" type="radio" name="ContohSoal1_ChapterA" value="ContohSoal1_ChapterA_e" disabled>(e) Pilihan jawaban E</td></tr>
+                            <tr><td><label style="color: blue;">Ini adalah jawaban contoh soal chapter A beserta penjelasannya. Pastikan Anda memahami alasan mengapa itu yang menjadi jawabannya. Silahkan dipahami dengan seksama penjelasannya. Pastikan anda sudah memahami instruksi untuk model soal chapter A ini sebelum Anda menekan/mengklik tombol mulai soal ujian chapter A dibawah ini.</label></td></tr>
+                        </table>
+
+                        <table width="100%">
+                            <tr>
+                                <td align="center">
+                                    <button type="button" id="btnMulaiTestChapterA" onclick="btnMulaiTestOnClick('Tipe A')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter A</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="TestChapterA" style="display: none;">
+                        @{
+                            Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                            Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                            Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe A").TipeSoalId;
+                            int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe A").JumlahPertanyaan;
+                            Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                            List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                            List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+
+                            <div style="border: 3px solid black; padding: 10px;">
+                                <label style="font-size: xx-large; font-weight: 1000; text-align: center;">SOAL CHAPTER A</label>
+                                <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                                <label id="instruksiA2" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                                <label style="font-size: x-large; margin: 20px 20px 20px 20px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat. Anda dapat mengerjakan soal yang menurut anda lebih mudah terlebih dahulu.</label>
+                                <label style="font-size: x-large; margin: 20px 20px 20px 20px">Apabila sudah selesai Click <span style="color: red">"Lanjut ke Chapter B"</span></label>
+                            </div>
+                            <div id="A">
+                                @for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                                {
+                                    paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                                    pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                                    pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                                    jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                                    <table class="multiplechoice">
+                                        <tr>
+                                            @foreach (var mp1 in pertanyaanDetail)
+                                            {
+                                                <td width="4%"><label>(@noUrut)</label></td>
+                                                <td>@mp1.PertanyaanTeks</td>
+                                            }
+                                        </tr>
+
+                                        @foreach (var mp2 in jawaban)
+                                        {
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <label id="A1_@noUrut" style="display: none;">@mp2.PertanyaanId</label>
+                                                    <input class="largerRadio" type="radio" name="A_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('A_@noUrut','@(mp2.NoUrut)')" /><span class="jawaban" onclick="pertanyaanOnClick('A_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut)) @mp2.JawabanTeks</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                }
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnA" onclick="btnOnClick('Tipe A')" class="btn-big" sstyle="font-size: x-large; height: 60px; width: 250px;">Lanjut ke Chapter B</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+<style>
+    #ContohChapterA {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #TestChapterA {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+</style>

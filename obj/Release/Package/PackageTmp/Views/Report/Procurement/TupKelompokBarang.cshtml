@@ -1,0 +1,717 @@
+﻿
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">Persediaan Barang Bahan</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="10%">
+                        <label>Persediaan sampai tanggal:</label>
+                    </td>
+                    <td width="40%">
+                        @(Html.Kendo().DatePicker().Name("TanggalAkhir").Format("dd-MM-yyyy")
+                            .Value(DateTime.Now)
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Nama Kelompok Barang:</label>
+                    </td>
+                    <td>
+                        @(Html.Kendo().AutoComplete()
+                            .Name("aucRekening")
+                            .DataTextField("Text")
+                            .HtmlAttributes(new { style = "width: 36%", @class = "allcaps" })
+                            .MinLength(3)
+                            .Placeholder("Pilih Rekg Kegiatan")
+                            .Value("300")
+                            .DataSource(o =>
+                            {
+                                o.Read(r => r.Action("GetRekening1", "ddl", new { Area = "Referensi" }).Data("filterRekening")).ServerFiltering(true);
+                            })
+                            .Events(e =>
+                            {
+                                e.Select("aucRekeningOnSelect");
+                                e.Change("aucRekeningOnChange");
+                            })
+                        )
+
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Procurement.Models.PersediaanBarangBahan>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            //g.Bound(i => i.KodeBarang).Width(200);
+            g.Bound(i => i.NamaBarang).Width(200);
+            g.Group(i => i
+           .Title("TOTAL PTPN")
+           .Columns(c =>
+           {
+               c.Bound(x => x.JMLQTY).Width(100).ClientTemplate("#= formatNum(JMLQTY) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+               c.Bound(x => x.JMLNILAI).Width(100).ClientTemplate("#= formatNum(JMLNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+               c.Bound(x => x.JMLSATUAN).Width(100).ClientTemplate("#= kendo.toString(JMLNILAI/JMLQTY,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+           })
+           );
+            g.Group(i => i
+            .Title("KERTAJAYA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.KERTAJAYA).Width(100).ClientTemplate("#= formatNum(KERTAJAYA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.KERTAJAYANILAI).Width(100).ClientTemplate("#= formatNum(KERTAJAYANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.KERTAJAYASATUAN).Width(100).ClientTemplate("#= kendo.toString(KERTAJAYANILAI/KERTAJAYA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+
+            g.Group(i => i
+            .Title("BOJONG DATAR")
+            .Columns(c =>
+            {
+                c.Bound(x => x.BOJONGDATAR).Width(100).ClientTemplate("#= formatNum(BOJONGDATAR) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BOJONGDATARNILAI).Width(100).ClientTemplate("#= formatNum(BOJONGDATARNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BOJONGDATARSATUAN).Width(100).ClientTemplate("#= kendo.toString(BOJONGDATARNILAI/BOJONGDATAR,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CISALAKBARU")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CISALAKBARU).Width(100).ClientTemplate("#= formatNum(CISALAKBARU) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CISALAKBARUNILAI).Width(100).ClientTemplate("#= formatNum(CISALAKBARUNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CISALAKBARUSATUAN).Width(100).ClientTemplate("#= kendo.toString(CISALAKBARUNILAI/CISALAKBARU,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CIKASUNGKA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CIKASUNGKA).Width(100).ClientTemplate("#= formatNum(CIKASUNGKA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKASUNGKANILAI).Width(100).ClientTemplate("#= formatNum(CIKASUNGKANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKASUNGKASATUAN).Width(100).ClientTemplate("#= kendo.toString(CIKASUNGKANILAI/CIKASUNGKA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("SUKAMAJU")
+            .Columns(c =>
+            {
+                c.Bound(x => x.SUKAMAJU).Width(100).ClientTemplate("#= formatNum(SUKAMAJU) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.SUKAMAJUNILAI).Width(100).ClientTemplate("#= formatNum(SUKAMAJUNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.SUKAMAJUSATUAN).Width(100).ClientTemplate("#= kendo.toString(SUKAMAJUNILAI/SUKAMAJU,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CIBUNGUR")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CIBUNGUR).Width(100).ClientTemplate("#= formatNum(CIBUNGUR) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIBUNGURNILAI).Width(100).ClientTemplate("#= formatNum(CIBUNGURNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIBUNGURSATUAN).Width(100).ClientTemplate("#= kendo.toString(CIBUNGURNILAI/CIBUNGUR,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PASIRBADAK")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PASIRBADAK).Width(100).ClientTemplate("#= formatNum(PASIRBADAK) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PASIRBADAKNILAI).Width(100).ClientTemplate("#= formatNum(PASIRBADAKNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PASIRBADAKSATUAN).Width(100).ClientTemplate("#= kendo.toString(PASIRBADAKNILAI/PASIRBADAK,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CIKASO")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CIKASO).Width(100).ClientTemplate("#= formatNum(CIKASO) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKASONILAI).Width(100).ClientTemplate("#= formatNum(CIKASONILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKASOSATUAN).Width(100).ClientTemplate("#= kendo.toString(CIKASONILAI/CIKASO,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("AGRABINTA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.AGRABINTA).Width(100).ClientTemplate("#= formatNum(AGRABINTA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.AGRABINTANILAI).Width(100).ClientTemplate("#= formatNum(AGRABINTANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.AGRABINTASATUAN).Width(100).ClientTemplate("#= kendo.toString(AGRABINTANILAI/AGRABINTA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("GUNUNGMAS")
+            .Columns(c =>
+            {
+                c.Bound(x => x.GUNUNGMAS).Width(100).ClientTemplate("#= formatNum(GUNUNGMAS) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.GUNUNGMASNILAI).Width(100).ClientTemplate("#= formatNum(GUNUNGMASNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.GUNUNGMASSATUAN).Width(100).ClientTemplate("#= kendo.toString(GUNUNGMASNILAI/GUNUNGMAS,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CIANTEN")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CIANTEN).Width(100).ClientTemplate("#= formatNum(CIANTEN) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIANTENNILAI).Width(100).ClientTemplate("#= formatNum(CIANTENNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIANTENSATUAN).Width(100).ClientTemplate("#= kendo.toString(CIANTENNILAI/CIANTEN,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PARAKANSALAK")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PARAKANSALAK).Width(100).ClientTemplate("#= formatNum(PARAKANSALAK) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PARAKANSALAKNILAI).Width(100).ClientTemplate("#= formatNum(PARAKANSALAKNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PARAKANSALAKSATUAN).Width(100).ClientTemplate("#= kendo.toString(PARAKANSALAKNILAI/PARAKANSALAK,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("GOALPARA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.GOALPARA).Width(100).ClientTemplate("#= formatNum(GOALPARA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.GOALPARANILAI).Width(100).ClientTemplate("#= formatNum(GOALPARANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.GOALPARASATUAN).Width(100).ClientTemplate("#= kendo.toString(GOALPARANILAI/GOALPARA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CIKUMPAY")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CIKUMPAY).Width(100).ClientTemplate("#= formatNum(CIKUMPAY) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKUMPAYNILAI).Width(100).ClientTemplate("#= formatNum(CIKUMPAYNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKUMPAYSATUAN).Width(100).ClientTemplate("#= kendo.toString(CIKUMPAYNILAI/CIKUMPAY,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("JALUPANG")
+            .Columns(c =>
+            {
+                c.Bound(x => x.JALUPANG).Width(100).ClientTemplate("#= formatNum(JALUPANG) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.JALUPANGNILAI).Width(100).ClientTemplate("#= formatNum(JALUPANGNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.JALUPANGSATUAN).Width(100).ClientTemplate("#= kendo.toString(JALUPANGNILAI/JALUPANG,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("WANGUNREJA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.WANGUNREJA).Width(100).ClientTemplate("#= formatNum(WANGUNREJA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.WANGUNREJANILAI).Width(100).ClientTemplate("#= formatNum(WANGUNREJANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.WANGUNREJASATUAN).Width(100).ClientTemplate("#= kendo.toString(WANGUNREJANILAI/WANGUNREJA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("MIRAMARE")
+            .Columns(c =>
+            {
+                c.Bound(x => x.MIRAMARE).Width(100).ClientTemplate("#= formatNum(MIRAMARE) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.MIRAMARENILAI).Width(100).ClientTemplate("#= formatNum(MIRAMARENILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.MIRAMARESATUAN).Width(100).ClientTemplate("#= kendo.toString(MIRAMARENILAI/MIRAMARE,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("BUNISARILENDRA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.BUNISARILENDRA).Width(100).ClientTemplate("#= formatNum(BUNISARILENDRA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BUNISARILENDRANILAI).Width(100).ClientTemplate("#= formatNum(BUNISARILENDRANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BUNISARILENDRASATUAN).Width(100).ClientTemplate("#= kendo.toString(BUNISARILENDRANILAI/BUNISARILENDRA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("BAGJANAGARA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.BAGJANAGARA).Width(100).ClientTemplate("#= formatNum(BAGJANAGARA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BAGJANAGARANILAI).Width(100).ClientTemplate("#= formatNum(BAGJANAGARANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BAGJANAGARASATUAN).Width(100).ClientTemplate("#= kendo.toString(BAGJANAGARANILAI/BAGJANAGARA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("BATULAWANG")
+            .Columns(c =>
+            {
+                c.Bound(x => x.BATULAWANG).Width(100).ClientTemplate("#= formatNum(BATULAWANG) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BATULAWANGNILAI).Width(100).ClientTemplate("#= formatNum(BATULAWANGNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BATULAWANGSATUAN).Width(100).ClientTemplate("#= kendo.toString(BATULAWANGNILAI/BATULAWANG,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CIKUPA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CIKUPA).Width(100).ClientTemplate("#= formatNum(CIKUPA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKUPANILAI).Width(100).ClientTemplate("#= formatNum(CIKUPANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIKUPASATUAN).Width(100).ClientTemplate("#= kendo.toString(CIKUPANILAI/CIKUPA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PAPANDAYAN")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PAPANDAYAN).Width(100).ClientTemplate("#= formatNum(PAPANDAYAN) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PAPANDAYANNILAI).Width(100).ClientTemplate("#= formatNum(PAPANDAYANNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PAPANDAYANSATUAN).Width(100).ClientTemplate("#= kendo.toString(PAPANDAYANNILAI/PAPANDAYAN,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;", @readonly = "true" });
+            })
+            );
+            g.Group(i => i
+            .Title("CISARUNI")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CISARUNI).Width(100).ClientTemplate("#= formatNum(CISARUNI) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CISARUNINILAI).Width(100).ClientTemplate("#= formatNum(CISARUNINILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CISARUNISATUAN).Width(100).ClientTemplate("#= kendo.toString(CISARUNINILAI/CISARUNI,'n0') #").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("DAYEUHMANGGUNG")
+            .Columns(c =>
+            {
+                c.Bound(x => x.DAYEUHMANGGUNG).Width(100).ClientTemplate("#= formatNum(DAYEUHMANGGUNG) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.DAYEUHMANGGUNGNILAI).Width(100).ClientTemplate("#= formatNum(DAYEUHMANGGUNGNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.DAYEUHMANGGUNGSATUAN).Width(100).ClientTemplate("#= kendo.toString(DAYEUHMANGGUNGNILAI/DAYEUHMANGGUNG,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("BUKITUNGGUL")
+            .Columns(c =>
+            {
+                c.Bound(x => x.BUKITUNGGUL).Width(100).ClientTemplate("#= formatNum(BUKITUNGGUL) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BUKITUNGGULNILAI).Width(100).ClientTemplate("#= formatNum(BUKITUNGGULNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.BUKITUNGGULSATUAN).Width(100).ClientTemplate("#= kendo.toString(BUKITUNGGULNILAI/BUKITUNGGUL,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("TAMBAKSARI")
+            .Columns(c =>
+            {
+                c.Bound(x => x.TAMBAKSARI).Width(100).ClientTemplate("#= formatNum(TAMBAKSARI) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.TAMBAKSARINILAI).Width(100).ClientTemplate("#= formatNum(TAMBAKSARINILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.TAMBAKSARISATUAN).Width(100).ClientTemplate("#= kendo.toString(TAMBAKSARINILAI/TAMBAKSARI,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PANGLEJAR")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PANGLEJAR).Width(100).ClientTemplate("#= formatNum(PANGLEJAR) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PANGLEJARNILAI).Width(100).ClientTemplate("#= formatNum(PANGLEJARNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PANGLEJARSATUAN).Width(100).ClientTemplate("#= kendo.toString(PANGLEJARNILAI/PANGLEJAR,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("SINUMBRA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.SINUMBRA).Width(100).ClientTemplate("#= formatNum(SINUMBRA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.SINUMBRANILAI).Width(100).ClientTemplate("#= formatNum(SINUMBRANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.SINUMBRASATUAN).Width(100).ClientTemplate("#= kendo.toString(SINUMBRANILAI/SINUMBRA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("RANCABALI")
+            .Columns(c =>
+            {
+                c.Bound(x => x.RANCABALI).Width(100).ClientTemplate("#= formatNum(RANCABALI) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.RANCABALINILAI).Width(100).ClientTemplate("#= formatNum(RANCABALINILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.RANCABALISATUAN).Width(100).ClientTemplate("#= kendo.toString(RANCABALINILAI/RANCABALI,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("RANCABOLANG")
+            .Columns(c =>
+            {
+                c.Bound(x => x.RANCABOLANG).Width(100).ClientTemplate("#= formatNum(RANCABOLANG) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.RANCABOLANGNILAI).Width(100).ClientTemplate("#= formatNum(RANCABOLANGNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.RANCABOLANGSATUAN).Width(100).ClientTemplate("#= kendo.toString(RANCABOLANGNILAI/RANCABOLANG,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PASIRMALANG")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PASIRMALANG).Width(100).ClientTemplate("#= formatNum(PASIRMALANG) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PASIRMALANGNILAI).Width(100).ClientTemplate("#= formatNum(PASIRMALANGNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PASIRMALANGSATUAN).Width(100).ClientTemplate("#= kendo.toString(PASIRMALANGNILAI/PASIRMALANG,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("KERTAMANAH")
+            .Columns(c =>
+            {
+                c.Bound(x => x.KERTAMANAH).Width(100).ClientTemplate("#= formatNum(KERTAMANAH) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.KERTAMANAHNILAI).Width(100).ClientTemplate("#= formatNum(KERTAMANAHNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.KERTAMANAHSATUAN).Width(100).ClientTemplate("#= kendo.toString(KERTAMANAHNILAI/KERTAMANAH,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("MALABAR")
+            .Columns(c =>
+            {
+                c.Bound(x => x.MALABAR).Width(100).ClientTemplate("#= formatNum(MALABAR) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.MALABARNILAI).Width(100).ClientTemplate("#= formatNum(MALABARNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.MALABARSATUAN).Width(100).ClientTemplate("#= kendo.toString(MALABARNILAI/MALABAR,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PURBASARI")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PURBASARI).Width(100).ClientTemplate("#= formatNum(PURBASARI) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PURBASARINILAI).Width(100).ClientTemplate("#= formatNum(PURBASARINILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PURBASARISATUAN).Width(100).ClientTemplate("#= kendo.toString(PURBASARINILAI/PURBASARI,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("TALUNSANTOSA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.TALUNSANTOSA).Width(100).ClientTemplate("#= formatNum(TALUNSANTOSA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.TALUNSANTOSANILAI).Width(100).ClientTemplate("#= formatNum(TALUNSANTOSANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.TALUNSANTOSASATUAN).Width(100).ClientTemplate("#= kendo.toString(TALUNSANTOSANILAI/TALUNSANTOSA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("SEDEP")
+            .Columns(c =>
+            {
+                c.Bound(x => x.SEDEP).Width(100).ClientTemplate("#= formatNum(SEDEP) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.SEDEPNILAI).Width(100).ClientTemplate("#= formatNum(SEDEPNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.SEDEPSATUAN).Width(100).ClientTemplate("#= kendo.toString(SEDEPNILAI/SEDEP,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("GEDEH")
+            .Columns(c =>
+            {
+                c.Bound(x => x.GEDEH).Width(100).ClientTemplate("#= formatNum(GEDEH) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.GEDEHNILAI).Width(100).ClientTemplate("#= formatNum(GEDEHNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.GEDEHSATUAN).Width(100).ClientTemplate("#= kendo.toString(GEDEHNILAI/GEDEH,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("MONTAYA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.MONTAYA).Width(100).ClientTemplate("#= formatNum(MONTAYA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.MONTAYANILAI).Width(100).ClientTemplate("#= formatNum(MONTAYANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.MONTAYASATUAN).Width(100).ClientTemplate("#= kendo.toString(MONTAYANILAI/MONTAYA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PASIRNANGKA")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PASIRNANGKA).Width(100).ClientTemplate("#= formatNum(PASIRNANGKA) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PASIRNANGKANILAI).Width(100).ClientTemplate("#= formatNum(PASIRNANGKANILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PASIRNANGKASATUAN).Width(100).ClientTemplate("#= kendo.toString(PASIRNANGKANILAI/PASIRNANGKA,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("PANYAIRAN")
+            .Columns(c =>
+            {
+                c.Bound(x => x.PANYAIRAN).Width(100).ClientTemplate("#= formatNum(PANYAIRAN) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PANYAIRANNILAI).Width(100).ClientTemplate("#= formatNum(PANYAIRANNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.PANYAIRANSATUAN).Width(100).ClientTemplate("#= kendo.toString(PANYAIRANNILAI/PANYAIRAN,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+            g.Group(i => i
+            .Title("CIATER")
+            .Columns(c =>
+            {
+                c.Bound(x => x.CIATER).Width(100).ClientTemplate("#= formatNum(CIATER) #").Title("Vol").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIATERNILAI).Width(100).ClientTemplate("#= formatNum(CIATERNILAI) #").Title("Nilai (Rp)").HtmlAttributes(new { style = "text-align: right;" });
+                c.Bound(x => x.CIATERSATUAN).Width(100).ClientTemplate("#= kendo.toString(CIATERNILAI/CIATER,'n0') #").Title("Harga Satuan").HtmlAttributes(new { style = "text-align: right;" });
+            })
+            );
+        })
+        .AutoBind(false)
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .Filterable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Excel(excel => excel.AllPages(true))
+        .Events(ev => ev.DataBound("grdOnDataBound"))
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+        )
+    )
+</div>
+
+<script>
+    var wnd, err, prt;
+    var tanggalAwal, tanggalAkhir, rekening;
+
+
+    function filterRekening() {
+        return {
+            value: $('#aucRekening').val()
+        };
+    }
+
+    function aucRekeningOnSelect(e) {
+        rekening = $('#aucRekening').data('kendoAutoComplete').value();
+        if (rekening.indexOf('-') > -1) rekening = rekening.substr(0, rekening.indexOf('-'));
+        rekening = rekening.trim();
+    }
+
+    function aucRekeningOnChange(e) {
+        rekening = $('#aucRekening').data('kendoAutoComplete').value();
+        if (rekening.indexOf('-') > -1) rekening = rekening.substr(0, rekening.indexOf('-'));
+        rekening = rekening.trim();
+    }
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    tanggalAwal = kendo.toString(($('#TanggalAkhir').data('kendoDatePicker'))._value, "01-MM-yyyy");
+                    tanggalAkhir = kendo.toString(($('#TanggalAkhir').data('kendoDatePicker'))._value, "dd-MM-yyyy");
+                    namaRekening = $('#aucRekening').val();
+                    grdUnHideColumns();
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+    function formatNum(n) {
+        if (n == null || n == 0 || isNaN(n))
+            return " ";
+        else
+            return kendo.toString(n, "n2");
+    }
+
+    function HitungSatuan(qty,nilai) {
+        //var satuan;
+        //var grid = $('#grdDetail').data('kendoGrid');
+        //var dataItem = typeof (grid.dataSource.get(uid)) == "undefined" ? grid.dataSource.getByUid(uid) : grid.dataSource.get(uid);
+        //var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        //if (qty != 0 && nilai != 0) {
+        //    satuan = nilai / qty
+        //    row[0].column(nilai).val(satuan);
+        //    return satuan;
+        //}
+        //else {
+        //    return kendo.toString(satuan, "n2");
+        //}
+        return 0
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Procurement.Models.PersediaanBarangBahan',
+            scriptSQL: " SET DATEFORMAT DMY;" +
+                        " DECLARE @@tbl1 TABLE" +
+                        " ( KodeBarang nvarchar(max),NamaBarang nvarchar(max),[JML] float, [JMLNILAI] float, [KERTAJAYA] float,[BOJONGDATAR] float,[CISALAKBARU] float, [CIKASUNGKA] float,[SUKAMAJU] float,[CIBUNGUR] float,[PASIRBADAK] float,[CIKASO] float,[AGRABINTA] float, [GUNUNGMAS] float,[CIANTEN] float, [PARAKANSALAK] float,[GOALPARA] float,[CIKUMPAY] float,[JALUPANG] float,[WANGUNREJA] float,[MIRAMARE] float,[BUNISARI/LENDRA] float,[BAGJANAGARA] float,[BATULAWANG] float,[CIKUPA] float,[PAPANDAYAN] float,[CISARUNI] float,[DAYEUHMANGGUNG] float,[BUKITUNGGUL] float,[TAMBAKSARI] float,[PANGLEJAR / PANGHEOTAN] float,[SINUMBRA] float,[RANCABALI] float,[RANCABOLANG] float,[PASIRMALANG] float,[KERTAMANAH] float,[MALABAR] float,[PURBASARI] float,[TALUNSANTOSA] float,[SEDEP] float,[GEDEH] float,[MONTAYA] float,[PASIRNANGKA] float,[PANYAIRAN] float,[CIATER] float, [KERTAJAYANILAI] float,[BOJONGDATARNILAI] float,[CISALAKBARUNILAI] float,[CIKASUNGKANILAI] float,[SUKAMAJUNILAI] float,[CIBUNGURNILAI] float,  [PASIRBADAKNILAI] float,  [CIKASONILAI] float,  [AGRABINTANILAI] float,  [GUNUNGMASNILAI] float,  [CIANTENNILAI] float,  [PARAKANSALAKNILAI] float, [GOALPARANILAI] float,  [CIKUMPAYNILAI] float,  [JALUPANGNILAI] float,  [WANGUNREJANILAI] float,  [MIRAMARENILAI] float, [BUNISARI/LENDRANILAI] float,   [BAGJANAGARANILAI] float,  [BATULAWANGNILAI] float,  [CIKUPANILAI] float,   [PAPANDAYANNILAI] float, [CISARUNINILAI] float, [DAYEUHMANGGUNGNILAI] float,  [BUKITUNGGULNILAI] float,  [TAMBAKSARINILAI] float,  [PANGLEJAR / PANGHEOTANNILAI] float,  [SINUMBRANILAI] float,  [RANCABALINILAI] float,  [RANCABOLANGNILAI] float,[PASIRMALANGNILAI] float, [KERTAMANAHNILAI] float, [MALABARNILAI] float,  [PURBASARINILAI] float,[TALUNSANTOSANILAI] float,[SEDEPNILAI] float,  [GEDEHNILAI] float,  [MONTAYANILAI] float, [PASIRNANGKANILAI] float,[PANYAIRANNILAI] float, [CIATERNILAI] float )" +
+                        " INSERT INTO @@tbl1" +
+                        " SELECT * FROM" +
+                        " (" +
+	                    " SELECT C.Nama as NamaQty, C.Nama+'NILAI' as NamaNilai, '' as NamaJumlahQty, '' as NamaJumlahNilai, A.KodeBarang,A.NamaBarang," +
+                        " sum(case when SUBSTRING(B.NoInput,1,3)='A58' then -1*B.Qty else B.Qty end) as Qty," +
+                        " sum(case when SUBSTRING(B.NoINput,1,3)='A58' then -1*B.Nilai else B.Nilai end) as Nilai,0 as JumlahQty, 0 as JumlahNilai" +
+                        " FROM [ReferensiEF].[dbo].[Barang] as A" +
+                        " JOIN [SPDK_KanpusEF].[dbo].[tup] as B" +
+                        " ON A.KodeBarang=B.kodebarang" +
+                        " JOIN [ReferensiEF].[dbo].[Kebun] as C" +
+                        " ON B.KodeUnit=C.kd_kbn" +
+                        " JOIN [ReferensiEF].[dbo].[Rekening] as D" +
+                        " ON A.NoRek=D.NoRek" +
+                        " WHERE B.Tanggal>='" + tanggalAwal + "' and B.Tanggal<='" + tanggalAkhir + "' and A.Norek like '%" + rekening + "%'" +
+                        " group by A.KodeBarang, A.NamaBarang, C.Nama" +
+                        " UNION" +
+                        " SELECT '' as NamaQty, '' as NamaNilai, 'JML' as NamaJumlahQty, 'JMLNILAI' as NamaJumlahNilai, A.KodeBarang, A.NamaBarang, 0 as Qty, 0 as Nilai," +
+                        " sum(case when SUBSTRING(B.NoINput,1,3)='A58' then -1*B.Qty else B.Qty end) as JumlahQty," +
+                        " sum(case when SUBSTRING(B.NoINput,1,3)='A58' then -1*B.Nilai else B.Nilai end) as JumlahNilai" +
+                        " FROM [ReferensiEF].[dbo].[Barang] as A" +
+                        " JOIN [SPDK_KanpusEF].[dbo].[tup] as B" +
+                        " ON A.KodeBarang=B.kodebarang" +
+                        " JOIN [ReferensiEF].[dbo].[Kebun] as C " +
+                        " ON B.KodeUnit=C.kd_kbn" +
+                        " JOIN [ReferensiEF].[dbo].[Rekening] as D" +
+                        " ON A.NoRek=D.NoRek" +
+                        " WHERE B.Tanggal>='" + tanggalAwal + "' and B.Tanggal<='" + tanggalAkhir + "' and A.Norek like '%" + rekening + "%'" +
+                        " group by A.KodeBarang, A.NamaBarang" +
+                        " ) AS SRC" +
+                        " PIVOT" +
+                        " (" +
+                        " sum(JumlahQty) for NamaJumlahQty in ([JML])" +
+                        " ) as PIVOT3" +
+                        " PIVOT" +
+                        " (" +
+	                    " sum(JumlahNilai) for NamaJumlahNilai in ([JMLNILAI])" +
+                        " ) as PIVOT4" +
+                        " PIVOT" +
+                        " (" +
+	                    " sum(Qty) for NamaQty in ([KERTAJAYA],[BOJONGDATAR],[CISALAKBARU], [CIKASUNGKA], [SUKAMAJU], [CIBUNGUR], [PASIRBADAK], [CIKASO], [AGRABINTA], [GUNUNGMAS], [CIANTEN], [PARAKANSALAK], [GOALPARA], [CIKUMPAY], [JALUPANG], [WANGUNREJA], [MIRAMARE], [BUNISARI/LENDRA], [BAGJANAGARA], [BATULAWANG], [CIKUPA], [PAPANDAYAN], [CISARUNI], [DAYEUHMANGGUNG], [BUKITUNGGUL], [TAMBAKSARI], [PANGLEJAR / PANGHEOTAN], [SINUMBRA], [RANCABALI], [RANCABOLANG], [PASIRMALANG], [KERTAMANAH], [MALABAR], [PURBASARI], [TALUNSANTOSA], [SEDEP], [GEDEH], [MONTAYA], [PASIRNANGKA], [PANYAIRAN], [CIATER] )" +
+                        " ) as PIVOT1" +
+                        " PIVOT" +
+                        " (" +
+	                    " sum(Nilai) for NamaNilai in ([KERTAJAYANILAI],[BOJONGDATARNILAI],[CISALAKBARUNILAI], [CIKASUNGKANILAI], [SUKAMAJUNILAI], [CIBUNGURNILAI], [PASIRBADAKNILAI], [CIKASONILAI], [AGRABINTANILAI], [GUNUNGMASNILAI], [CIANTENNILAI], [PARAKANSALAKNILAI], [GOALPARANILAI], [CIKUMPAYNILAI], [JALUPANGNILAI], [WANGUNREJANILAI], [MIRAMARENILAI], [BUNISARI/LENDRANILAI], [BAGJANAGARANILAI], [BATULAWANGNILAI], [CIKUPANILAI], [PAPANDAYANNILAI], [CISARUNINILAI], [DAYEUHMANGGUNGNILAI], [BUKITUNGGULNILAI], [TAMBAKSARINILAI], [PANGLEJAR / PANGHEOTANNILAI], [SINUMBRANILAI], [RANCABALINILAI], [RANCABOLANGNILAI], [PASIRMALANGNILAI], [KERTAMANAHNILAI], [MALABARNILAI], [PURBASARINILAI], [TALUNSANTOSANILAI], [SEDEPNILAI], [GEDEHNILAI], [MONTAYANILAI], [PASIRNANGKANILAI], [PANYAIRANNILAI], [CIATERNILAI])" +
+                        " ) as PIVOT2" +
+                        " ORDER BY NamaBarang" +
+                        " select KodeBarang, NamaBarang, sum(JML) as JMLQTY, sum(JMLNILAI) as JMLNILAI, sum([KERTAJAYA]) as KERTAJAYA, sum([KERTAJAYANILAI]) as KERTAJAYANILAI, sum([BOJONGDATAR]) as  BOJONGDATAR, sum([BOJONGDATARNILAI]) as  BOJONGDATARNILAI, sum([CISALAKBARU]) as CISALAKBARU, sum([CISALAKBARUNILAI]) as CISALAKBARUNILAI, sum([CIKASUNGKA]) as CIKASUNGKA, sum([CIKASUNGKANILAI]) as CIKASUNGKANILAI,sum([SUKAMAJU]) as SUKAMAJU,sum([SUKAMAJUNILAI]) as SUKAMAJUNILAI,sum([CIBUNGUR]) as CIBUNGUR,sum([CIBUNGURNILAI]) as CIBUNGURNILAI,sum([PASIRBADAK]) as PASIRBADAK,sum([PASIRBADAKNILAI]) as PASIRBADAKNILAI,sum([CIKASO]) as CIKASO,sum([CIKASONILAI]) as CIKASONILAI,sum([AGRABINTA]) as AGRABINTA,sum([AGRABINTANILAI]) as AGRABINTANILAI,sum([GUNUNGMAS]) as GUNUNGMAS,sum([GUNUNGMASNILAI]) as GUNUNGMASNILAI,sum([CIANTEN]) as CIANTEN,sum([CIANTENNILAI]) as CIANTENNILAI,sum([PARAKANSALAK]) as PARAKANSALAK,sum([PARAKANSALAKNILAI])as PARAKANSALAKNILAI,sum([GOALPARA]) as GOALPARA, sum([GOALPARANILAI]) as GOALPARANILAI,sum([CIKUMPAY]) as CIKUMPAY,sum([CIKUMPAYNILAI]) as CIKUMPAYNILAI,sum([JALUPANG]) as JALUPANG,sum([JALUPANGNILAI]) as JALUPANGNILAI,sum([WANGUNREJA]) as WANGUNREJA,sum([WANGUNREJANILAI]) as WANGUNREJANILAI,sum([MIRAMARE]) as MIRAMARE,sum([MIRAMARENILAI]) as MIRAMARENILAI,sum([BUNISARI/LENDRA])as BUNISARILENDRA,sum([BUNISARI/LENDRANILAI]) as BUNISARILENDRANILAI,sum([BAGJANAGARA])as BAGJANAGARA, sum([BAGJANAGARANILAI]) as BAGJANAGARANILAI,sum([BATULAWANG]) as BATULAWANG,sum([BATULAWANGNILAI]) as BATULAWANGNILAI,sum([CIKUPA])as CIKUPA,sum([CIKUPANILAI]) as CIKUPANILAI, sum([PAPANDAYAN]) as PAPANDAYAN,sum([PAPANDAYANNILAI]) as PAPANDAYANNILAI,sum([CISARUNI]) as CISARUNI,sum([CISARUNINILAI]) as CISARUNINILAI,sum([DAYEUHMANGGUNG]) as DAYEUHMANGGUNG,sum([DAYEUHMANGGUNGNILAI]) as DAYEUHMANGGUNGNILAI,sum([BUKITUNGGUL]) as BUKITUNGGUL,sum([BUKITUNGGULNILAI]) as BUKITUNGGULNILAI,sum([TAMBAKSARI]) as TAMBAKSARI,sum([TAMBAKSARINILAI]) as TAMBAKSARINILAI,sum([PANGLEJAR / PANGHEOTAN]) as PANGLEJAR,sum([PANGLEJAR / PANGHEOTANNILAI]) as PANGLEJARNILAI,sum([SINUMBRA]) as SINUMBRA,sum([SINUMBRANILAI]) as SINUMBRANILAI,sum([RANCABALI]) as RANCABALI, sum([RANCABALINILAI]) as RANCABALINILAI,sum([RANCABOLANG])as RANCABOLANG,SUM([RANCABOLANGNILAI]) as RANCABOLANGNILAI,sum([PASIRMALANG]) as PASIRMALANG,SUM([PASIRMALANGNILAI]) as PASIRMALANGNILAI,sum([KERTAMANAH]) as KERTAMANAH,sum([KERTAMANAHNILAI]) as KERTAMANAHNILAI,sum([MALABAR]) as MALABAR,sum([MALABARNILAI]) as MALABARNILAI,sum([PURBASARI]) as PURBASARI,sum([PURBASARINILAI]) as PURBASARINILAI,sum([TALUNSANTOSA]) as TALUNSANTOSA,sum([TALUNSANTOSANILAI]) as TALUNSANTOSANILAI,sum([SEDEP]) as SEDEP,sum([SEDEPNILAI]) as SEDEPNILAI,sum([GEDEH]) as GEDEH,sum([GEDEHNILAI]) as GEDEHNILAI,sum([MONTAYA]) as MONTAYA,sum([MONTAYANILAI]) as MONTAYANILAI,sum([PASIRNANGKA]) as PASIRNANGKA,sum([PASIRNANGKANILAI]) as PASIRNANGKANILAI,sum([PANYAIRAN]) as PANYAIRAN,sum([PANYAIRANNILAI]) as PANYAIRANNILAI,sum([CIATER]) as CIATER,sum([CIATERNILAI])as CIATERNILAI" +
+                        " FROM @@tbl1" +
+                        " GROUP BY KodeBarang,NamaBarang" +
+                        " ORDER BY NamaBarang"
+        }
+    }
+
+
+    function grdUnHideColumns()
+    {
+        var grd = $('#grdDetail').data('kendoGrid');
+        for (var i = 0; i < grd.columns.length; i++) {
+
+            var nmField;
+            if (typeof (grd.columns[i].field) != 'undefined') {
+                nmField = grd.columns[i].field.toUpperCase()
+            }
+            else {
+                nmField = '';
+            }
+
+            if (nmField != 'NAMABARANG') {
+                for (var j = 0; j < grd.columns[i].columns.length; j++) {
+                    nmField = grd.columns[i].columns[j].field.toUpperCase();
+                    if (rekap(nmField) == 0) {
+                        grd.showColumn(nmField);
+                    }
+                }
+
+            }
+        }
+
+    }
+    function grdOnDataBound(e)
+    {
+        var grd = $('#grdDetail').data('kendoGrid');
+        var ds = grd.dataSource;
+        var nmField;
+
+        for (var i = 0; i < ds.view().length; i++)
+        {
+            for(var j=0;j<grd.columns.length;j++)
+            {
+                if(typeof(grd.columns[j].field)=="undefined")
+                {
+                    nmField = grd.columns[j].columns[2].field.toUpperCase();
+                    var nmkebun = nmField.substring(0, nmField.indexOf("SATUAN"));
+                    var fld1 = nmkebun;
+                    var fld2 = nmkebun + "NILAI";
+                    var val1 = grd._data[i][fld1];
+                    var val2 = grd._data[i][fld2];
+                    if (val1 != 0)
+                        grd._data[i][nmField] = val2 / val1;
+                    else
+                        grd._data[i][nmField] = 0;
+
+                }
+            }
+        }
+
+        for (var i = 0; i < grd.columns.length; i++) {
+
+
+            if (typeof (grd.columns[i].field) != 'undefined')
+            {
+                nmField = grd.columns[i].field.toUpperCase()
+            }
+            else
+            {
+                nmField = '';
+            }
+
+            if (nmField != 'NAMABARANG')
+            {
+                for (var j = 0; j < grd.columns[i].columns.length; j++) {
+                    nmField = grd.columns[i].columns[j].field.toUpperCase();
+                    if (rekap(nmField) == 0) {
+                        grd.hideColumn(nmField);
+                    }
+                }
+
+            }
+        }
+    }
+
+    function rekap(fld)
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var newValue = 0;
+        for (var i = 0; i < grid.dataItems().length; i++) {
+            var x = grid.dataItems()[i];
+            newValue += x[fld];
+        }
+        return newValue;
+    }
+
+</script>
+
+<style>
+    .cssJumlah {
+        font-weight: 600;
+        background-color: darkseagreen;
+    }
+
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+
+
+
+
+
+

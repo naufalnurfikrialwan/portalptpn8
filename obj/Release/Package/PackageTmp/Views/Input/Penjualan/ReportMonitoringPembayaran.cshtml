@@ -1,0 +1,533 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+
+@*header*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="">
+                <table width="40%">
+                    <tr>
+                        <td width="3%">
+                            <label>Tahun:</label>
+                        </td>
+                        <td width="20%">
+                            @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(DateTime.Now.Year)
+                                        .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label style="text-align:left">Bulan:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().DropDownList().Name("ddlBulan").DataTextField("Text").DataValueField("Value")
+                                        //.Events(ev => ev.Select("ddlBulanOnSelect"))
+                                        //.HtmlAttributes(new { style = "font-size: medium;" })
+                                        .SelectedIndex(DateTime.Now.Month - 1)
+                                        .BindTo(new List<SelectListItem>()
+                                        {
+                                                        new SelectListItem() {
+                                                            Text = "Januari",
+                                                            Value = "1"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Februari",
+                                                            Value = "2"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Maret",
+                                                            Value = "3"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "April",
+                                                            Value = "4"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Mei",
+                                                            Value = "5"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Juni",
+                                                            Value = "6"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Juli",
+                                                            Value = "7"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Agustus",
+                                                            Value = "8"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "September",
+                                                            Value = "9"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Oktober",
+                                                            Value = "10"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "November",
+                                                            Value = "11"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Desember",
+                                                            Value = "12"
+                                                        }
+                                    })
+                            )
+                        </td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                    .Items(tabstrip =>
+                    {
+                        tabstrip.Add().Text("I. Rekap").Selected(true)
+                        .Content(@<text>
+                            @(Html.Kendo()
+                                        .Grid<Ptpn8.MonitoringPembayaran.Models.MonitoringPembayaran_InputPembeli>(Guid.Empty.ToString())
+                                        .Name("grdDetail")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(q => q.SudahTerima).Width(200).Title("Status Terima").ClientTemplate("#= SudahTerima ? 'Sudah':'Belum' #");
+                                            g.Group(i => i
+                                            .Title("Identitas Perusahaan")
+                                            .Columns(c =>
+                                            {
+                                                c.Bound(q => q.NamaPerusahaan).Width(200).Title("Nama Perusahaan");
+                                                c.Bound(q => q.Email).Width(120).Title("Email");
+                                                c.Bound(q => q.Telepon).Width(120).Title("Telepon");
+
+                                            })
+                                            );
+                                            g.Group(i => i
+                                            .Title("Detail Pembayaran")
+                                            .Columns(c =>
+                                            {
+                                                c.Bound(q => q.DeskripsiPembayaran).Width(250).Title("Deskripsi Pembayaran");
+                                                c.Bound(q => q.NoReferensi).Width(180).Title("No. Billing/Faktur");
+                                                c.Bound(q => q.AsalBank).Width(150).Title("Bank Customer");
+                                                c.Bound(q => q.NoRekeningAsal).Width(150).Title("No. Rek Bank Customer");
+                                                c.Bound(q => q.TujuanBank).Width(150).Title("Tujuan Bank (PTPN)");
+                                                c.Bound(q => q.Tanggal_Transfer).Width(100).Title("Tanggal Transfer").Format("{0:dd/MM/yyyy}");
+                                                c.Bound(q => q.Currency).Width(150).Title("Currency")
+                                                    .ClientGroupFooterTemplate("Jumlah")
+                                                    .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                                                c.Bound(q => q.JumlahTransfer).Width(100).Title("Jml Transfer").Format("{0:N2}").HtmlAttributes(new { style = "text-align: right; color: blue; font-weight : 700" })
+                                                    .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                                g.Command(command =>
+                                                {
+                                                    command.Custom("Search").Text(" Lihat Bukti Bayar").Click("onButtonClick")
+                                                                  .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                                                }).Width(200);
+                                            })
+                                            );
+                                        })
+                                        .ToolBar(toolbar =>
+                                        {
+                                            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                                            toolbar.Excel();
+                                        })
+                                        .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                        .Excel(excel => excel.AllPages(true))
+                                        .AutoBind(false)
+                                        .Resizable(resizeable => resizeable.Columns(true))
+                                        .Scrollable()
+                                        .Sortable()
+                                        .Groupable()
+                                        .Selectable(
+                                            selectable => selectable
+                                            .Type(GridSelectionType.Cell)
+                                        )
+                                        .Groupable()
+                                        .HtmlAttributes(new { style = "Height: 450px" })
+                                        .Events(e =>
+                                        {
+                                            e.Change("grdOnChange");
+                                            e.Edit("grdOnEdit");
+                                            e.DataBound("grdOnDataBound");
+                                        })
+                                        .DataSource(o => o
+                                            .Ajax()
+                                            .ServerOperation(false)
+                                            .Sort(s => s.Add(x => x.Tanggal_Transfer).Descending())
+                                            .Group(s => s.Add(x => x.Currency))
+                                            .Model(model =>
+                                            {
+                                                model.Id(p => p.MonitoringPembayaran_InputPembeliId);
+                                            })
+                                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                            .Aggregates(ag =>
+                                            {
+                                                ag.Add(x => x.JumlahTransfer).Sum();
+                                            })
+                                        )
+                            )
+                        </text>);
+                            })
+    )
+</div>
+
+<script>
+    var bagian;
+    var kode, colIdx, pilihan;
+    var UserName = "@HttpContext.Current.User.Identity.Name";
+    var menuId = 'f71492be-6b6f-436c-abb2-6b794f488d01';
+
+    $(document).ready(function () {
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+        prt = $("#printWindow").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+        prt2 = $("#printWindow2").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    angular.module("__header", ["kendo.directives"])
+    .controller("MyCtrl", function ($scope) {
+        $scope.validate = function (event) {
+            event.preventDefault();
+            if ($scope.validator.validate()) {
+                tahun = $('#Tahun').val();
+                bulan = $('#ddlBulan').data('kendoDropDownList').value();
+                $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                $('#grdDetail').removeClass('disabledbutton');
+                $("#grdDetail").data("kendoGrid").dataSource.read();
+            } else {
+                $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                gridDestroy();
+            }
+        }
+    });
+
+    function grdOnDataBound(e) {
+    var rows = e.sender.tbody.children();
+
+        for (var j = 0; j < rows.length-1; j++) {
+            var row = $(rows[j]);
+            var dataItem = e.sender.dataItem(row);
+
+            if (dataItem.get("SudahTerima") == 1) {
+                row.addClass("sudahDisetujui");
+            }
+            else {
+                row.addClass("belumDisetujui");
+            }
+        }
+}
+
+    function btnProsesOnClick() {
+        $('#grdDetail').data('kendoGrid').dataSource.read();
+    }
+
+    function grdCariOnDataBound(e) {
+    }
+
+    function grdCariOnChange(e) {
+        var selected = $.map(this.select(), function (item) {
+            return $(item).text();
+        });
+
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        //colIdx = $("td", row).index(row);
+        var data = grid.dataItem(row);
+        var x = grid.select();
+        var r = x.closest("tr");
+        var xx = grid.dataItem(r);
+        bagian = xx.NamaBagian;
+        kode = selected.toString();
+
+
+        $("#tabstrip").data("kendoTabStrip").select(1);
+        var grid = $('#grdDetail2').data('kendoGrid');
+        grid.dataSource.read();
+        //filterReport3(kode);
+        var chart = $('#chart').data('kendoChart');
+        chart.dataSource.read();
+    }
+
+    function btnPrintHeaderOnClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var fakturPajakSementara_HDRId = data.FakturPajakSementara_HDRId;
+
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: { FakturPajakSementara_HDRId: fakturPajakSementara_HDRId }
+        });
+        viewer.refreshReport();
+        prt.open().center();
+    }
+
+
+    function btnPrintHeaderOnClickCSV(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var fakturPajakSementara_HDRId = data.FakturPajakSementara_HDRId;
+
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: { FakturPajakSementara_HDRId: fakturPajakSementara_HDRId }
+        });
+        viewer.refreshReport();
+        prt2.open().center();
+    }
+    //fungsi dashboard
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.MonitoringPembayaran.Models.MonitoringPembayaran_Report',
+            scriptSQL: "Select NamaPerusahaan,Email,Telepon,DeskripsiPembayaran,NoReferensi,AsalBank,NoRekeningAsal,TujuanBank,Tanggal_Transfer,Currency,JumlahTransfer from [SPDK_KanpusEF].[dbo].[MonitoringPembayaran_InputPembeli] where YEAR(Tanggal_Transfer)= " + $('#Tahun').val() + " and Month(Tanggal_Transfer) =" + $('#ddlBulan').val()
+        }
+    }
+
+function grdOnChange(e) {
+}
+
+function grdOnEdit(e) {
+    var model = e.model;
+    this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+    if (model.isNew()) {
+        model.KPI_InisiasiKPIId = model.uid;
+        model.UnitId = unitId;
+    }
+    kPI_InisiasiKPIId = model.KPI_InisiasiKPIId;
+    gridStatus = 'sudah-diapa-apain';
+    //$(e.container).find("input[name='Catatan']").prop('disabled', true);
+    //$(e.container).find("input[name='Verifikasi']").prop('disabled', true);
+}
+
+function grdOnDataBinding(e) {
+}
+
+function filterdetailRead() {
+    return {
+        _menuId: menuId, // teh
+        _filter: ['YEAR(Tanggal_Transfer)', tahun, 'MONTH(Tanggal_Transfer)', bulan]
+    };
+}
+
+function filterdetailCreate(e) {
+    return { _menuId: menuId };
+}
+
+function sendData() {
+    var grid = $("#grdDetail").data("kendoGrid"),
+        parameterMap = grid.dataSource.transport.parameterMap;
+
+    //get the new and the updated records
+    var currentData = grid.dataSource.data();
+
+    var updatedRecords = [];
+    var newRecords = [];
+    var spupdated = [];
+    var spnew = [];
+
+    for (var i = 0; i < currentData.length; i++) {
+        if (currentData[i].isNew()) {
+            newRecords.push(JSON.stringify(currentData[i]));
+        } else if (currentData[i].dirty) {
+            updatedRecords.push(JSON.stringify(currentData[i]));
+        }
+    }
+
+    //this records are deleted
+    var deletedRecords = [];
+    var spdeleted = [];
+    for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+        deletedRecords.push(JSON.stringify(grid.dataSource._destroyed[i]));
+    }
+
+    var data = {};
+    $.extend(data,
+        parameterMap({ updated: updatedRecords }),
+        parameterMap({ deleted: deletedRecords }),
+        parameterMap({ new: newRecords }),
+        parameterMap({ spupdated: spupdated }),
+        parameterMap({ spdeleted: spdeleted }),
+        parameterMap({ spnew: spnew }),
+        parameterMap({ mnid: menuId })
+        );
+
+    _sendData(data).done(function (msg) {
+        if (msg == "Success") {
+            grid.dataSource.read([]);
+            //disableHeader();
+            gridStatus = 'belum-ngapa-ngapain';
+        }
+        else {
+            $('#errMsg').text(msg);
+            gridStatus = 'sudah-nyoba-disimpan-tapi-model-masih-salah';
+            openErrWindow();
+        }
+    }).fail(function (x) {
+        $('#errMsg').text(msg);
+        openErrWindow();
+        grid.dataSource.read([]);
+        //disableHeader();
+        gridStatus = 'sudah-nyoba-disimpan-tapi-gagal';
+    });
+
+}
+
+function _sendData(data) {
+    return $.ajax({
+        url: "/Input/UpdateCreateDelete",
+        data: data,
+        type: "POST"
+    })
+}
+
+    function filterGridUpdate(e) {
+    var mdl = e.models;
+    var arr = [];
+    for (var i = 0; i < mdl.length; i++) {
+        arr.push(JSON.stringify(mdl[i]));
+    }
+    return {
+        _model: arr,
+        _menuId: menuId
+    };
+}
+
+function filterGridDestroy(e) {
+    return {
+        _model: JSON.stringify(e),
+        _menuId: menuId
+    };
+}
+
+function gridDestroy() {
+    $("#grdDetail").data("kendoGrid").dataSource.read([]);
+}
+
+function onButtonClick(e) {
+    e.preventDefault();
+    var grid = this;
+    var row = $(e.currentTarget).closest("tr");
+
+    var data = grid.dataItem(row);
+    var file = data.File_BuktiPembayaran;
+
+    //window.location.href = "/Content/Images/FileBuktiPembayaran/" + file; //pass the desired url for the view
+    var newwindow = window.open("/Content/Images/FileBuktiPembayaran/" + file, "window2", "");
+}
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <script type='text/javascript'>
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+    </script>
+</div>
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    .belumDisetujui {
+        background-color: lightcoral;
+    }
+
+    .sudahDisetujui {
+        background-color: lightgreen;
+    }
+
+</style>
+
+
+
+

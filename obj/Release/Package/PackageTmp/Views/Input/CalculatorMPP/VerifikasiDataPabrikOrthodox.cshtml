@@ -1,0 +1,134 @@
+﻿@model Ptpn8.CalculatorMPP.Models.MPPView_RasioPabrikOrthodox
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/CalculatorMPP/VerifikasiDataPabrikOrthodox.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<button type="button" id="btnSelesaiSimpanDetail" class="k-button" style="color: white; background-color: blue; font-size: small; height: 30px; text-align:left; display: none;"><span class="k-font-icon .k-i-search"></span>Cek Kilometer</button>
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                                .Grid<Ptpn8.CalculatorMPP.Models.MPPView_RasioPabrikOrthodox>(Guid.Empty.ToString())
+                                .Name("grdDetail")
+                                .Columns(g =>
+                                {
+                                    g.Bound(i => i.MPP_RasioPabrikOrthodoxId).Width(50).Hidden();
+                                    g.Bound(i => i.UnitId).Width(50).Hidden();
+                                    g.Bound(i => i.NomorInput).Width(50).Hidden();
+                                    g.Bound(i => i.NomorInputView).Width(50).Hidden();
+
+                                    g.Group(i =>
+                                    {
+                                        i.Title("Verifikasi Kasubag");
+                                        i.Columns(c =>
+                                        {
+                                            c.Bound(j => j.VerKaur).Title("Checklist").Width(50).ClientTemplate("#= VerKaur ? 'Sudah':'Belum' #");
+                                            c.Bound(j => j.TglVerKaur).Title("Tanggal Verifikasi").Width(75).ClientTemplate("#= kendo.toString(TglVerKaur,'dd/MM/yyyy')#");
+                                            c.Bound(j => j.TahunBuku).Title("Tahun").Width(50);
+                                            c.Bound(j => j.UserNameKaur).Hidden();
+                                        });
+                                    });
+                                    g.Bound(i => i.No_Register).Width(70).Title("No Register");
+                                    g.Bound(i => i.Tanggal_Register).Width(70).Title("Tanggal Register").ClientTemplate("#= kendo.toString(Tanggal_Register,'dd/MM/yyyy')#");
+                                    g.Group(i =>
+                                    {
+                                        i.Title("Data Kebun/Tanaman");
+                                        i.Columns(c =>
+                                        {
+                                            c.Bound(j => j.HariKerjaEfektif).Width(90).Title("Hari Kerja").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.TipePabrikOrthodox).Width(90).Title("Tipe Pabrik Orthodox");
+                                            c.Bound(j => j.RatioBK).Width(90).Title("Ratio BK");
+                                            c.Bound(j => j.TingkatMCOrthodox).Width(90).Title("Tingkat MC Orthodox");
+                                            c.Bound(j => j.KapasitasPabrikOrthodox).Width(90).Title("Kapasitas Pabrik Orthodox").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahShiftOrthodox).Width(90).Title("Jml Shift Orthodox").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahPengering).Width(90).Title("Jml Penegering").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahBoilerWoodPelet).Width(90).Title("Jml Boiler Wood Pellet").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahBoilerKayuBakar).Width(90).Title("Jml Boiler Kayu Bakar").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahTruk).Width(90).Title("Jml Truk").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahGudang).Width(90).Title("Jml Gudang").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahMesinBubut).Width(90).Title("Jml Mesin Bubut").HtmlAttributes(new { style = "text-align: right;" });
+                                            c.Bound(j => j.JumlahMesinAsahPisau).Width(90).Title("Jml Mesin Asah Pisau").HtmlAttributes(new { style = "text-align: right;" });
+                                        });
+                                    });
+                                })
+                                .ToolBar(toolbar =>
+                                {
+                                    toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                                })
+                                .AutoBind(true)
+                                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                .Navigatable()
+                                .Resizable(resizeable => resizeable.Columns(true))
+                                .Scrollable()
+                                .Sortable()
+                                .HtmlAttributes(new { style = "Height: 600px" })
+                                .Events(e =>
+                                {
+                                    e.Change("grdOnChange");
+                                    e.Edit("grdOnEdit");
+                                    e.DataBound("grdOnDataBound");
+                                })
+                                .DataSource(o => o
+                                    .Ajax()
+                                    .ServerOperation(false)
+                                    .Batch(true)
+                                    .Sort(i =>
+                                    {
+                                        i.Add(j => j.VerKaur).Ascending();
+                                        i.Add(j => j.Tanggal_Register).Descending();
+                                    })
+                                    .Model(model =>
+                                    {
+                                        model.Id(p => p.MPP_RasioPabrikOrthodoxId);
+                                        model.Field(f => f.No_Register).Editable(false);
+                                        model.Field(f => f.Tanggal_Register).Editable(false);
+                                        model.Field(f => f.HariKerjaEfektif).Editable(false);
+                                        model.Field(f => f.TipePabrikOrthodox).Editable(false);
+                                        model.Field(f => f.KapasitasPabrikOrthodox).Editable(false);
+                                        model.Field(f => f.JumlahShiftOrthodox).Editable(false);
+                                        model.Field(f => f.JumlahPengering).Editable(false);
+                                        model.Field(f => f.JumlahBoilerWoodPelet).Editable(false);
+                                        model.Field(f => f.JumlahBoilerKayuBakar).Editable(false);
+                                        model.Field(f => f.JumlahTruk).Editable(false);
+                                        model.Field(f => f.JumlahGudang).Editable(false);
+                                        model.Field(f => f.JumlahMesinBubut).Editable(false);
+                                        model.Field(f => f.JumlahMesinAsahPisau).Editable(false);
+                                    })
+                                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                    )
+    )
+</div>
+
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>

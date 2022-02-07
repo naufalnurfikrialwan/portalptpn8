@@ -1,0 +1,29 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Dalam Wilayah",
+                Value = "Dalam Wilayah"
+            },
+            new SelectListItem() {
+                Text = "Luar Wilayah",
+                Value = "Luar Wilayah"
+            },
+            new SelectListItem() {
+                Text = "Jakarta PP",
+                Value = "Jakarta PP"
+            },
+            new SelectListItem() {
+                Text = "Luar Negeri",
+                Value = "Luar Negeri"
+            }
+        })
+        .Events(e => { e.Change("ddlStatusWilayahRemiseOnChange"); e.Select("ddlStatusWilayahRemiseOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

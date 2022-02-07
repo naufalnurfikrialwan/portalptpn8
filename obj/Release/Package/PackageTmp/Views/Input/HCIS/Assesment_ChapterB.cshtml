@@ -1,0 +1,135 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe B'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="80%">
+        <tr>
+            <td>
+                <div id="_chapterB" style="display: none;">
+                    <div id="ContohChapterB" style="display: none;">
+                        <label style="font-size: xx-large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER B</label>
+                        <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                        <label id="instruksiB1" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                        <label style="font-size: x-large;">Contoh Soal 1 :</label>
+                        <table class="multiplechoice">
+                            <tr><td>Berapakah jumlah 20 botol dan 10 botol? </td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterB_a" type="radio" name="ContohSoal1_ChapterB" value="ContohSoal1_ChapterB_a" disabled>(a) 28</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterB_b" type="radio" name="ContohSoal1_ChapterB" value="ContohSoal1_ChapterB_b" disabled>(b) 29</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterB_c" type="radio" name="ContohSoal1_ChapterB" value="ContohSoal1_ChapterB_c" disabled checked="checked">(c) 30</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterB_d" type="radio" name="ContohSoal1_ChapterB" value="ContohSoal1_ChapterB_d" disabled>(d) 31</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterB_e" type="radio" name="ContohSoal1_ChapterB" value="ContohSoal1_ChapterB_e" disabled>(e) 32</td></tr>
+                            <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (c). Karena 20 ditambah 10 adalah 30. Sehingga, jawabannya adalah 30 (c).</label></td></tr>
+                        </table>
+                        </br>
+                        <label style="font-size: x-large;">Contoh Soal 2 :</label>
+                        <table class="multiplechoice">
+                            <tr><td>Apabila 2 orang harus membagi uang 1000 rupiah. Berapa rupiah yang diperoleh oleh masing- masing orang? </td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterB_a" type="radio" name="ContohSoal2_ChapterB" value="ContohSoal2_ChapterB_a" disabled>(a) 300</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterB_b" type="radio" name="ContohSoal2_ChapterB" value="ContohSoal2_ChapterB_b" disabled>(b) 350</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterB_c" type="radio" name="ContohSoal2_ChapterB" value="ContohSoal2_ChapterB_c" disabled>(c) 400</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterB_d" type="radio" name="ContohSoal2_ChapterB" value="ContohSoal2_ChapterB_d" disabled>(d) 450</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterB_e" type="radio" name="ContohSoal2_ChapterB" value="ContohSoal2_ChapterB_e" disabled checked="checked">(e) 500</td></tr>
+                            <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (e). Karena 1000 dibagi 2 adalah 500 rupiah. Sehingga, jawabannya adalah 500 (e).</label></td></tr>
+                        </table>
+                        <table width="100%">
+                            <tr>
+                                <td align="center">
+                                    <button type="button" id="btnMulaiTestChapterB" onclick="btnMulaiTestOnClick('Tipe B')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter B</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="TestChapterB" style="display: none;">
+                        @{
+                            Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                            Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe B").TipeSoalId;
+                            int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe B").JumlahPertanyaan;
+                            Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                            Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                            List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                            List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+                            Ptpn8.Models.ModalManusia.View_LoadSoal mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoal)HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name];
+                            if (mdlLoadPerChapter == null)
+                            {
+                                mdlLoadPerChapter = new Ptpn8.Models.ModalManusia.View_LoadSoal();
+                            }
+
+                            <div style="border: 3px solid black; padding: 10px;">
+                                <label style="font-size: xx-large; font-weight: 1000; text-align: center;">SOAL CHAPTER B</label>
+                                <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                                <label id="instruksiB2" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                                <label style="font-size: x-large; margin: 20px 20px 20px 20px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.Anda dapat mengerjakan soal yang menurut anda lebih mudah terlebih dahulu.</label>
+                                <label style="font-size: x-large; margin: 20px 20px 20px 20px">Apabila sudah selesai Click <span style="color: red">"Lanjut ke Chapter C"</span></label>
+                            </div>
+                            <div id="B">
+                                @{
+                                    mdlLoadPerChapter.JumlahLoadChapterB = 0;
+                                }
+                                @for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                                {
+                                    paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                                    pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                                    pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                                    jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                                    <table class="multiplechoice">
+                                        <tr>
+                                            @foreach (var mp1 in pertanyaanDetail)
+                                            {
+                                                <td width="4%"><label>(@noUrut)</label></td>
+                                                <td>@mp1.PertanyaanTeks</td>
+                                            }
+                                        </tr>
+
+                                        @foreach (var mp2 in jawaban)
+                                        {
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <label id="B1_@noUrut" style="display: none;">@mp2.PertanyaanId</label>
+                                                    <input class="largerRadio" type="radio" name="B_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('B_@noUrut','@(mp2.NoUrut)')" /><span class="jawaban" onclick="pertanyaanOnClick('B_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut)) @mp2.JawabanTeks</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                    mdlLoadPerChapter.JumlahLoadChapterB = mdlLoadPerChapter.JumlahLoadChapterB + 1;
+                                    HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name] = mdlLoadPerChapter;
+                                }
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnB" onclick="btnOnClick('Tipe B')" class="btn-big" style="font-size: x-large; height: 60px; width: 250px;">Lanjut ke Chapter C</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+<style>
+    #ContohChapterB {
+        background-color: white;
+        color: black;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    #TestChapterB {
+        background-color: white;
+        color: black;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+</style>

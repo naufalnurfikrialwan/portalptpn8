@@ -1,0 +1,87 @@
+﻿@model Ptpn8.Procurement.Models.View_HDRPermintaanBarangDariKebun
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Procurement/VerAdsi.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Procurement.Models.View_HDRPermintaanBarangDariKebun>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.HDR_PermintaanBarangDariKebunId).Width(50).Hidden();
+            g.Bound(i => i.TahunBuku).Width(50).Hidden();
+            g.Bound(i => i.KebunId).Width(50).Hidden();
+            g.Bound(i => i.NamaKebun).Width(50).Hidden();
+            g.Bound(i => i.NomorInput).Width(50).Hidden();
+            g.Bound(i => i.NomorInputView).Width(50).Hidden();
+            g.Bound(i => i.TanggalPermintaan).Width(50).Hidden();
+            g.Bound(i => i.UserName).Width(50).Hidden();
+            g.Bound(i => i.Pejabat).Width(50).Hidden();
+            g.Bound(i => i.No_SuratTugas).Width(50).Hidden();
+            g.Bound(i => i.VerKaur).Width(50).Title("Verifikasi").ClientTemplate("#= VerKaur ? 'Sudah':'Belum' #");
+            g.Bound(i => i.VerKabag).Width(50).Hidden();
+            g.Bound(i => i.NomorPermintaan).Width(100);
+            g.Bound(i => i.TglVerKaur).Width(100).Title("Tanggal Verifikasi").ClientTemplate("#= kendo.toString(TglVerKaur,'dd/MM/yyyy')#");
+            g.Bound(i => i.TglVerKabag).Width(50).Hidden();
+            g.Bound(i => i.UserNameKaur).Width(50).Hidden();
+            g.Bound(i => i.UserNameKabag).Width(50).Hidden();
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        })
+        .AutoBind(true)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBound("grdOnDataBound");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(i =>
+            {
+                i.Add(j => j.VerKaur).Ascending();
+                i.Add(j => j.TanggalPermintaan).Descending();
+            })
+            .Group(g=>g.Add(gg=>gg.NamaKebun))
+            .Model(model =>
+            {
+                model.Id(p => p.HDR_PermintaanBarangDariKebunId);
+                model.Field(f => f.No_SuratTugas).Editable(false);
+                model.Field(f => f.TanggalPermintaan).Editable(false);
+                model.Field(f => f.NamaKebun).Editable(false);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+

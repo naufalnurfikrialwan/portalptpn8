@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="dsHDR_PJB" Width="17.9000002523263cm" Culture="id-ID" Name="PackingList" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportHDR_PJB" SelectCommandType="StoredProcedure" Name="dsHDR_PJB">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Guid" Name="@HDR_PJBId">
+          <Value>
+            <String>= Parameters.HDR_PJBId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportDTL_PJB" SelectCommandType="StoredProcedure" Name="dsDTL_PJB">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Guid" Name="@HDR_PJBId">
+          <Value>
+            <String>= Parameters.HDR_PJBId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="0.132291472252043cm" Name="Century">
+      <Style>
+        <Font Name="Gadugi" />
+      </Style>
+    </PageHeaderSection>
+    <DetailSection Height="20.308123941092cm" Name="detailSection1">
+      <Items>
+        <Table DataSourceName="dsDTL_PJB" Width="17.4612386703595cm" Height="1.50895822399391cm" Left="0.300000050465265cm" Top="5.76770858933941cm" Name="tblDTL_ShippingInstruction" StyleName="Normal.TableNormal">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.14312462603879cm" Height="0.399999954009971cm" Left="0cm" Top="0cm" Value="= Fields.NamaMerk" Name="textBox59" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.48166426634881cm" Height="0.399999954009973cm" Left="0cm" Top="0cm" Value="= Fields.NamaGrade" Name="textBox61" StyleName="Normal.TableBody">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.52916416121557cm" Height="0.399999936128586cm" Left="0cm" Top="0cm" Value="= Fields.Netto" Format="{0:N0}" Name="textBox65" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.97895496388648cm" Height="0.399999954009971cm" Left="0cm" Top="0cm" Value="= Fields.Price" Format="{0:N4}" Name="textBox66" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.32832899496605cm" Height="0.399999959970434cm" Left="0cm" Top="0cm" Value="= Fields.Netto* Fields.Price" Format="{0:N0}" Name="textBox67" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.52916416121557cm" Height="0.400000071039956cm" Left="0cm" Top="0cm" Value="= Sum(Fields.Netto)" Format="{0:N0}" Name="textBox75" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" Bold="True" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.97895496388648cm" Height="0.400000043950888cm" Left="0cm" Top="0cm" Format="{0:N0}" Name="textBox76" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.32832899496605cm" Height="0.400000049911353cm" Left="0cm" Top="0cm" Value="= Sum(Fields.Netto* Fields.Price)" Format="{0:N0}" Name="Arial" StyleName="Normal.TableBody">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" Bold="True" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="1" ColumnIndex="0" RowSpan="1" ColumnSpan="2">
+                <ReportItem>
+                  <TextBox Width="7.62478974111405cm" Height="0.400000043950889cm" Left="0cm" Top="0cm" Value="JUMLAH" Name="textBox52" StyleName="Normal.TableBody">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <Font Name="Gadugi" Size="10pt" Bold="True" />
+                      <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                      <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                      <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="4.14312510924138cm" />
+              <Column Width="3.48166522731165cm" />
+              <Column Width="2.529164423189cm" />
+              <Column Width="2.97895491565143cm" />
+              <Column Width="4.32832899496605cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.399999959970434cm" />
+              <Row Height="0.400000049911353cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <Style>
+            <Font Name="Gadugi" Size="8pt" />
+            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+            <BorderColor Top="228, 108, 10" Bottom="228, 108, 10" Left="228, 108, 10" Right="228, 108, 10" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+          </Style>
+          <RowGroups>
+            <TableGroup Name="detail">
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+            <TableGroup Name="group1" />
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="lineNumber">
+              <ReportItem>
+                <TextBox Width="4.14312462603879cm" Height="0.708958181062591cm" Left="0cm" Top="0cm" Value="Kebun" Name="textBox48" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Tahoma" Size="11pt" Bold="True" />
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="chop">
+              <ReportItem>
+                <TextBox Width="3.48166426634881cm" Height="0.708958181062594cm" Left="0cm" Top="0cm" Value="Jenis" Name="textBox50" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Tahoma" Size="11pt" Bold="True" />
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group">
+              <ReportItem>
+                <TextBox Width="2.52916416121557cm" Height="0.328020762651066cm" Left="0cm" Top="0cm" Value="Banyaknya" Name="textBox72" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Tahoma" Size="11pt" Bold="True" />
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group8">
+                  <ReportItem>
+                    <TextBox Width="2.52916416121557cm" Height="0.380937364233408cm" Left="0cm" Top="0cm" Value="Kg (Netto)" Name="textBox26" StyleName="Normal.TableHeader">
+                      <Style TextAlign="Center" VerticalAlign="Middle">
+                        <Font Name="Tahoma" Size="11pt" Bold="True" />
+                        <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="tare">
+              <ReportItem>
+                <TextBox Width="2.97895496388648cm" Height="0.708958181062591cm" Left="0cm" Top="0cm" Value="Harga Satuan (Rp/Kg)" Name="textBox38" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Tahoma" Size="11pt" Bold="True" />
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="price">
+              <ReportItem>
+                <TextBox Width="4.32832899496605cm" Height="0.70895819162689cm" Left="0cm" Top="0cm" Value="Jumlah Harga (Rp)" Name="textBox56" StyleName="Normal.TableHeader">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <Font Name="Tahoma" Size="11pt" Bold="True" />
+                    <BorderStyle Top="Groove" Bottom="Groove" Left="Groove" Right="Groove" />
+                    <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                    <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+          </ColumnGroups>
+        </Table>
+        <TextBox Width="3.07875165105422cm" Height="0.49979965289991cm" Left="11.7001995901211cm" Top="7.3677081856173cm" Value="PPN 10% Rp." Name="textBox2">
+          <Style TextAlign="Left">
+            <Font Name="Tahoma" Size="10pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="3.07875141263564cm" Height="0.499799652899911cm" Left="11.7001995901211cm" Top="7.86770833701309cm" Value="MATERAI Rp." Name="textBox3">
+          <Style TextAlign="Left">
+            <Font Name="Tahoma" Size="10pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="3.07980000615676cm" Height="0.499799652899911cm" Left="11.7001995901211cm" Top="8.36770848840889cm" Value="TOTAL Rp." Name="textBox4">
+          <Style TextAlign="Left">
+            <Font Name="Tahoma" Size="10pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.99959968846163cm" Height="0.390842214680118cm" Left="0.199999899069471cm" Top="7.3677081856173cm" Value="Terbilang :" Name="textBox5">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="9.50019956984995cm" Height="0.890843140936294cm" Left="2.19979986032407cm" Top="7.3677081856173cm" Value="= Fields.Terbilang" Format="{0}" Name="textBox6">
+          <Style TextAlign="Left">
+            <Font Name="Tahoma" Size="11pt" Bold="False" Italic="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.96123392668616cm" Height="0.499799652899911cm" Left="14.8000038353601cm" Top="7.3677081856173cm" Value="= Fields.PPn" Format="{0:N0}" Name="textBox7">
+          <Style TextAlign="Right">
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.96123353255338cm" Height="0.499799652899911cm" Left="14.8000038353601cm" Top="7.86770833701309cm" Value="= Fields.Materai" Format="{0:N0}" Name="textBox8">
+          <Style TextAlign="Right">
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.96123361587524cm" Height="0.499799638986588cm" Left="14.8000040054321cm" Top="8.36770820617676cm" Value="= Fields.Total + Fields.PPn + Fields.Materai" Format="{0:N0}" Name="textBox9">
+          <Style TextAlign="Right">
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <Barcode Width="2.29999986251195cm" Height="23.2979179855765mm" Left="0.0787401596705119in" Top="4.22752634684245in" Value="= Fields.No_PJB + ';'+ Fields.Tanggal_PJB + ';'+ Fields.NamaBuyer" Stretch="True" Name="barcode25">
+          <Style>
+            <Font Name="Tahoma" Size="9pt" />
+            <BorderStyle Top="None" Bottom="None" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Padding Top="0cm" Bottom="0cm" />
+          </Style>
+          <Encoder>
+            <QRCodeEncoder ErrorCorrectionLevel="H" />
+          </Encoder>
+        </Barcode>
+        <TextBox Width="16.9781131744385cm" Height="0.599800303782598cm" Left="0.100000353256852cm" Top="0.167708488408886cm" Value="PERJANJIAN JUAL BELI" Name="textBox1">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="12.5pt" Bold="True" Underline="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.19999986486106cm" Height="0.396675347579603cm" Left="4.8cm" Top="0.767708791200473cm" Value="Nomor : " Name="textBox10">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="12pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.90437953817583cm" Height="0.39667534828186cm" Left="7.00019994337797cm" Top="0.767708690269944cm" Value="= Fields.No_PJB" Name="textBox33">
+          <Style TextAlign="Left">
+            <Font Name="Tahoma" Size="12pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="12.3999989402294cm" Height="0.396674752235413cm" Left="0.2cm" Top="1.46770853887415cm" Value="Dengan ini kami tegaskan bahwa pada hari ini telah dilakukan jual beli" Name="textBox34">
+          <Style VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.09979971449137cm" Height="0.396674752235413cm" Left="12.5999992934863cm" Top="1.46770853887415cm" Value="= Fields.NamaMainBudidaya" Name="textBox35">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="11pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.09999840736393cm" Height="0.396674752235413cm" Left="14.7000018672148cm" Top="1.46770833701309cm" Value=", antara :" Name="textBox36">
+          <Style VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.99979950150412cm" Height="0.396674752235413cm" Left="0.199999899069471cm" Top="2.16770858933941cm" Value="Penjual" Name="textBox37">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599761565069cm" Height="0.396674752235413cm" Left="2.19999969720841cm" Top="2.16770858933941cm" Value=":" Name="textBox39">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6.10019953965586cm" Height="0.396674752235413cm" Left="2.79979975383044cm" Top="2.16770858933941cm" Value="PT Perkebunan Nusantara VIII" Name="textBox40">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599799604012513cm" Height="0.396674752235413cm" Left="2.19979985476097cm" Top="2.56770858933941cm" Value=":" Name="textBox41">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6.40019978244587cm" Height="0.396674752235413cm" Left="2.79979975383044cm" Top="2.56458357830014cm" Value="JL. Sindangsirna No. 4 Bandung" Name="textBox42">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.99979950150412cm" Height="0.396674752235413cm" Left="0.199999899069471cm" Top="3.16770848840889cm" Value="Pembeli" Name="textBox43">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599761565069cm" Height="0.396674752235413cm" Left="2.20000010093053cm" Top="3.16770848840889cm" Value=":" Name="textBox44">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.79999984860421cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="3.16770848840889cm" Value="Nama" Name="textBox11">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="4.60019994337797cm" Top="3.16770848840889cm" Value=":" Name="textBox13">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="9.60019856531862cm" Height="0.396674752235413cm" Left="5.19999939441683cm" Top="3.16770848840889cm" Value="= Fields.NamaBuyer" Name="textBox15">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.79999983310699cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="3.56458367923067cm" Value="Alamat" Name="textBox16">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="4.60019994337797cm" Top="3.56458367923067cm" Value=":" Name="textBox17">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="12.6998996381048cm" Height="0.396674752235413cm" Left="5.20000020186106cm" Top="3.56458367923067cm" Value="= Fields.Alamat" Name="textBox18">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.79999983310699cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="3.96145866819139cm" Value="NPWP" Name="textBox19">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="4.60019994337797cm" Top="3.96145866819139cm" Value=":" Name="textBox20">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="9.60019874572754cm" Height="0.396674752235413cm" Left="5.20000020186106cm" Top="3.96145866819139cm" Value="= Fields.NPWP" Name="textBox21">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="7.39980000615676cm" Height="0.396674752235413cm" Left="0.199999899069471cm" Top="4.56770879120047cm" Value="dengan syarat-syarat sebagai berikut " Name="textBox22">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="7.60000020186106cm" Top="4.56770879120047cm" Value=":" Name="textBox23">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="9.29999987641969cm" Height="0.396674752235413cm" Left="8.19980046034414cm" Top="4.56770879120047cm" Value="= Fields.Syarat" Name="textBox24">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6.29999977548916cm" Height="0.396674752235413cm" Left="0.199999899069471cm" Top="5.26770803422151cm" Value="Hasil Perkebunan dengan rincian" Name="textBox29">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="6.49999954581262cm" Top="5.26770803422151cm" Value=":" Name="textBox30">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.59979960243465cm" Height="0.396674752235413cm" Left="0.199999899069471cm" Top="8.86770863980468cm" Value="PENGEPAKAN" Name="textBox12">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="8.86770863980468cm" Value=":" Name="textBox14">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="13.6783151626587cm" Height="0.396674752235413cm" Left="3.39979958534241cm" Top="8.86770820617676cm" Value="= Fields.Pengepakan" Name="textBox28">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.59979963302612cm" Height="0.396674752235413cm" Left="0.199999899069471cm" Top="9.2645836287654cm" Value="PEMBAYARAN" Name="textBox31">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="9.2645836287654cm" Value=":" Name="textBox32">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="13.6783151626587cm" Height="0.396674752235413cm" Left="3.39979958534241cm" Top="9.26458358764648cm" Value="= Fields.Pembayaran" Name="textBox45">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.59979963302612cm" Height="0.396674752235413cm" Left="0.199999899069471cm" Top="9.66145861772613cm" Value="PENYERAHAN" Name="textBox46">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.599599778652191cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="9.66145861772613cm" Value=":" Name="textBox47">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="11.3791515682035cm" Height="0.679382509213371cm" Left="3.39979965289991cm" Top="9.66145861772613cm" Value="= Fields.Penyerahan" Name="textBox49">
+          <Style>
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.96145236492157cm" Height="0.39667421579361cm" Left="12.2682236882942cm" Top="12.7752082322977cm" Value="Bandung, " Name="textBox81">
+          <Style TextAlign="Right">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.90000009536743cm" Height="0.390424877405167cm" Left="11.6596828459987cm" Top="13.1720832212584cm" Value="PENJUAL" Name="textBox82">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.89989948272705cm" Height="0.793549716472626cm" Left="11.6596828459987cm" Top="16.267708135152cm" Value="= Fields.Pejabat" Name="textBox83">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="3.28949904441834cm" Height="0.39667421579361cm" Left="14.2790569656952cm" Top="12.7752082322977cm" Value="= Fields.Tanggal_PJB" Format="{0:dd MMMM yyyy}" Name="textBox27">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.59637420768314cm" Height="0.396674752235413cm" Left="0.20322483133247cm" Top="10.3410416333386cm" Value=" SYARAT LAIN    :" Name="textBox51">
+          <Style TextAlign="Left" VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="7.09063291549683cm" Height="0.393549412488937cm" Left="2.79999979813894cm" Top="10.3410416333386cm" Value="1. Pembayaran harus dilaksanakan selambat-lambatnya" Name="textBox54">
+          <Style>
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.396675050258636cm" Height="0.39354994893074cm" Left="9.89083172307085cm" Top="10.3410416333386cm" Value="= Fields.LamaHari" Name="textBox55">
+          <Style TextAlign="Left">
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6.89979982376099cm" Height="0.393549412488937cm" Left="10.2877067120316cm" Top="10.3410415649414cm" Value=" hari sejak tanggal perjanjian jual beli ini diterbitkan." Name="textBox57">
+          <Style>
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="14.4002027511597cm" Height="0.399798482656479cm" Left="2.8cm" Top="10.7379169464111cm" Value="2. Apabila terjadi keterlambatan pembayaran, pembeli dikenakan denda 1/1000 (satu per mil) dari jumlah harga " Name="textBox58">
+          <Style>
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="7.96561813354492cm" Height="0.393550481419059cm" Left="2.79999979813894cm" Top="11.1379158820764cm" Value="   setiap hari keterlambatan." Name="textBox62">
+          <Style>
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="14.400200843811cm" Height="0.396674752235413cm" Left="2.8cm" Top="11.5316667556763cm" Value="3. Apabila pembeli secara sepihak membatalkan perjanjian jual beli, kepada pembeli dikenakan denda sebesar 10% " Name="textBox63">
+          <Style>
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="7.96561813354492cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="11.9285415891815cm" Value="   10% dari nilai kontrak." Name="textBox69">
+          <Style>
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="14.400200843811cm" Height="0.396674752235413cm" Left="2.79999979813894cm" Top="12.3254165781422cm" Value="4. Pengajuan klaim kualitas setelah barang diterima di gudang pembeli." Name="textBox70">
+          <Style>
+            <Font Name="Tahoma" Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.90000009536743cm" Height="0.390424877405167cm" Left="0.600099820293193cm" Top="13.1720832212584cm" Value="PEMBELI" Name="textBox68">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.89989948272705cm" Height="0.793549716472626cm" Left="0.600099820293193cm" Top="16.267708135152cm" Value="= Fields.NamaBuyer" Name="textBox60">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="11pt" Bold="True" />
+          </Style>
+        </TextBox>
+      </Items>
+    </DetailSection>
+    <PageFooterSection Height="0.132291659712791cm" Name="pageFooterSection1" />
+  </Items>
+  <PageSettings PaperKind="Legal" Landscape="False" ContinuousPaper="False">
+    <Margins>
+      <MarginsU Left="2cm" Right="2cm" Top="4.9cm" Bottom="0cm" />
+    </Margins>
+  </PageSettings>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <ReportParameters>
+    <ReportParameter Name="HDR_PJBId">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

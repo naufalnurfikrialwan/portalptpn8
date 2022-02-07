@@ -1,0 +1,192 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe I'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="100%">
+    <tr>
+        <td>
+            <div id="_chapterI" style="display: none;">
+                <div id="ContohChapterI" style="display: none;">
+                    <label style="font-size: large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER I</label>
+                    <label style="font-size: large; font-weight: 600;">INSTRUKSI:</label>
+                    <label id="instruksiI1" style="font-size: large; font-weight: 600;margin: 5px 5px 5px 5px">@instruksi</label>
+                    <label style="font-size: large;">Contoh Soal 1 :</label>
+                    <table class="multiplechoice">
+                        <tr>
+                            <td>
+                                <table style="text-align:center; border: solid; border-color: grey;" width="100%">
+                                    <tr>
+                                        <td style="border: solid; border-color: grey;" width="50%">Laptop</td>
+                                        <td style="border: solid; border-color: grey;" width="50%">Laptop</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterI_a" type="radio" name="ContohSoal1_ChapterI" value="ContohSoal1_ChapterI_a" disabled checked="checked">(a) SAMA</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterI_b" type="radio" name="ContohSoal1_ChapterI" value="ContohSoal1_ChapterI_b" disabled>(b) TIDAK SAMA</td></tr>
+                        <tr><td><label style="color: blue;">Jawabannya adalah SAMA (a), karena kedua kata tersebut sama persis.</label></td></tr>
+                    </table>
+                    <label style="font-size: large;">Contoh Soal 2 :</label>
+                    <table class="multiplechoice">
+                        <tr>
+                            <td>
+                                <table style="text-align:center; border: solid; border-color: grey;" width="100%">
+                                    <tr>
+                                        <td style="border: solid; border-color: grey;" width="50%">PTPN IX</td>
+                                        <td style="border: solid; border-color: grey;" width="50%">PTPN XI</td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterI_a" type="radio" name="ContohSoal2_ChapterI" value="ContohSoal2_ChapterI_a" disabled>(a) SAMA</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterI_b" type="radio" name="ContohSoal2_ChapterI" value="ContohSoal2_ChapterI_b" disabled checked="checked">(b) TIDAK SAMA</td></tr>
+                        <tr><td><label style="color: blue;">Jawabannya adalah TIDAK SAMA (b), karena kedua kata tersebut berbeda pada angka romawi IX dan XI</label></td></tr>
+                    </table>
+                    <label style="font-size: large;">Contoh Soal 3 :</label>
+                    <table class="multiplechoice">
+                        <tr>
+                            <td>
+                                <table style="text-align:center; border: solid; border-color: grey;" width="100%">
+                                    <tr>
+                                        <td style="border: solid; border-color: grey;" width="50%">081522136754</td>
+                                        <td style="border: solid; border-color: grey;" width="50%">081522136756</td>
+                                    </tr>
+
+                                </table>
+                            </td>
+                        </tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal3_ChapterI_a" type="radio" name="ContohSoal3_ChapterI" value="ContohSoal3_ChapterI_a" disabled>(a) SAMA</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal3_ChapterI_b" type="radio" name="ContohSoal3_ChapterI" value="ContohSoal3_ChapterI_b" disabled checked="checked">(a) TIDAK SAMA</td></tr>
+                        <tr><td><label style="color: blue;">Jawabannya adalah TIDAK SAMA (b), karena kedua kata tersebut berbeda pada angka terakhirnya yaitu antara angka 4 dan 6.</label></td></tr>
+                    </table>
+
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <button type="button" id="btnMulaiTestChapterI" onclick="btnMulaiTestOnClick('Tipe I')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter I</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="TestChapterI" style="display: none;">
+                    @{
+                        Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                        Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                        Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe I").TipeSoalId;
+                        int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe I").JumlahPertanyaan;
+                        Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                        List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                        List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+                        Ptpn8.Models.ModalManusia.View_LoadSoal mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoal)HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name];
+                        if (mdlLoadPerChapter == null)
+                        {
+                            mdlLoadPerChapter = new Ptpn8.Models.ModalManusia.View_LoadSoal();
+                        }
+                        @*<div style="border: 3px solid black; padding: 10px;">*@
+                            <label style="font-size: large; font-weight: 1000; text-align: center;">SOAL CHAPTER I</label>
+                            <label style="font-size: large; font-weight: 600;">INSTRUKSI:</label>
+                            <label id="instruksiI2" style="font-size: large; font-weight: 600;margin: 5px 5px 5px 5px">@instruksi</label>
+                            <label style="font-size: large; margin: 5px 5px 5px 5px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.</label>
+                            <label style="font-size: large; margin: 5px 5px 5px 5px">Apabila anda ingin melanjutkan ke soal berikutnya, Click <span style="color: red">"Soal Chapter I Berikutnya"</span> atau <span style="color: red">"Lanjut ke Chapter J"</span></label>
+                        @*</div>*@
+                        mdlLoadPerChapter.JumlahLoadChapterI=0;
+                        for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                        {
+                            paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                            pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                            pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                            jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                        <div id="I_@noUrut.ToString()" style="display: none;">
+                            <h2>Soal No @noUrut</h2>
+                            <table width="100%" class="multiplechoice">
+                                <tr>
+                                    @foreach (var mp1 in pertanyaanDetail)
+                                    {
+                                        <td width="50%" style="font-size:large; border: solid; border-color: gray; text-align: center;">@mp1.PertanyaanTeks</td>
+                                    }
+                                </tr>
+                            </table>
+                            <table>
+                                @foreach (var mp2 in jawaban)
+                                {
+                                    <tr>
+                                        <td>
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="10%">
+                                                        <label id="I1_@noUrut" style="display: none;">@mp2.PertanyaanId</label>
+                                                        <input class="largerRadio" type="radio" name="I_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('I_@noUrut','@(mp2.NoUrut)')" />
+                                                    </td>
+                                                    <td width="10%">
+                                                        <span style="font-size: large;" class="jawaban" onclick="pertanyaanOnClick('I_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut)) </span>
+                                                    </td>
+                                                    <td>
+                                                        <span style="font-size: large;" class="jawaban" onclick="pertanyaanOnClick('I_@noUrut','@(mp2.NoUrut - 1)')">@mp2.JawabanTeks</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            
+                                            @*<input class="largerRadio" type="radio" name="I_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('I_@noUrut','@(mp2.NoUrut)')" /><span class="jawaban" onclick="pertanyaanOnClick('I_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut)) @mp2.JawabanTeks</span>*@
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                            <br />
+                            @if (noUrut < jumlahPertanyaan)
+                            {
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnI_@noUrut" onclick="btnOnClick1('Tipe I')" class="btn-big" style="height: 60px; width: 250px; display: none;">Soal Chapter I Berikutnya</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                            else
+                            {
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnI_@noUrut" onclick="btnOnClick('Tipe I')" class="btn-big" style="height: 60px; width: 250px; display: none;">Lanjut ke Chapter J</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                            <br />
+                        </div>
+                            mdlLoadPerChapter.JumlahLoadChapterI = mdlLoadPerChapter.JumlahLoadChapterI + 1;
+                            HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name] = mdlLoadPerChapter;
+
+                        }
+                    }
+
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<style>
+    #ContohChapterI {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #TestChapterI {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+</style>

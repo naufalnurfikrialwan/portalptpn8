@@ -1,0 +1,205 @@
+﻿@model Ptpn8.Models.View_CV.View_KeteranganPerorangan
+<script src="~/Scripts/CV/CV_Interest.js"></script>
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div class="_headersawit">
+
+    <table width="50%;" align="center">
+        <tr>
+            <td width="100%;">
+                <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%;" align="center" style="font-size: small;">
+        <tr>
+            <td width="5%"><label style="text-align: right; font-size: 12px;">NIK:</label></td>
+            <td width="20%">
+                <label id="NIK" style="text-align: left; color: green; font-size: 24px;">@HttpContext.Current.User.Identity.Name</label>
+            </td>
+            <td width="30%" align="left"></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Nama Lengkap:</label></td>
+            <td><label id="NamaLengkap" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 18px; color: darkcyan ;">Lengkapi Isian Di Bawah Ini :</label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 11px; color: darkcyan ;">(Ilustrasi atas minat/passion yang secara terus menerus dikembangkan)</label></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <div class="_headersawit">
+                @(Html.Kendo().TextBox().Name("InterestId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("KeteranganPeroranganId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+
+
+                <table width="100%;" align="center" style="font-size: small;">
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Minat:</label></td>
+                        <td>@(Html.Kendo().Editor().Name("Minat").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                        <td>Isi dengan Minat saudara (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @*@(Html.Kendo().Button().Name("btnSimpan").Content("Simpan").HtmlAttributes(new { style = "width: 150px; height: 60px; background-color: yellow; font-size: 18px;" }).Events(ev => ev.Click("btnSimpanOnClick")))*@
+
+                            <button type="submit" id="btnSimpan" class="k-button" style="background-color: yellow; font-size: 18px; width: 150px; height: 60px; ">Simpan</button>
+
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><label></label></td>
+                        <td></td>
+
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+</div>
+
+<script>
+    var nik, keteranganperoranganid;
+    $(document).ready(function () {
+        CV_KeteranganPeroranganOnSelect();
+    });
+
+    function CV_KeteranganPeroranganOnSelect(e) {
+        GetCV_KeteranganPerorangan().done(function (data) {
+            if (data != 0) {
+                var dta = data[0];
+                keteranganperoranganid=dta.KeteranganPeroranganId;
+                $('#NIK').text(dta.NIK);
+                $('#NamaLengkap').text(dta.NamaLengkap);
+                GetCV_Interest(dta.NIK).done(function (data) {
+                    if (data != 0) {
+                        dta = data[0];
+                        $('#InterestId').val(dta.InterestId);
+                        $('#Minat').data('kendoEditor').value(dta.Minat);
+                    }
+                });
+            }
+        });
+    }
+
+    function GetCV_KeteranganPerorangan() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_KeteranganPerorangan',
+                scriptSQL: "SELECT top 1 KeteranganPeroranganId,NIK,NamaLengkap FROM [SPDK_KanpusEF].[dbo].[CV_KeteranganPerorangan] " +
+                    "WHERE NIK='" + nik + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetCV_Interest() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_Interest',
+                scriptSQL: "SELECT top 1 InterestId,Minat FROM [SPDK_KanpusEF].[dbo].[CV_Interest] " +
+                    "WHERE keteranganperoranganid='" + keteranganperoranganid + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData() {
+        var url = '/Input/ExecSQL';
+        var InterestId = $('#InterestId').val();
+
+        var KeteranganPeroranganId = keteranganperoranganid;
+        var Minat = $('#Minat').val();
+
+        if (InterestId == "") {
+            InterestId = guid();
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "insert into [SPDK_KanpusEF].[dbo].[CV_Interest] " +
+                        "values ( " +
+                        "'" + InterestId + "','" + KeteranganPeroranganId + "','" + Minat + "' )",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+        }
+        else {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec [SPDK_KanpusEF].[dbo].[CV_Interest] " +
+                        "'" + InterestId + "','" + KeteranganPeroranganId + "','" + Minat + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+        }
+    }
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+
+

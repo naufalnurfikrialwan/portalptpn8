@@ -1,0 +1,117 @@
+﻿
+<div id="detail">
+    @(Html.Kendo().Grid<Ptpn8.UploadDataHarian.Models.EvaluasiUploadData>()
+        .Name("grdDetail")
+        .ToolBar(tools => { tools.Excel(); })
+        .Excel(excel => excel
+            .FileName("EvaluasiUploadDataHarian.xlsx")
+            .Filterable(true)
+        )
+        .Columns(g =>
+        {
+            g.Bound(i => i.EvaluasiUploadDataId).Hidden();
+            g.Bound(i => i.NamaKebun).Title("Kebun").Width(150).Locked(true).HtmlAttributes(new { style="font-weight:600" });
+            g.Group(i => i.HeaderTemplate("<label style='font-size: medium; text-align:center;'>Tanggal</label>")
+                .Columns(h =>
+                {
+                    for (int ii=1;ii<=31;ii++)
+                    {
+                        h.Bound("Tanggal" + ii.ToString("00")).Title(ii.ToString("00")).Width(110)
+                            .ClientTemplate("#= WarnaKolom(Tanggal"+ii.ToString("00")+", TanggalUp"+ ii.ToString("00") + ") #");
+                    }
+                }));
+        })
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .HtmlAttributes(new { style = "Height: 590px" })
+        .Events(ev=>ev.ExcelExport("excelExport"))
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Read(read => read.Action("GetDataFromGRID", "UploadDataHarian").Data("filterGRD").Type(HttpVerbs.Post))
+            .Model(model =>
+            {
+                model.Id(p => p.EvaluasiUploadDataId);
+            })
+        )
+    )
+</div>
+
+
+<script>
+    $(document).ajaxStart(function () {
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+    });
+    function WarnaHeader(str) {
+        var myDate = str+'.'+$("#Bulan").data("kendoDropDownList").value()+'.'+$("#Tahun").val();
+        var parsedDate = $.datepicker.parseDate('dd.mm.yyyy', myDate);
+        return "<div style='text-align:center'>" + str + "</div>";
+    }
+
+    function WarnaKolom(str,str1)
+    {
+        if (str == '')
+            return "<div class='breakWord20' style='color: white; background-color: red;'>Belum UPLOAD!</div>";
+        else if (str.toLowerCase().indexOf("produksi") < 0 || str.toLowerCase().indexOf("lhkh") < 0 )
+            return "<div class='breakWord20' style='color: white; background-color: orange;'>" + str + "</div>" +
+                "<div class='breakWord20' style='color: black; background-color: lightgray;'>" + str1 + "</div>";
+        else
+            return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>" +
+                "<div class='breakWord20' style='color: black; background-color: lightgray;'>" + str1 + "</div>";
+    }
+
+    function filterGRD(e) {
+        var _bln = $('#Bulan').val();
+        var _thn = $('#Tahun').val();
+        var _scriptSQL = "exec [SPDK_KanpusEF].[dbo].[EvaluasiUploadData3] "+_bln+","+_thn
+        return {
+            strClassView: "Ptpn8.UploadDataHarian.Models.EvaluasiUploadData",
+            scriptSQL: _scriptSQL,
+            _menuId: menuID
+        };
+    }
+
+    function excelExport(e)
+    {
+        var sheet = e.workbook.sheets[0];
+        for (var rowIndex = 1; rowIndex < sheet.rows.length; rowIndex++) {
+
+            var row = sheet.rows[rowIndex];
+            for (var cellIndex = 1; cellIndex < row.cells.length; cellIndex++) {
+                var str = row.cells[cellIndex].value;
+                if (str == '') {
+                    row.cells[cellIndex].value = 'Belum Upload!'; 
+                    row.cells[cellIndex].color = "#fdfafa";
+                    row.cells[cellIndex].background = "#fe0202";
+                }
+                else if (str.toLowerCase().indexOf("produksi") < 0 || str.toLowerCase().indexOf("lhkh") < 0) {
+                    row.cells[cellIndex].color = "#000000";
+                    row.cells[cellIndex].background = "#fccb06";
+                }
+                else {
+                    row.cells[cellIndex].color = "#fdfafa";
+                    row.cells[cellIndex].background = "#298409";
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    .breakWord20 {
+        word-break: break-all !important;
+        word-wrap: break-word !important;
+        vertical-align: top;
+        
+    }
+
+    .k-grid-header .k-header {
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+</style>

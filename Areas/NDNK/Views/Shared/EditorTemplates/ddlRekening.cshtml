@@ -1,0 +1,34 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Rekening
+
+@(Html.Kendo().AutoComplete()
+        .Name("ddlRekening")
+        .Placeholder("Cari Rekening...")
+        .DataTextField("Text")
+        .TemplateId("scrRekg")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetRekeningbyNorek", "ddl", new { Area="Referensi"}).Data("filterRekening")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("ddlRekeningOnSelect"); e.DataBound("ddlRekeningOnDataBound"); })
+)
+
+<script id="scrRekg" type="text/kendo-tmpl">
+    <table style='vertical-align: top'>
+        <tr>
+            <td>#=KodeRekening#</td>
+            <td>
+                <table>
+                    <tr><td>#=Nama#</td></tr>
+                    <tr><td>#=KelompokRekening#</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</script>
+
+
+
+

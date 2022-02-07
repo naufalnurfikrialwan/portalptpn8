@@ -1,0 +1,846 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <table width="100%">
+                    <tr>
+                        <td width="33%" style="vertical-align:top;">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Rentang Waktu</label>
+                                        <table width="100%;" style="border: 1px solid lightgray; margin-bottom : 5px;">
+                                            <tr>
+                                                <td>Tahun Produksi:</td>
+                                                <td>
+                                                    @(Html.Kendo().NumericTextBox().Min(2016).Format("D4")
+                                                        .Name("TahunProduksi")
+                                                        .Placeholder("Tahun")
+                                                        .HtmlAttributes(new { style = "width:80px" })
+                                                        .Events(e => { e.Change("TahunProduksiOnChange"); e.Spin("TahunProduksiOnChange"); })
+                                                        .Value(DateTime.Now.Year)
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Bulan:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().DropDownList()
+                                                        .Name("BulanAwal")
+                                                        .AutoBind(true)
+                                                        .DataTextField("Text")
+                                                        .DataValueField("Value")
+                                                        .BindTo(new List<SelectListItem>() {
+                                                            new SelectListItem() {
+                                                                Text = "Seluruh",
+                                                                Value = "0"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Januari",
+                                                                Value = "1"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Februari",
+                                                                Value = "2"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Maret",
+                                                                Value = "3"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "April",
+                                                                Value = "4"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Mei",
+                                                                Value = "5"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juni",
+                                                                Value = "6"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juli",
+                                                                Value = "7"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Agustus",
+                                                                Value = "8"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "September",
+                                                                Value = "9"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Oktober",
+                                                                Value = "10"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Nopember",
+                                                                Value = "11"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Desember",
+                                                                Value = "12"
+                                                            }
+                                                        })
+                                                        .Value("Seluruh")
+                                                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan Awal", style = "width: 120px" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("BulanAwalOnSelect");
+                                                            e.Select("BulanAwalOnSelect");
+                                                        })
+                                                    )
+                                                    sd Bulan:
+                                                    @(Html.Kendo().DropDownList()
+                                                        .Name("BulanAkhir")
+                                                        .AutoBind(true)
+                                                        .DataTextField("Text")
+                                                        .DataValueField("Value")
+                                                        .BindTo(new List<SelectListItem>() {
+                                                            new SelectListItem() {
+                                                                Text = "Seluruh",
+                                                                Value = "0"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Januari",
+                                                                Value = "1"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Februari",
+                                                                Value = "2"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Maret",
+                                                                Value = "3"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "April",
+                                                                Value = "4"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Mei",
+                                                                Value = "5"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juni",
+                                                                Value = "6"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Juli",
+                                                                Value = "7"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Agustus",
+                                                                Value = "8"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "September",
+                                                                Value = "9"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Oktober",
+                                                                Value = "10"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Nopember",
+                                                                Value = "11"
+                                                            },
+                                                            new SelectListItem() {
+                                                                Text = "Desember",
+                                                                Value = "12"
+                                                            }
+                                                        })
+                                                        .Value("Seluruh")
+                                                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan Akhir", style = "width: 120px" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("BulanAkhirOnSelect");
+                                                            e.Select("BulanAkhirOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="33%" style="vertical-align:top">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black;background-color: lightgray; text-align: center;">Budidaya</label>
+                                        @(Html.Kendo().TextBox().Name("MainBudidayaId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                                        @(Html.Kendo().TextBox().Name("SubBudidayaId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                                        <table width="100%;" style="border: 1px solid lightgray;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Budidaya:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Budidaya")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Budidaya")
+                                                        .DataTextField("Nama")
+                                                        .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("BudidayaOnSelect");
+                                                            e.Select("BudidayaOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Sub Budidaya:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("SubBudidaya")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Sub Budidaya")
+                                                        .DataTextField("Nama")
+                                                        .DataSource(o => o.Read(r => r.Action("GetSubBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterSubBudidaya")).ServerFiltering(true))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("SubBudidayaOnSelect");
+                                                            e.Select("SubBudidayaOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33%" style="vertical-align:top">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Pembeli</label>
+                                        <table width="100%;" style="border: 1px solid lightgray;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Buyer:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Pembeli")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Pembeli")
+                                                        .DataTextField("NamaBuyer")
+                                                        .DataSource(ds => ds.Read(r => r.Action("GetDataFrom", "Report").Data("filterPembeli")))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("PembeliOnSelect");
+                                                            e.Select("PembeliOnSelect");
+                                                        })
+                                                    )
+
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Broker:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Broker")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Broker")
+                                                        .DataTextField("NamaBroker")
+                                                        .DataSource(ds => ds.Read(r => r.Action("GetDataFrom", "Report").Data("filterBroker")))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("BrokerOnSelect");
+                                                            e.Select("BrokerOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="vertical-align:top">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Kebun</label>
+                                        <table width="100%;" style="border: 1px solid lightgray;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Kebun:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Kebun")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Kebun")
+                                                        .DataTextField("NamaKebun")
+                                                        .DataSource(ds => ds.Read(r => r.Action("GetDataFrom", "Report").Data("filterKebun")))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("KebunOnSelect");
+                                                            e.Select("KebunOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Merk:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Merk")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Merk")
+                                                        .DataTextField("Merk")
+                                                        .DataSource(ds => ds.Read(r => r.Action("GetDataFrom", "Report").Data("filterMerk")))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("MerkOnSelect");
+                                                            e.Select("MerkOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="33%" style="vertical-align:top">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Grade</label>
+                                        <table width="100%;" style="border: 1px solid lightgray;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Grade:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Grade")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .Placeholder("Grade")
+                                                        .DataTextField("Grade")
+                                                        .DataSource(ds => ds.Read(r => r.Action("GetDataFrom", "Report").Data("filterGrade")))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("GradeOnSelect");
+                                                            e.Select("GradeOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="80px">
+                                                    No Chop:
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete()
+                                                        .Name("Chop")
+                                                        .MinLength(0)
+                                                        .Filter("contains")
+                                                        .Placeholder("Chop")
+                                                        .DataTextField("Chop")
+                                                        .DataSource(ds => ds.Read(r => r.Action("GetDataFrom", "Report").Data("filterChop")))
+                                                        .HtmlAttributes(new { style = "width: 95%" })
+                                                        .Events(e =>
+                                                        {
+                                                            e.Change("ChopOnSelect");
+                                                            e.Select("ChopOnSelect");
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </td>
+                        <td style="vertical-align:top"></td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="_detail" class="_detail">
+
+    @(Html.Kendo()
+        .Grid<Ptpn8.QCdanAlokasi.Models.ReportsChop>()
+        .Name("grdDetail")
+        .HtmlAttributes(new { style = "width: inherit; height: 600px;" })
+        .Columns(g =>
+        {
+            g.Bound(i => i.ReportsChopId).Width(50).Hidden();
+            g.Bound(i => i.No_ProductSample).Width(100).Title("No ProductSample");
+            g.Bound(i => i.No_UjiMutu).Width(100).Title("No UjiMutu");
+            g.Bound(i => i.NamaMainBudidaya).Width(80).Title("Budidaya");
+            g.Bound(i => i.NamaSubBudidaya).Width(80).Title("Sub Budidaya");
+            g.Bound(i => i.NamaKebun).Width(100).Title("Kebun");
+            g.Bound(i => i.Merk).Width(100).Title("Merk");
+            g.Bound(i => i.Grade).Width(80).Title("Grade")
+                .ClientFooterTemplate("Jml Chop")
+                .ClientGroupFooterTemplate("Jml Chop")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.Chop).Width(60).Title("Chop")
+                .ClientGroupFooterTemplate("#= kendo.toString(count,'n0') #")
+                .ClientFooterTemplate("#= kendo.toString(count,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" })
+                .Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.BulanProduksi).Width(80).Title("Bulan Produksi");
+            g.Bound(i => i.TahunProduksi).Width(80).Title("Tahun Produksi");            
+            g.Bound(i => i.QtySacks).Width(80).Title("Jumlah Sak").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.NamaSatuan).Width(80).Title("Satuan")
+                .ClientFooterTemplate("Total")
+                .ClientGroupFooterTemplate("Total")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.Gross).Width(80).Title("Gross")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" })
+                .Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.NamaBroker).Width(100).Title("Pembeli");
+
+        })
+        .AutoBind(false)
+        .Pageable()
+        .Groupable()
+        .Sortable()
+        .Filterable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Excel(excel => excel.AllPages(true))
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.ReportsChopId);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.QtySacks).Sum();
+                ag.Add(x => x.Gross).Sum();
+                ag.Add(x => x.Chop).Count();
+            })
+
+        )
+    )
+
+</div>
+
+
+<script>
+    var wnd, err, prt;
+    var arrFilter = ['','','','','','','','','','','','',''];
+    var scriptFilter;
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    scriptFilter = arrFilter.join(' and ');
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+    $(document).ready(function () {
+
+        arrFilter[0] = 'TahunProduksi = ' + $('#TahunProduksi').val();
+        arrFilter[1] = '0=0';
+        arrFilter[2] = '0=0';
+        arrFilter[3] = '0=0';
+        arrFilter[4] = '0=0';
+        arrFilter[5] = '0=0';
+        arrFilter[6] = '0=0';
+        arrFilter[7] = '0=0';
+        arrFilter[8] = '0=0';
+        arrFilter[9] = '0=0';
+        arrFilter[10] = '0=0';
+        arrFilter[11] = '0=0';
+        arrFilter[12] = '0=0';
+    });
+
+    function setArrFilter(str) {
+        if (str == 'tahun') {
+            arrFilter[0] = 'TahunProduksi = ' + $('#TahunProduksi').val();
+        }
+
+        if (str == 'bulan') {
+            var bulanAwal = $('#BulanAwal').data('kendoDropDownList').value();
+            var bulanAkhir = $('#BulanAkhir').data('kendoDropDownList').value();
+            if (bulanAwal == '0') {
+                if (bulanAkhir == '0') {
+                    arrFilter[1] = '0=0';
+                }
+                else {
+                    arrFilter[1] = 'BulanProduksi>=1 and BulanProduksi<=' + bulanAkhir;
+                }
+            }
+            else {
+                if (bulanAkhir == '0') {
+                    arrFilter[1] = 'BulanProduksi>=' + bulanAwal;
+                }
+                else {
+                    arrFilter[1] = 'BulanProduksi>=' + bulanAwal + ' and BulanProduksi<=' + bulanAkhir;
+                }
+            }
+        }
+
+        if (str == 'budidaya') {
+            var budidaya = $('#Budidaya').data('kendoAutoComplete').value();
+            if (budidaya.toLowerCase() == 'seluruh' || budidaya.toLowerCase() == '') {
+                arrFilter[2] = '0=0';
+            }
+            else {
+                arrFilter[2] = "lower(NamaMainBudidaya)='" + budidaya.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'subbudidaya') {
+            var subbudidaya = $('#SubBudidaya').data('kendoAutoComplete').value();
+            if (subbudidaya.toLowerCase() == 'seluruh' || subbudidaya.toLowerCase() == '') {
+                arrFilter[3] = '0=0';
+            }
+            else {
+                arrFilter[3] = "lower(NamaSubBudidaya)='" + subbudidaya.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'statuspenjualan') {
+            var statuspenjualan = $('#StatusPenjualan').data('kendoDropDownList').text();
+            if (statuspenjualan.toLowerCase() == 'seluruh') {
+                arrFilter[4] = '0=0';
+            }
+            else {
+                arrFilter[4] = "lower(StatusPenjualan)='" + statuspenjualan.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'negaratujuan') {
+            var negaratujuan = $('#NegaraTujuan').data('kendoAutoComplete').value();
+            if (negaratujuan.toLowerCase() == '') {
+                arrFilter[5] = '0=0';
+            }
+            else {
+                arrFilter[5] = "lower(NegaraTujuan)='" + negaratujuan.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'kotaKirim') {
+            var kotaKirim = $('#KotaKirim').data('kendoAutoComplete').value();
+            if (kotaKirim.toLowerCase() == '') {
+                arrFilter[6] = '0=0';
+            }
+            else {
+                arrFilter[6] = "lower(KotaKirim)='" + kotaKirim.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'pembeli') {
+            var pembeli = $('#Pembeli').data('kendoAutoComplete').value();
+            if (pembeli.toLowerCase() == '') {
+                arrFilter[7] = '0=0';
+            }
+            else {
+                arrFilter[7] = "lower(NamaBuyer)='" + pembeli.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'broker') {
+            var broker = $('#Broker').data('kendoAutoComplete').value();
+            if (broker.toLowerCase() == '') {
+                arrFilter[8] = '0=0';
+            }
+            else {
+                arrFilter[8] = "lower(NamaBroker)='" + broker.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'kebun') {
+            var kebun = $('#Kebun').data('kendoAutoComplete').value();
+            if (kebun.toLowerCase() == '') {
+                arrFilter[9] = '0=0';
+            }
+            else {
+                arrFilter[9] = "lower(NamaKebun)='" + kebun.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'merk') {
+            var merk = $('#Merk').data('kendoAutoComplete').value();
+            if (merk.toLowerCase() == '') {
+                arrFilter[10] = '0=0';
+            }
+            else {
+                arrFilter[10] = "lower(Merk)='" + merk.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'namaPengangkut') {
+            var namaPengangkut = $('#NamaPengangkut').data('kendoAutoComplete').value();
+            if (namaPengangkut.toLowerCase() == '') {
+                arrFilter[11] = '0=0';
+            }
+            else {
+                arrFilter[11] = "lower(NamaPengangkut)='" + namaPengangkut.toLowerCase() + "'";
+            }
+        }
+
+        if (str == 'grade') {
+            var grade = $('#Grade').data('kendoAutoComplete').value();
+            if (grade.toLowerCase() == '') {
+                arrFilter[12] = '0=0';
+            }
+            else {
+                arrFilter[12] = "lower(Grade)='" + grade.toLowerCase() + "'";
+            }
+        }
+        if (str == 'chop') {
+            var chop = $('#Chop').data('kendoAutoComplete').value();
+            if (chop.toLowerCase() == '') {
+                arrFilter[12] = '0=0';
+            }
+            else {
+                arrFilter[12] = "lower(Chop)='" + chop.toLowerCase() + "'";
+            }
+        }
+
+    }
+
+    function TahunProduksiOnChange(e)
+    {
+        setArrFilter('tahun');
+    }
+
+
+    function BulanAwalOnSelect(e) {
+        setArrFilter('bulan');
+    }
+
+    function BulanAkhirOnSelect(e) {
+        setArrFilter('bulan');
+    }
+
+    function BudidayaOnSelect(e) {
+        var budidaya = this.dataItem(e.item);
+        $('#MainBudidayaId').val(budidaya.MainBudidayaId);
+        setArrFilter('budidaya');
+    }
+
+    function SubBudidayaOnSelect(e) {
+        var subbudidaya = this.dataItem(e.item);
+        $('#SubBudidayaId').val(subbudidaya.SubBudidayaId);
+        setArrFilter('subbudidaya');
+    }
+
+    function filterBudidaya(e) {
+        return {
+            value: $("#Budidaya").val()
+        };
+    }
+
+    function filterSubBudidaya(e) {
+        return {
+            mainBudidayaId: $("#MainBudidayaId").val(),
+            value: $("#SubBudidaya").val()
+        };
+    }
+
+    function StatusPenjualanOnSelect(e) {
+        setArrFilter('statuspenjualan');
+    }
+
+    function filterNegaraTujuan(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.NegaraTujuan) as NegaraTujuan from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where NegaraTujuan like '%"+$("#NegaraTujuan").val()+"%'"
+        }
+    }
+
+    function NegaraTujuanOnSelect(e) {
+        setArrFilter('negaratujuan');
+    }
+
+    function filterKotaKirim(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.KotaKirim) as KotaTujuan from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where KotaKirim like '%" + $("#KotaKirim").val() + "%'"
+        }
+    }
+
+    function KotaKirimOnSelect(e) {
+        setArrFilter('kotaKirim');
+    }
+
+    function filterPembeli(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.NamaBuyer) as NamaBuyer from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where NamaBuyer like '%" + $("#Pembeli").val() + "%'"
+        }
+    }
+
+    function PembeliOnSelect(e) {
+        setArrFilter('pembeli');
+    }
+
+
+    function filterBroker(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.NamaBroker) as NamaBroker from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where NamaBroker like '%" + $("#Broker").val() + "%'"
+        }
+    }
+
+    function BrokerOnSelect(e) {
+        setArrFilter('broker');
+    }
+
+    function filterKebun(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.NamaKebun) as NamaKebun from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where NamaKebun like '%" + $("#Kebun").val() + "%'"
+        }
+    }
+
+    function KebunOnSelect(e) {
+        setArrFilter('kebun');
+    }
+
+
+    function filterMerk(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.Merk) as Merk from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where Merk like '%" + $("#Merk").val() + "%'"
+        }
+    }
+
+    function MerkOnSelect(e) {
+        setArrFilter('merk');
+    }
+
+    function filterPengangkut(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.NamaPengangkut) as NamaPengangkut from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where NamaPengangkut like '%" + $("#NamaPengangkut").val() + "%'"
+        }
+    }
+
+    function PengangkutOnSelect(e) {
+        setArrFilter('namaPengangkut');
+    }
+
+    function filterGrade(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.Grade) as Grade from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where Grade like '%" + $("#Grade").val() + "%'"
+        }
+    }
+
+    function GradeOnSelect(e) {
+        setArrFilter('grade');
+    }
+
+    function filterChop(e) {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select DISTINCT upper(A.Chop) as Chop from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where Chop like '%" + $("#Chop").val() + "%'"
+        }
+    }
+
+    function ChopOnSelect(e) {
+        setArrFilter('chop');
+    }
+
+    function filterReport(e)
+    {
+        return {
+            strClassView: 'Ptpn8.QCdanAlokasi.Models.ReportsChop',
+            scriptSQL: "select * from [SPDK_KanpusEF].[dbo].[ReportsChop] as A where "+ scriptFilter
+        }
+
+    }
+
+</script>
+
+<style>
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>

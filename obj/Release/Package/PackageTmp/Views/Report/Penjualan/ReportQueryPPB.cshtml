@@ -1,0 +1,399 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rekap PPB</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(DateTime.Now.Year)
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+                <td width="5%">
+                    <label>Budidaya:</label>
+                </td>
+                <td width="20%">
+                    @(Html.Kendo().AutoComplete()
+                        .Name("Budidaya")
+                        .MinLength(2)
+                        .Filter("contains")
+                        .Placeholder("Budidaya")
+                        .DataTextField("Nama")
+                        .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                        .HtmlAttributes(new { style = "width: 95%" })
+                    .Events(e =>
+                    {
+                        e.Change("BudidayaOnSelect");
+                        e.Select("BudidayaOnSelect");
+                    })
+                    )
+                </td>
+            </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                                            .AutoBind(true)
+                                            .Name("Bulan")
+                                            .DataTextField("Text")
+                                            .DataValueField("Value")
+                                            .HtmlAttributes(new { style = "width:35%", @class = "allcaps" })
+                                            .BindTo(new List<SelectListItem>()
+                                            {
+                                                new SelectListItem() {
+                                                    Text = "Januari",
+                                                    Value = "01"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Februari",
+                                                    Value = "02"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Maret",
+                                                    Value = "03"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "April",
+                                                    Value = "04"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Mei",
+                                                    Value = "05"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Juni",
+                                                    Value = "06"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Juli",
+                                                    Value = "07"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Agustus",
+                                                    Value = "08"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "September",
+                                                    Value = "09"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Oktober",
+                                                    Value = "10"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Nopember",
+                                                    Value = "11"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Desember",
+                                                    Value = "12"
+                                                }
+                                                })
+                ) s/d
+                @(Html.Kendo().DropDownList()
+                                    .AutoBind(true)
+                                    .Name("BulanAkhir")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .HtmlAttributes(new { style = "width:35%", @class = "allcaps" })
+                                    .BindTo(new List<SelectListItem>()
+                                    {
+                                        new SelectListItem() {
+                                            Text = "Januari",
+                                            Value = "01"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Februari",
+                                            Value = "02"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Maret",
+                                            Value = "03"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "April",
+                                            Value = "04"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Mei",
+                                            Value = "05"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Juni",
+                                            Value = "06"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Juli",
+                                            Value = "07"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Agustus",
+                                            Value = "08"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "September",
+                                            Value = "09"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Oktober",
+                                            Value = "10"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Nopember",
+                                            Value = "11"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Desember",
+                                            Value = "12"
+                                        }
+                                        })
+                )
+            </td>
+        </tr>
+       
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                        .Items(tabstrip =>
+                        {
+
+                            tabstrip.Add().Text("Rekap PPB").Selected(true)
+                .Content(@<text>
+                        @(Html.Kendo()
+                                    .Grid<Ptpn8.Penjualan.Models.ReportsPPB>(Guid.Empty.ToString())
+                                    .Name("grdDetail")
+                                    .Columns(g =>
+                                    {
+                                        g.Bound(i => i.TahunBuku).Width(100);
+                                        g.Bound(i => i.Budidaya).Width(100);
+                                        g.Bound(i => i.NomorInput).Width(100);
+                                        g.Bound(i => i.No_PPB).Width(100);
+                                        g.Bound(i => i.Tanggal_PPB).Width(100);
+                                        g.Bound(i => i.NamaKebun).Width(100);
+                                        g.Bound(i => i.Buyer).Width(100);
+                                        g.Bound(i => i.AlamatKirim).Width(300);
+                                        g.Bound(i => i.KotaKirim).Width(100);
+                                        g.Bound(i => i.PropinsiKirim).Width(100);
+                                        g.Bound(i => i.ContactPerson).Width(100);
+                                        g.Bound(i => i.UserName).Width(100);
+                                        g.Bound(i => i.Pembuat).Width(100);
+                                        g.Bound(i => i.Pemeriksa).Width(100);
+                                        g.Bound(i => i.Pejabat).Width(100);
+                                        g.Bound(i => i.Syarat1).Width(100);
+                                        g.Bound(i => i.Syarat2).Width(100);
+                                        g.Bound(i => i.Syarat3).Width(100);
+                                        g.Bound(i => i.Catatan1).Width(300);
+                                        g.Bound(i => i.Catatan2).Width(300);
+                                        g.Bound(i => i.Catatan3).Width(300);
+                                        g.Bound(i => i.ListNo_Faktur).Width(100);
+                                        g.Bound(i => i.No_SuratTugas).Width(100);
+                                        g.Bound(i => i.Pengangkut1).Width(100);
+                                        g.Bound(i => i.Pengangkut2).Width(100);
+                                        g.Bound(i => i.Pengangkut3).Width(100);
+                                        g.Bound(i => i.Pengangkut4).Width(100);
+                                        g.Bound(i => i.Pengangkut5).Width(100);
+                                        g.Bound(i => i.ListNo_PO).Width(100);
+                                        g.Bound(i => i.Subbudidaya).Width(100);
+                                        g.Bound(i => i.Merk).Width(100);
+                                        g.Bound(i => i.Chop).Width(100);
+                                        g.Bound(i => i.QtySacks).Width(100);
+                                        g.Bound(i => i.Satuan).Width(100);
+                                        g.Bound(i => i.Grade).Width(100);
+                                        g.Bound(i => i.Gross).Width(100);
+                                        g.Bound(i => i.Tare).Width(100);
+                                        g.Bound(i => i.Price).Width(100);
+                                        g.Bound(i => i.KK).Width(100);
+                                        g.Bound(i => i.KA).Width(100);
+                                        g.Bound(i => i.ALB).Width(100);
+                                        g.Bound(i => i.TahunProduksi).Width(100);
+                                        g.Bound(i => i.No_Faktur).Width(100);
+                                    })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Excel();
+                                    })
+                                    .Excel(excel => excel.AllPages(true))
+                                    .AutoBind(false)
+                                    .Resizable(resizeable => resizeable.Columns(true))
+                                    .Scrollable()
+                                    .Filterable()
+                                    
+                                    .Sortable()
+                                    .Groupable()
+                                    .Selectable(
+                                        selectable => selectable
+                                        .Type(GridSelectionType.Cell)
+                                    )
+                                    .Groupable()
+                                    .HtmlAttributes(new { style = "Height: 450px" })
+                                    .DataSource(o => o
+                                        .Ajax()
+                                        .ServerOperation(false)
+                                        .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                                    //.Aggregates(ag =>
+                                    //{
+                                    //    ag.Add(x => x.JumlahKaryawan).Sum();
+                                    //    ag.Add(x => x.JumlahSHT).Sum();
+                                    //})
+                                    )
+                        )
+                </text>);
+                            
+                            
+                        })
+    )
+</div>
+
+<script>
+    var bagian;
+    var kode, colIdx, pilihan, budidayaId;
+
+    $(document).ready(function () {
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function filterBudidaya(e) {
+    return {
+        value: $("#Budidaya").val()
+    };
+}
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function BudidayaOnSelect(e) {
+    var mainBudidaya = this.dataItem(e.item);
+    $('#MainBudidayaId').val(mainBudidaya.MainBudidayaId);
+    budidayaId = mainBudidaya.MainBudidayaId;
+}
+
+    //fungsi dashboard
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Penjualan.Models.ReportsPPB',
+            scriptSQL: "SELECT "+
+      "A.TahunBuku "+
+	  ",D.Nama as Budidaya "+
+      ",A.NomorInput "+
+      ",A.No_PPB "+
+      ",A.Tanggal_PPB "+
+      ",A.NamaKebun "+
+      ",C.Nama as Buyer "+
+      ",A.AlamatKirim "+
+      ",A.KotaKirim "+
+      ",A.PropinsiKirim "+
+      ",A.ContactPerson "+
+      ",A.UserName "+
+      ",A.Pembuat "+
+      ",A.Pemeriksa "+
+      ",A.Pejabat "+
+      ",A.Syarat1"+
+      ",A.Syarat2 "+
+      ",A.Syarat3 "+
+      ",A.Catatan1 "+
+      ",A.Catatan2 "+
+	  ",A.Catatan3 "+
+      ",A.ListNo_Faktur "+
+      ",A.No_SuratTugas "+
+      ",A.Pengangkut1 "+
+      ",A.Pengangkut2 "+
+      ",A.Pengangkut3 "+
+      ",A.Pengangkut4 "+
+      ",A.Pengangkut5 "+
+      ",A.ListNo_PO "+
+	  ",E.Nama as Subbudidaya "+
+      ",F.Merk as Merk "+
+      ",B.Chop "+
+      ",B.QtySacks "+
+      ",G.Nama as Satuan "+
+      ",H.Nama as Grade "+
+      ",B.Gross "+
+      ",B.Tare "+
+      ",B.Price "+
+      ",B.KK "+
+      ",B.KA "+
+      ",B.ALB "+
+      ",B.TahunProduksi "+
+      ",B.No_Faktur "+
+  "FROM [SPDK_KanpusEF].[dbo].[HDR_PPB] as A "+
+  "JOIN [SPDK_KanpusEF].[dbo].[DTL_PPB] as B on A.HDR_PPBId=B.HDR_PPBId "+
+  "JOIN ReferensiEF.dbo.Buyer as C on A.BuyerId=C.BuyerId "+
+  "JOIN ReferensiEF.dbo.MainBudidaya as D on A.MainBudidayaId=D.MainBudidayaId "+
+  "JOIN ReferensiEF.dbo.SubBudidaya as E on B.SubBudidayaId=E.SubBudidayaId "+
+  "JOIN ReferensiEF.dbo.KebunBudidaya as F on B.MerkId=F.KebunBudidayaId "+
+  "JOIN ReferensiEF.dbo.Satuan as G on B.SatuanId=G.SatuanId "+
+  "JOIN ReferensiEF.dbo.Grade as H on B.GradeId=H.GradeId "+
+  "where TahunBuku="+$('#Tahun').val()+" and (month(tanggal_ppb)>='"+$('#Bulan').val()+"' and month(tanggal_ppb) <='"+$('#BulanAkhir').val()+"') and A.MainbudidayaId ='" +budidayaId+ "'"+
+  "order by Budidaya,No_PPB,Chop"
+        }
+    }
+
+   
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+

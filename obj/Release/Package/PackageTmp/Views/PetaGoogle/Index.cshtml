@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "PetaGoogle";
+}
+
+<meta name="viewport" content="initial-scale=1.0">
+<meta charset="utf-8">
+
+<div id="map"></div>
+
+<script>
+    var map;
+    var markerKebun=[];
+    var markerAfdeling=[];
+    var markerBlok=[];
+    var petaKebun, petaAfdeling, petaBlok;
+
+    $(document).ready(function () {
+    });
+
+    function initMap() {
+        loadKebunJson().done(function (data) {
+            petaKebun = data;
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: -6.878055, lng: 107.596070 },
+                zoom: 9,
+                mapTypeId: 'terrain'
+            });
+
+            map.data.addGeoJson(petaKebun);
+            map.data.addListener('click', function (event) {
+                petaClick(event);
+            });
+
+            map.data.addListener('mouseover', function (event) {
+                map.data.revertStyle();
+                map.data.overrideStyle(event.feature, { strokeWeight: 4 });
+            });
+
+            map.data.setStyle(function (feature) {
+                var color = 'lightgray';
+                if (feature.getProperty('FULLCOLOR')) color = feature.getProperty('COLOR');
+                var _lat = feature.getProperty('CENTER_Y');
+                var _lng = feature.getProperty('CENTER_X');
+                var contentString = feature.getProperty('CONTENT');
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+
+                var marker = new google.maps.Marker({
+                    position: { lat: _lat, lng: _lng },
+                    map: map,
+                    title: feature.getProperty('NAMA_LOKASI')
+                });
+
+                marker.addListener('click', function () {
+                    map.setZoom(13);
+                    map.setCenter({ lat: _lat, lng: _lng });
+                    infowindow.open(map, marker);
+                });
+
+                if (feature.getProperty('LOKASI') == 'KEBUN') {
+                    return ({
+                        fillColor: color,
+                        strokeColor: color,
+                        strokeWeight: 2
+                    });
+                } else if (feature.getProperty('LOKASI') == 'AFDELING') {
+                    return ({
+                        fillColor: color,
+                        strokeColor: color,
+                        strokeWeight: 2,
+                        visibility: 'off'
+                    });
+                }
+                else {
+                    return ({
+                        fillColor: color,
+                        strokeColor: color,
+                        strokeWeight: 2,
+                        visibility: 'off'
+                    });
+                }
+                
+            });
+
+        });
+    }
+
+    function petaClick(event) {
+        if (event.feature.getProperty('LOKASI') == 'KEBUN') {
+            setStyle(event.feature,'none');
+        } else if (event.feature.getProperty('LOKASI') == 'AFDELING') {
+
+        } else {
+
+        }
+    }
+
+    function setStyle(feature,styleColor)
+    {
+        if(styleColor='fullColor')
+        {
+            map.data.overrideStyle(feature, { fillColor: 'red' });
+        }
+        else
+        {
+            map.data.overrideStyle(feature, { fillColor: 'red' });
+        }
+    }
+
+    function loadKebunJson() {
+        var url = '/PetaGoogle/KebunGeoJson';
+        return $.ajax({
+            url: url,
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function loadAfdelingJson(kebunId) {
+        var url = '/PetaGoogle/AfdelingGeoJson';
+        return $.ajax({
+            url: url,
+            data: kebunId,
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function loadBlokJson(afdelingId) {
+        var url = '/PetaGoogle/BlokGeoJson';
+        return $.ajax({
+            url: url,
+            data: afdelingId,
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvtSRbfZtRPfxbkQV36GB7zzzih5xTeEU&callback=initMap" async defer></script>
+
+<style>
+    /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+    #map {
+        height: 550px;
+        width: 80%;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>

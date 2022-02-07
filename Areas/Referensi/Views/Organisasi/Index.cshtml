@@ -1,0 +1,619 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model Organisasi
+
+@{
+    ViewBag.Title = "Referensi Organisasi";
+}
+
+<h2>Referensi Organisasi</h2>
+
+<div id="organisasiDb">
+    <div>
+        @(Html.Kendo()
+            .Grid<Organisasi>()
+            .Name("grdOrganisasi")
+
+        .Columns(g =>
+        {
+            g.Bound(i => i.OrganisasiId).Hidden(); //.Width(150);
+            g.Bound(i => i.Nama);//.Width(200);
+            g.Bound(i => i.Alamat);//.Width(200);
+            g.Bound(i => i.RT);//.Width(70);
+            g.Bound(i => i.RW);//.Width(70);
+            g.Bound(i => i.NegaraId).Title("NegaraId").Hidden();
+            g.Bound(i => i.Propinsi).ClientTemplate("#=Propinsi.Nama#").Title("Propinsi");
+            g.Bound(i => i.Kota).ClientTemplate("#=Kota.Nama#").Title("Kota");
+            g.Bound(i => i.Kecamatan).ClientTemplate("#=Kecamatan.Nama#").Title("Kecamatan");
+            g.Bound(i => i.Kelurahan).ClientTemplate("#=Kelurahan.Nama#").Title("Kelurahan");
+            g.Bound(i => i.Logo).Width(120).Title("Logo").ClientTemplate(
+                    @"<div class='photo'><img src='" + Url.Content("~/Content/Images/View/") + "#:OrganisasiId#_Logo.jpg' alt='#: OrganisasiId #_Logo' /></div>");
+            g.Command(command => {
+                command.Edit();
+                command.Custom("Delete").Click("openWindow");
+            }
+            ).Width(180);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+        })
+        .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+        .Selectable()
+        .Pageable()
+        .HtmlAttributes(new { style="height: 450px;"})
+        .Scrollable()
+        .ClientDetailTemplateId("daftarLainnya")
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); })
+        .DataSource(o => o
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(p => p.OrganisasiId);
+                model.Field(p => p.OrganisasiId).Editable(false);//.DefaultValue(Guid.NewGuid());
+                model.Field(p => p.NegaraId).DefaultValue(Guid.Parse("6cd797f8-f7ae-4413-a41f-03088a532ea2"));
+                model.Field(p => p.Propinsi).DefaultValue(new Propinsi());
+                model.Field(p => p.Kota).DefaultValue(new Kota());
+                model.Field(p => p.Kecamatan).DefaultValue(new Kecamatan());
+                model.Field(p => p.Kelurahan).DefaultValue(new Kelurahan());
+            })
+
+            .Create(create => create.Action("organisasiCreate", "Organisasi", new { @onclick = "grdCreateOnClick" }).Type(HttpVerbs.Post))
+            .Read(read => read.Action("organisasiRead", "Organisasi").Type(HttpVerbs.Post))
+            .Update(update => update.Action("organisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("organisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+            )
+        )
+    </div>
+</div>
+
+<div id="modalWindow">
+    <h2><span style="color: red">Hapus 1 Record ?</span></h2>
+    <br />
+    <button style="background-color: red; color: white;" id="yes" class="k-button">Yes</button>
+    <button style="background-color: green; color: white;" id="no" class="k-button">No</button>
+</div>
+
+<script id="daftarLainnya" type="text/kendo-tmpl">
+        @(Html.Kendo().TabStrip()
+            .Name("tabstrip_#=OrganisasiId#")
+            .SelectedIndex(0)
+            .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+            .Items(items =>
+            {
+            items.Add().Text("Telepon").Content(@<text>
+                      @(Html.Kendo().Grid<TeleponOrganisasi>()
+                      .Name("grdTelepon_#=OrganisasiId#")
+                      .Columns(column => {
+                          column.Bound(o => o.OrganisasiId).Width(100).Hidden();
+                          column.Bound(o => o.TeleponOrganisasiId).Width(100).Hidden();
+                          column.Bound(o => o.Telepon).Width(100);
+                          column.Command(command => {
+                              command.Edit();
+                              //command.Destroy();
+                              command.Custom("Delete").Click("openWindow");
+                          }).Width(180);
+                      })
+                      .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                      .Events(e => { e.Edit("grdTeleponOnEdit"); e.DataBound("grdTeleponOnDataBound"); })
+                                .ToolBar(toolbar =>
+                                {
+                                    toolbar.Create();
+                                })
+                                .DataSource(datasource => datasource
+                                    .Ajax()
+                                    .Model(model => {
+                                        model.Id(p => p.TeleponOrganisasiId);
+                                        model.Field(p => p.TeleponOrganisasiId).Editable(true);
+                                        model.Field(p => p.OrganisasiId).Editable(true);
+                                    })
+                                    .Read(read=>read.Action("TeleponOrganisasiRead","Organisasi", new { organisasiId = "#=OrganisasiId#"}).Type(HttpVerbs.Post))
+                                    .Create(create => create.Action("TeleponOrganisasiCreate", "Organisasi").Type(HttpVerbs.Post))
+                                    .Update(update => update.Action("TeleponOrganisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+                                    .Destroy(destroy => destroy.Action("TeleponOrganisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+                                )
+                                .ToClientTemplate()
+                            )
+                    </text>
+                    );
+                items.Add().Text("Faksimili").Content(@<text>
+                        @(Html.Kendo().Grid<FaksimiliOrganisasi>()
+                          .Name("grdFaksimili_#=OrganisasiId#")
+                          .Columns(column =>
+                          {
+                              column.Bound(o => o.OrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.FaksimiliOrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.Faksimili).Width(100);
+                              column.Command(command => {
+                                  command.Edit();
+                                  //command.Destroy();
+                                  command.Custom("Delete").Click("openWindow");
+                              }).Width(180);
+                          })
+                          .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                          .Events(e => { e.Edit("grdFaksimiliOnEdit"); e.DataBound("grdFaksimiliOnDataBound"); })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Create();
+                                    })
+                                    .DataSource(datasource => datasource
+                                        .Ajax()
+                                        .Model(model =>
+                                        {
+                                            model.Id(p => p.FaksimiliOrganisasiId);
+                                            model.Field(p => p.FaksimiliOrganisasiId).Editable(true);
+                                            model.Field(p => p.OrganisasiId).Editable(true);
+                                        })
+                                        .Read(read => read.Action("FaksimiliOrganisasiRead", "Organisasi", new { organisasiId = "#=OrganisasiId#" }).Type(HttpVerbs.Post))
+                                        .Create(create => create.Action("FaksimiliOrganisasiCreate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Update(update => update.Action("FaksimiliOrganisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Destroy(destroy => destroy.Action("FaksimiliOrganisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+                                    )
+                                    .ToClientTemplate()
+                            )
+                    </text>);
+                items.Add().Text("Email").Content(@<text>
+                    @(Html.Kendo().Grid<EmailOrganisasi>()
+                          .Name("grdEmail_#=OrganisasiId#")
+                          .Columns(column =>
+                          {
+                              column.Bound(o => o.OrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.EmailOrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.AlamatEmail).Width(100);
+                              column.Command(command => {
+                                  command.Edit();
+                                  //command.Destroy();
+                                  command.Custom("Delete").Click("openWindow");
+                              }).Width(180);
+                          })
+                          .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                          .Events(e => { e.Edit("grdEmailOnEdit"); e.DataBound("grdEmailOnDataBound"); })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Create();
+                                    })
+                                    .DataSource(datasource => datasource
+                                        .Ajax()
+                                        .Model(model =>
+                                        {
+                                            model.Id(p => p.EmailOrganisasiId);
+                                            model.Field(p => p.EmailOrganisasiId).Editable(true);
+                                            model.Field(p => p.OrganisasiId).Editable(true);
+                                        })
+                                        .Read(read => read.Action("EmailOrganisasiRead", "Organisasi", new { organisasiId = "#=OrganisasiId#" }).Type(HttpVerbs.Post))
+                                        .Create(create => create.Action("EmailOrganisasiCreate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Update(update => update.Action("EmailOrganisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Destroy(destroy => destroy.Action("EmailOrganisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+                                    )
+                                    .ToClientTemplate()
+                    )
+                    </text>);
+                items.Add().Text("Portal").Content(@<text>
+                    @(Html.Kendo().Grid<PortalOrganisasi>()
+                          .Name("grdPortal_#=OrganisasiId#")
+                          .Columns(column =>
+                          {
+                              column.Bound(o => o.OrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.PortalOrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.NamaPortal).Width(100);
+                              column.Command(command => {
+                                  command.Edit();
+                                  //command.Destroy();
+                                  command.Custom("Delete").Click("openWindow");
+                              }).Width(180);
+                          })
+                          .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                          .Events(e => { e.Edit("grdPortalOnEdit"); e.DataBound("grdPortalOnDataBound"); })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Create();
+                                    })
+                                    .DataSource(datasource => datasource
+                                        .Ajax()
+                                        .Model(model =>
+                                        {
+                                            model.Id(p => p.PortalOrganisasiId);
+                                            model.Field(p => p.PortalOrganisasiId).Editable(true);
+                                            model.Field(p => p.OrganisasiId).Editable(true);
+                                        })
+                                        .Read(read => read.Action("PortalOrganisasiRead", "Organisasi", new { organisasiId = "#=OrganisasiId#" }).Type(HttpVerbs.Post))
+                                        .Create(create => create.Action("PortalOrganisasiCreate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Update(update => update.Action("PortalOrganisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Destroy(destroy => destroy.Action("PortalOrganisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+                                    )
+                                    .ToClientTemplate()
+                    )
+                    </text>);
+                items.Add().Text("NPWP").Content(@<text>
+                    @(Html.Kendo().Grid<NPWPOrganisasi>()
+                          .Name("grdNPWP_#=OrganisasiId#")
+                          .Columns(column =>
+                          {
+                              column.Bound(o => o.OrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.NPWPOrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.NPWP).Width(100);
+                              column.Command(command => {
+                                  command.Edit();
+                                  //command.Destroy();
+                                  command.Custom("Delete").Click("openWindow");
+                              }).Width(180);
+                          })
+                          .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                          .Events(e => { e.Edit("grdNPWPOnEdit"); e.DataBound("grdNPWPOnDataBound"); })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Create();
+                                    })
+                                    .DataSource(datasource => datasource
+                                        .Ajax()
+                                        .Model(model =>
+                                        {
+                                            model.Id(p => p.NPWPOrganisasiId);
+                                            model.Field(p => p.NPWPOrganisasiId).Editable(true);
+                                            model.Field(p => p.OrganisasiId).Editable(true);
+                                        })
+                                        .Read(read => read.Action("NPWPOrganisasiRead", "Organisasi", new { organisasiId = "#=OrganisasiId#" }).Type(HttpVerbs.Post))
+                                        .Create(create => create.Action("NPWPOrganisasiCreate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Update(update => update.Action("NPWPOrganisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Destroy(destroy => destroy.Action("NPWPOrganisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+                                    )
+                                    .ToClientTemplate()
+        )
+                    </text>);
+                items.Add().Text("Struktur Komisaris").Content(@<text>
+                    @(Html.Kendo().Grid<Komisaris>()
+                          .Name("grdKomisaris_#=OrganisasiId#")
+                          .Columns(column =>
+                          {
+                              column.Bound(o => o.OrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.KomisarisId).Width(100).Hidden();
+                              column.Bound(o => o.Nama).Width(250);
+                              column.Bound(o => o.Nomenklatur).Width(150);
+                              column.Command(command => {
+                                  command.Edit();
+                                  //command.Destroy();
+                                  command.Custom("Delete").Click("openWindow");
+                              }).Width(180);
+                          })
+                          .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                          .Events(e => { e.Edit("grdKomisarisOnEdit"); e.DataBound("grdKomisarisOnDataBound"); })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Create();
+                                    })
+                                    .DataSource(datasource => datasource
+                                        .Ajax()
+                                        .Model(model =>
+                                        {
+                                            model.Id(p => p.KomisarisId);
+                                            model.Field(p => p.KomisarisId).Editable(true);
+                                            model.Field(p => p.OrganisasiId).Editable(true);
+                                        })
+                                        .Read(read => read.Action("KomisarisOrganisasiRead", "Organisasi", new { organisasiId = "#=OrganisasiId#" }).Type(HttpVerbs.Post))
+                                        .Create(create => create.Action("KomisarisOrganisasiCreate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Update(update => update.Action("KomisarisOrganisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Destroy(destroy => destroy.Action("KomisarisOrganisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+                                    )
+                                    .ToClientTemplate()
+            )
+                </text>);
+                items.Add().Text("Struktur Direksi").Content(@<text>
+            @(Html.Kendo().Grid<Direksi>()
+                          .Name("grdDireksi_#=OrganisasiId#")
+                          .Columns(column =>
+                          {
+                              column.Bound(o => o.OrganisasiId).Width(100).Hidden();
+                              column.Bound(o => o.DireksiId).Width(100).Hidden();
+                              column.Bound(o => o.Nama).Width(250);
+                              column.Bound(o => o.Nomenklatur).Width(150);
+                              column.Command(command => {
+                                  command.Edit();
+                                  //command.Destroy();
+                                  command.Custom("Delete").Click("openWindow");
+                              }).Width(180);
+                          })
+                          .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                          .Events(e => { e.Edit("grdDireksiOnEdit"); e.DataBound("grdDireksiOnDataBound"); })
+                                    .ToolBar(toolbar =>
+                                    {
+                                        toolbar.Create();
+                                    })
+                                    .DataSource(datasource => datasource
+                                        .Ajax()
+                                        .Model(model =>
+                                        {
+                                            model.Id(p => p.DireksiId);
+                                            model.Field(p => p.DireksiId).Editable(true);
+                                            model.Field(p => p.OrganisasiId).Editable(true);
+                                        })
+                                        .Read(read => read.Action("DireksiOrganisasiRead", "Organisasi", new { organisasiId = "#=OrganisasiId#" }).Type(HttpVerbs.Post))
+                                        .Create(create => create.Action("DireksiOrganisasiCreate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Update(update => update.Action("DireksiOrganisasiUpdate", "Organisasi").Type(HttpVerbs.Post))
+                                        .Destroy(destroy => destroy.Action("DireksiOrganisasiDestroy", "Organisasi").Type(HttpVerbs.Post))
+                                    )
+                                    .ToClientTemplate()
+            )
+                </text>);
+
+            })
+            .ToClientTemplate()
+)
+
+    </script>
+    
+<script>
+
+    var organisasiId;
+    var ddlPropinsi;
+    var ddlKota;
+    var ddlKecamatan;
+    var ddlKelurahan;
+    var uid;
+
+    var wnd;
+    
+    $(document).ready(function () {
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+    });
+
+    
+
+    function openWindow(e) {
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.open().center();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        var grid = $('#grdOrganisasi').data('kendoGrid');
+        var dataItem = grid.dataSource.get(organisasiId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("FileLogo", filename);
+    }
+
+    /* Grid Organisasi */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDetailExpand(e) {
+        organisasiId = this.dataItem(e.masterRow).OrganisasiId;
+    }
+
+    function grdOnDataBound(e) {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            model.OrganisasiId = model.uid;
+        }
+
+        organisasiId = model.id;
+        ddlPropinsi = model.Propinsi;
+        ddlKota = model.Kota;
+        ddlKecamatan = model.Kecamatan;
+        ddlKelurahan = model.Kelurahan;
+        uid = model.uid;
+        this.expandRow(this.tbody.find("tr[data-uid='" + uid + "']"));
+    }
+
+
+    function grdOnChange(e) {
+    }
+
+    function ddlPropinsiOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdOrganisasi').data('kendoGrid');
+        var dataItem = grid.dataSource.get(organisasiId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Propinsi", ddlItem);
+        data.set("PropinsiId", ddlItem.PropinsiId)
+    }
+
+    function ddlKotaOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdOrganisasi').data('kendoGrid');
+        var dataItem = grid.dataSource.get(organisasiId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kota", ddlItem);
+        data.set("KotaId", ddlItem.KotaId);
+    }
+
+    function ddlKecamatanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdOrganisasi').data('kendoGrid');
+        var dataItem = grid.dataSource.get(organisasiId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kecamatan", ddlItem);
+        data.set("KecamatanId", ddlItem.KecamatanId);
+    }
+
+    function ddlKelurahanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdOrganisasi').data('kendoGrid');
+        var dataItem = grid.dataSource.get(organisasiId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kelurahan", ddlItem);
+        data.set("KelurahanId", ddlItem.KelurahanId);
+    }
+
+    function ddlPropinsiOnDataBound(e) {
+        var ddl = $('#ddlPropinsi').data('kendoDropDownList');
+        ddl.search(ddlPropinsi.Nama);
+    }
+
+    function ddlKotaOnDataBound(e) {
+        var ddl = $('#ddlKota').data('kendoDropDownList');
+        ddl.search(ddlKota.Nama);
+    }
+
+    function ddlKecamatanOnDataBound(e) {
+        var ddl = $('#ddlKecamatan').data('kendoDropDownList');
+        ddl.search(ddlKecamatan.Nama);
+    }
+
+    function ddlKelurahanOnDataBound(e) {
+        var ddl = $('#ddlKelurahan').data('kendoDropDownList');
+        ddl.search(ddlKelurahan.Nama);
+    }
+
+    /* Grid Telepon */
+    function grdTeleponOnDataBound(e) {
+
+    }
+
+    function grdTeleponOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=TeleponOrganisasiId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=OrganisasiId]").val(organisasiId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    /* Grid Faksimili */
+    function grdFaksimiliOnDataBound(e) {
+
+    }
+
+    function grdFaksimiliOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=FaksimiliOrganisasiId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=OrganisasiId]").val(organisasiId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    /* Grid Email */
+    function grdEmailOnDataBound(e) {
+
+    }
+
+    function grdEmailOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=EmailOrganisasiId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=OrganisasiId]").val(organisasiId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    /* Grid Portal */
+    function grdPortalOnDataBound(e) {
+
+    }
+
+    function grdPortalOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=PortalOrganisasiId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=OrganisasiId]").val(organisasiId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    /* Grid NPWP */
+    function grdNPWPOnDataBound(e) {
+
+    }
+
+    function grdNPWPOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=NPWPOrganisasiId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=OrganisasiId]").val(organisasiId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    /* Grid Komisaris*/
+    function grdKomisarisOnDataBound(e) {
+
+    }
+
+    function grdKomisarisOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=KomisarisId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=OrganisasiId]").val(organisasiId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    /* Grid Direksi*/
+    function grdDireksiOnDataBound(e) {
+
+    }
+
+    function grdDireksiOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=DireksiId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=OrganisasiId]").val(organisasiId).change(); // trigger change in order to notify the model binding
+        }
+    }
+
+    function filterKota() {
+        return {
+            propinsiId: $("#ddlPropinsi").val()
+        };
+    }
+
+    function filterKecamatan() {
+
+        return {
+            kotaId: $("#ddlKota").val()
+        };
+    }
+
+    function filterKelurahan() {
+
+        return {
+            kecamatanId: $("#ddlKecamatan").val()
+        };
+    }
+
+</script>
+
+<style>
+
+    .photo {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+    }
+    #organisasiDb {
+    }
+</style>

@@ -1,0 +1,128 @@
+﻿@model Ptpn8.Penjualan.Models.View_HDRPPB
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/Penjualan/VerPPBKabag.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Penjualan.Models.View_HDRPPB>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.HDR_PPBId).Width(50).Hidden();
+            g.Bound(i => i.TahunBuku).Width(50).Hidden();
+            g.Bound(i => i.NomorInput).Width(50).Hidden();
+            g.Bound(i => i.NomorInputView).Width(50).Hidden();
+            g.Bound(i => i.KebunId).Width(50).Hidden();
+            g.Bound(i => i.NamaKebun).Width(50).Hidden();
+            g.Bound(i => i.BuyerId).Width(50).Hidden();
+            g.Bound(i => i.MainBudidayaId).Width(50).Hidden();
+            g.Bound(i => i.NamaMainBudidaya).Width(50).Hidden();
+            g.Bound(i => i.AlamatKirim).Width(50).Hidden();
+            g.Bound(i => i.KotaKirim).Width(50).Hidden();
+            g.Bound(i => i.PropinsiKirim).Width(50).Hidden();
+            g.Bound(i => i.ContactPerson).Width(50).Hidden();
+            g.Bound(i => i.ListFakturId).Width(50).Hidden();
+            g.Bound(i => i.ListNo_Faktur).Width(50).Hidden();
+            g.Bound(i => i.UserName).Width(50).Hidden();
+            g.Bound(i => i.Pembuat).Width(50).Hidden();
+            g.Bound(i => i.Pemeriksa).Width(50).Hidden();
+            g.Bound(i => i.Pejabat).Width(50).Hidden();
+            g.Bound(i => i.Syarat1).Width(50).Hidden();
+            g.Bound(i => i.Syarat2).Width(50).Hidden();
+            g.Bound(i => i.Syarat3).Width(50).Hidden();
+            g.Bound(i => i.Catatan1).Width(50).Hidden();
+            g.Bound(i => i.Catatan2).Width(50).Hidden();
+            g.Bound(i => i.UserNameKaur).Width(50).Hidden();
+            g.Bound(i => i.UserNameKabag).Width(50).Hidden();
+            g.Bound(i => i.VerKaur).Width(50).Title("Verifikasi Kaur").ClientTemplate("#= VerKaur ? 'Sudah':'Belum' #");
+            g.Bound(i => i.TglVerKaur).Width(100).Title("Tanggal Verifikasi Kaur").ClientTemplate("#= kendo.toString(TglVerKaur,'dd/MM/yyyy')#");
+            g.Bound(i => i.VerKabag).Width(50).Title("Verifikasi Kabag").ClientTemplate("#= VerKabag ? 'Sudah':'Belum' #");
+            g.Bound(i => i.TglVerKabag).Width(100).Title("Tanggal Verifikasi Kabag").ClientTemplate("#= kendo.toString(TglVerKabag,'dd/MM/yyyy')#");
+            g.Bound(i => i.No_PPB).Width(70).Title("No PPB");
+            g.Bound(i => i.Tanggal_PPB).Width(70).Title("Tanggal PPB").ClientTemplate("#= kendo.toString(Tanggal_PPB,'dd/MM/yyyy')#");
+            g.Bound(i => i.NamaBuyer).Width(120).Title("Pembeli");
+            g.Bound(i => i.NamaKebun).Width(120).Title("Kebun");
+            g.Bound(i => i.TotalQty).Width(100).Title("Qty").Width(80).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.TotalPrice).Width(100).Title("Rp").Width(80).Format("{0:N2}").HtmlAttributes(new { style = "text-align: right;" });
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        })
+        .AutoBind(true)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 600px" })
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBound("grdOnDataBound");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(i =>
+            {
+                i.Add(j => j.VerKaur).Ascending();
+                i.Add(j => j.Tanggal_PPB).Descending();              
+            })
+            .Group(g => g.Add(gg => gg.NamaMainBudidaya))
+            .Model(model =>
+            {
+                model.Id(p => p.HDR_PPBId);
+                model.Field(f => f.No_PPB).Editable(false);
+                model.Field(f => f.Tanggal_PPB).Editable(false);
+                model.Field(f => f.NamaBuyer).Editable(false);
+                model.Field(f => f.NamaKebun).Editable(false);
+                model.Field(f => f.TotalQty).Editable(false);
+                model.Field(f => f.TotalPrice).Editable(false);
+                model.Field(f => f.VerKaur).Editable(false);
+                model.Field(f => f.TglVerKaur).Editable(false);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>

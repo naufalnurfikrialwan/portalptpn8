@@ -1,0 +1,362 @@
+﻿@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+<script src="~/Scripts/PerjalananDinas/RuangRapat_VerifikasiPengajuan.js"></script>
+
+@*header*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerkopi">
+                <table width="40%">
+                    <tr>
+                        <td width="3%">
+                            <label>Tahun:</label>
+                        </td>
+                        <td width="20%">
+                            @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2019)
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="3%">
+                            <label>Bulan:</label>
+                        </td>
+                        <td width="20%">
+                            @(Html.Kendo().DropDownList()
+                                        .AutoBind(true)
+                                        .Name("Bulan")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>()
+                                        {
+                                                        new SelectListItem() {
+                                                            Text = "Januari",
+                                                            Value = "01"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Februari",
+                                                            Value = "02"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Maret",
+                                                            Value = "03"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "April",
+                                                            Value = "04"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Mei",
+                                                            Value = "05"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Juni",
+                                                            Value = "06"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Juli",
+                                                            Value = "07"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Agustus",
+                                                            Value = "08"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "September",
+                                                            Value = "09"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Oktober",
+                                                            Value = "10"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Nopember",
+                                                            Value = "11"
+                                                        },
+                                                        new SelectListItem() {
+                                                            Text = "Desember",
+                                                            Value = "12"
+                                                        }
+                                            })
+                            )
+                        </td>
+                    </tr>
+
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                        .Grid<Ptpn8.Models.RuangRapat.View_RuangRapatPTPNVIII>(Guid.Empty.ToString())
+                        .Name("grdDetail")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.RuangRapatPTPNVIIIId).Width(50).Hidden();
+                            g.Bound(i => i.NoBaris).Template(t => { }).Title("No Baris").ClientTemplate("#= renderNumber(data) #").Width(50);
+                            g.Bound(i => i.BagianId).Width(50).Hidden();
+                            g.Bound(i => i.NamaBagian).Title("Divisi/Unit yang Mengajukan").Width(200);
+                            g.Bound(i => i.TanggalMulai).Title("Tanggal Mulai").Width(150).Format("{0:dd-MM-yyyy HH:mm}");
+                            g.Bound(i => i.TanggalSelesai).Title("Tanggal Selesai").Width(150).Format("{0:dd-MM-yyyy HH:mm}");
+                            g.Bound(i => i.JenisRuangRapat).Title("Jenis Ruang Rapat").Width(250);
+                            g.Bound(i => i.NamaKegiatan).Title("Nama Kegiatan").Width(250);
+                            g.Bound(i => i.JumlahPeserta).Title("Jumlah Peserta").Width(100);
+                            g.Bound(i => i.ReferensiNoSuratUndangan).Title("No Surat/Memo Undangan").Width(200);
+                            g.Bound(i => i.DihadiriOleh).Title("Dihadiri Oleh").Width(300);
+                            g.Bound(i => i.FasilitasRapat).Title("Fasilitas Rapat").Width(300);
+                            g.Group(i =>
+                            {
+                                i.Title("Permintaan Konsumsi");
+                                i.Columns(c =>
+                                {
+                                    c.Bound(j => j.PermintaanSnack).Title("Snack Pagi").Width(120).ClientTemplate("<input id='#=RuangRapatPTPNVIIIId#' type='checkbox' #= PermintaanSnack ? checked='checked' :'' # onclick='handleClickPermintaanSnack(this)'/>");
+                                    c.Bound(j => j.PermintaanSnackSore).Title("Snack Sore").Width(120).ClientTemplate("<input id='#=RuangRapatPTPNVIIIId#' type='checkbox' #= PermintaanSnackSore ? checked='checked' :'' # onclick='handleClickPermintaanSnackSore(this)'> ");
+                                    c.Bound(j => j.PermintaanMakan).Title("Makan Pagi").Width(120).ClientTemplate("<input id='#=RuangRapatPTPNVIIIId#' type='checkbox' #= PermintaanMakan ? checked='checked' :'' # onclick='handleClickPermintaanMakan(this)'> ");
+                                    c.Bound(j => j.PermintaanMakanSiang).Title("Makan Siang").Width(120).ClientTemplate("<input id='#=RuangRapatPTPNVIIIId#' type='checkbox' #= PermintaanMakanSiang ? checked='checked' :'' # onclick='handleClickPermintaanMakanSiang(this)'> ");
+                                    c.Bound(j => j.PermintaanMakanMalam).Title("Makan Malam").Width(120).ClientTemplate("<input id='#=RuangRapatPTPNVIIIId#' type='checkbox' #= PermintaanMakanMalam ? checked='checked' :'' # onclick='handleClickPermintaanMakanMalam(this)'> ");
+                                });
+                            });
+                            g.Bound(i => i.Verifikasi).Title("Verifikasi").Width(100);
+                            g.Bound(i => i.Catatan).Title("Catatan").Width(400);
+
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                            toolbar.Excel();
+                        })
+                        .AutoBind(false)
+                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                        .Navigatable()
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Excel(excel => excel.AllPages(true))
+                        .Sortable()
+                        .Groupable()
+                        .Filterable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .Events(e =>
+                        {
+                            e.Change("grdOnChange");
+                            e.Edit("grdOnEdit");
+                            e.DataBound("resetRowNumber");
+                        })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Sort(s => s.Add(x => x.TanggalMulai).Descending())
+                            .Group(s => s.Add(x => x.Verifikasi))
+                            .Batch(true)
+                            .Model(model =>
+                            {
+                                model.Id(p => p.RuangRapatPTPNVIIIId);
+                            })
+                            .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                            .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                            .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                        )
+    )
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Invoice dengan No SI ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<style>
+    .belumDisetujui {
+        background-color: lightcoral;
+    }
+</style>
+<script>
+    function handleClickPermintaanSnack(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.PermintaanSnack = true;
+        }
+        else {
+            model.PermintaanSnack = false;
+        }
+
+        model.dirty = true;
+    }
+
+    function handleClickPermintaanSnackSore(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.PermintaanSnackSore = true;
+        }
+        else {
+            model.PermintaanSnackSore = false;
+        }
+
+        model.dirty = true;
+    }
+
+    function handleClickPermintaanMakan(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.PermintaanMakan = true;
+        }
+        else {
+            model.PermintaanMakan = false;
+        }
+
+        model.dirty = true;
+    }
+
+    function handleClickPermintaanMakanSiang(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.PermintaanMakanSiang = true;
+        }
+        else {
+            model.PermintaanMakanSiang = false;
+        }
+
+        model.dirty = true;
+    }
+
+    function handleClickPermintaanMakanMalam(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.PermintaanMakanMalam = true;
+        }
+        else {
+            model.PermintaanMakanMalam = false;
+        }
+
+        model.dirty = true;
+    }
+</script>
+
+
+
+
+
+
+
+

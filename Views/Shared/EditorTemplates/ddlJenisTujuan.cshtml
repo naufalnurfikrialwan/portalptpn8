@@ -1,0 +1,25 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Kebun dan Unit",
+                Value = "Dalam Wilayah"
+            },
+            new SelectListItem() {
+                Text = "Diluar Kebun/Unit < 50 km",
+                Value = "Luar Wilayah < 50 km"
+            },
+            new SelectListItem() {
+                Text = "Diluar Kebun/Unit > 50 km",
+                Value = "Luar Wilayah > 50 km"
+            }
+        })
+        .Events(e => { e.Change("ddlJenisTujuanOnChange"); e.Select("ddlJenisTujuanOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

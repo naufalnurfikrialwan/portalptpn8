@@ -1,0 +1,386 @@
+﻿@model Ptpn8.Penjualan.Models.View_HDRFaktur
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/jquery.maskedinput.js"></script>
+<script src="~/Scripts/Penjualan/ExportFakturPajak.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+
+@*header*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerkaret">
+                @*@(Html.Kendo().TextBoxFor(m => m.HDR_FakturId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.NomorInput).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.NomorInputView).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.MainBudidayaId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.NamaMainBudidaya).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.BuyerId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserName).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.Pembuat).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.Pemeriksa).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.ListNo_PO).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.VerKaur).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.VerKabag).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TglVerKaur).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TglVerKabag).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserNameKaur).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserNameKabag).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.ListPOId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.ListNo_PO).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.KenaMaterai).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.QtyMaterai).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.NilaiMaterai).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.Pejabat).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.No_SuratTugas).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.KenaPpn).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))*@
+
+                @(Html.Kendo().TextBoxFor(m => m.MainBudidayaId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+                <table width="100%;" align="left">
+                    <tr>
+                        <td width="10%">
+                            <label style="text-align:left">Budidaya:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().AutoCompleteFor(m => m.NamaMainBudidaya)
+                                .MinLength(2)
+                                .Filter("contains")
+                                .DataTextField("Nama")
+                                .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Isi Budidaya", style = "width: 30%", @class = "allcaps" })
+                                .Events(e => e.Change("BudidayaOnSelect"))
+                                .Placeholder("Pilih Budidaya")
+                            )
+                        </td>
+                    </tr>
+                </table>
+                <table width="100%;" align="left">
+                    <tr>
+                        <td width="10%">
+                            <label style="text-align:left">Tahun Buku:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @(Html.Kendo().NumericTextBoxFor(m => m.TahunBuku).Min(2016).Format("D4")
+                                .HtmlAttributes(new { style = "width:30%", @class = "allcaps" })
+                                .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                            )
+                            
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <table width="100%;" align="center">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                                @*<button type="button" id="btnDeleteHeader" onclick="btnDeleteHeaderOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Hapus</button>*@
+                                <button type="button" id="btnPrintHeader" onclick="btnPrintHeaderOnClick()" class="k-button" style="color: white; background-color: gray; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Cetak Faktur Pajak</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Penjualan.Models.View_HDRFaktur>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.TahunBuku).Width(50).Hidden();
+            g.Bound(i => i.MainBudidayaId).Width(50).Hidden();
+            g.Bound(i => i.NomorInput).Width(50).Hidden();
+            g.Bound(i => i.BuyerId).Width(50).Hidden();
+            g.Bound(i => i.KenaPpn).Width(50).Hidden();
+            g.Bound(i => i.KenaMaterai).Width(50).Hidden();
+            g.Bound(i => i.UserName).Width(50).Hidden();
+            g.Bound(i => i.Pembuat).Width(50).Hidden();
+            g.Bound(i => i.Pemeriksa).Width(50).Hidden();
+            g.Bound(i => i.Pejabat).Width(50).Hidden();
+            g.Bound(i => i.ListPOId).Width(50).Hidden();
+            g.Bound(i => i.ListNo_PO).Width(50).Hidden();
+            g.Bound(i => i.Tanggal_PO).Width(50).Hidden();
+            g.Bound(i => i.Alamat).Width(50).Hidden();
+            g.Bound(i => i.Kota).Width(50).Hidden();
+            g.Bound(i => i.Propinsi).Width(50).Hidden();
+            g.Bound(i => i.VerKaur).Width(50).Hidden();
+            g.Bound(i => i.VerKabag).Width(50).Hidden();
+            g.Bound(i => i.TglVerKaur).Width(50).Hidden();
+            g.Bound(i => i.TglVerKabag).Width(50).Hidden();
+            g.Bound(i => i.UserNameKaur).Width(50).Hidden();
+            g.Bound(i => i.UserNameKabag).Width(50).Hidden();
+            g.Bound(i => i.No_SuratTugas).Width(50).Hidden();
+            g.Bound(i => i.QtyMaterai).Width(50).Hidden();
+            g.Bound(i => i.NilaiMaterai).Width(50).Hidden();
+            g.Bound(i => i.Catatan).Width(50).Hidden();
+            g.Bound(i => i.ListTanggal_PO).Width(50).Hidden();
+            g.Bound(i => i.Tanggal_Faktur).Width(50).Hidden();
+            g.Bound(i => i.HDR_FakturId).Width(50).Hidden();
+            g.Bound(i => i.No_Faktur).Width(80);
+            g.Bound(i => i.TanggalPajak).Title("Tanggal Pajak").Width(50).Format("{0:dd-MM-yyyy}");
+            g.Bound(i => i.NamaSesuaiNPWP).Title("Pembeli").Width(100);
+            g.Bound(i => i.AlamatSesuaiNPWP).Title("Alamat").Width(150);
+            g.Bound(i => i.KotaSesuaiNPWP).Title("Kota").Width(50);
+            g.Bound(i => i.PropinsiSesuaiNPWP).Title("Propinsi").Width(50);
+            g.Bound(i => i.NPWP).Width(100).Title("NPWP");
+            g.Bound(i => i.NoSeriFakturPajak).Width(100).Title("No Seri Faktur Pajak");
+            g.Bound(i => i.SudahKirim).Width(40).Title("Sudah Kirim").ClientTemplate("#= SudahKirim ? 'Sudah':'Belum' #"); ;
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        })
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Excel( excel =>
+        {
+            excel.FileName("Faktur Pajak.xlsx");
+            excel.Filterable(true);
+        }
+        )
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .ClientDetailTemplateId("detailPembelian")
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBinding("grdOnDataBinding");
+            e.DetailExpand("grdOnDetailExpand");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Sort(s => s.Add(x => x.No_Faktur))
+            .Batch(true)
+            .Model(model =>
+            {
+                model.Id(p => p.HDR_FakturId);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            .Create(create => create.Action("detailCreate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            .Update(update => update.Action("detailUpdate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+            // Each report viewer must have an id - it will be used by the initialization script
+            // to find the element and initialize the report viewer.
+            .Id("reportViewer")
+            // The URL of the service which will serve reports.
+            // The URL corresponds to the name of the controller class (ReportsController).
+            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+            .ServiceUrl(Url.Content("/api/reports/"))
+            // The URL for custom report vie    wer template. The template can be edited -
+            // new functionalities can be added and unneeded ones can be removed.
+            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+            //
+            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+            .ReportSource(new UriReportSource() { Uri = "../Reports/Penjualan/ExportFakturPajak.trdx" })
+            // Specifies whether the viewer is in interactive or print preview mode.
+            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+            .ViewMode(ViewMode.Interactive)
+            // Sets the scale mode of the viewer.
+            // Three modes exist currently:
+            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+            // Specific - Uses the scale to zoom in and out the report.
+            .ScaleMode(ScaleMode.Specific)
+            // Zoom in and out the report using the scale
+            // 1.0 is equal to 100%, i.e. the original size of the report
+            .Scale(1.0)
+            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+            .PersistSession(false)
+            // Sets the print mode of the viewer.
+            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Faktur dengan No PO ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<script id="detailPembelian" type="text/kendo-tmpl">
+        @(Html.Kendo().Grid<Ptpn8.Penjualan.Models.View_DTLFaktur>()
+                .Name("grdDetailPembelian_#=HDR_FakturId#")
+                .Columns(column =>
+                {
+                    column.Bound(o => o.DTL_FakturId).Hidden();
+                    column.Bound(o => o.HDR_FakturId).Hidden();
+                    column.Bound(o => o.DTL_POId).Hidden();
+                    column.Bound(o => o.SubBudidayaId).Hidden();
+                    column.Bound(o => o.MerkId).Hidden();
+                    column.Bound(o => o.GradeId).Hidden();
+                    column.Bound(o => o.SatuanId).Hidden();
+                    column.Bound(o => o.NamaMerk);
+                    column.Bound(o => o.NamaSubBudidaya);
+                    column.Bound(o => o.NamaGrade);
+                    column.Bound(o => o.Chop);
+                    column.Bound(o => o.QtySacks);
+                    column.Bound(o => o.NamaSatuan);
+                    column.Bound(o => o.Gross);
+                    column.Bound(o => o.Tare);
+                    column.Bound(o => o.Price);
+                })
+                .AutoBind(false)
+                .Events(e => { e.Edit("grdDetailPembelianOnEdit"); e.DataBound("grdDetailPembelianOnDataBound"); })
+                .DataSource(datasource => datasource
+                    .Ajax()
+
+                    .Model(model =>
+                    {
+                        model.Id(p => p.DTL_FakturId);
+                        model.Field(p => p.HDR_FakturId).Editable(false);
+                        model.Field(p => p.DTL_POId).Editable(false);
+                        model.Field(p => p.SubBudidayaId).Editable(false);
+                        model.Field(p => p.MerkId).Editable(false);
+                        model.Field(p => p.GradeId).Editable(false);
+                        model.Field(p => p.SatuanId).Editable(false);
+                    })
+                    .Read(read => read.Action("detailRead", "Input", new { id = "#=HDR_FakturId#", _menuId = "ae49f593-dfd1-431d-961f-53ce4f175491", _classDetailView = "Ptpn8.Penjualan.Models.View_DTLFaktur" }).Type(HttpVerbs.Post))
+                )
+                .ToClientTemplate()
+        )
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+

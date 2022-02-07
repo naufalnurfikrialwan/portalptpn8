@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="sqlDataSource1" Width="20cm" Name="tagihan" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/3.8">
+  <DataSources>
+    <SqlDataSource ConnectionString="IHTHortikultur" ProviderName="System.Data.SqlClient" SelectCommand="dbo.Tagihan" SelectCommandType="StoredProcedure" Name="sqlDataSource1">
+      <Parameters>
+        <SqlDataSourceParameter DbType="AnsiString" Name="@id">
+          <Value>
+            <String>= Parameters.NoInput.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="3.30000015139579cm" Name="pageHeaderSection1">
+      <Items>
+        <TextBox Width="2.80000019073486cm" Height="0.400000005960464cm" Left="13.5466662898594cm" Top="2.69999984860421cm" Value="Kode Supplier:" Name="textBox2" />
+        <TextBox Width="3.18749904632568cm" Height="0.400000005960464cm" Left="16.5364578733635cm" Top="2.69999984860421cm" Value="= Fields.KodeSuplier" Name="textBox13" />
+        <TextBox Width="8.19999980926514cm" Height="0.499800115823746cm" Left="0.238124993376434cm" Top="1.90624987068276cm" Value="= Fields.NamaBuyer" Name="textBox1">
+          <Style>
+            <Font Italic="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5.10000038146973cm" Height="0.400000005960464cm" Left="0.238124993376434cm" Top="1.48291654912465cm" Value="Kepada Yth." Name="textBox10" />
+        <TextBox Width="8.19999980926514cm" Height="0.499800115823746cm" Left="0.238124993376434cm" Top="2.48833318782515cm" Value="= Fields.AlamatBuyer" Name="textBox11">
+          <Style>
+            <Font Italic="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.59999930858612cm" Height="0.400000005960464cm" Left="14.8431245871311cm" Top="0.292291582242485cm" Value="Nomor:" Name="textBox6" />
+        <TextBox Width="1.59999930858612cm" Height="0.400000005960464cm" Left="14.8431245871311cm" Top="0.794999901592734cm" Value="Tanggal:" Name="textBox7" />
+        <TextBox Width="3.20000004768372cm" Height="0.400000005960464cm" Left="16.5364578733635cm" Top="0.292291582242485cm" Value="= Fields.NoInput" Name="textBox8" />
+        <TextBox Width="3.20000004768372cm" Height="0.400000005960464cm" Left="16.5099995407661cm" Top="0.794999901592734cm" Value="= Fields.TanggalTagihan" Format="{0:D}" Name="textBox9" />
+        <TextBox Width="3.40000009536743cm" Height="0.400000005960464cm" Left="8.22854143778567cm" Top="0.292291582242485cm" Value="FAKTUR TAGIHAN" Name="textBox5" />
+        <TextBox Width="6cm" Height="0.400000005960464cm" Left="0.238124993376434cm" Top="0.292291582242485cm" Value="PT Perkebunan Nusantara VIII" Name="textBox3">
+          <Style>
+            <Font Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6.00000047683716cm" Height="0.399999976158142cm" Left="0.238124993376434cm" Top="0.794999901592734cm" Value="Unit Industri Hilir Terpadu" Name="textBox4">
+          <Style>
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+      </Items>
+    </PageHeaderSection>
+    <DetailSection Height="0cm" Name="detailSection1" />
+    <PageFooterSection Height="0cm" Name="pageFooterSection1" />
+    <ReportHeaderSection Height="6.29999964674315cm" Name="reportHeaderSection1">
+      <Items>
+        <Table DataSourceName="sqlDataSource1" Width="19.0587406158447cm" Height="1.71708309650421cm" Left="0.449791654155487cm" Top="0cm" Name="table1">
+          <Body>
+            <Cells>
+              <TableCell RowIndex="0" ColumnIndex="3" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.84666585922241cm" Height="0.608541488647461cm" Left="0cm" Top="0cm" Value="= Fields.TanggalPO" Format="{0:D}" Name="textBox31" StyleName="">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Default="Solid" />
+                      <Font Size="8pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="4" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.06374835968018cm" Height="0.608541488647461cm" Left="0cm" Top="0cm" Value="= Fields.NoPO" Name="textBox33" StyleName="">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Default="Solid" />
+                      <Font Size="8pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="0" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="1.12124967575073cm" Height="0.608541667461395cm" Left="0cm" Top="0cm" Value="= RowNumber()" Name="textBox22">
+                    <Style VerticalAlign="Middle">
+                      <BorderStyle Default="Solid" />
+                      <Font Size="8pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="1" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="2.66145801544189cm" Height="0.608541548252106cm" Left="0cm" Top="0cm" Value="= Fields.TanggalSJ" Format="{0:D}" Name="textBox25">
+                    <Style TextAlign="Center" VerticalAlign="Middle">
+                      <BorderStyle Default="Solid" />
+                      <Font Size="8pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="2" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="4.5929102897644cm" Height="0.608541488647461cm" Left="0cm" Top="0cm" Value="= Fields.NoSJ" Name="textBox28">
+                    <Style TextAlign="Left" VerticalAlign="Middle">
+                      <BorderStyle Default="Solid" />
+                      <Font Size="8pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+              <TableCell RowIndex="0" ColumnIndex="5" RowSpan="1" ColumnSpan="1">
+                <ReportItem>
+                  <TextBox Width="3.77270746231079cm" Height="0.608541488647461cm" Left="0cm" Top="0cm" Value="= Fields.JumlahTagihan" Format="{0:N0}" Name="textBox16">
+                    <Style TextAlign="Right" VerticalAlign="Middle">
+                      <BorderStyle Default="Solid" />
+                      <Font Size="8pt" />
+                    </Style>
+                  </TextBox>
+                </ReportItem>
+              </TableCell>
+            </Cells>
+            <Columns>
+              <Column Width="1.12125035597149cm" />
+              <Column Width="2.66145717633421cm" />
+              <Column Width="4.59291019908678cm" />
+              <Column Width="2.8466663426131cm" />
+              <Column Width="4.06374926678611cm" />
+              <Column Width="3.77270763004972cm" />
+            </Columns>
+            <Rows>
+              <Row Height="0.608541684806354cm" />
+            </Rows>
+          </Body>
+          <Corner />
+          <Style>
+            <BorderStyle Default="Solid" />
+          </Style>
+          <RowGroups>
+            <TableGroup Name="detailTableGroup">
+              <Groupings>
+                <Grouping />
+              </Groupings>
+            </TableGroup>
+          </RowGroups>
+          <ColumnGroups>
+            <TableGroup Name="tableGroup">
+              <ReportItem>
+                <TextBox Width="1.1212500333786cm" Height="1.10854160785675cm" Left="0cm" Top="0cm" Value="No" Name="textBox38" StyleName="">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Default="Solid" />
+                    <Font Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+            <TableGroup Name="group">
+              <ReportItem>
+                <TextBox Width="7.25436782836914cm" Height="0.499999910593033cm" Left="0cm" Top="0cm" Value="Surat Jalan" Name="textBox41" StyleName="">
+                  <Style TextAlign="Center">
+                    <BorderStyle Default="Solid" />
+                    <Font Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group9">
+                  <ReportItem>
+                    <TextBox Width="2.66145801544189cm" Height="0.608541667461395cm" Left="0cm" Top="0cm" Value="Tanggal" Name="textBox23" StyleName="">
+                      <Style TextAlign="Center">
+                        <BorderStyle Default="Solid" />
+                        <Font Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group10">
+                  <ReportItem>
+                    <TextBox Width="4.5929102897644cm" Height="0.60854172706604cm" Left="0cm" Top="0cm" Value="Nomor" Name="textBox27" StyleName="">
+                      <Style TextAlign="Center">
+                        <BorderStyle Default="Solid" />
+                        <Font Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group2">
+              <ReportItem>
+                <TextBox Width="6.9104151725769cm" Height="0.499999910593033cm" Left="0cm" Top="0cm" Value="PO" Name="textBox43" StyleName="">
+                  <Style TextAlign="Center">
+                    <BorderStyle Default="Solid" />
+                    <Font Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+              <ChildGroups>
+                <TableGroup Name="group11">
+                  <ReportItem>
+                    <TextBox Width="2.84666585922241cm" Height="0.60854172706604cm" Left="0cm" Top="0cm" Value="Tanggal" Name="textBox30" StyleName="">
+                      <Style TextAlign="Center">
+                        <BorderStyle Default="Solid" />
+                        <Font Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+                <TableGroup Name="group12">
+                  <ReportItem>
+                    <TextBox Width="4.06374835968018cm" Height="0.60854172706604cm" Left="0cm" Top="0cm" Value="Nomor" Name="textBox32" StyleName="">
+                      <Style TextAlign="Center">
+                        <BorderStyle Default="Solid" />
+                        <Font Bold="True" />
+                      </Style>
+                    </TextBox>
+                  </ReportItem>
+                </TableGroup>
+              </ChildGroups>
+            </TableGroup>
+            <TableGroup Name="group5">
+              <ReportItem>
+                <TextBox Width="3.77270746231079cm" Height="1.10854148864746cm" Left="0cm" Top="0cm" Value="Jumlah" Name="textBox46" StyleName="">
+                  <Style TextAlign="Center" VerticalAlign="Middle">
+                    <BorderStyle Default="Solid" />
+                    <Font Bold="True" />
+                  </Style>
+                </TextBox>
+              </ReportItem>
+            </TableGroup>
+          </ColumnGroups>
+          <Filters>
+            <Filter Expression="= Fields.JumlahTagihan" Operator="GreaterThan" Value="0" />
+          </Filters>
+        </Table>
+        <TextBox Width="11.0370779037476cm" Height="0.499999344348907cm" Left="0.396874988960723cm" Top="1.99999979813894cm" Value="Terbilang :" Name="textBox18" />
+        <TextBox Width="11.0370779037476cm" Height="1.8998007774353cm" Left="0.396874988960723cm" Top="2.50270811748919cm" Value="---------------------" Name="textBox12" />
+        <TextBox Width="11.0370779037476cm" Height="0.499999344348907cm" Left="0.396874988960723cm" Top="4.40770806450066cm" Value="Harap di transfer ke rekening kami :" Name="textBox14" />
+        <TextBox Width="11.0370779037476cm" Height="1.00000035762787cm" Left="0.396874988960723cm" Top="4.91041638385091cm" Value="BNI KCP DAGO Nomor 0405-01-000356-30-2 a/n Perkebunan Nusantara" Name="textBox24">
+          <Style>
+            <Font Bold="True" Italic="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="4.09999990463257cm" Height="0.499999344348907cm" Left="15.4781245694682cm" Top="3.71979141696874cm" Value="Manajer Pemasaran" Name="textBox26" />
+        <TextBox Width="4.09999990463257cm" Height="0.499999344348907cm" Left="15.5045829020656cm" Top="3.21708309761849cm" Value="Hormat kami," Name="textBox29" />
+        <TextBox Width="3.39750742912292cm" Height="0.608541667461395cm" Left="11.9000000504653cm" Top="1.69999954581262cm" Value="Potongan" Name="textBox17">
+          <Style VerticalAlign="Middle">
+            <Font Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="3.33375644683838cm" Height="0.608541667461395cm" Left="11.9000000504653cm" Top="2.30000005046526cm" Value="Total" Name="textBox34">
+          <Style VerticalAlign="Middle" />
+        </TextBox>
+        <TextBox Width="3.77270698547363cm" Height="0.608541667461395cm" Left="15.7358252408076cm" Top="1.69999954581262cm" Value="= Sum(IIf(Fields.JumlahTagihan&lt;0,Fields.JumlahTagihan,0))" Format="{0:N0}" Name="textBox21">
+          <Style TextAlign="Right" VerticalAlign="Middle">
+            <BorderStyle Default="Solid" />
+            <Font Size="8pt" />
+          </Style>
+          <ConditionalFormatting>
+            <FormattingRule>
+              <Filters>
+                <Filter Expression="= Fields.JumlahTagihan" Operator="LessThan" Value="0" />
+              </Filters>
+            </FormattingRule>
+          </ConditionalFormatting>
+        </TextBox>
+        <TextBox Width="3.77270698547363cm" Height="0.608541667461395cm" Left="15.7358252408076cm" Top="2.30000005046526cm" Value="= Sum(Fields.JumlahTagihan)" Format="{0:N0}" Name="textBox15">
+          <Style TextAlign="Right" VerticalAlign="Middle">
+            <BorderStyle Default="Solid" />
+            <Font Size="8pt" />
+          </Style>
+        </TextBox>
+      </Items>
+    </ReportHeaderSection>
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings>
+    <PageSettings PaperKind="A4" Landscape="False">
+      <Margins>
+        <MarginsU Left="0cm" Right="0cm" Top="0cm" Bottom="0cm" />
+      </Margins>
+    </PageSettings>
+  </PageSettings>
+  <ReportParameters>
+    <ReportParameter Name="NoInput">
+      <Value>
+        <String>TG-1</String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

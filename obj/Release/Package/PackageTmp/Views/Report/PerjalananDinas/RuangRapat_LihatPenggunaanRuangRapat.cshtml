@@ -1,0 +1,116 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Penggunaan Ruang Rapat Kantor Direksi PTPN VIII</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tanggal:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DatePicker().Name("TanggalMulai").Format("yyyy-MM-dd")
+                                                    .Value(DateTime.Now)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+.Items(tabstrip =>
+{
+    tabstrip.Add().Text("I. Table Lihat Penggunaan Ruang Rapat").Selected(true)
+    .Content(@<text>
+        @(Html.Kendo()
+        .Grid<Ptpn8.Models.RuangRapat.View_RuangRapatPTPNVIII>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.RuangRapatPTPNVIIIId).Width(50).Hidden();
+                    g.Bound(i => i.TanggalMulai).Title("Tanggal Mulai").Width(150).Format("{0:dd-MM-yyyy HH:mm}");
+                    g.Bound(i => i.TanggalSelesai).Title("Tanggal Selesai").Width(150).Format("{0:dd-MM-yyyy HH:mm}");
+                    g.Bound(i => i.JenisRuangRapat).Title("Jenis Ruang Rapat").Width(250);
+                    g.Bound(i => i.NamaKegiatan).Title("Nama Kegiatan").Width(250);
+                    g.Bound(i => i.JumlahPeserta).Title("Jumlah Peserta").Width(100);
+                    g.Bound(i => i.ReferensiNoSuratUndangan).Title("No Surat/Memo Undangan").Width(200);
+                    g.Bound(i => i.DihadiriOleh).Title("Dihadiri Oleh").Width(300);
+                    g.Group(i =>
+                    {
+                        i.Title("Permintaan Konsumsi");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.PermintaanSnack).Title("Snack Pagi").Width(120).ClientTemplate("#= PermintaanSnack ? 'Ya':'Tidak' #");
+                            c.Bound(j => j.PermintaanSnackSore).Title("Snack Sore").Width(120).ClientTemplate("#= PermintaanSnackSore ? 'Ya':'Tidak' #");
+                            c.Bound(j => j.PermintaanMakan).Title("Makan Pagi").Width(120).ClientTemplate("#= PermintaanMakan ? 'Ya':'Tidak' #");
+                            c.Bound(j => j.PermintaanMakanSiang).Title("Makan Siang").Width(120).ClientTemplate("#= PermintaanMakanSiang ? 'Ya':'Tidak' #");
+                            c.Bound(j => j.PermintaanMakanMalam).Title("Makan Malam").Width(120).ClientTemplate("#= PermintaanMakanMalam ? 'Ya':'Tidak' #");
+                        });
+                    });
+                    g.Bound(i => i.Verifikasi).Title("Verifikasi").Width(100).Hidden();
+                    g.Bound(i => i.Catatan).Title("Catatan").Width(100).Hidden();
+                    g.Bound(i => i.BagianId).Width(50).Hidden();                    
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .Sort(s => s.Add(x => x.TanggalMulai))
+            .Group(g => g.Add(gg => gg.JenisRuangRapat))
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+        )
+        )
+    </text>);
+})
+    )
+</div>
+
+<script>
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Models.RuangRapat.View_RuangRapatPTPNVIII',
+            scriptSQL: "EXEC RuangRapat_LihatPenggunaanRuangRapat '" + $('#TanggalMulai').val() + "'"
+        }
+    }
+</script>
+
+
+
+
+
+

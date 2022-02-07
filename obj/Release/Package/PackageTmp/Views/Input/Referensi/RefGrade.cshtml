@@ -1,0 +1,259 @@
+﻿@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+<script src="~/Scripts/Referensi/RefGrade.js"></script>
+
+@*header*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerkopi">
+                @*@(Html.Kendo().TextBox().Name("SubBudidayaId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))*@
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInpuView" style="text-align:center; color: red; font-size:medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <label>Budidaya:</label>
+                            @(Html.Kendo().AutoComplete()
+                                .Name("NamaBudidaya")
+                                .DataTextField("Nama")
+                                .DataSource(o => o.Read(r => r.Action("GetBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterBudidaya")).ServerFiltering(true))
+                                .Events(ev => { ev.Change("NamaBudidayaOnSelect"); })
+                                .HtmlAttributes(new { style = "width: 30%", @class = "allcaps" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Sub Budidaya:</label>
+                            @(Html.Kendo().AutoComplete()
+                                .Name("NamaSubBudidaya")
+                                .DataTextField("Nama")
+                                .DataSource(o => o.Read(r => r.Action("GetSubBudidaya1", "ddl", new { Area = "Referensi" }).Data("filterSubBudidaya")).ServerFiltering(true))
+                                .Events(ev => { ev.Change("NamaSubBudidayaOnSelect"); })
+                                .HtmlAttributes(new { style = "width: 30%", @class = "allcaps" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 0px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Areas.Referensi.Models.Grade>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.GradeId).Hidden();
+            g.Bound(i => i.SubBudidayaId).Hidden();
+            g.Bound(i => i.SatuanId).Hidden();
+            g.Bound(i => i.KemasanId).Hidden();
+            g.Bound(i => i.Merk).Hidden();
+            g.Bound(i => i.Ukuran).Hidden();
+            g.Bound(i => i.Group).Hidden();
+            g.Bound(i => i.Nama).Title("Nama Grade").Width(100);
+            g.Bound(i => i.Uraian).Title("Uraian Grade").Width(250);
+            g.Bound(i => i.KelasGrade).Title("Kelas Grade").Width(150);
+            g.Bound(i => i.JumlahSatuan).Title("Jumlah Pack/Sack").Width(80);
+            g.Bound(i => i.NamaSatuan).Title("Satuan Pack/Sack").Width(120);
+            g.Bound(i => i.Standar_BeratPerSatuan).Title("Berat Standar per Pack/Sack").Width(80);
+            g.Bound(i => i.Tara).Title("Berat Tara").Width(80);
+            g.Bound(i => i.FileFoto).Hidden();
+            g.Bound(i => i.Foto).Width(100).Filterable(false).Sortable(false).Title("Foto").ClientTemplate(
+                   @"<div class='photo'><img id='#:GradeId#' src='" + Url.Content("~/Content/Images/View/") + "#:GradeId#.jpg?timespan=#:new Date().getTime()#' alt='#: GradeId #' /></div>");
+            g.Bound(i => i.kd_grade).Title("Id-SPDK").Width(70);
+            g.Command(command =>
+            {
+                command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                    .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+            }).Width(200);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                            "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+        })
+        .AutoBind(true)
+        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+		.Sortable()
+        .HtmlAttributes(new { style = "Height: 500px" })
+        .Events(e =>
+        {
+            e.Change("grdOnChange");
+            e.Edit("grdOnEdit");
+            e.DataBinding("grdOnDataBinding");
+        })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Sort(j => j.Add(i => i.Nama))
+            .Model(model =>
+            {
+                model.Id(p => p.GradeId);
+            })
+            .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            .Create(create => create.Action("detailCreate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            .Update(update => update.Action("detailUpdate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterRead").Type(HttpVerbs.Post))
+            )
+    )
+</div>
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+            // Each report viewer must have an id - it will be used by the initialization script
+            // to find the element and initialize the report viewer.
+            .Id("reportViewer")
+            // The URL of the service which will serve reports.
+            // The URL corresponds to the name of the controller class (ReportsController).
+            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+            .ServiceUrl(Url.Content("/api/reports/"))
+            // The URL for custom report vie    wer template. The template can be edited -
+            // new functionalities can be added and unneeded ones can be removed.
+            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+            //
+            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+            .ReportSource(new UriReportSource() { Uri = "../Reports/Penjualan/SIKaret.trdx" })
+            // Specifies whether the viewer is in interactive or print preview mode.
+            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+            .ViewMode(ViewMode.Interactive)
+            // Sets the scale mode of the viewer.
+            // Three modes exist currently:
+            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+            // Specific - Uses the scale to zoom in and out the report.
+            .ScaleMode(ScaleMode.Specific)
+            // Zoom in and out the report using the scale
+            // 1.0 is equal to 100%, i.e. the original size of the report
+            .Scale(1.0)
+            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+            .PersistSession(false)
+            // Sets the print mode of the viewer.
+            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Invoice dengan No SI ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+

@@ -1,0 +1,299 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+
+
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Cari Dokumen</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2019)
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                            .AutoBind(true)
+                            .Name("Bulan")
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                            .BindTo(new List<SelectListItem>()
+                            {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "01"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "02"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "03"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "04"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "05"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "06"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "07"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "08"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "09"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "Nopember",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Nama:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().TextBox().Name("Nama")
+                                        .HtmlAttributes(new { style = "width: 35%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo()
+                        .Grid<Ptpn8.SumberDayaManusia.Models.CariPerNama>(Guid.Empty.ToString())
+                        .Name("grdDetail")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.Ref_DikID).Width(120).Hidden();
+                            g.Bound(i => i.TANGGAL).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.REG).Width(120);
+                            g.Bound(i => i.NAMA).Width(120);
+                            g.Bound(i => i.GLR_DPN).Width(120);
+                            g.Bound(i => i.GLR_BLK).Width(120);
+                            g.Bound(i => i.TPT_LAHIR).Width(120);
+                            g.Bound(i => i.TGL_LAHIR).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.KELAMIN).Width(120);
+                            g.Bound(i => i.GOL_DARAH).Width(120);
+                            g.Bound(i => i.AGAMA).Width(120);
+                            g.Bound(i => i.ALAMAT).Width(120);
+                            g.Bound(i => i.KOTA).Width(120);
+                            g.Bound(i => i.TINGGAL).Width(120);
+                            g.Bound(i => i.SIPIL).Width(120);
+                            g.Bound(i => i.STAT_IS).Width(120);
+                            g.Bound(i => i.TGL_NIKAH).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.TGL_CERAI).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.KANDUNG).Width(120);
+                            g.Bound(i => i.ANGKAT).Width(120);
+                            g.Bound(i => i.TANGGUNG).Width(120);
+                            g.Bound(i => i.TGG_PPH).Width(120);
+                            g.Bound(i => i.KD_PEND).Width(120);
+                            g.Bound(i => i.TGL_SK).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.NO_SK).Width(120);
+                            g.Bound(i => i.KD_KELAS).Width(120);
+                            g.Bound(i => i.KLS_TMT).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.KLS_SK).Width(120);
+                            g.Bound(i => i.GOL).Width(120);
+                            g.Bound(i => i.MK).Width(120);
+                            g.Bound(i => i.GOL_TMT).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.GOL_SK).Width(120);
+                            g.Bound(i => i.GPO).Width(120);
+                            g.Bound(i => i.KD_KBN).Width(120);
+                            g.Bound(i => i.KD_AFD).Width(120);
+                            g.Bound(i => i.KD_JAB).Width(120);
+                            g.Bound(i => i.NAMA_JAB).Width(120);
+                            g.Bound(i => i.KD_BUD).Width(120);
+                            g.Bound(i => i.JAB_TMT).Width(120).Format("{0:dd/MM/yyyy}");
+                            g.Bound(i => i.JAB_SK).Width(120);
+                            g.Bound(i => i.ASTEK).Width(120);
+                            g.Bound(i => i.TASPEN).Width(120);
+                            g.Bound(i => i.SANSOS).Width(120);
+                            g.Bound(i => i.STAT_DAP).Width(120);
+                            g.Bound(i => i.MBT).Width(120);
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Excel();
+                        })
+                        .AutoBind(false)
+
+                        .Navigatable()
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Excel(excel => excel.AllPages(true))
+                        .Sortable()
+                        .Groupable()
+                        .Filterable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        //.Events(e =>
+                        //{
+                        //    e.Change("grdOnChange");
+                        //    e.Edit("grdOnEdit");
+                        //    e.DataBound("resetRowNumber");
+                        //})
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Sort(s => s.Add(x => x.NAMA))
+                            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                        )
+    )
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function onButtonClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var file = data.File;
+
+        //window.location.href = "/Content/Images/Document/" + file; //pass the desired url for the view
+        pdf.open().center();
+
+        var options = {
+            pdfOpenParams: {
+                navpanes: 1,
+                toolbar: 0,
+                statusbar: 0,
+                pagemode: 'none',
+                pagemode: "none",
+                page: 1,
+                preventDefault: 1,
+                zoom: "page-width",
+                enableHandToolOnLoad: true
+            } //,
+            //forcePDFJS: true,
+            //PDFJS_URL: "/PDF.js/web/viewer.html"
+        }
+
+
+        PDFObject.embed("/Content/Images/Document/PerjanjianKerjasama/" + file, "#testPDFObject", options)
+
+    }
+
+    function btnProsesOnClick() {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        var TAHUN = $('#Tahun').val();
+        var BULAN = $('#Bulan').data('kendoDropDownList').value();
+        var REG = $('#Nama').val();
+        var NAMA = $('#Nama').val();
+        var NM_PGL = $('#Nama').val();
+        var ALAMAT = $('#Nama').val();
+        var NAMA_JAB = $('#Nama').val();
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.CariPerNama',
+            scriptSQL: "Select TANGGAL, REG, NAMA, GLR_DPN, GLR_BLK, TPT_LAHIR, TGL_LAHIR, KELAMIN, GOL_DARAH, AGAMA, ALAMAT, KOTA, TINGGAL, SIPIL, STAT_IS, TGL_NIKAH, TGL_CERAI, KANDUNG, ANGKAT, " +
+                "TANGGUNG, TGG_PPH, KD_PEND, TGL_SK, NO_SK, KD_KELAS, KLS_TMT, KLS_SK, GOL, MK, GOL_TMT, GOL_SK, GPO, KD_KBN, KD_AFD, KD_JAB, NAMA_JAB, KD_BUD, JAB_TMT, JAB_SK, ASTEK, TASPEN, SANSOS, " +
+                "STAT_DAP, MBT " +
+                "from [SPDK_KanpusEF].[dbo].[ref_dik] where  (REG like'%" + REG + "%' or NAMA like '%" + NAMA + "%' or NM_PGL like '%" + NM_PGL + "%' or ALAMAT like '%" + ALAMAT + "%' or NAMA_JAB like '%" + NAMA_JAB + "%') and YEAR(TANGGAL) =" + TAHUN + " and MONTH(TANGGAL) = " + BULAN + " " +
+                "UNION " +
+                "Select TANGGAL, REG, NAMA, '', '', TPT_LAHIR, TGL_LAHIR, KELAMIN, GOL_DARAH, AGAMA, ALAMAT, KOTA, TINGGAL, SIPIL, '', TGL_NIKAH, TGL_CERAI, KANDUNG, ANGKAT, " +
+                "TANGGUNG, '', KD_PEND, TGL_SK, NO_SK, KD_KELAS, KLS_TMT, KLS_SK, GOL, MK, GOL_TMT, GOL_SK, GPO, KD_KBN, KD_AFD, KD_JAB, NAMA_JAB, KD_BUD, JAB_TMT, JAB_SK, ASTEK, TASPEN, '', " +
+                "'', '' " +
+                "from [SPDK_KanpusEF].[dbo].[ref_dikklm] where  (REG like'%" + REG + "%' or NAMA like '%" + NAMA + "%' or ALAMAT like '%" + ALAMAT + "%' or NAMA_JAB like '%" + NAMA_JAB + "%') and YEAR(TANGGAL) =" + TAHUN + " and MONTH(TANGGAL) = " + BULAN
+        }
+    }
+
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<script>
+    var usrName = "@HttpContext.Current.User.Identity.Name";
+</script>

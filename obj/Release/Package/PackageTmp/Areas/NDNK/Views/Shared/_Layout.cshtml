@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width" />
+
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/MyStyle.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.mobile.all.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.default.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2016.2.714/kendo.dataviz.default.min.css")" rel="stylesheet" type="text/css" />
+
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/angular.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/jszip.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2016.2.714/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+    <script src="@Url.Content("~/Scripts/cultures/kendo.culture.id-ID.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/cultures/kendo.culture.id.min.js")"></script>
+</head>
+<body>
+    <header>
+        <div class="content-wrapper">
+            <table width="100%" style="margin: 0;">
+                <tr>
+                    <td style="width: 20%;">
+                        <img src="@Url.Content("~/Content/Images/WalagriJatiUtama.jpg")" width="100%" />
+                    </td>
+                    <td style="width: 64%;">
+                        <p class="site-title" style="text-align: center; ">@Html.ActionLink("Transaksi Nota Antar Unit PTPN-VIII", "Index", "Home", new { Area = "" }, null)</p>
+                    </td>
+                    <td style="text-align: right;">
+                        @Html.Partial("_LogInPartial")
+                    </td>
+                </tr>
+            </table>
+
+            @{
+                List<Ptpn8.Models.Menu> menuList = ViewBag.Menu;
+            }
+            @if (menuList != null)
+            {
+                <ul id="kmenu" style="display: none;">
+                    @foreach (var mp in menuList.Where(p => p.ParentId == Guid.Empty))
+                    {
+                        if (@mp.InRole == "" ? true : User.IsInRole(@mp.InRole))
+                        {
+                            <li>
+                                @if (@mp.ActionName != "")
+                                {
+                                    @Html.ActionLink(@mp.LinkText, @mp.ActionName, @mp.ControllerName, new { Area = @mp.Area }, null)
+                                }
+                                else
+                                {
+                                    @mp.LinkText
+                                }
+
+                                @if (menuList.Count(p => p.ParentId == mp.MenuId) > 0)
+                                {
+                                    @:<ul>
+                                }
+                                @RenderMenuItem(menuList, mp)
+
+                                @if (menuList.Count(p => p.ParentId == mp.MenuId) > 0)
+                                {
+                                    @:</ul>
+                                }
+                            </li>
+                        }
+                    }
+                </ul>
+            }
+
+            @helper RenderMenuItem(List<Ptpn8.Models.Menu> menuList, Ptpn8.Models.Menu mi)
+            {
+                foreach (var cp in menuList.Where(p => p.ParentId == mi.MenuId))
+                {
+                    @:<li>
+                    if (@cp.ActionName != "")
+                    {
+                        if (@cp.InRole != "" ? User.IsInRole(@cp.InRole) : true)
+                        {
+                                @Html.ActionLink(@cp.LinkText, @cp.ActionName, @cp.ControllerName, new { Area = @cp.Area }, null)
+                        }
+                    }
+                    else
+                    {
+                            @cp.LinkText
+                    }
+
+                    if (menuList.Count(p => p.ParentId.ToString() == cp.MenuId.ToString()) > 0)
+                    {
+                        @:<ul>
+                    }
+
+                    @RenderMenuItem(menuList, cp)
+                    if (menuList.Count(p => p.ParentId == cp.MenuId) > 0)
+                    {
+                        @:</ul>
+                    }
+                    else
+                    {
+                        @:</li>
+                    }
+                }
+            }
+        </div>
+    </header>
+    <div id="body">
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper main-content clear-fix">
+            @RenderBody()
+        </section>
+    </div>
+
+    <footer>
+        @Html.Partial("_ViewSwitcher")
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year - PT Perkebunan Nusantara VIII</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+<script type="text/javascript">
+    kendo.culture("id-ID");
+    $(document).ready(function () {
+        $('#kmenu').css("display", "block");
+        $('#kmenu').kendoMenu({
+            openOnClick: true
+        });
+    });
+</script>
+
+<style type="text/css">
+    .k-menu {
+        border: 0;
+        color: white;
+        background-color: indianred; /*transparent; */
+        font-size: small;
+        font-weight: 500;
+        text-decoration: none;
+    }
+</style>

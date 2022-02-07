@@ -1,0 +1,30 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Menginap < 50 km",
+                Value = "Menginap < 50 km"
+            },
+            new SelectListItem() {
+                Text = "Menginap > 50 km",
+                Value = "Menginap > 50 km"
+            },
+            new SelectListItem() {
+                Text = "Tdk Menginap < 50 km",
+                Value = "Tdk Menginap < 50 km"
+            },
+            new SelectListItem() {
+                Text = "Tdk Menginap > 50 km",
+                Value = "Tdk Menginap > 50 km"
+            }
+        })
+        .Events(e => { e.Change("ddlKMdanMenginapOnChange"); e.Select("ddlKMdanMenginapOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+
+

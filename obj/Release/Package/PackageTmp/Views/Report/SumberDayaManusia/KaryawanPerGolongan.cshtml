@@ -1,0 +1,231 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Report Karyawan Per Golongan</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2019)
+                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                    .AutoBind(true)
+                    .Name("Bulan")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                    .BindTo(new List<SelectListItem>()
+                    {
+                        new SelectListItem() {
+                            Text = "Januari",
+                            Value = "01"
+                        },
+                        new SelectListItem() {
+                            Text = "Februari",
+                            Value = "02"
+                        },
+                        new SelectListItem() {
+                            Text = "Maret",
+                            Value = "03"
+                        },
+                        new SelectListItem() {
+                            Text = "April",
+                            Value = "04"
+                        },
+                        new SelectListItem() {
+                            Text = "Mei",
+                            Value = "05"
+                        },
+                        new SelectListItem() {
+                            Text = "Juni",
+                            Value = "06"
+                        },
+                        new SelectListItem() {
+                            Text = "Juli",
+                            Value = "07"
+                        },
+                        new SelectListItem() {
+                            Text = "Agustus",
+                            Value = "08"
+                        },
+                        new SelectListItem() {
+                            Text = "September",
+                            Value = "09"
+                        },
+                        new SelectListItem() {
+                            Text = "Oktober",
+                            Value = "10"
+                        },
+                        new SelectListItem() {
+                            Text = "Nopember",
+                            Value = "11"
+                        },
+                        new SelectListItem() {
+                            Text = "Desember",
+                            Value = "12"
+                        }
+                        })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+.Items(tabstrip =>
+{
+    tabstrip.Add().Text("I. Table").Selected(true)
+    .Content(@<text>
+        @(Html.Kendo()
+        .Grid<Ptpn8.SumberDayaManusia.Models.KaryawanPerKebun>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.Unit).Width(100).Title("Nama Kebun");
+            g.Bound(i => i.JenisKaryawan).Width(100).Title("Jenis Karyawan")
+                .ClientFooterTemplate("JUMLAH")
+                .ClientGroupFooterTemplate("JUMLAH")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.JumlahKaryawan).Width(100).Title("Jumlah Karyawan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .Group(g => g.Add(gg => gg.Unit))
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.JumlahKaryawan).Sum();
+            })
+        )
+        )
+    </text>);
+tabstrip.Add().Text("II. Chart").Selected(false)
+    .Content(@<text>
+            <div class="demo-section k-content wide">
+                @(Html.Kendo().Chart<Ptpn8.SumberDayaManusia.Models.KaryawanPerGolonganChart>()
+                .Name("chart")
+                .Title("Karyawan PTPN VIII")
+                .Legend(legend => legend.Position(ChartLegendPosition.Top))
+                .HtmlAttributes(new { style = "Height: 1500px" })
+                .DataSource(ds => ds
+                    .Read(read => read.Action("GetDataFrom", "Report").Type(HttpVerbs.Post).Data("filterReport2"))
+                )
+                .ChartArea(chartArea => chartArea
+                    .Background("transparent")
+                )
+                .Series(series =>
+                {
+                    series.Bar(model => model.JumlahIA).Name("IA").Color("blue");
+                    series.Bar(model => model.JumlahIB).Name("IB").Color("blue");
+                    series.Bar(model => model.JumlahIC).Name("IC").Color("blue");
+                    series.Bar(model => model.JumlahID).Name("ID").Color("blue");
+                    series.Bar(model => model.JumlahIIA).Name("IIA").Color("green");
+                    series.Bar(model => model.JumlahIIB).Name("IIB").Color("green");
+                    series.Bar(model => model.JumlahIIC).Name("IIC").Color("green");
+                    series.Bar(model => model.JumlahIID).Name("IID").Color("green");
+                    series.Bar(model => model.JumlahIIIA).Name("IIIA").Color("red");
+                    series.Bar(model => model.JumlahIIIB).Name("IIIB").Color("red");
+                    series.Bar(model => model.JumlahIIIC).Name("IIIC").Color("red");
+                    series.Bar(model => model.JumlahIIID).Name("IIID").Color("red");
+                    series.Bar(model => model.JumlahIVA).Name("IVA").Color("brown");
+                    series.Bar(model => model.JumlahIVB).Name("IVB").Color("brown");
+                    series.Bar(model => model.JumlahIVC).Name("IVC").Color("brown");
+                    series.Bar(model => model.JumlahIVD).Name("IVD").Color("brown");
+                })
+                .CategoryAxis(axis => axis
+                        .Categories(model => model.Unit)
+                        )
+                .ValueAxis(axis => axis
+                    .Numeric().Labels(labels => labels.Format("{0:N0}"))
+                    .Line(line => line.Visible(false))
+                    .MajorGridLines(lines => lines.Visible(true))
+                )
+                .Tooltip(tooltip => tooltip
+                    .Visible(true)
+                    .Template("#= series.name #: #= value #")
+                )
+                )
+            </div>
+    </text>);
+})
+    )
+</div>
+
+<script>
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+        $('#chart').data('kendoChart').dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.KaryawanPerKebun',
+            scriptSQL: "EXEC SDM_KaryawanPerGolongan '" + $('#Bulan').val() + "','" + $('#Tahun').val() + "'"
+        }
+    }
+
+    function filterReport2(e) {
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.KaryawanPerGolonganChart',
+            scriptSQL: "declare @@dashboard as table (Unit nvarchar(max),JumlahIA int,JumlahIB int,JumlahIC int,JumlahID int,JumlahIIA int,JumlahIIB int,JumlahIIC int,JumlahIID int,JumlahIIIA int,JumlahIIIB int,JumlahIIIC int,JumlahIIID int,JumlahIVA int,JumlahIVB int,JumlahIVC int,JumlahIVD int ) " +
+                           "insert @@dashboard " +
+                           "Select distinct A.Nama as Unit, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='01' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIA, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='02' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIB, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='03' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIC, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='04' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahID, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='05' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIIA, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='06' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIIB, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='07' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIIC, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='08' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIID, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='09' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIIIA, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='10' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIIIB, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='11' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIIIC, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='12' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIIID, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='13' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIVA, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='14' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIVB, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='15' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIVC, (select count(AA.REG) from [SPDK_KanpusEF].[dbo].[ref_dik] as AA where AA.KD_KBN=A.KD_KBN and AA.Gol='16' and Month(AA.TANGGAL)='" + $('#Bulan').val() + "' and Year(AA.TANGGAL)='" + $('#Tahun').val() + "') as JumlahIVD " +
+                           "from [ReferensiEF].[dbo].[Kebun] as A " +
+                           "order by A.Nama " +
+                           "select * from @@dashboard"
+        }
+    }
+</script>
+
+
+
+
+
+

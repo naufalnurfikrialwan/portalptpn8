@@ -1,0 +1,20 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Kena Pajak",
+                Value = "1"
+            },
+            new SelectListItem() {
+                Text = "Tidak Kena Pajak",
+                Value = "0"
+            }
+        })
+        .Events(e => { e.Change("ddlStatusPajakOnChange"); e.Select("ddlStatusPajakOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

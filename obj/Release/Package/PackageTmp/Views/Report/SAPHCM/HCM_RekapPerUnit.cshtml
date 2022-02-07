@@ -1,0 +1,195 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rekapitulasi Data SDM</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+    <div id="_detail">
+        @(Html.Kendo()
+            .Grid<Ptpn8.SAPHCM.Models.RekapDataSDM>(Guid.Empty.ToString())
+            .Name("grdDetail")
+            .Columns(g =>
+            {
+                g.Bound(i => i.Nomor).Width(100).Hidden();
+                g.Bound(i => i.Register).Width(100).Title("Register");
+                g.Bound(i => i.KTP).Width(100).Title("NIK KTP");
+                g.Bound(i => i.KartuKeluarga).Width(100).Title("No. Kartu Keluarga");
+                g.Bound(i => i.NamaLengkap).Width(200).Title("Nama Lengkap");
+                g.Bound(i => i.TanggalLahir).Width(100).Title("Tanggal Lahir");
+                g.Bound(i => i.Alamat).Width(200).Title("Alamat Rumah");
+                g.Bound(i => i.PendidikanTerakhir).Width(100).Title("Pendidikan Terakhir");
+                g.Bound(i => i.Golongan).Width(100).Title("Golongan");
+                g.Bound(i => i.Jabatan).Width(100).Title("Jabatan");
+                g.Bound(i => i.Unit).Width(100).Title("Unit/Afdeling");
+                g.Bound(i => i.LevelBOM).Width(100).Title("Level BOM -");
+                g.Bound(i => i.TMTBekerja).Width(100).Title("TMT Bekerja");
+                g.Bound(i => i.StatusKaryawan).Width(100).Title("Status Karyawan");
+                g.Bound(i => i.Email).Width(100).Title("Email");
+                g.Bound(i => i.Telepon).Width(100).Title("Telepon");
+                g.Bound(i => i.DiklatTerakhir).Width(300).Title("Diklat Terakhir yang diikuti");
+                g.Bound(i => i.RiwayatPunishment).Width(100).Title("Riwayat Punishment");
+                
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Excel();
+            })
+            .Excel(excel => excel.AllPages(true))
+            .AutoBind(true)
+            .Navigatable()
+            .Resizable(resizeable => resizeable.Columns(true))
+            .Scrollable()
+            .Sortable()
+            .Groupable()
+            .HtmlAttributes(new { style = "Height: 450px" })
+            .DataSource(o => o
+                .Ajax()
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            )
+        )
+
+    </div>
+
+    <div id="printWindow" contextmenu="Print" title="Print" class="print">
+        <div id="reportViewer">
+            @(Html.TelerikReporting().ReportViewer()
+                                // Each report viewer must have an id - it will be used by the initialization script
+                                // to find the element and initialize the report viewer.
+                                .Id("reportViewer")
+                                // The URL of the service which will serve reports.
+                                // The URL corresponds to the name of the controller class (ReportsController).
+                                // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                                .ServiceUrl(Url.Content("/api/reports/"))
+                                // The URL for custom report vie    wer template. The template can be edited -
+                                // new functionalities can be added and unneeded ones can be removed.
+                                // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                                //
+                                // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                                .ReportSource(new UriReportSource() { Uri = "../Reports/PerjalananDinas/RekapPerjalananDinasKebun.trdx" })
+                                // Specifies whether the viewer is in interactive or print preview mode.
+                                // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                                // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                                .ViewMode(ViewMode.Interactive)
+                                // Sets the scale mode of the viewer.
+                                // Three modes exist currently:
+                                // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                                // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                                // Specific - Uses the scale to zoom in and out the report.
+                                .ScaleMode(ScaleMode.Specific)
+                                // Zoom in and out the report using the scale
+                                // 1.0 is equal to 100%, i.e. the original size of the report
+                                .Scale(1.0)
+                                // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                                // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                                .PersistSession(false)
+                                // Sets the print mode of the viewer.
+                                .PrintMode(PrintMode.AutoSelect)
+            )
+        </div>
+    </div>
+
+
+    <style>
+        #reportViewer {
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            top: 5px;
+            bottom: 5px;
+            overflow: hidden;
+            font-family: Verdana, Arial;
+        }
+    </style>
+
+    <script>
+    var wndLeaveGrid, wnd, wndDetail, prt, kd_kebun;
+
+$(document).ready(function () {
+    getKodeKebun().done(function (data) {
+        if (data) {
+            $('#KebunId').val(data[0]);
+            kd_kebun = $('#KebunId').val(data[0]);
+        }
+    });
+    prt = $("#printWindow").kendoWindow({
+        title: "Print",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 800,
+        height: 500
+    }).data("kendoWindow");
+});
+
+
+
+function getKodeKebun() {
+    var url = '/Report/GetKebunId';
+    return $.ajax({
+        url: url,
+        data: {},
+        type: 'POST',
+        datatype: 'json'
+    });
+}
+
+function btnPrintHeaderOnClick() {
+    var viewer = $("#reportViewer").data("telerik_ReportViewer");
+    viewer.reportSource({
+        report: viewer.reportSource().report,
+        parameters: { KebunId: $('#KebunId').val(), Bulan: $('#Bulan').val(), Tahun: $('#Tahun').val() }
+    });
+    viewer.refreshReport();
+    prt.open().center();
+}
+
+    var usrName = "@HttpContext.Current.User.Identity.Name";
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SAPHCM.Models.RekapDataSDM',
+            scriptSQL: "Declare @@kodekebunSAP nvarchar(max); "+
+                       "set @@kodekebunSAP = (select a.Plant from [ERP].[dbo].[Migrasi_Kebun] as a join [ReferensiEF].[dbo].[Unit] as b on a.KodeKebun=b.KodeKebun join [Identity].[dbo].[AspNetUsers] as c on b.OrgId=c.PosisiLokasiKerjaId where c.UserName='"+usrName+"') "+
+                       "Select distinct a.[emp id] as Register, b.[Nomor Identitas] as KTP, C.[Nomor Identitas] as KartuKeluarga, a.[Full Name] as NamaLengkap, a.[Tanggal Lahir] as TanggalLahir, d.[Street and House No.]+', '+d.City as Alamat "+
+                       ", case when e.[Jenjang Pendidikan]='Z1' then 'SD' "+
+	                   "when e.[Jenjang Pendidikan]='Z2' then 'SMP' "+
+	                   "when e.[Jenjang Pendidikan]='Z3' then 'SMA' "+
+	                   "when e.[Jenjang Pendidikan]='Z4' then 'D3' "+
+	                   "when e.[Jenjang Pendidikan]='Z5' then 'S1' "+
+	                   "when e.[Jenjang Pendidikan]='Z6' then 'S2' "+
+	                   "end  +' - '+e.[Institusi Pendidikan / Training] As PendidikanTerakhir, "+
+	                   "f.[PS group] as Golongan, f.Position1 as Jabatan, f.[Personnel Subarea]  as Unit, j.BOM as LevelBOM, g.TMTBekerja, g.statuskaryawan, h.[System ID] as Email, i.[System ID] as Telepon, g.DiklatTerakhir, g.RiwayatPunishment "+
+                       "from SAPHCM.dbo.HCM02_ListEmployee as a "+
+                       "left join SAPHCM.dbo.HCM18_PersonalIDs as b on a.[Emp ID]=b.[Emp ID] and b.[Jenis Identitas]='01' "+
+                       "left join SAPHCM.dbo.HCM18_PersonalIDs as c on a.[Emp ID]=c.[Emp ID] and c.[Jenis Identitas]='10' "+
+                       "left join SAPHCM.dbo.HCM03_Addressess as d on a.[Emp ID]=d.[Emp ID] "+
+                       "left join SAPHCM.dbo.HCM12_Education as e on a.[Emp ID]=e.[Emp ID] and e.[Jenjang Pendidikan] = (select top 1 ee.[Jenjang Pendidikan] from  SAPHCM.dbo.HCM12_Education as ee where e.[Emp ID]=ee.[Emp ID] order by [Jenjang Pendidikan] desc  ) "+
+                       "left join [ERP].[dbo].[CheckRoll_DIK_SAP] as f on a.[Emp ID]=f.[NIK SPDK] and f.Tahun=year(getdate()) and f.bulan=month(getdate())-1 "+
+                       "left join SAPHCM.dbo.HCM_RiwayatPekerjaan as g on a.[Emp ID]=g.[Emp ID] "+
+                       "left join SAPHCM.dbo.HCM19_Communication as h on a.[Emp ID]=h.[Emp ID] and h.[Tipe Komunikasi]='0002' "+
+                       "left join SAPHCM.dbo.HCM19_Communication as i on a.[Emp ID]=i.[Emp ID] and i.[Tipe Komunikasi]='0003' "+
+                        "left join SAPHCM.dbo.HCM_IDtoBOM as j on f.Pers#No#=j.Persno "+
+                        "where f.PSubarea=@@kodekebunSAP order by golongan desc, NamaLengkap"
+        }
+    }
+    </script>
+
+
+
+

@@ -1,0 +1,134 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Cari Dokumen</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Lokasi Kerja:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().AutoComplete().Name("aucLokasiKerja")
+                                .MinLength(2)
+                                .Filter("contains")
+                                .DataTextField("Nama")
+                                .Placeholder("Cari Disini")
+                                .Events(ev => { ev.Change("aucLokasiKerjaOnSelect"); })
+                                .HtmlAttributes(new { style = "width: 100%", @class = "allcaps" })
+                                .DataSource(o =>
+                                {
+                                    o.Read(r => r.Action("GetLokasiKerja1", "ddl", new { Area = "Referensi" }).Data("filterLokasiKerja").Type(HttpVerbs.Post));
+                                    o.ServerFiltering(true);
+                                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo()
+        .Grid<Ptpn8.SMPNVIII.Models.ReportDokumen>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NamaBagian).Width(100).Title("Bagian").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Tanggal).Width(100).Title("Tanggal Dokumen").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.NomorDokumen).Width(100).Title("Nomor Dokumen").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Nama).Width(200).Title("Nama Dokumen").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.Keterangan).Width(200).Title("Keterangan").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.File).Width(200).Title("File").HtmlAttributes(new { style = "text-align: right;" }).Hidden();
+            g.Command(command =>
+            {
+                command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                              .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+            }).Width(120);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+        )
+    )
+
+</div>
+
+<script>
+
+
+    var bagianId;
+
+    function aucLokasiKerjaOnSelect(e) {
+        bagianId = e.sender.dataItem().LokasiKerjaId;
+    }
+
+    function filterLokasiKerja() {
+        return {
+            //id: IdBudidaya,
+            value: $('#aucLokasiKerja').val()
+        };
+    }
+
+    function onButtonClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var file = data.File;
+
+        window.location.href = "/Content/Images/Document/SMPNVIII/" + file; //pass the desired url for the view
+    }
+
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+            scriptSQL: "Select B.Nama as NamaBagian, A.* " +
+                       "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Bagian] as B on A.BagianId=B.BagianId " +
+                       "where A.BagianId ='" + bagianId + "' and A.Verifikasi=1 " +
+                       "order by A.Nama "
+        }
+    }
+</script>
+
+
+
+
+

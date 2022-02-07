@@ -1,0 +1,65 @@
+﻿
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div>
+    <label id="lblJawaban"></label>
+</div>
+
+<script>
+    var menuId = '4750895F-1270-48CA-907E-8FB5F155323F';
+    var no;
+    var scrpt;
+    var jadwalNIKId;
+    var paketID;
+    var _nik;
+    var a, b;
+
+    $(document).ready(function () {
+        _nik = $('#_username').val();
+        scrpt = '';
+        ambilJadwal(_nik).done(function (dt) {
+            if (dt.length > 0) {
+                jadwalNIKId = dt[0][3];
+                paketID = dt[0][5];
+
+                for (var nI = 0; nI < localStorage.length; nI++) {
+                    a = localStorage.key(nI);
+                    if (a.substring(0, 1) != 'T') {//&& localStorage.getItem(a) != '0' ) {
+                        b = localStorage.getItem(a);
+                        b = b.replace("'", "");
+                        if (a.substring(0, 1) != 'M') {
+                            no = a.substring(2);
+                        }
+                        else {
+                            no = a.substring(2); // M_12_1 -> 12_1
+                            no = no.substring(no.indexOf('_') + 1);
+                        }
+                        scrpt = scrpt + a + '~'+ b + '~';
+                    }
+                }
+            }
+            $('#lblJawaban').text(scrpt);
+        });
+    });
+
+
+    function ambilJadwal(reg) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "select top 1 getdate(),MulaiAssesment,SelesaiAssesment,JadwalNIKId,Setuju,PaketId from [dbo].[Assesment_JadwalNIKBOM4dan5] where NIK='" + reg + "' order by MulaiAssesment desc",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+</script>

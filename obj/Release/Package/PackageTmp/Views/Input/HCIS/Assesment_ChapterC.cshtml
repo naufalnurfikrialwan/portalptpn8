@@ -1,0 +1,135 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe C'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="80%">
+        <tr>
+            <td>
+                <div id="_chapterC" style="display: none;">
+                    <div id="ContohChapterC" style="display: none;">
+                        <label style="font-size: xx-large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER C</label>
+                        <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                        <label id="instruksiC1" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                        <label style="font-size: x-large;">Contoh Soal 1 :</label>
+                        <table class="multiplechoice">
+                            <tr><td> </td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterC_a" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_a" disabled>(a) Pensil</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterC_b" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_b" disabled>(b) Bolpoin</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterC_c" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_c" disabled>(c) Spidol</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterC_d" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_d" disabled checked="checked">(d) Meja</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal1_ChapterC_e" type="radio" name="ContohSoal1_ChapterC" value="ContohSoal1_ChapterC_e" disabled>(e) Penggaris</td></tr>
+                            <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (d). Karena diantara pilihan kata yang lainnya, meja merupakan barang perabotan, sementara pilihan kata yang lainnya adalah nama alat tulis. Sehingga, jawabannya adalah Meja (d).</label></td></tr>
+                        </table>
+                        </br>
+                        <label style="font-size: x-large;">Contoh Soal 2 :</label>
+                        <table class="multiplechoice">
+                            <tr><td></td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterC_a" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_a" disabled>(a) Jeruk</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterC_b" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_b" disabled>(b) Apel</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterC_c" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_c" disabled checked="checked">(c) Mawar</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterC_d" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_d" disabled>(d) Jambu</td></tr>
+                            <tr><td><input class="largerRadio" id="ContohSoal2_ChapterC_e" type="radio" name="ContohSoal2_ChapterC" value="ContohSoal2_ChapterC_e" disabled>(e) Anggur</td></tr>
+                            <tr><td><label style="color: blue;">Jawaban soal tersebut adalah (c). Karena diantara pilihan kata yang lainnya, mawar merupakan nama bunga, sementara pilihan kata yang lainnya adalah nama buah. Sehingga, jawabannya adalah Mawar (c).</label></td></tr>
+                        </table>
+                        <table width="100%">
+                            <tr>
+                                <td align="center">
+                                    <button type="button" id="btnMulaiTestChapterC" onclick="btnMulaiTestOnClick('Tipe C')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter C</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="TestChapterC" style="display: none;">
+                        @{
+                            Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                            Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe C").TipeSoalId;
+                            int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe C").JumlahPertanyaan;
+                            Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                            Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                            List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                            List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+                            Ptpn8.Models.ModalManusia.View_LoadSoal mdlLoadPerChapter = (Ptpn8.Models.ModalManusia.View_LoadSoal)HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name];
+                            if (mdlLoadPerChapter == null)
+                            {
+                                mdlLoadPerChapter = new Ptpn8.Models.ModalManusia.View_LoadSoal();
+                            }
+                            <div style="border: 3px solid black; padding: 10px;">
+                                <label style="font-size: xx-large; font-weight: 1000; text-align: center;">SOAL CHAPTER C</label>
+                                <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                                <label id="instruksiC2" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                                <label style="font-size: x-large; margin: 20px 20px 20px 20px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.Anda dapat mengerjakan soal yang menurut anda lebih mudah terlebih dahulu</label>
+                                <label style="font-size: x-large; margin: 20px 20px 20px 20px">Apabila sudah selesai Click <span style="color: red">"Lanjut ke Chapter D"</span></label>
+                            </div>
+                            <div id="C">
+                                @{
+                                    mdlLoadPerChapter.JumlahLoadChapterC = 0;
+                                }
+                                @for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                                {
+                                    paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                                    pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                                    pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                                    jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                                    <table class="multiplechoice">
+                                        <tr>
+                                            @foreach (var mp1 in pertanyaanDetail)
+                                            {
+                                                <td width="4%"><label>(@noUrut)</label></td>
+                                                <td>Pilihlah salah satu pilihan yang berbeda dengan pilihan lainnya!</td>
+                                            }
+                                        </tr>
+
+                                        @foreach (var mp2 in jawaban)
+                                        {
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <label id="C1_@noUrut" style="display: none;">@mp2.PertanyaanId</label>
+                                                    <input class="largerRadio" type="radio" name="C_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('C_@noUrut','@(mp2.NoUrut)')" /><span class="jawaban" onclick="pertanyaanOnClick('C_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut)) @mp2.JawabanTeks</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                    mdlLoadPerChapter.JumlahLoadChapterC = mdlLoadPerChapter.JumlahLoadChapterC + 1;
+                                    HttpContext.Current.Application["Assesment" + (string)HttpContext.Current.User.Identity.Name] = mdlLoadPerChapter;
+                                }
+
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnC" onclick="btnOnClick('Tipe C')" class="btn-big" style="font-size: x-large; height: 60px; width: 250px;">Lanjut ke Chapter D</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div> 
+                            }
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+<style>
+    #ContohChapterC {
+        background-color: white;
+        color: black;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    #TestChapterC {
+        background-color: white;
+        color: black;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+</style>

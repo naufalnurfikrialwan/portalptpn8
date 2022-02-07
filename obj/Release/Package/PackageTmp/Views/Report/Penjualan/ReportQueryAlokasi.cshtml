@@ -1,0 +1,213 @@
+﻿
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">Rekapitulasi Alokasi Chop</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="20%">
+                <tr>
+                    <td>Tahun Produksi:</td>
+                    <td>
+                        @(Html.Kendo().NumericTextBox().Min(2016).Format("D4")
+                            .Name("TahunProduksi")
+                            .Placeholder("Tahun")
+                            .HtmlAttributes(new { style = "width:80px" })
+                            .Value(DateTime.Now.Year)
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bulan Produksi:</td>
+                    <td>
+                        @(Html.Kendo().TextBox()
+                            .Name("BulanProduksi")
+                            .HtmlAttributes(new { style = "width:80px" })
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td class="_nonkey">
+                        Status Alokasi:
+                    </td>
+                    <td class="_nonkey">
+                        @(Html.Kendo().DropDownList()
+                                .Name("StatusAlokasi")
+                                .AutoBind(true)
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .BindTo(new List<SelectListItem>() {
+                                            new SelectListItem() {
+                                                Text = "Belum",
+                                                Value = "0"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Sudah",
+                                                Value = "1"
+                                            }
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Status", style = "width: 120px" })
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.Penjualan.Models.ReportsAlokasi>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.No_ProductSample).Width(100).Title("No SP");
+            g.Bound(i => i.NamaMainBudidaya).Width(80).Title("Budidaya");
+            g.Bound(i => i.NamaSubBudidaya).Width(180).Title("Sub Budidaya");
+            g.Bound(i => i.Merk).Width(100).Title("Merk");
+            g.Bound(i => i.Grade).Width(80).Title("Grade")
+                .ClientFooterTemplate("Jml Chop")
+                .ClientGroupFooterTemplate("Jml Chop")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.Chop).Width(80).Title("Chop")
+                .ClientGroupFooterTemplate("#= kendo.toString(count,'n0') #")
+                .ClientFooterTemplate("#= kendo.toString(count,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" })
+                .Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.BulanProduksi).Width(80).Title("Bulan Produksi");
+            g.Bound(i => i.TahunProduksi).Width(80).Title("Tahun Produksi");
+            g.Bound(i => i.QtySacks).Width(80).Title("Jumlah Sak").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.NamaSatuan).Width(80).Title("Satuan")
+                .ClientFooterTemplate("Total")
+                .ClientGroupFooterTemplate("Total")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.Gross).Width(80).Title("Gross")
+                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" })
+                .Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+            g.Bound(i => i.NamaBroker).Width(100).Title("Broker");
+            g.Bound(i => i.NamaBuyer).Width(100).Title("Buyer");
+            g.Bound(i => i.Alokasi).Width(100).Title("Alokasi");
+            g.Bound(i => i.No_Katalog).Width(100).Title("No Katalog");
+            g.Bound(i => i.No_Alokasi).Width(100).Title("No Alokasi");
+        })
+        .AutoBind(false)
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 500px" })
+        .Filterable()
+        .Groupable()
+        .Pageable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Excel(excel => excel.AllPages(true))
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.Merk);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.QtySacks).Sum();
+                ag.Add(x => x.Gross).Sum();
+                ag.Add(x => x.Chop).Count();
+            })
+        )
+    )
+</div>
+
+<script>
+    var wnd, err, prt;
+    var statusAlokasi, tahunProduksi, bulanProduksi;
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    statusAlokasi = kendo.toString($('#StatusAlokasi').val());                    
+                    bulanProduksi = kendo.toString($('#BulanProduksi').val());                    
+                    tahunProduksi = kendo.toString($('#TahunProduksi').val());
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+
+    function formatNum(n) {
+        if (n == null || n == 0)
+            return " ";
+        else
+            return kendo.toString(n, "n0");
+    }
+
+    function filterReport(e)
+    {
+        return {
+            strClassView: 'Ptpn8.Penjualan.Models.ReportsAlokasi',
+            scriptSQL: "exec [dbo].[Report_Alokasi] '" + bulanProduksi + "','" + tahunProduksi + "','" + statusAlokasi + "'"
+
+                       
+        }
+    }
+
+</script>
+
+<style>
+    .cssJumlah {
+        font-weight: 600;
+        background-color: darkseagreen;
+    }
+
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+

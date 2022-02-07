@@ -1,0 +1,169 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Report Verifikasi Sekper</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2019)
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                            .AutoBind(true)
+                            .Name("Bulan")
+                            .DataTextField("Text")
+                            .DataValueField("Value")
+                            .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                            .BindTo(new List<SelectListItem>()
+                            {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "01"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "02"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "03"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "04"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "05"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "06"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "07"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "08"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "09"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "Nopember",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                                })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.TehRelasi.Models.TehRelasi_RekapVerifikasiSekper>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.TahunBuku).Width(50).Title("TahunBuku");
+                    g.Bound(i => i.No_Pengajuan).Width(100).Title("No_Pengajuan");
+                    g.Bound(i => i.NamaUnit).Width(200).Title("Nama Unit");
+                    g.Bound(i => i.Tanggal_Pengajuan).Width(100).Title("Tanggal Pengajuan").Format("{0:dd/MM/yyyy}");
+                    g.Bound(i => i.NamaRelasi).Width(150).Title("Nama Relasi");
+                    g.Bound(i => i.Keterangan).Width(250).Title("Keperluan");
+                    g.Bound(i => i.StatusPenyelesaian).Width(250).Title("Status Penyelesaian").HtmlAttributes(new { style = "text-align: center; color: blue; font-weight : 700" });
+                    g.Bound(i => i.Permintaan).Width(150).Title("Nama Produk");
+                    g.Group(i =>
+                    {
+                        i.Title("Jumlah");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.Jumlah).Width(100).Title("Yang Diajukan");
+                            c.Bound(j => j.JumlahYangDisetujui).Width(100).Title("Yang Disetujui");
+                        });
+                    });
+                    g.Bound(i => i.UserNamePenerima).Width(150).Title("Penerima");
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(false)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                    .Ajax()
+                    .Group(g => { g.Add(gg => gg.NamaUnit); g.Add(gg => gg.No_Pengajuan); })
+                    .ServerOperation(false)
+                    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                )
+    )
+</div>
+
+<script>
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.TehRelasi.Models.TehRelasi_RekapVerifikasiSekper',
+            scriptSQL: "EXEC TehRelasi_RekapSekper '" + $('#Bulan').val() + "','" + $('#Tahun').val() + "'"
+        }
+    }
+</script>
+
+
+
+
+
+
+
+

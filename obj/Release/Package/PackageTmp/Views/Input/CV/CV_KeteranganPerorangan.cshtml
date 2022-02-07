@@ -1,0 +1,293 @@
+﻿@model Ptpn8.Models.View_CV.View_KeteranganPerorangan
+<script src="~/Scripts/CV/CV_KeteranganPerorangan.js"></script>
+
+@*header*@
+
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+
+            <div id="_header" style="font-size:10px;" ng-app="__header">
+                <div class="k-content" ng-controller="MyCtrl">
+                    <form kendo-validator="validator" ng-submit="validate($event)">
+                        <div class="_headersawit">
+                            @(Html.Kendo().TextBox().Name("KeteranganPeroranganId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))                            
+                            <table width="100%;" align="center" style="font-size: small;">
+                                <tr>
+                                    <td width="5%"><label style="text-align: right; font-size: 12px;">Nama Lengkap:</label></td>
+                                    <td width="20%">@(Html.Kendo().TextBox().Name("NamaLengkap").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td width="30%">Isi dengan nama lengkap (tidak boleh kosong)</td>                                  
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Gelar Akademik:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("GelarAkademik").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan gelar akademik (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">NIK:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("NIK").Value(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).UserName).HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan NIK ktp (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Tempat Lahir:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("TempatLahir").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan tempat lahir (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Tanggal Lahir:</label></td>
+                                    <td>@(Html.Kendo().DatePicker().Name("TanggalLahir").Format("dd/MM/yyyy").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi tanggal lahir (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td width="5%"><label style="text-align: right; font-size: 12px;">Jenis Kelamin:</label></td>
+                                    <td width="20%">
+                                        @(Html.Kendo().DropDownList()
+                                            .AutoBind(true)
+                                            .Name("JenisKelamin")
+                                            .DataTextField("Text")
+                                            .DataValueField("Value")
+                                            .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                            .BindTo(new List<SelectListItem>()
+                                            {
+                                                new SelectListItem() {
+                                                    Text = "Laki-Laki",
+                                                    Value = "Laki-Laki"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Perempuan",
+                                                    Value = "Perempuan"
+                                                }
+                                            })
+                                        )
+                                    </td>
+                                    <td width="30%">Dipilih jenis kelamin (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Agama:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("Agama").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan Agama (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Jabatan Terakhir:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("JabatanTerakhir").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan JabatanTerakhir (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Alamat Rumah:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("AlamatRumah").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan Alamat Rumah (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Handphone:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("Handphone").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan Nomor Handphone (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Email:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("Email").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan Alamat Email (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">NPWP:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("NPWP").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan Nomor NPWP (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td><label style="text-align: right; font-size: 12px;">Alamat Social Media:</label></td>
+                                    <td>@(Html.Kendo().TextBox().Name("AlamatSocialMedia").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                                    <td>Isi dengan Alamat Social Media (tidak boleh kosong)</td>
+                                </tr>
+                                <tr>
+                                    <td class="_nonkey">
+                                        <label style="text-align:right">Upload Foto:</label>
+                                    </td>
+                                    <td class="_nonkey">
+                                        @Html.HiddenFor(m => m.FileFoto)
+                                        @(Html.Kendo().Upload()
+                                            .Name("files")
+                                            .Events(e => e.Success("UploadSuccess"))
+                                            .Multiple(false)
+                                            .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                                            .Async(a => a.Save("SaveFoto", "Input")
+                                            .Remove("RemoveFoto", "Input")
+                                            .AutoUpload(true)
+                                            )
+                                        )
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label style="text-align:right">Cek Foto:</label>
+                                    </td>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td width="200px">
+                                                    <img id="img1" class="imgFoto" width="100%" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button type="submit" id="btnSimpan" class="k-button" style="background-color: yellow; font-size: 18px; width: 150px; height: 60px; ">Simpan</button>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><label></label></td>
+                                    <td></td>
+
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+</div>
+
+<script>
+    var nik;
+    var Foto;
+    $(document).ready(function () {
+        CV_KeteranganPeroranganOnSelect();
+    });
+
+    function CV_KeteranganPeroranganOnSelect(e) {
+        GetCV_KeteranganPerorangan().done(function (data) {
+            if (data != 0) {
+                var dta = data[0];
+                $('#KeteranganPeroranganId').val(dta.KeteranganPeroranganId);
+                $('#NamaLengkap').val(dta.NamaLengkap);
+                $('#GelarAkademik').val(dta.GelarAkademik);
+                $('#NIK').val(dta.NIK);
+                $('#TempatLahir').val(dta.TempatLahir);
+                $('#TanggalLahir').data('kendoDatePicker').value(dta.TanggalLahir);
+                $('#JenisKelamin').val(dta.JenisKelamin);
+                $('#Agama').val(dta.Agama);
+                $('#JabatanTerakhir').val(dta.JabatanTerakhir);
+                $('#AlamatRumah').val(dta.AlamatRumah);
+                $('#Handphone').val(dta.Handphone);
+                $('#Email').val(dta.Email);
+                $('#NPWP').val(dta.NPWP);
+                $('#AlamatSocialMedia').val(dta.AlamatSocialMedia);
+
+                var filename = dta.NIK + '.jpg';
+                document.getElementById("img1").src = "/Content/Images/View/" + filename;
+
+                //$('#files').val(dta.Foto);
+            }
+        });
+    }
+
+    function GetCV_KeteranganPerorangan() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_KeteranganPerorangan',
+                scriptSQL: "SELECT top 1 KeteranganPeroranganId,NamaLengkap,GelarAkademik,NIK, TempatLahir, TanggalLahir,JenisKelamin,Agama,JabatanTerakhir,AlamatRumah,Handphone,Email,NPWP,AlamatSocialMedia,Foto FROM [SPDK_KanpusEF].[dbo].[CV_KeteranganPerorangan] " +
+                    "WHERE NIK='" + nik + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+
+    function GetByte() {
+        var url = '/Input/GetByteFromUploadH'
+            //(string _filename, string _id, string _menuId, string _classDetailView = "")';
+        return $.ajax({
+            url: url,
+            data: {
+                _filename: $('#FileFoto').val(),
+                _id: $('#NIK').val(),
+                _menuId: menuId,
+                _classHeaderView: 'Ptpn8.Models.View_CV.View_KeteranganPerorangan'
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData() {
+        var url = '/Input/ExecSQL';
+        var KeteranganPeroranganId = $('#KeteranganPeroranganId').val();
+        var NamaLengkap = $('#NamaLengkap').val();
+        NamaLengkap = NamaLengkap.replace("'", "`");
+        var GelarAkademik = $('#GelarAkademik').val();
+        var NIK = $('#NIK').val();
+        var TempatLahir = $('#TempatLahir').val();
+        var TanggalLahir = $('#TanggalLahir').val();
+        var JenisKelamin = $('#JenisKelamin').val();
+        var Agama = $('#Agama').val();
+        var JabatanTerakhir = $('#JabatanTerakhir').val();
+        var AlamatRumah = $('#AlamatRumah').val();
+        var Handphone = $('#Handphone').val();
+        var Email = $('#Email').val();
+        var NPWP = $('#NPWP').val();
+        var AlamatSocialMedia = $('#AlamatSocialMedia').val();
+        
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec [SPDK_KanpusEF].[dbo].[simpanCV_KeteranganPerorangan] " +
+                "'" + KeteranganPeroranganId + "', " +
+                "'" + NamaLengkap + "', " +
+                "'" + GelarAkademik + "', " +
+                "'" + NIK + "', " +
+                "'" + TempatLahir + "', " +
+                "'" + TanggalLahir + "', " +
+                "'" + JenisKelamin + "', " +
+                "'" + Agama + "', " +
+                "'" + JabatanTerakhir + "', " +
+                "'" + AlamatRumah + "', " +
+                "'" + Handphone + "', " +
+                "'" + Email + "', " +
+                "'" + NPWP + "', " +
+                "'" + AlamatSocialMedia + "', " +
+                "'" + Foto +"'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#FileFoto').val(filename);
+        document.getElementById("img1").src = "/Content/Images/Upload/"+filename;
+    }
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+

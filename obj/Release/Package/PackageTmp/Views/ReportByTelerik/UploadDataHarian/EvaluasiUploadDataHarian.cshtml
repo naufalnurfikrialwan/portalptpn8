@@ -1,0 +1,189 @@
+﻿
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+@*header*@
+<table width="100%">
+    <tr>
+        <td>
+            <div id="_header" style="font-size:11px; border: 1px solid gray; padding: 5px 5px ">
+                <div class="k-content" style="background: lightgray;">
+                    <table width="100%" class="hdr">
+                        <tr>
+                            <td>
+                                <div style="text-align:center">@ViewBag.Title</div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table width="100%">
+                        <tr>
+                            <td width="5%">
+                                <label>Bulan:</label>
+                            </td>
+                            <td>
+                                @(Html.Kendo().DropDownList()
+                        .Name("Bulan")
+                        .AutoBind(true)
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .BindTo(new List<SelectListItem>() {
+                            new SelectListItem() {
+                                Text = "Januari",
+                                Value = "1"
+                            },
+                            new SelectListItem() {
+                                Text = "Februari",
+                                Value = "2"
+                            },
+                            new SelectListItem() {
+                                Text = "Maret",
+                                Value = "3"
+                            },
+                            new SelectListItem() {
+                                Text = "April",
+                                Value = "4"
+                            },
+                            new SelectListItem() {
+                                Text = "Mei",
+                                Value = "5"
+                            },
+                            new SelectListItem() {
+                                Text = "Juni",
+                                Value = "6"
+                            },
+                            new SelectListItem() {
+                                Text = "Juli",
+                                Value = "7"
+                            },
+                            new SelectListItem() {
+                                Text = "Agustus",
+                                Value = "8"
+                            },
+                            new SelectListItem() {
+                                Text = "September",
+                                Value = "9"
+                            },
+                            new SelectListItem() {
+                                Text = "Oktober",
+                                Value = "10"
+                            },
+                            new SelectListItem() {
+                                Text = "Nopember",
+                                Value = "11"
+                            },
+                            new SelectListItem() {
+                                Text = "Desember",
+                                Value = "12"
+                            }
+                        })
+                        .Value("Seluruh")
+                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan", style = "width: 120px" })
+                        .Events(e =>
+                        {
+                            e.Change("BulanOnChange");
+                            e.Select("BulanOnChange");
+                        })
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label>Tahun:</label></td>
+                            <td>
+                                @(Html.Kendo().NumericTextBox().Min(2016).Format("D4")
+                        .Name("Tahun")
+                        .Placeholder("Tahun")
+                        .HtmlAttributes(new { style = "width:80px" })
+                        .Events(e => { e.Change("TahunOnChange"); e.Spin("TahunOnChange"); })
+                        .Value(DateTime.Now.Year)
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <div class="confirm" style="padding: 5px 0px">
+                                    <button type="button" id="btn" onclick="btnOnClick()" class="k-button" style="color: white; background-color: darkgreen; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Proses</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </td>
+    </tr>
+</table>
+
+<div id="printWindow">
+    <div id="reportViewer1">
+        @(Html.TelerikReporting().ReportViewer()
+                    .Id("reportViewer")
+                    .ServiceUrl(Url.Content("/api/reports/"))
+                    .ReportSource(new UriReportSource() { Uri = "../Reports/UploadDataHarian/UploadDataHarian.trdx" })
+                    .ViewMode(ViewMode.Interactive)
+                    .ScaleMode(ScaleMode.Specific)
+                    .Scale(1.0)
+                    .PersistSession(false)
+                    .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+
+<script>
+    var prt;
+
+    $(document).ajaxStart(function () {
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+    });
+
+    $(document).ready(function () {
+        prt = $("#printWindow").kendoWindow({
+            title: "Report",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 1200,
+            height: 700
+        }).data("kendoWindow");
+    });
+
+    function BulanOnChange(e) {
+    }
+
+    function TahunOnChange(e) {
+    }
+
+    function btnOnClick() {
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: {
+                bln: $('#Bulan').data('kendoDropDownList').value(),
+                thn: $('#Tahun').val()
+            }
+        });
+        viewer.refreshReport();
+        prt.open().center();
+    }
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+

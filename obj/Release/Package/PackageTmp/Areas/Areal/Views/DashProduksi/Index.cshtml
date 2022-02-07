@@ -1,0 +1,751 @@
+﻿@using Ptpn8.Areas.Areal.Models
+@{
+    ViewBag.Title = "Dashboard-Produksi";
+}
+
+@(Html.Kendo().Splitter()
+          .Name("vertical")
+          .Orientation(SplitterOrientation.Vertical)
+          .Panes(verticalPanes =>
+          {
+          verticalPanes.Add()
+                  .HtmlAttributes(new { id = "top-pane" })
+                  .Scrollable(false)
+                  .Collapsible(false)
+                  .Content(
+                    Html.Kendo().Splitter()
+                        .Name("horizontal")
+                        .HtmlAttributes(new { style = "height: 600px;" })
+                        .Panes(horizontalPanes =>
+                        {
+                        horizontalPanes.Add()
+                            .HtmlAttributes(new { id = "left-pane" })
+                            .Size("200px")
+                            .Collapsible(true)
+                            .Content(@<div class="pane-content">
+                                <table style="width: inherit;">
+                                    @*<tr><td><h4>Budidaya</h4></td></tr>
+                                    <tr>
+                                        <td width="100%">
+                                            @(Html.Kendo().DropDownList()
+                                                    .Name("ddlBudidaya")
+                                                    .OptionLabel("Pilih Budidaya")
+                                                    .AutoBind(true)
+                                                    .DataValueField("Nama")
+                                                    .DataTextField("Nama")
+                                                    .DataSource(o => o.Read(r => r.Action("getBudidaya", "Home")).ServerFiltering(true))
+                                                    .HtmlAttributes(new { style = "width: 100%;" })
+                                                    .Events(e =>
+                                                    {
+                                                        e.Select("ddlBudidayaOnSelect");
+                                                        e.Change("ddlBudidayaOnChange");
+                                                    })
+                                            )
+                                        </td>
+                                    </tr>*@
+
+                                    <tr><td><h4>Bulan-Tahun</h4></td></tr>
+                                    <tr>
+                                        <td>
+                                            @(Html.Kendo().DropDownList()
+                                                    .Name("ddlBulan")
+                                                    .AutoBind(true)
+                                                    .OptionLabel("Pilih Bulan...")
+                                                    .DataTextField("Text")
+                                                    .DataValueField("Value")
+                                                    .HtmlAttributes(new { style = "width: 100px;" })
+                                                    .Events(e => { e.Change("ddlBulanChange"); e.Select("ddlBulanSelect"); })
+                                                    .Value(((DateTime.Now.Month) - 1).ToString())
+                                                    .BindTo(new List<SelectListItem>()
+                                                    {
+                                                        new SelectListItem() {Text = "Januari",Value = "1"},
+                                                        new SelectListItem() {Text = "Februari",Value = "2"},
+                                                        new SelectListItem() {Text = "Maret",Value = "3"},
+                                                        new SelectListItem() {Text = "April",Value = "4"},
+                                                        new SelectListItem() {Text = "Mei",Value = "5"},
+                                                        new SelectListItem() {Text = "Juni",Value = "6"},
+                                                        new SelectListItem() {Text = "Juli",Value = "7"},
+                                                        new SelectListItem() {Text = "Agustus",Value = "8"},
+                                                        new SelectListItem() {Text = "September",Value = "9"},
+                                                        new SelectListItem() {Text = "Oktober",Value = "10"},
+                                                        new SelectListItem() {Text = "November",Value = "11"},
+                                                        new SelectListItem() {Text = "Desember",Value = "12"},
+                                                    })
+                                            )
+                                            -
+                                            @(Html.Kendo().IntegerTextBox()
+                                                    .Name("txtTahun")
+                                                    .Value(DateTime.Now.Year)
+                                                    .HtmlAttributes(new { style = "width: 60px;" })
+                                                    .Events(e => { e.Change("txtTahunChange"); })
+                                                    .Format("{0:0000}")
+                                            )
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>);
+
+                        horizontalPanes.Add()
+                            .HtmlAttributes(new { id = "center-pane" })
+                            .Content(@<div style="width:100%;height:100%;">
+                                          <table width="100%" height="100%">
+                                              <tr>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiPerBudidayaBI")
+                                                        .Title("Produksi Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Budidaya)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(1000000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiPerBudidayaSBI")
+                                                        .Title("Produksi sd Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiSBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Budidaya)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(5000000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>                                              
+                                              </tr>
+                                              <tr>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiKaretBI")
+                                                        .Title("Produksi Karet Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiKaretBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Kebun)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(100000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiKaretSBI")
+                                                        .Title("Produksi Karet sd Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiKaretSBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Kebun)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(500000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>  
+                                              </tr>
+                                              <tr>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiSawitBI")
+                                                        .Title("Produksi Sawit Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiSawitBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Kebun)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(1000000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiSawitSBI")
+                                                        .Title("Produksi Sawit sd Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiSawitSBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Kebun)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(5000000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>
+                                              </tr>
+                                              <tr>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiTehBI")
+                                                        .Title("Produksi Teh Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiTehBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Kebun)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(100000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>
+                                                  <td class="tblChart" width="50%">
+                                                      @(Html.Kendo().Chart<ChartProduksiPerBudidaya>()
+                                                        .Name("ChartProduksiTehSBI")
+                                                        .Title("Produksi Teh sd Bulan Ini")
+                                                        .AutoBind(false)
+                                                        .Legend(legend => legend
+                                                            .Position(ChartLegendPosition.Top)
+                                                        )
+                                                        .DataSource(ds => ds
+                                                            .Read(read => read.Action("ChartTotalProduksiTehSBI", "DashProduksi").Data("getKebunData"))
+                                                        )
+                                                        .Series(series =>
+                                                        {
+                                                            series.Column(model => model.RealisasiJumlahProduksi).Name("Realisasi").Color("green");
+                                                            series.Column(model => model.RKAPJumlahProduksi).Name("RKAP").Color("red");
+                                                        })
+                                                        .CategoryAxis(axis => axis
+                                                            .Categories(model => model.Kebun)
+                                                            .Labels(labels => labels.Rotation(-90))
+                                                            .MajorGridLines(lines => lines.Visible(false)))
+                                                        .ValueAxis(axis => axis.Numeric()
+                                                            .Labels(labels => labels.Format("{0:N0}"))
+                                                            .MajorUnit(500000)
+                                                            .Line(line => line.Visible(false)))
+                                                        .Tooltip(tooltip => tooltip
+                                                            .Visible(true)
+                                                            .Format("{0:N0}")
+                                                        )
+                                                      )
+                                                  </td>
+                                              </tr>
+
+                                          </table>
+                            </div>);
+                        }).ToHtmlString()
+                 );
+
+                verticalPanes.Add()
+              .Size("600px")
+              .HtmlAttributes(new { id = "middle-pane" })
+              .Collapsible(false)
+              .Content(@<div class="pane-content">
+                <div class="grdKebun">
+                    @(Html.Kendo().Grid<Ptpn8.Areas.Areal.Models.BiayaProduksiperBudidaya>().Name("grdDataKebun")
+                                    .Resizable(resizeable => resizeable.Columns(true))
+                                    .Sortable()
+                                    .Scrollable()
+                                    .Filterable()
+                                    .ColumnMenu()
+                                    .Groupable()
+                                    .Selectable()
+                                    .Events(e => { e.DataBound("grdDataKebunOnDataBound"); e.Change("grdDataKebunOnChange"); })
+                                    .HtmlAttributes(new { style = "height: 600px;" })
+                                    .ToolBar(tools => tools.Excel())
+                                    .AutoBind(false)
+                                    .Excel(excel => excel
+                                          .FileName("ProduksiKebun.xlsx")
+                                          .Filterable(true)
+                                          .AllPages(true)
+                                          .ProxyURL(Url.Action("Excel_Export_Save", "Home"))
+                                      )
+                                  .Columns(c =>
+                                  {
+                                      c.Bound(o => o.KebunId).Hidden();
+                                      c.Bound(o => o.NamaKebun).HeaderTemplate("Kebun").Locked(true).Width(100);
+                                      c.Bound(o => o.NamaWilayah).HeaderTemplate("Wilayah").Groupable(true).Hidden();
+                                      c.Bound(o => o.NamaBudidaya).HeaderTemplate("Budidaya").Groupable(true).Locked(true).Width(150); //.ClientTemplate("#= StringJSonDecode(JSON.stringify(DaftarBudidaya)) #");
+                                      c.Bound(o => o.LuasAreal).Locked(true).HeaderTemplate("Luas (Ha)").Width(80).Format("{0:n2}").HtmlAttributes(new { style = "text-align: right;" })
+                                            .ClientGroupFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                            .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                                            .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                      c.Group(o => o
+                                        .Title("Realisasi Produksi Bulan InI")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(q => q.ProduksiSendiriMurni_BI).HeaderTemplate("Produksi Sendiri").Format("{0:n0}")
+                                                        .Width(70)
+                                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPembelianAntarKebun_BI).HeaderTemplate("Pembelian Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPenjualanAntarKebun_BI).HeaderTemplate("Penjualan Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiLancuranTBM_BI).HeaderTemplate("Lancuran/TBM").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPihak3_BI).HeaderTemplate("Pihak ke-III").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.JumlahProduksi_BI).HeaderTemplate("Jumlah").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                        }));
+
+                                      c.Group(o => o
+                                        .Title("RKAP Produksi Bulan InI")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(q => q.ProduksiSendiriMurni_RBI).HeaderTemplate("Produksi Sendiri").Format("{0:n0}")
+                                                        .Width(70)
+                                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPembelianAntarKebun_RBI).HeaderTemplate("Pembelian Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPenjualanAntarKebun_RBI).HeaderTemplate("Penjualan Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiLancuranTBM_RBI).HeaderTemplate("Lancuran/TBM").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPihak3_RBI).HeaderTemplate("Pihak ke-III").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.JumlahProduksi_RBI).HeaderTemplate("Jumlah").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.JumlahProduksi_RBI).HeaderTemplate("% Realisasi thd RKAP").Format("{0:n0}")
+                                                .ClientTemplate("#= kendo.toString(JumlahProduksi_BI/JumlahProduksi_RBI,'p') #")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" });
+                                        }));
+
+                                      c.Group(o => o
+                                        .Title("Realisasi Produksi sd Bulan InI")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(q => q.ProduksiSendiriMurni_SBI).HeaderTemplate("Produksi Sendiri").Format("{0:n0}")
+                                                        .Width(70)
+                                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPembelianAntarKebun_SBI).HeaderTemplate("Pembelian Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPenjualanAntarKebun_SBI).HeaderTemplate("Penjualan Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiLancuranTBM_SBI).HeaderTemplate("Lancuran/TBM").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPihak3_SBI).HeaderTemplate("Pihak ke-III").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.JumlahProduksi_SBI).HeaderTemplate("Jumlah").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                        }));
+
+                                      c.Group(o => o
+                                        .Title("RKAP Produksi sd Bulan InI")
+                                        .Columns(g =>
+                                        {
+                                            g.Bound(q => q.ProduksiSendiriMurni_RSBI).HeaderTemplate("Produksi Sendiri").Format("{0:n0}")
+                                                        .Width(70)
+                                                        .HtmlAttributes(new { style = "text-align: right;" })
+                                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                        .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPembelianAntarKebun_RSBI).HeaderTemplate("Pembelian Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPenjualanAntarKebun_RSBI).HeaderTemplate("Penjualan Antar Kebun").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiLancuranTBM_RSBI).HeaderTemplate("Lancuran/TBM").Format("{0:n0}")
+                                                .Width(70)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.ProduksiPihak3_RSBI).HeaderTemplate("Pihak ke-III").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.JumlahProduksi_RSBI).HeaderTemplate("Jumlah").Format("{0:n0}")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" })
+                                                .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                                .FooterHtmlAttributes(new { style = "text-align: right; font-weight: 500; color: black; font-size: medium; background: silver;" });
+                                            g.Bound(q => q.JumlahProduksi_RBI).HeaderTemplate("% Realisasi thd RKAP").Format("{0:n0}")
+                                                .ClientTemplate("#= kendo.toString(JumlahProduksi_SBI/JumlahProduksi_RSBI,'p') #")
+                                                .Width(100)
+                                                .HtmlAttributes(new { style = "text-align: right;" });
+                                        }));
+                                  })
+                                  .DataSource(d => d
+                                      .Ajax()
+                                      .Read(r => r.Action("qtyProduksi", "DashProduksi").Data("getKebunData"))
+                                      .Group(g => { g.Add(p => p.NamaWilayah); })
+                                      .Model(m => m.Id(p => p.KebunId))
+                                      .Aggregates(ag =>
+                                      {
+                                          ag.Add(o => o.LuasAreal).Sum();
+                                          ag.Add(o => o.ProduksiSendiriMurni_BI).Sum();
+                                          ag.Add(o => o.ProduksiPembelianAntarKebun_BI).Sum();
+                                          ag.Add(o => o.ProduksiPenjualanAntarKebun_BI).Sum();
+                                          ag.Add(o => o.ProduksiLancuranTBM_BI).Sum();
+                                          ag.Add(o => o.ProduksiPihak3_BI).Sum();
+                                          ag.Add(o => o.JumlahProduksi_BI).Sum();
+                                    
+                                          ag.Add(o => o.ProduksiSendiriMurni_SBI).Sum();
+                                          ag.Add(o => o.ProduksiPembelianAntarKebun_SBI).Sum();
+                                          ag.Add(o => o.ProduksiPenjualanAntarKebun_SBI).Sum();
+                                          ag.Add(o => o.ProduksiLancuranTBM_SBI).Sum();
+                                          ag.Add(o => o.ProduksiPihak3_SBI).Sum();
+                                          ag.Add(o => o.JumlahProduksi_SBI).Sum();
+
+                                          ag.Add(o => o.ProduksiSendiriMurni_RBI).Sum();
+                                          ag.Add(o => o.ProduksiPembelianAntarKebun_RBI).Sum();
+                                          ag.Add(o => o.ProduksiPenjualanAntarKebun_RBI).Sum();
+                                          ag.Add(o => o.ProduksiLancuranTBM_RBI).Sum();
+                                          ag.Add(o => o.ProduksiPihak3_RBI).Sum();
+                                          ag.Add(o => o.JumlahProduksi_RBI).Sum();
+
+                                          ag.Add(o => o.ProduksiSendiriMurni_RSBI).Sum();
+                                          ag.Add(o => o.ProduksiPembelianAntarKebun_RSBI).Sum();
+                                          ag.Add(o => o.ProduksiPenjualanAntarKebun_RSBI).Sum();
+                                          ag.Add(o => o.ProduksiLancuranTBM_RSBI).Sum();
+                                          ag.Add(o => o.ProduksiPihak3_RSBI).Sum();
+                                          ag.Add(o => o.JumlahProduksi_RSBI).Sum();
+
+                                      })
+                              ))
+                </div>
+            </div>);
+          })
+)
+
+<script>
+    var chkPopUp, chkKebun, chkStreetMap, chkCitra, chkKontur;
+    var tahun, bulan;
+    var statusAreal, lokasiID, kebunID, budidaya, masaBerlakuHGU, textSearch, loadDataKebun;
+
+    var popup = $("<div>Foo</div>")
+        .appendTo(document.body)
+        .kendoPopup()
+        .data("kendoPopup");
+
+    var myWindow = $("#window")
+    var wnd,wndProject;
+
+    var shapesById = {};
+
+    function onReset() {
+        shapesById = {};
+    }
+
+    $(document).ready(function () {
+        bulan = $('#ddlBulan').data('kendoDropDownList').value();
+        tahun = $('#txtTahun').val();
+        budidaya = '';
+        loadDataKebun = true;
+
+        $('#grdDataKebun').data('kendoGrid').dataSource.read();
+        $('#ChartProduksiPerBudidayaBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiPerBudidayaSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiKaretBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiKaretSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiSawitBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiSawitSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiTehBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiTehSBI').data('kendoChart').dataSource.read();
+
+
+
+        myWindow.kendoWindow({
+            width: "600px",
+            height: "400px",
+            title: "About",
+            visible: false,
+            actions: [
+                "Pin",
+                "Minimize",
+                "Maximize",
+                "Close"
+            ],
+            //close: onClose
+        }).data("kendoWindow");
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+    });
+
+    function grdDataKebunOnDataBound(e)
+    {
+    }
+
+    function grdDataKebunOnChange(e) {
+    }
+
+
+    function getKebunData()
+    {
+        return { Id: "", budidaya: budidaya, tahun: tahun, bulan: bulan }
+    }
+
+    function ddlBudidayaOnSelect(e)
+    {
+        budidaya = $('#ddlBudidaya').data('kendoDropDownList').value();
+    }
+
+    function ddlBudidayaOnChange(e)
+    {
+        budidaya = $('#ddlBudidaya').data('kendoDropDownList').value();
+    }
+
+    function StringJSonDecode(value)
+    {
+        return value.replace(/"/g, '').replace("[",'').replace("]",'').replace(/,/g,", ");
+    }
+
+    function ddlBulanChange(e) {
+        bulan = $('#ddlBulan').data('kendoDropDownList').value();
+        $('#grdDataKebun').data('kendoGrid').dataSource.read();
+        $('#ChartProduksiPerBudidayaBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiPerBudidayaSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiKaretBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiKaretSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiSawitBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiSawitSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiTehBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiTehSBI').data('kendoChart').dataSource.read();
+
+
+    }
+
+    function ddlBulanSelect(e) {
+        //bulan = $('#ddlBulan').data('kendoDropDownList').value();
+        //loadDataKebun = true;
+        //resetGridData();
+    }
+
+    function txtTahunChange(e) {
+        tahun = $('#txtTahun').val();
+        $('#grdDataKebun').data('kendoGrid').dataSource.read();
+        $('#ChartProduksiPerBudidayaBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiPerBudidayaSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiKaretBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiKaretSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiSawitBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiSawitSBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiTehBI').data('kendoChart').dataSource.read();
+        $('#ChartProduksiTehSBI').data('kendoChart').dataSource.read();
+
+
+    }
+
+</script>
+
+
+<style>
+    #vertical {
+        height: 1200px;
+        margin: 0 auto;
+    }
+
+    #middle-pane {
+        background-color: rgba(60, 70, 80, 0.10);
+    }
+
+    #bottom-pane {
+        background-color: rgba(60, 70, 80, 0.15);
+    }
+
+    #left-pane, #center-pane, #right-pane {
+        background-color: rgba(60, 70, 80, 0.05);
+    }
+
+    .pane-content {
+        padding: 0 10px;
+    }
+    /*.k-grid .k-header {
+        display: none;
+    }*/
+</style>

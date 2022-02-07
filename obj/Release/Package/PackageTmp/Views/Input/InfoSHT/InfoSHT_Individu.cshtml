@@ -1,0 +1,255 @@
+﻿@model Ptpn8.InfoSHT.Models.Info_SHT
+@*<script src="~/Scripts/WFH/WFH_PelaporanWFH.js"></script>*@
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div>
+
+    <table width="100%;" align="center">
+        <tr>
+            <td width="100%;">
+                <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%;" align="center" style="font-size: small;">
+        <tr>
+            <td class="_nonkey" width="5%"><label style="text-align: left; font-size: 18px;">Tahun SHT</label></td>
+            <td class="_nonkey" width="1%">:</tdclass="_nonkey">
+            <td class="_nonkey" width="20%">
+                <label id="TahunSHT" style="text-align: left; color: blue;"></label>
+            </td>
+            <td width="30%" align="left"></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">NIK</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey">
+                <label id="Register" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">Nama</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey"><label id="Nama" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">Golongan</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey"><label id="Gol" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">Jabatan</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey"><label id="Jabatan" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">Nilai SHT</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey"><label id="SHT" style="text-align: left; color: darkgreen;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">Unit</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey"><label id="Unit" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">Periode Pensiun</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey"><label id="PeriodePensiun" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="_nonkey"><label style="text-align: left; font-size: 18px;">Jenis Pensiun</label></td>
+            <td class="_nonkey" width="1%">:</td>
+            <td class="_nonkey"><label id="JenisPensiun" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+    var menuId = '970D44DC-05FB-4EDC-A361-6B7C20ACD821';
+    var info_SHTId;
+
+    $('.k-window.titlebar').css('style', 'display: none');
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+    $(document).ready(function () {
+        wndDetail = $("#konfirmasiDetail").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+    });
+
+    angular.module("__header", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    SimpanData().done(function () {
+                        alert("Data Sudah Angular...");
+
+                    });
+                } else {
+                    alert("Ada Kesalahan Data!!!Tidak dapat disimpan...");
+                }
+            }
+        });
+    $.extend({
+        distinct: function (anArray) {
+            var result = [];
+            $.each(anArray, function (i, v) {
+                if ($.inArray(v, result) == -1) result.push(v);
+            });
+            return result;
+        }
+    });
+
+    $(window).on("beforeunload", function () {
+        return "Please don't leave me!";
+    });
+
+    $(window).on("unload", function () {
+        hapusPenggunaPortalYangAktif();
+    });
+
+    function hapusPenggunaPortalYangAktif() {
+        var url = '/Account/HapusPenggunaPortalYangAktif';
+        return $.ajax({
+            url: url,
+            data: {
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+
+    $(document).ready(function () {
+       Info_SHTOnSelect();
+    });
+
+    function Info_SHTOnSelect(e) {
+        GetInfoSHT().done(function (data) {
+            if (data) {
+                var dta = data[0];
+                info_SHTId = dta.Info_SHTId;
+                $('#Info_SHTId').text(dta.Info_SHTId);
+                $('#TahunSHT').text(dta.TahunSHT);
+                $('#Register').text(dta.Register);
+                $('#Nama').text(dta.Nama);
+                $('#Gol').text(dta.Gol);
+                $('#Jabatan').text(dta.Jabatan);
+                var nilaiSHT = 'Rp. ' + dta.SHT
+                $('#SHT').text(nilaiSHT);
+                $('#Unit').text(dta.Unit);
+                $('#PeriodePensiun').text(dta.PeriodePensiun);
+                $('#JenisPensiun').text(dta.JenisPensiun);
+            }
+        });
+    }
+
+    function GetInfoSHT() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.InfoSHT.Models.Info_SHT',
+                scriptSQL: "Declare @@tabelhasil as table (Info_SHTId uniqueidentifier, TahunSHT int, Register nvarchar(max), Nama nvarchar(max), Gol nvarchar(max), Jabatan nvarchar(max), SHT nvarchar(max), Unit nvarchar(max), PeriodePensiun nvarchar(max), JenisPensiun nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "SELECT top 1 Info_SHTId, TahunSHT, Register, Nama, Gol, Jabatan, replace(convert(varchar, convert(Money, SHT), 1), '.00', '') as SHT, Unit, PeriodePensiun, JenisPensiun FROM [SPDK_KanpusEF].[dbo].[Info_SHT] " +
+                "WHERE REGISTER='" + nik + "'" +
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    
+
+    function toDate(value) {
+        //var dateRegExp = /^\/Date\((.*?)\)\/$/;
+        //var date = dateRegExp.exec(value);
+
+        try {
+            return new Date(parseInt(value.substr(6)));
+        }
+        catch (err) {
+            return value;
+        }
+
+    }
+
+
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

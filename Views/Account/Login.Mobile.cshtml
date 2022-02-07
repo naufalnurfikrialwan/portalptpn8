@@ -1,0 +1,113 @@
+﻿@using Ptpn8.UserManagement.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Login/Register";
+}
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", id="LoginForm" }))
+{
+    @Html.AntiForgeryToken()
+    <table width="100%">
+        <tr>
+            <td width="100%" style="border-bottom: 1px solid black; padding-bottom: 5px;">
+                <h3>Login ke Portal PTPN-VIII, gunakan akun e-mail (Google atau Yahoo) sesuai dengan akun pada saat registrasi.</h3>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="100%" style="border-bottom: 1px solid black; padding-bottom: 5px;">
+                <table>
+                    <tr>
+                        <td width="20%">
+                            <label style="text-align:left">Email</label>
+                        </td>                
+                    </tr>
+                    <tr>
+                        <td>
+                            @(Html.Kendo().TextBoxFor(m => m.Email).HtmlAttributes(new { style = "width: 100%;" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">
+                            <label style="text-align:left">Password</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @(Html.Kendo().TextBoxFor(m => m.Password).HtmlAttributes(new { type = "password", style = "width: 100%;" }))
+                            @(Html.Kendo().TextBoxFor(m => m.KonfirmasiPassword).HtmlAttributes(new { type = "password", style = "width: 100%; display: none;" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: smaller; padding-bottom: 20px;">
+                            @(Html.Kendo().CheckBoxFor(m => m.RememberMe).Checked(false).Label("Remember Me"))
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <button type="button" id="btnLogin" onclick="btnLoginOnClick()" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 0px;"><span class="k-font-icon k-i-restore"></span>Login</button>
+                            <input id="submit" type="submit" value="Log in" class="btn btn-default" style="display:none;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: smaller; padding-bottom: 20px;">
+                            @Html.ActionLink("Register as a new user", "Register", "Account", null, new { style = "font-size: small;" })
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </td>
+        </tr>
+
+    </table>
+}
+
+<script>
+    function btnLoginOnClick()
+    {
+        var userName = $('#Email').val();
+        var passWord = $("#Password").val();
+        var sts, msg;
+        periksaEmail(userName, passWord).done(function (data) {
+            sts = data[0];
+            msg = data[1];
+            if (sts)
+            {
+                if (msg == "OK")
+                    $('#submit').click();
+                else
+                {
+                    $('#KonfirmasiPassword').val('NULL');
+                    $('#submit').click();
+                }
+            }
+        });
+    }
+
+    function periksaEmail(userName, passWord)
+    {
+        var url = '/Account/periksaEmail';
+        return $.ajax({
+            url: url,
+            //contentType: 'application/json; charset=utf-8',
+            data: {
+                _userName: userName,
+                _passWord: passWord
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+</script>
+
+<style>
+    .areaLoginBaru
+    {
+
+    }
+</style>

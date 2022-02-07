@@ -1,0 +1,464 @@
+﻿@model Ptpn8.Models.SAPHCM.View_HCM02_ListEmployee
+<script src="~/Scripts/SAPHCM/HCM10_FamilyMember_Pasangan.js"></script>
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div class="_headersawit">
+    @(Html.Kendo().TextBoxFor(m => m.PersNo).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.Title).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.KodePosition).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.PersonalArea).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.PersonnelSubArea).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.EmployeeGroup).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.EmployeeSubgroup).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.PayrollArea).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.WorkContract).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.StatusPernikahan).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.TanggalPernikahan).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBoxFor(m => m.Nationality).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%;" align="center">
+        <tr>
+            <td width="100%;">
+                <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%;" align="center" style="font-size: small;">
+        <tr>
+            <td width="5%"><label style="text-align: right; font-size: 12px;">NIK:</label></td>
+            <td width="20%">
+                @(Html.Kendo().TextBox().Name("CariNIK").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))
+
+                <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+            </td>
+            <td width="30%" align="left"></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Nama Lengkap:</label></td>
+            <td><label id="FullName" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Kota Kelahiran:</label></td>
+            <td>
+                <label id="TempatLahir" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Negara Kelahiran:</label></td>
+            <td>
+                <label id="NegaraTempatLahir" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Tanggal Lahir:</label></td>
+            <td>
+                <label id="TanggalLahir" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Agama:</label></td>
+            <td>
+                <label id="Agama" style="text-align: left; color: blue;"></label>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 12px; color: red;">Apabila terdapat ketidakcocokan pada data NAMA, TEMPAT TANGGAL LAHIR dan AGAMA, agar segera menghubungi Divisi SDM</label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 18px; color: darkcyan ;">Lengkapi Isian Di Bawah Ini :</label></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <div class="_headersawit">
+                @(Html.Kendo().TextBox().Name("IDD").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("TanggalEdit").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("EmpID").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("PersonnelNumber").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("StartDate").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("CountryofBirth").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+
+                <table width="100%;" align="center" style="font-size: small;">
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Jenis Tanggungan Beras:</label></td>
+                        <td width="20%">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("Subtype")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "PASANGAN YANG DITANGGUNG BERAS",
+                                        Value = "1=SPOUSE YANG DITANGGUNG BERAS"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PASANGAN YANG TIDAK DITANGGUNG BERAS",
+                                        Value = "20=SPOUSE YANG TIDAK DITANGGUNG BERAS"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Kosong",
+                                        Value = "DAMI"
+                                    }
+                                })
+                            )
+                        </td>
+                        <td width="30%">Mohon Dipilih (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Nama Pasangan:</label></td>
+                        <td width="20%">@(Html.Kendo().TextBox().Name("NamaPasangan").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                        <td width="30%">Isi dengan nama pasangan (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Jenis Kelamin Pasangan:</label></td>
+                        <td width="20%">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("JenisKelaminPasangan")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "Laki-Laki",
+                                        Value = "L"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Perempuan",
+                                        Value = "P"
+                                    }
+                                })
+                            )
+                        </td>
+                        <td width="30%">Mohon Dipilih (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Tempat Lahir Pasangan:</label></td>
+                        <td width="20%">@(Html.Kendo().TextBox().Name("Birthplace").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                        <td width="30%">Isi dengan tempat lahir (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Tanggal Lahir Pasangan:</label></td>
+                        <td>@(Html.Kendo().DatePicker().Name("DateofBirth").Format("dd.MM.yyyy").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                        <td>Isi tanggal lahir (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Pekerjaan Pasangan:</label></td>
+                        <td width="20%">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("JobTitle")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "BEKERJA",
+                                        Value = "BEKERJA"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "TIDAK BEKERJA",
+                                        Value = "TIDAK BEKERJA"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Kosong",
+                                        Value = "DAMI"
+                                    }
+                                })
+                            )
+                        </td>
+                        <td width="30%">Mohon Dipilih (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Tempat Bekerja Pasangan:</label></td>
+                        <td width="20%">@(Html.Kendo().TextBox().Name("Employer").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                        <td width="30%">Isi dengan tempat bekerja pasangan (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Nomor BPJS Pasangan:</label></td>
+                        <td width="20%">@(Html.Kendo().TextBox().Name("BPJSHealthInsuranceDependentType").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                        <td width="30%">Isi dengan Nomor BPJS Pasangan (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Kelas BPJS:</label></td>
+                        <td width="20%">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("BenefitClassforBPJS")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "Kelas 1",
+                                        Value = "1"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Kelas 2",
+                                        Value = "2"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Kelas 3",
+                                        Value = "3"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Kosong",
+                                        Value = "DAMI"
+                                    }
+                                })
+                            )
+                        </td>
+                        <td width="30%">Mohon Dipilih (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Lingkup Kerja:</label></td>
+                        <td width="20%">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("PersonnelArea")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "HOLDING",
+                                        Value = "HOLDING"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "KANTOR DIREKSI",
+                                        Value = "KANTOR DIREKSI"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "KANTOR KEBUN/UNIT",
+                                        Value = "KANTOR KEBUN/UNIT"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "KEBUN",
+                                        Value = "KEBUN"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PABRIK",
+                                        Value = "PABRIK"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "Kosong",
+                                        Value = "DAMI"
+                                    }
+                                })
+                            )
+                        </td>
+                        <td width="30%">Mohon Dipilih (tidak boleh kosong)</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @*@(Html.Kendo().Button().Name("btnSimpan").Content("Simpan").HtmlAttributes(new { style = "width: 150px; height: 60px; background-color: yellow; font-size: 18px;" }).Events(ev => ev.Click("btnSimpanOnClick")))*@
+
+                            <button type="submit" id="btnSimpan" class="k-button" style="background-color: yellow; font-size: 18px; width: 150px; height: 60px; ">Simpan</button>
+
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><label>_</label></td>
+                        <td></td>
+
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        
+    });
+
+    function btnProsesOnClick()
+    {
+         EmpIDOnSelect();
+    }
+
+    function EmpIDOnSelect(e) {
+        GetEmployee().done(function (data) {
+            if (data) {
+                var dta = data[0];
+                $('#FullName').text(dta.FullName);
+                $('#TempatLahir').text(dta.TempatLahir);
+                $('#NegaraTempatLahir').text(dta.NegaraTempatLahir);
+                $('#TanggalLahir').text(dta.TanggalLahir);
+                $('#Agama').text(dta.Agama);
+                GetPasangan(dta.EmpID).done(function (data) {
+                    if (data) {
+                        dta = data[0];
+                        $('#IDD').val(dta.IDD);
+                        $('#PersonnelNumber').val(dta.PersonnelNumber);
+                        $('#StartDate').val(dta.StartDate);
+                        $('#Subtype').data('kendoDropDownList').value(dta.Subtype);
+                        $('#NamaPasangan').val(dta.NamaPasangan);
+                        var jnsKelaminPerempuan = dta.Female;
+                        var jnsKelaminLakiLaki = dta.Male;
+                        if (jnsKelaminPerempuan != "" && jnsKelaminLakiLaki == "")
+                        {
+                            $('#JenisKelaminPasangan').data('kendoDropDownList').value("P");
+                        }
+                        else if (jnsKelaminPerempuan == "" && jnsKelaminLakiLaki != "")
+                        {
+                            $('#JenisKelaminPasangan').data('kendoDropDownList').value("L");
+                        }
+                        else $('#JenisKelaminPasangan').val("DUMI");
+                        $('#Birthplace').val(dta.Birthplace);
+                        $('#DateofBirth').val(dta.DateofBirth);
+                        $('#CountryofBirth').val(dta.CountryofBirth);
+                        $('#JobTitle').data('kendoDropDownList').value(dta.JobTitle);
+                        $('#Employer').val(dta.Employer);
+                        $('#BPJSHealthInsuranceDependentType').val(dta.BPJSHealthInsuranceDependentType);
+                        $('#BenefitClassforBPJS').data('kendoDropDownList').value(dta.BenefitClassforBPJS);
+                        $('#PersonnelArea').data('kendoDropDownList').value(dta.PersonnelArea);
+                        $('#TanggalEdit').val(dta.TanggalEdit);
+                    }
+                });
+            }
+        });
+    }
+
+    function GetEmployee() {
+        var url = '/Input/GetDataFrom';
+        var empID = $('#CariNIK').val();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.SAPHCM.View_HCM02_ListEmployee',
+                scriptSQL: "SELECT [Emp ID] as EmpID,[Full Name] as FullName,[Tempat Lahir] as TempatLahir,[Tanggal Lahir] as TanggalLahir, [Negara Tempat Lahir] as NegaraTempatLahir, [Agama] as Agama FROM [SAPHCM].[dbo].[HCM02_ListEmployee] " +
+                    "WHERE [Emp ID]='" + empID.substring(2,14) + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetPasangan() {
+        var url = '/Input/GetDataFrom';
+        var empID = $('#CariNIK').val();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.SAPHCM.View_HCM10_FamilyMember_Pasangan',
+                scriptSQL: "SELECT  IDD, [Emp ID] as EmpID, [Personnel Number] as PersonnelNumber, [Start Date] as StartDate, [Subtype] as Subtype, " +
+                    "[Nama Pasangan] as NamaPasangan, [Female] as Female, [Male] as Male, [Birthplace] as Birthplace, [Date of Birth] as DateofBirth, [Country of Birth] as CountryofBirth, [Job Title] as JobTitle, [Employer] as Employer, [BPJS Health Insurance Dependent Type] as BPJSHealthInsuranceDependentType, [Benefit Class for BPJS] as BenefitClassforBPJS, [Personnel Area] as PersonnelArea, TanggalEdit " +
+                    "FROM [SAPHCM].[dbo].[HCM10_FamilyMember_Pasangan] WHERE [Emp ID]='" + empID.substring(2, 14) + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData() {
+        var url = '/Input/ExecSQL';
+        var IDD = $('#IDD').val();
+        if (IDD == "") {
+            IDD = guid();
+        }
+        var EmpID = $('#CariNIK').val().substring(2, 14);
+        var PersonnelNumber = $('#PersonnelNumber').val();
+        var StartDate = "01.01.2018";
+        var Subtype = $('#Subtype').data('kendoDropDownList').value();
+        var NamaPasangan = $('#NamaPasangan').val();
+        NamaPasangan = NamaPasangan.replace("'", "`");
+        var jnsklmn = $('#JenisKelaminPasangan').data('kendoDropDownList').value();
+        if (jnsklmn == "L")
+        {
+            var Female = "";
+            var Male = "X";
+        }
+        else if (jnsklmn == "P")
+        {
+            var Female = "X";
+            var Male = "";
+        }
+        var Birthplace = $('#Birthplace').val();
+        var DateofBirth = $('#DateofBirth').val();
+        var CountryofBirth = "INA";
+        var JobTitle = $('#JobTitle').data('kendoDropDownList').value();
+        var Employer = $('#Employer').val();
+        var BPJSHealthInsuranceDependentType = $('#BPJSHealthInsuranceDependentType').val();
+        var BenefitClassforBPJS = $('#BenefitClassforBPJS').data('kendoDropDownList').value();
+        var PersonnelArea = $('#PersonnelArea').val();
+        var TanggalEdit = $('#TanggalEdit').val();
+
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec [SAPHCM].dbo.SimpanHCM10_FamilyMember_Pasangan '" + IDD + "','" + EmpID + "','" + PersonnelNumber + "','01.01.2018','" + Subtype + "','" + NamaPasangan +
+                    "','" + Female + "','" + Male + "','" + Birthplace + "','" + DateofBirth + "','" + CountryofBirth + "','" + JobTitle + "','" + Employer + "','" + BPJSHealthInsuranceDependentType + "','" + BenefitClassforBPJS + "','" + PersonnelArea + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+
+
+
+

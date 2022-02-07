@@ -1,0 +1,29 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "PENGHARGAAN MASA KERJA 20 THN",
+                Value = "PENGHARGAAN MASA KERJA 20 THN"
+            },
+            new SelectListItem() {
+                Text = "PENGHARGAAN MASA KERJA 25 THN",
+                Value = "PENGHARGAAN MASA KERJA 25 THN"
+            },
+            new SelectListItem() {
+                Text = "PENGHARGAAN MASA KERJA 30 THN",
+                Value = "PENGHARGAAN MASA KERJA 30 THN"
+            },
+            new SelectListItem() {
+                Text = "PENGHARGAAN MASA KERJA 35 THN",
+                Value = "PENGHARGAAN MASA KERJA 35 THN"
+            }
+        })
+        .Events(e => { e.Change("ddlPenghargaanOnSelect"); e.Select("ddlPenghargaanOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

@@ -1,0 +1,251 @@
+﻿
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                <table width="100%">
+                    <tr>
+                        <td width="33%" style="vertical-align:top;">
+                            <table width="100%">
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label style="color: black; background-color: lightgray; text-align: center;">Cari KPI Resume</label>
+                                        <table width="100%;" style="border: 1px solid lightgray; margin-bottom : 5px;">
+                                            <tr>
+                                                <td width="80px">
+                                                    Lokasi Kerja :
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().AutoComplete().Name("aucLokasiKerja")
+                                                        .MinLength(2)
+                                                        .Filter("contains")
+                                                        .DataTextField("Nama")
+                                                        .Events(ev => { ev.Change("aucLokasiKerjaOnSelect"); })
+                                                        .HtmlAttributes(new { style = "width: 100%", @class = "allcaps" })
+                                                        .DataSource(o =>
+                                                        {
+                                                            o.Read(r => r.Action("GetLokasiKerja1", "ddl", new { Area = "Referensi" }).Data("filterLokasiKerja").Type(HttpVerbs.Post));
+                                                            o.ServerFiltering(true);
+                                                        })
+                                                    )
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="80px">
+                                                    Bulan :
+                                                </td>
+                                                <td>
+                                                    @(Html.Kendo().DatePicker().Name("Bulan").Format("MM-yyyy")
+                                                        .Value(DateTime.Now)
+                                                        .HtmlAttributes(new { style = "width: 100%" })
+
+                                                    )
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="vertical-align:top"></td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.KPI.Models.DTL_KPIResumes>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NoBaris).Width(50).Hidden();
+            g.Bound(i => i.DTL_KPIResumesId).Width(50).Hidden();
+            g.Bound(i => i.HDR_KPIResumesId).Width(50).Hidden();
+            g.Bound(i => i.KPIID).Title("KPIID").Width(80);
+            g.Bound(i => i.KPIName).Title("KPI Name").Width(200);
+            g.Bound(i => i.Polarization).Title("Polarization").Width(200).HtmlAttributes(new { style = "text-align: center;" });
+            g.Bound(i => i.Target).Title("Target").Width(200)
+                .ClientTemplate(" #= buatFormat(Target,'n0') #")
+                .HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N0}");
+            g.Bound(i => i.Realisasi).Title("Realisasi").Width(200)
+                .ClientTemplate(" #= buatFormat(Realisasi,'n0') #")
+                .HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N2}");
+            g.Bound(i => i.Pencapaian).Title("Pencapaian").Width(200).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N2}");
+            g.Bound(i => i.Indikator).Title("Indicator").Width(200).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N2}").ClientFooterTemplate("JUMLAH SKOR");
+            g.Bound(i => i.Bobot).Title("Bobot").Width(200).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N2}").ClientFooterTemplate("<span id='jmlBobot'>#= kendo.toString(rekapJumlahBobot(),'n2') #</span>").FooterHtmlAttributes(new { style = "text-align: right; background: silver;" }); ;
+            g.Bound(i => i.Result).Title("Result").Width(200).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:N2}").ClientFooterTemplate("<span id='jmlResult'>#= kendo.toString(rekapJumlahResult(),'n2') #</span>").FooterHtmlAttributes(new { style = "text-align: right; background: silver;" }); ;
+            g.Bound(i => i.Keterangan).Width(300).Title("Keterangan");
+        })
+        .AutoBind(false)
+        .Sortable()
+        .HtmlAttributes(new { style = "Height: 550px" })
+        .Filterable()
+        .ToolBar(tools => tools.Excel())
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .ColumnMenu()
+        .Events(e =>
+        {
+            e.DataBound("resetRowNumber");
+        })
+        .Excel(excel => excel.AllPages(true))
+        .DataSource(o => o
+            .Ajax()
+            .Sort(s => s.Add(x => x.NoBaris))
+            //.Group(g => g.Add(gg => gg.KPIID))
+            .ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.DTL_KPIResumesId);
+            })
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+
+        )
+    )
+</div>
+
+<script>
+    var wnd, err, prt;
+    var bulan, bagian;
+    var lokasiKerjaId;
+    var bulanFormat;
+
+    function buatFormat(v,fmt)
+    {
+        var o;
+        if(v.toString().indexOf("/")>-1)
+        {
+            o = v;
+        }
+        else
+        {
+            o = kendo.toString(parseFloat(v), fmt);
+        }
+        return o;
+    }
+
+    function resetRowNumber(e) {
+        var jmlBobot = 0;
+        var jmlResult = 0;
+        var grid = $('#grdDetail').data('kendoGrid');
+        var datasource = grid.dataSource.data();
+        for (var i = 0; i < datasource.length; i++) {
+            var model = datasource[i];
+            jmlBobot = jmlBobot + model.Bobot;
+            jmlResult = jmlResult + model.Result;
+        }
+        $('#jmlBobot').text(kendo.toString(rekapJumlahBobot(), 'n2'));
+        $('#jmlResult').text(kendo.toString(rekapJumlahResult(), 'n2'));
+    }
+
+    function rekapJumlahBobot() {
+
+        var grid = $('#grdDetail').data('kendoGrid');
+        var newValue = 0;
+        for (var i = 0; i < grid.dataItems().length; i++) {
+            newValue += grid.dataItems()[i].Bobot;
+        }
+        return newValue;
+    }
+
+    function rekapJumlahResult() {
+
+        var grid = $('#grdDetail').data('kendoGrid');
+        var newValue = 0;
+        for (var i = 0; i < grid.dataItems().length; i++) {
+            newValue += grid.dataItems()[i].Result;
+        }
+        return newValue;
+    }
+
+    function renderNumber(data) {
+        var no = ++rowNumber;
+        data.NoBaris = no;
+        return no;
+    }
+
+    function filterLokasiKerja() {
+        return {
+            //id: IdBudidaya,
+            value: $('#aucLokasiKerja').val()
+        };
+    }
+
+    function aucLokasiKerjaOnSelect(e) {
+        lokasiKerjaId = e.sender.dataItem().LokasiKerjaId;
+    }
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    bagian = $('#aucLokasiKerja').data('kendoAutoComplete').value();
+                    bulan = $('#Bulan').data('kendoDatePicker');
+                    bulanFormat = kendo.toString(bulan._value, "MM-yyyy");
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+
+    function filterReport(e)
+    {
+        return {
+            strClassView: 'Ptpn8.KPI.Models.DTL_KPIResumes',
+            scriptSQL: "select * from [SPDK_KanpusEF].[dbo].[DTL_KPIResumes] as A join [SPDK_KanpusEF].[dbo].[HDR_KPIResumes] as B on A.HDR_KPIResumesId = B.HDR_KPIResumesId where B.BagianId = '"+bagian+"' and B.Bulan = '"+bulanFormat+"' and A.StatusTampil=1"
+        }
+
+    }
+
+</script>
+
+<style>
+    .areaFilter {
+        width: 100%;
+        height: 30%;
+        border: 1px solid lightgray;
+    }
+
+    .areaTabel {
+        width: 50%;
+        height: 70%;
+    }
+
+    .areaGrafik {
+        width: 50%;
+        height: 70%;
+    }
+</style>
+
+
+
+

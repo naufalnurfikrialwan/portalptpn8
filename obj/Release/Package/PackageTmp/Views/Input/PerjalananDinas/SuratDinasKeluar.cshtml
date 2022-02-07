@@ -1,0 +1,384 @@
+﻿@model Ptpn8.Models.MemoOnline.View_SuratDinasKeluar
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PerjalananDinas/SuratKeluar.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+
+<!--header-->
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                @(Html.Kendo().TextBoxFor(m => m.SuratDinasKeluarId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @*@(Html.Kendo().TextBoxFor(m => m.UnitId).Value(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))*@
+                @(Html.Kendo().TextBoxFor(m => m.NomorInput).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="50%;" align="left">
+
+                    <tr>
+                        <td width="16%">
+                            <label style="text-align:left">Tahun/Nomor Input</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @(Html.Kendo().NumericTextBoxFor(m => m.TahunBuku).Min(2019).Format("D4")
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                                .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                            )
+                            -
+                            @(Html.Kendo().DropDownListFor(m => m.NomorInputView)
+                                .OptionLabel("Pilih No Input")
+                                .AutoBind(false)
+                                .DataValueField("NomorInput")
+                                .DataTextField("NomorInputView")
+                                .DataSource(o =>
+                                {
+                                    o.Read(r => r.Action("getNomorInput", "Input").Data("filterNomorInput").Type(HttpVerbs.Post));
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 64%" })
+                                .SelectedIndex(0)
+                                .Events(e =>
+                                {
+                                    e.Change("NomorInputViewOnSelect");
+                                    e.Select("NomorInputViewOnSelect");
+                                    e.DataBound("NomorInputViewOnDataBound");
+                                })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">No/Tgl Register</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo()
+                                .AutoCompleteFor(m => m.NomorSuratKeluar)
+                                .DataTextField("No_Pengajuan")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .DataSource(o => { o.Read(r => r.Action("getNomorInput", "Input").Data("filterNomorInput").Type(HttpVerbs.Post)); })
+                            )
+                            /
+                            @(Html.Kendo().DateTimePickerFor(m => m.TanggalSuratKeluar).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 24%" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Lampiran</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.Lampiran).HtmlAttributes(new { style = "width:55%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Perihal</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.Perihal).HtmlAttributes(new { style = "width:55%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Nama</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.Nama).HtmlAttributes(new { style = "width:55%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Nama Instansi</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.NamaInstansi).HtmlAttributes(new { style = "width:55%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Alamat Lengkap</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.Alamat).HtmlAttributes(new { style = "width:55%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Isi</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().EditorFor(m => m.Isi)
+                                .Tools(tools => tools
+                                          .Clear()
+                                          .Bold().Italic().Underline().Strikethrough()
+                                          .JustifyLeft().JustifyCenter().JustifyRight().JustifyFull()
+                                          .InsertUnorderedList().InsertOrderedList()
+                                          .Outdent().Indent()
+                                          .CreateLink().Unlink()
+                                          .InsertImage()
+                                          .InsertFile()
+                                          .SubScript()
+                                          .SuperScript()
+                                          .TableEditing()
+                                          .ViewHtml()
+                                          .Formatting()
+                                          .CleanFormatting()
+                                          .FontName()
+                                          .FontSize()
+                                          .FontColor().BackColor()
+                                      )
+                                .HtmlAttributes(new { style = "width:100%;height:150px", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Penutup</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().EditorFor(m => m.Penutup)
+                                .Tools(tools => tools
+                                          .Clear()
+                                          .Bold().Italic().Underline().Strikethrough()
+                                          .JustifyLeft().JustifyCenter().JustifyRight().JustifyFull()
+                                          .InsertUnorderedList().InsertOrderedList()
+                                          .Outdent().Indent()
+                                          .CreateLink().Unlink()
+                                          .InsertImage()
+                                          .InsertFile()
+                                          .SubScript()
+                                          .SuperScript()
+                                          .TableEditing()
+                                          .ViewHtml()
+                                          .Formatting()
+                                          .CleanFormatting()
+                                          .FontName()
+                                          .FontSize()
+                                          .FontColor().BackColor()
+                                      )
+                                .HtmlAttributes(new { style = "width:100%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Direksi</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.NamaDireksi).HtmlAttributes(new { style = "width:55%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey"></td>
+                        <td width="2%"></td>
+                        <td width="50%" align="center">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                                <button type="button" id="btnDeleteHeader" onclick="btnDeleteHeaderOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Hapus Permintaan</button>
+                                <button type="button" id="btnPrintHeader" onclick="btnPrintHeaderOnClick()" class="k-button" style="color: white; background-color: gray; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Cetak Permintaan</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+        // Each report viewer must have an id - it will be used by the initialization script
+        // to find the element and initialize the report viewer.
+        .Id("reportViewer")
+        // The URL of the service which will serve reports.
+        // The URL corresponds to the name of the controller class (ReportsController).
+        // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+        .ServiceUrl(Url.Content("/api/reports/"))
+        // The URL for custom report vie    wer template. The template can be edited -
+        // new functionalities can be added and unneeded ones can be removed.
+        // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+        //
+        // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+        .ReportSource(new UriReportSource() { Uri = "../Reports/PerjalananDinas/BalasSuratDinas.trdx" })
+        // Specifies whether the viewer is in interactive or print preview mode.
+        // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+        // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+        .ViewMode(ViewMode.Interactive)
+        // Sets the scale mode of the viewer.
+        // Three modes exist currently:
+        // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+        // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+        // Specific - Uses the scale to zoom in and out the report.
+        .ScaleMode(ScaleMode.Specific)
+        // Zoom in and out the report using the scale
+        // 1.0 is equal to 100%, i.e. the original size of the report
+        .Scale(1.0)
+        // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+        // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+        .PersistSession(false)
+        // Sets the print mode of the viewer.
+        .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+</style>
+
+
+
+
+
+

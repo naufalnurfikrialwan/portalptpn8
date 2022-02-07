@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Upload Data Harian";
+}
+
+<script src="~/Scripts/UploadDataHarian/UploadData.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 5%; " />
+
+@(Html.Kendo().TextBox().HtmlAttributes(new { style="display: none;"}).Name("KodeUnit").Value(@ViewBag.KodeUnit))
+@(Html.Kendo().TextBox().Name("FileZIP").HtmlAttributes(new { style = "display: none;" }))
+
+<table width="100%;">
+    <tr><td style="text-align: center; font-weight:600; font-size: large; background: lightgray;vertical-align:middle;">Upload Data Harian</td></tr>
+</table>
+
+<div id="splitter">
+    @(Html.Kendo().Splitter().Name("horizontal").HtmlAttributes(new { style = "height: 600px;" }).Panes(hz =>
+        {
+            hz.Add().Size("15%").HtmlAttributes(new { id = "left-pane" })
+                .Collapsible(true).Content(@<text>
+                    @Html.Partial("~/Views/UploadDataHarian/UploadDataHarian_left_pane.cshtml")
+                </text>);
+            hz.Add().HtmlAttributes(new { id = "middle-pane" })
+                .Collapsible(false).Content(@<text>
+                    @Html.Partial("~/Views/UploadDataHarian/UploadDataHarian_middle_pane.cshtml")
+                </text>);
+        }))
+</div>

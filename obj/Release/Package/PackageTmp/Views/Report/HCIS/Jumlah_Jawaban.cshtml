@@ -1,0 +1,115 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+<div id="_header" class="areaFilter" ng-app="__areaFilter">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">Hasil Jawaban Assessment PTPN VIII</div>
+                    </td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <td width="10%">
+                        <label>Tanggal Assessment:</label>
+                    </td>
+                    <td width="40%">
+                        @(Html.Kendo().DatePicker().Name("TanggalAssessment").Format("dd-MM-yyyy")
+                                    .Value(DateTime.Now)
+                        )
+                    </td>
+                </tr>                
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <div class="confirm">
+                            <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<div id="_detail">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+        .Items(tabstrip =>
+        {
+            tabstrip.Add().Text("JumlahJawaban").Selected(true)
+            .Content(@<text>
+                @(Html.Kendo()
+                .Grid<Ptpn8.Models.ModalManusia.Rekap_JumlahJawaban>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.NIK).Width(250).Title("NIK");
+                    g.Bound(i => i.Nama).Width(400).Title("Nama Karyawan");
+                    g.Bound(i => i.JumlahJawaban).Width(200).Format("{0:N0}").Title("Jumlah Jawaban");
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Excel();
+                })
+                .Excel(excel => excel.AllPages(true))
+                .AutoBind(false)
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .DataSource(o => o
+                .Ajax()
+                //.Group(g => { g.Add(gg => gg.namakaryawan); g.Add(gg => gg.chapter); g.Add(gg => gg.durasi); })
+                .ServerOperation(false)
+                .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                )
+                )
+            </text>);   
+        })
+
+    )
+</div>
+
+<script>
+    var tanggalAssessment;
+    @*var usrName = "@HttpContext.Current.User.Identity.Name";
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }*@
+
+    angular.module("__areaFilter", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    tanggalAssessment = kendo.toString(($('#TanggalAssessment').data('kendoDatePicker'))._value, "yyyy-MM-dd");
+                    $('#grdDetail').data('kendoGrid').dataSource.read();
+                } else {
+                    // not valid
+                }
+            }
+        });
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Models.ModalManusia.Rekap_JumlahJawaban',
+            scriptSQL: "exec [ModalManusiaEF].dbo.Assesment_JumlahJawaban '" + tanggalAssessment +"'"
+        }
+    }
+
+
+</script>
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="csIdentity-Web.config Connection String" description="csIdentity Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=Identity;User ID=budi;Password=Wardanie1" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csIdentity']/@connectionString" />
+  </parameter>
+  <parameter name="csReferensi-Web.config Connection String" description="csReferensi Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=ReferensiEF;User ID=budi;Password=Wardanie1" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csReferensi']/@connectionString" />
+  </parameter>
+  <parameter name="csIHTHortikultur-Web.config Connection String" description="csIHTHortikultur Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=IHTHortikultur;User ID=budi;Password=Wardanie1" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csIHTHortikultur']/@connectionString" />
+  </parameter>
+  <parameter name="IHTHortikultur-Web.config Connection String" description="IHTHortikultur Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=IHTHortikultur;User ID=budi;Password=Wardanie1" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='IHTHortikultur']/@connectionString" />
+  </parameter>
+  <parameter name="csAreal-Web.config Connection String" description="csAreal Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=ArealEF;User ID=budi;Password=Wardanie1" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csAreal']/@connectionString" />
+  </parameter>
+  <parameter name="csKonsol-Web.config Connection String" description="csKonsol Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=SPDK_KBN_KONSOL;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csKonsol']/@connectionString" />
+  </parameter>
+  <parameter name="csPortalPTPN8-Web.config Connection String" description="csPortalPTPN8 Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=PortalPTPN8;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csPortalPTPN8']/@connectionString" />
+  </parameter>
+  <parameter name="csNDNK-Web.config Connection String" description="csNDNK Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=NDNK;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csNDNK']/@connectionString" />
+  </parameter>
+  <parameter name="csSDM-Web.config Connection String" description="csSDM Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=SDM;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csSDM']/@connectionString" />
+  </parameter>
+  <parameter name="csSPDKKanpus-Web.config Connection String" description="csSPDKKanpus Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csSPDKKanpus']/@connectionString" />
+  </parameter>
+  <parameter name="csSAPHCM-Web.config Connection String" description="csSAPHCM Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=SAPHCM;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csSAPHCM']/@connectionString" />
+  </parameter>
+  <parameter name="csAPH-Web.config Connection String" description="csAPH Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=APH;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csAPH']/@connectionString" />
+  </parameter>
+  <parameter name="eFakturEntities-Web.config Connection String" description="eFakturEntities Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=eFaktur;User ID=budi; Password=Wardanie1" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='eFakturEntities']/@connectionString" />
+  </parameter>
+  <parameter name="csBGR-Web.config Connection String" description="csBGR Connection String used in web.config by the application to access the database." defaultValue="Data Source=222.165.223.204;Initial Catalog=wms;User ID=ptpn8; Password=WMSb612" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csBGR']/@connectionString" />
+  </parameter>
+  <parameter name="csKPBN-Web.config Connection String" description="csKPBN Connection String used in web.config by the application to access the database." defaultValue="Data Source=36.37.107.231;Initial Catalog=penjualanPTPN8;User ID=budi; Password=Wardanie1" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csKPBN']/@connectionString" />
+  </parameter>
+  <parameter name="csSPDKKanpus1-Web.config Connection String" description="csSPDKKanpus1 Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=SPDK_Kanpus1;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csSPDKKanpus1']/@connectionString" />
+  </parameter>
+  <parameter name="csKerjasama-Web.config Connection String" description="csKerjasama Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=KerjasamaEF;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csKerjasama']/@connectionString" />
+  </parameter>
+  <parameter name="csModalManusia-Web.config Connection String" description="csModalManusia Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=ModalManusiaEF;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csModalManusia']/@connectionString" />
+  </parameter>
+  <parameter name="csERP-Web.config Connection String" description="csERP Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=ERP;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csERP']/@connectionString" />
+  </parameter>
+  <parameter name="csSekper-Web.config Connection String" description="csSekper Connection String used in web.config by the application to access the database." defaultValue="Data Source=192.168.17.17;Initial Catalog=Sekper;User ID=budi;Password=Wardanie1;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\WebProject\\25082020\\portalpn8\\obj\\Release\\Package\\PackageTmp\\web\.config$" match="/configuration/connectionStrings/add[@name='csSekper']/@connectionString" />
+  </parameter>
+</parameters>

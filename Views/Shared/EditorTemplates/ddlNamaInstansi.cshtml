@@ -1,0 +1,18 @@
+﻿@model string
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlNamaInstansi")
+        .AutoBind(true)
+        .DataTextField("NM_INST")
+        .DataValueField("NM_INST")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterNamaInstansi").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlNamaInstansiOnSelect"); e.Change("ddlNamaInstansiOnSelect"); })
+)
+
+
+
+

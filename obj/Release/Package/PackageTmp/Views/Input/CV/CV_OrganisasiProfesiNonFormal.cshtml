@@ -1,0 +1,324 @@
+﻿@model Ptpn8.Models.View_CV.View_KeteranganPerorangan
+<script src="~/Scripts/CV/CV_OrganisasiProfesiNonFormal.js"></script>
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div class="_headersawit">
+
+    <table width="50%;" align="center">
+        <tr>
+            <td width="100%;">
+                <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%;" align="center" style="font-size: small;">
+        <tr>
+            <td width="5%"><label style="text-align: right; font-size: 12px;">NIK:</label></td>
+            <td width="20%">
+                <label id="NIK" style="text-align: left; color: green; font-size: 24px;">@HttpContext.Current.User.Identity.Name</label>
+            </td>
+            <td width="30%" align="left"></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Nama Lengkap:</label></td>
+            <td><label id="NamaLengkap" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 18px; color: darkcyan ;">Lengkapi Isian Di Bawah Ini :</label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 11px; color: darkcyan ;">(Kegiatan/Organisasi yang Pernah/Sedang Diikuti secara non formal)</label></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+
+    @(Html.Kendo().Grid<Ptpn8.Models.View_CV.View_OrganisasiProfesiNonFormal>
+    ()
+    .Name("grdDetail")
+    .Columns(g =>
+    {
+        g.Command(command => { command.Custom("Delete").Text("Hapus Baris").Click("hapusSatuBaris").HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" }); }).Width(150);
+        g.Bound(i => i.OrganisasiProfesiNonFormalId).Width(50).Hidden();
+        g.Bound(i => i.KeteranganPeroranganId).Width(50).Hidden();
+        g.Bound(i => i.NamaOrganisasi).Width(120).Title("Nama Organisasi");
+        g.Bound(i => i.Jabatan).Width(250).Title("Jabatan");
+        g.Group(gg => gg.Title("RentangWaktu").Columns(cc =>
+        {
+            cc.Bound(i => i.RentangWaktu_TahunAwal).Title("Tahun Awal").Width(120);
+            cc.Bound(i => i.RentangWaktu_TahunAkhir).Width(120).Title("Tahun Akhir");
+        }
+        ));
+        g.Bound(i => i.KegiatanOrganisasi).Width(250).Title("Kegiatan Organisasi");
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+        "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+        "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+    })
+    .AutoBind(false)
+    .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+    .Navigatable()
+    .Resizable(resizeable => resizeable.Columns(true))
+    .Scrollable()
+    .HtmlAttributes(new { style = "Height: 400px" })
+    .Events(e =>
+    {
+        e.Change("grdOnChange");
+        e.Edit("grdOnEdit");
+        e.DataBinding("grdOnDataBinding");
+    })
+    .DataSource(o => o
+    .Ajax()
+    .ServerOperation(false)
+    .Batch(true)
+    .Model(model =>
+    {
+        model.Id(p => p.OrganisasiProfesiNonFormalId);
+        model.Field(p => p.OrganisasiProfesiNonFormalId).DefaultValue(Guid.NewGuid());
+    })
+    )
+    )
+</div>
+
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+
+
+<script>
+
+    var UID, keteranganperoranganid;
+    $(document).ready(function () {
+        CV_KeteranganPeroranganOnSelect();
+    });
+
+    function grdOnChange(e) { }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+        if (model.isNew()) {
+            model.OrganisasiProfesiNonFormalId = model.uid;
+        }
+        UID = model.uid;
+    }
+
+    function grdOnDataBinding() {
+
+    }
+
+    function sendData() {
+        var grid = $("#grdDetail").data("kendoGrid");
+        var currentData = grid.dataSource.data();
+        var stFail = 0;
+
+        for (var i = 0; i < currentData.length; i++) {
+            if (currentData[i].isNew()) {
+                SimpanData('baru', currentData[i]).done(function (dta) {
+                }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+            } else if (currentData[i].dirty) {
+                SimpanData('edit', currentData[i]).done(function (dta) {
+                }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+            }
+        }
+
+        //this records are deleted
+        var deletedRecords = [];
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            SimpanData('hapus', grid.dataSource._destroyed[i]).done(function (dta) {
+            }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+        }
+
+        if (stFail == 0) {
+            alert("Data Sudah Tersimpan...");
+        }
+    }
+
+    function hapusSeluruh(e) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            var grid = $('#grdDetail').data('kendoGrid');
+            var row = grid.tbody.find("tr:first");
+            do {
+                $('#grdDetail').data('kendoGrid').removeRow(row);
+                row = grid.tbody.find("tr:first");
+            }
+            while (grid.tbody.contents().length > 0)
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+    }
+
+    function hapusSatuBaris(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            $('#grdDetail').data('kendoGrid').removeRow(row);
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+
+    }
+
+    function CV_KeteranganPeroranganOnSelect(e) {
+        GetCV_KeteranganPerorangan().done(function (data) {
+            if (data) {
+                var dta = data[0];
+                keteranganperoranganid = dta.KeteranganPeroranganId;
+                $('#NIK').text(dta.NIK);
+                $('#NamaLengkap').text(dta.NamaLengkap);
+                GetCV_OrganisasiProfesiNonFormal(dta.keteranganperoranganid).done(function (data1) {
+                    if (data1) {
+                        var grd = $('#grdDetail').data('kendoGrid');
+                        grd.dataSource.data(data1);
+                        //grd.refresh();
+                    }
+                });
+            }
+        });
+    }
+
+    function GetCV_KeteranganPerorangan() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_KeteranganPerorangan',
+                scriptSQL: "SELECT top 1 KeteranganPeroranganId,NIK,NamaLengkap FROM [SPDK_KanpusEF].[dbo].[CV_KeteranganPerorangan] " +
+                    "WHERE NIK='" + nik + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetCV_OrganisasiProfesiNonFormal() {
+        var url = '/Input/GetDataFrom';
+        var empID = $('#EmpID').text();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_OrganisasiProfesiNonFormal',
+                scriptSQL: "set dateformat dmy;" +
+                    "SELECT * " +
+                    "FROM [SPDK_KanpusEF].[dbo].[CV_OrganisasiProfesiNonFormal] WHERE keteranganperoranganid='" + keteranganperoranganid + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData(status, dta) {
+
+        var url = '/Input/ExecSQL';
+        var OrganisasiProfesiNonFormalId = dta.OrganisasiProfesiNonFormalId;
+
+        var KeteranganPeroranganId = keteranganperoranganid;
+        var NamaOrganisasi = dta.NamaOrganisasi;
+        var Jabatan = dta.Jabatan;
+        var RentangWaktu_TahunAwal = dta.RentangWaktu_TahunAwal;
+        var RentangWaktu_TahunAkhir = dta.RentangWaktu_TahunAkhir;
+        var KegiatanOrganisasi = dta.KegiatanOrganisasi;
+
+        if (status == 'baru') {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec dbo.SimpanCV_OrganisasiProfesiNonFormal '" + OrganisasiProfesiNonFormalId.toString() +
+                        "','" + KeteranganPeroranganId.toString() + "','" + NamaOrganisasi + "','" + Jabatan + "', '" + RentangWaktu_TahunAwal + "', '" +
+                        RentangWaktu_TahunAkhir + "', '" + KegiatanOrganisasi + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        } else if (status == 'edit') {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec dbo.SimpanCV_OrganisasiProfesiNonFormal_Edit '" + OrganisasiProfesiNonFormalId.toString() +
+                        "','" + KeteranganPeroranganId.toString() + "','" + NamaOrganisasi + "','" + Jabatan + "', '" + RentangWaktu_TahunAwal + "', '" +
+                        RentangWaktu_TahunAkhir + "', '" + KegiatanOrganisasi + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        } else {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec dbo.SimpanCV_OrganisasiProfesiNonFormal_Del '" + OrganisasiProfesiNonFormalId.toString() + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        }
+    }
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@model Kebun
+
+@(Html.Kendo().DropDownList()
+        .Name("ddlKebun")
+        .AutoBind(true)
+        .OptionLabel("Pilih Kebun...")
+        .DataTextField("Nama")
+        .DataValueField("KebunId")
+        //.HtmlAttributes(new { style="width: 200px"})
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetKebun", "ddl", new { Area = "Referensi"})).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlKebunOnSelect"); e.DataBound("ddlKebunOnDataBound"); })
+)
+
+
+
+

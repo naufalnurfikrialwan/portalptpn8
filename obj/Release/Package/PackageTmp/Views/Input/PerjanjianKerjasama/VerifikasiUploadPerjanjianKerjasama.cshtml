@@ -1,0 +1,336 @@
+﻿@model Ptpn8.PerjanjianKerjasama.Models.PerjanjianKerjasama_Dokumen
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PerjanjianKerjasama/VerifikasiUploadPerjanjianKerjasama.js"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<button type="button" id="btnSelesaiSimpanDetail" class="k-button" style="color: white; background-color: blue; font-size: small; height: 30px; text-align:left; display: none;"><span class="k-font-icon .k-i-search"></span>Cek Kilometer</button>
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.PerjanjianKerjasama.Models.ViewPerjanjianKerjasama_Dokumen>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+		    g.Command(command =>
+                    {
+                        command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                      .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                        command.Custom("HakAkses").Text(" Verifikasi").Click("openUnit")
+                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                    }).Width(120);
+                    g.Bound(i => i.PerjanjianKerjasama_DokumenId).Width(50).Hidden();
+                    g.Bound(i => i.BagianId).Width(50).Hidden();
+                    g.Bound(i => i.Verifikasi).Title("Checklist").Width(150).ClientTemplate("#= Verifikasi ? 'Sudah':'Belum' #").Hidden();
+                    g.Bound(i => i.StatusOtoritas).Title("Status Otoritas").Width(150).Hidden();
+                    g.Group(i =>
+                    {
+                        i.Title("Rincian Perjanjian Kerjasama");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.NomorPerjanjian).Title("Nomor Perjanjian").Width(120);
+                            c.Bound(j => j.TanggalPenandatangananPerjanjian).Width(100).Title("Tgl Penandatanganan Perjanjian").Format("{0:dd/MM/yyyy}");
+                            c.Bound(j => j.BentukKerjasama).Title("Bentuk Kerjasama").Width(100);
+                            c.Bound(j => j.Perihal).Title("Ruang Lingkup Kerjasama").Width(200);
+                            c.Bound(j => j.JenisPerjanjian).Title("Jenis").Width(150);
+                            c.Bound(j => j.NamaMitra).Title("Mitra").Width(150);
+                            c.Bound(j => j.LokasiPerjanjian).Title("Lokasi Perjanjian").Width(150);
+                            c.Bound(j => j.PIC).Title("PIC").Width(150);
+                        });
+                    });
+                    g.Group(i =>
+                    {
+                        i.Title("Jangka Waktu");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.JangkaWaktuKerjasama).Title("Jangka Waktu").Width(150);
+                            c.Bound(j => j.TanggalMulai).Width(100).Title("Tgl Mulai").Format("{0:dd/MM/yyyy}");
+                            c.Bound(j => j.TanggalBerakhir).Width(100).Title("Tgl Berakhir").Format("{0:dd/MM/yyyy}");
+                        });
+                    });
+                    g.Group(i =>
+                    {
+                        i.Title("Kompensasi");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.BentukKompensasi).Title("Bentuk Kompensasi").Width(150);
+                            c.Bound(j => j.NilaiNominal).Title("Nilai Nominal").Width(150).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                        });
+                    });
+
+                    g.Bound(i => i.Keterangan).Title("Keterangan").Width(150);
+                    g.Bound(i => i.File).Title("File").Width(120);
+                    
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                })
+                .AutoBind(true)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Sortable()
+                .HtmlAttributes(new { style = "Height: 600px" })
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+                    e.DataBound("grdOnDataBound");
+                })
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    .Batch(true)
+                    .Sort(i =>
+                    {
+                        i.Add(j => j.Verifikasi).Ascending();
+                        i.Add(j => j.TanggalMulai).Descending();
+                    })
+                    .Model(model =>
+                    {
+                        model.Id(p => p.PerjanjianKerjasama_DokumenId);
+                        model.Field(f => f.BagianId).Editable(false);
+                        model.Field(f => f.NomorPerjanjian).Editable(false);
+                        model.Field(f => f.Perihal).Editable(false);
+                        model.Field(f => f.NamaMitra).Editable(false);
+                        model.Field(f => f.JenisPerjanjian).Editable(false);
+                        model.Field(f => f.TanggalMulai).Editable(false);
+                        model.Field(f => f.TanggalBerakhir).Editable(false);
+                        model.Field(f => f.NilaiNominal).Editable(false);
+                        model.Field(f => f.PIC).Editable(false);
+                        model.Field(f => f.Keterangan).Editable(false);
+                    })
+                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                    )
+    )
+</div>
+
+<div id="wndHakAkses" title="Hak Akses Untuk Unit" style="display: block;">
+    <table align="center">
+        <tr>
+            <td>
+                <label style="font-size:medium; font-weight:600;">HAK AKSES UNTUK :</label>
+            </td>
+        </tr>
+    </table>
+    <table width="100%">
+        <tr>
+            <td>
+                <table width="100%" style="border:solid; border-width: thin; text-align: center;">
+                    <tr>
+                        <td style="border: solid; border-width: thin;" width="25%">
+                            <input type="checkbox" id="fieldlistDitujukanA" value="C6DFDB6D-056E-45CC-9D07-A2207FF5FCC3" checked>
+                            <label>DIR-UT</label>
+                            <table width="100%" style="text-align: center;">
+                                <tr>
+                                    <td style="border-top: solid; border-width: thin;">
+                                        <label>I.1</label>
+                                        <input type="checkbox" id="fieldlistDitujukan1" value="C7A94AC2-6148-400D-9235-A5DE1837A55F">
+                                        <label>CS</label>
+                                    </td>
+                                    <td style="border-top: solid; border-left: solid; border-right:solid; border-width: thin;">
+                                        <label>I.2</label>
+                                        <input type="checkbox" id="fieldlistDitujukan2" value="580A7BA1-31E5-4337-ABB2-24A07F5E9778">
+                                        <label>SPI</label>
+                                    </td>
+                                    <td style="border-top: solid; border-width: thin;">
+                                        <label>I.3</label>
+                                        <input type="checkbox" id="fieldlistDitujukan8" value="30D4C2DB-8BB4-4EE6-884D-6FFBEF181D11">
+                                        <label>RENBANG</label>
+                                    </td>
+                                    <td style="border-top: solid; border-width: thin;">
+                                        <label>I.4</label>
+                                        <input type="checkbox" id="fieldlistDitujukan3" value="8FC50B2C-2A83-42CD-9C3C-0A14B6C9CD5A">
+                                        <label>TI</label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="border: solid; border-width: thin;" width="25%">
+                            <input type="checkbox" id="fieldlistDitujukanB" value="BDD778FE-BE35-42D7-A891-4B2BE7126CC7" checked>
+                            <label>DIR-OP</label>
+                            <table width="100%" style="text-align: center;">
+                                <tr>
+                                    <td style="border-top: solid; border-width: thin;">
+                                        <label>II.1</label>
+                                        <input type="checkbox" id="fieldlistDitujukan4" value="72928006-34F6-46D7-B668-4CA588DF714F">
+                                        <label>TAN</label>
+                                    </td>
+                                    <td style="border-top: solid; border-left: solid; border-width: thin;">
+                                        <label>II.2</label>
+                                        <input type="checkbox" id="fieldlistDitujukan5" value="78D31B7B-DA29-4A49-B77B-861EE5458D6B">
+                                        <label>T.POL</label>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                        <td style="border: solid; border-width: thin;" width="25%">
+                            <input type="checkbox" id="fieldlistDitujukanD" value="24BDBB95-0CD5-463E-9ABC-A4B03AB70A1A" checked>
+                            <label>DIR-KM</label>
+                            <table width="100%" style="text-align: center;">
+                                <tr>
+                                    <td style="border-top: solid; border-width: thin;">
+                                        <label>III.1</label>
+                                        <input type="checkbox" id="fieldlistDitujukan9" value="BBEEFC43-26E5-4F66-9DE3-D523A5462855">
+                                        <label>KEU</label>
+                                    </td>
+                                    <td style="border-top: solid; border-left: solid; border-right:solid; border-width: thin;">
+                                        <label>III.2</label>
+                                        <input type="checkbox" id="fieldlistDitujukan10" value="0AAFC5BE-96ED-4213-AEB4-6B8808404878">
+                                        <label>AKT</label>
+                                    </td>
+                                    <td style="border-top: solid; border-right:solid; border-width: thin;">
+                                        <label>III.3</label>
+                                        <input type="checkbox" id="fieldlistDitujukan11" value="F0D332DB-817A-479B-A229-FF31BBBB3872">
+                                        <label>PBJ</label>
+                                    </td>
+                                    <td style="border-top: solid; border-width: thin;">
+                                        <label>III.4</label>
+                                        <input type="checkbox" id="fieldlistDitujukan6" value="A492B23A-E11F-4650-BC19-A48713AFEFB6">
+                                        <label>HC</label>
+                                    </td>
+                                    <td style="border-top: solid; border-left: solid; border-right:solid; border-width: thin;">
+                                        <label>III.5</label>
+                                        <input type="checkbox" id="fieldlistDitujukan7" value="977EF1BF-D05F-4680-9080-58093FBE7D95">
+                                        <label>HK-UM</label>
+                                    </td>
+                                    <td style="border-top: solid; border-width: thin;">
+                                        <label>III.6</label>
+                                        <input type="checkbox" id="fieldlistDitujukan12" value="2FD211DD-610D-4EB7-B209-F4D1ED24D1CB">
+                                        <label>PSR</label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%" style="border:solid; border-width: thin; text-align: center;">
+                    <tr>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan14" value="FD73DF57-2F13-4A4D-980F-BEB92EBED1FC">
+                            <label>SSK-DU</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan15" value="E89C016D-D5F2-460F-8E88-225695B257B7">
+                            <label>HSR</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan16" value="DD9B064B-6A3C-43EE-A3DC-8CF8E100A4BF">
+                            <label>I-TEH</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan17" value="147031BD-D0E2-4730-87B8-F12E2E1EE1FC">
+                            <label>I-ASA</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan18" value="329AAF85-2087-4F41-B4F6-304C70A178C0">
+                            <label>I-AGR</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan20" value="E8B60A6F-C658-44A4-9486-DFEF5EADE092">
+                            <label>GM-TEH 1</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan19" value="60A6881F-B09B-440D-8742-778D83A455C1">
+                            <label>GM-TEH 2</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan21" value="E7F2EB45-A6FF-4FBD-9006-5FB34F7AFDC1">
+                            <label>GM-KRT</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan22" value="C4F3C41D-AAE2-44BD-8C8A-A22DFD50BA66">
+                            <label>GM-SWT</label>
+                        </td>
+                        <td style="border-top: solid; border-right:solid; border-width: thin;">
+                            <input type="checkbox" id="fieldlistDitujukan23" value="8D99BFAC-B86B-4E7F-826E-EEC778AD2C68">
+                            <label>Proyek</label>
+                        </td>
+
+                    </tr>
+                </table>
+            </td>
+
+        </tr>
+    </table>
+    <p></p>
+    <table width="100%">
+        <tr>
+            <td align="center">
+                @Html.Kendo().Button().Name("btnDisposisi").Events(ev => ev.Click("btnDisposisiOnClick")).Content("Simpan")
+                @Html.Kendo().Button().Name("btnBatalDisposisi").Events(ev => ev.Click("btnBatalDisposisiOnClick")).Content("Batal")
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<style>
+    .belumDisetujui {
+        background-color: lightcoral;
+    }
+    .sudahDisetujui {
+        background-color: lightgreen;
+    }
+</style>

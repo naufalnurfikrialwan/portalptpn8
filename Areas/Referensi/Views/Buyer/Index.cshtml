@@ -1,0 +1,433 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model Buyer
+
+@{
+    ViewBag.Title = "Referensi Buyers";
+}
+
+<h2>Referensi Buyers</h2>
+
+<div id="detailBuyer">
+    <div>
+        @(Html.Kendo()
+            .Grid<Buyer>()
+            .Name("grdBuyer")
+            .Columns(g =>
+            {
+                g.Bound(i => i.BuyerId).Hidden(); //.Width(150);
+                g.Bound(i => i.Nama).Width(120);
+                g.Bound(i => i.Inisial).Width(50);
+                g.Bound(i => i.Direktur).Width(120);
+                g.Bound(i => i.Foto).Width(100).Filterable(false).Sortable(false).Title("Foto").ClientTemplate(
+                       @"<div class='photo'><img src='" + Url.Content("~/Content/Images/View/") + "#:BuyerId#.jpg' alt='#: BuyerId #' /></div>");
+                g.Bound(i => i.Alamat).Width(120);
+                g.Bound(i => i.RT).Width(50);
+                g.Bound(i => i.RW).Width(50);
+                g.Bound(i => i.Telepon).Width(100);
+                g.Bound(i => i.Faksimili).Width(100);
+                g.Bound(i => i.Email).Width(100);
+                g.Bound(i => i.NPWP).Width(100);
+                g.Bound(i => i.Portal).Width(100);
+                g.Bound(i => i.kd_pemb).Title("Id-SPDK").Width(50);
+                g.Bound(i => i.Negara).Sortable(false).Filterable(false).ClientTemplate("#=Negara.Nama#").Width(120).Title("Negara");
+                g.Bound(i => i.Propinsi).Sortable(false).Filterable(false).ClientTemplate("#=Propinsi.Nama#").Width(120).Title("Propinsi");
+                g.Bound(i => i.Kota).Sortable(false).Filterable(false).ClientTemplate("#=Kota.Nama#").Width(120).Title("Kota");
+                g.Bound(i => i.Kecamatan).Sortable(false).Filterable(false).ClientTemplate("#=Kecamatan.Nama#").Width(120).Title("Kecamatan");
+                g.Bound(i => i.Kelurahan).Sortable(false).Filterable(false).ClientTemplate("#=Kelurahan.Nama#").Width(120).Title("Kelurahan");
+                g.Command(command =>
+                {
+                    command.Edit();
+                    command.Custom("Delete").Click("openWindow");
+                }).Width(180);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Create();
+            })
+            .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+            .Pageable()
+            .Filterable()
+            .Sortable()
+            .AutoBind(true)
+            .Groupable()
+            .Scrollable()
+            .ColumnMenu()
+            .Resizable(r => { r.Columns(true); })
+            .ClientDetailTemplateId("daftarLainnya")
+            .HtmlAttributes(new { style = "height: 450px" })
+            .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); })
+            .DataSource(o => o
+                .Ajax()
+                .Model(model =>
+                {
+                    model.Id(p => p.BuyerId);
+                    model.Field(p => p.BuyerId).Editable(false);//.DefaultValue(Guid.NewGuid());
+                    model.Field(p => p.Negara).DefaultValue(new Negara());
+                    model.Field(p => p.Propinsi).DefaultValue(new Propinsi());
+                    model.Field(p => p.Kota).DefaultValue(new Kota());
+                    model.Field(p => p.Kecamatan).DefaultValue(new Kecamatan());
+                    model.Field(p => p.Kelurahan).DefaultValue(new Kelurahan());
+                })
+
+                .Create(create => create.Action("buyerCreate", "Buyer", new { @onclick = "grdCreateOnClick" }).Type(HttpVerbs.Post))
+                .Read(read => read.Action("buyerRead", "Buyer").Type(HttpVerbs.Post))
+                .Update(update => update.Action("buyerUpdate", "Buyer").Type(HttpVerbs.Post))
+                .Destroy(destroy => destroy.Action("buyerDestroy", "Buyer").Type(HttpVerbs.Post))
+                )
+        )
+    </div>
+</div>
+
+
+<script id="daftarLainnya" type="text/kendo-tmpl">
+        @(Html.Kendo().TabStrip()
+            .Name("tabstrip_#=BuyerId#")
+            .SelectedIndex(0)
+            .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+            .Items(items =>
+            {
+                items.Add().Text("Budidaya").Content(@<text>
+                    @(Html.Kendo().Grid<BuyerBudidaya>()
+                    .Name("grdBuyerBudidaya_#=BuyerId#")
+                    .Columns(column =>
+                    {
+                        column.Bound(o => o.BuyerId).Width(100).Hidden();
+                        column.Bound(o => o.BuyerBudidayaId).Width(100).Hidden();
+
+                        column.ForeignKey(o => o.MainBudidayaId, CRUDBudidaya.CRUD.GetAllRecord(), "MainBudidayaId", "Nama")
+                            .Width(200).Title("Budidaya").EditorTemplateName("ddlBudidaya").Width(200);
+                        column.ForeignKey(o => o.RekeningId, CRUDRekening.CRUD.GetnRecord("130"), "RekeningId", "KodeRekening")
+                            .Width(200).Title("Rekening").EditorTemplateName("ddlRekening").Width(200);
+                        column.Command(command =>
+                        {
+                            command.Edit();
+                            command.Custom("Delete").Click("openWindow");
+                        }).Width(180);
+                    })
+                      .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+                      .Events(e => { e.Edit("grdBuyerBudidayaOnEdit"); e.DataBound("grdBuyerBudidayaOnDataBound"); })
+                                .ToolBar(toolbar =>
+                                {
+                                    toolbar.Create();
+                                })
+                                .DataSource(datasource => datasource
+                                    .Ajax()
+                                    .Model(model =>
+                                    {
+                                        model.Id(p => p.BuyerBudidayaId);
+                                        model.Field(p => p.BuyerBudidayaId).Editable(true);
+                                        model.Field(p => p.MainBudidayaId).Editable(true);
+                                        model.Field(p => p.BuyerId).Editable(true);
+                                        model.Field(p => p.Rekening).DefaultValue(new Rekening());
+                                        model.Field(p => p.Budidaya).DefaultValue(new MainBudidaya());
+                                    })
+                                    .Read(read => read.Action("BuyerBudidayaRead", "Buyer", new { buyerId = "#=BuyerId#" }).Type(HttpVerbs.Post))
+                                    .Create(create => create.Action("BuyerBudidayaCreate", "Buyer").Type(HttpVerbs.Post))
+                                    .Update(update => update.Action("BuyerBudidayaUpdate", "Buyer").Type(HttpVerbs.Post))
+                                    .Destroy(destroy => destroy.Action("BuyerBudidayaDestroy", "Buyer").Type(HttpVerbs.Post))
+                                )
+                                .ToClientTemplate()
+                             )
+                    </text>
+                );
+            })
+            .ToClientTemplate()
+    )
+</script>
+
+
+<div id="modalWindow">
+    <h2><span style="color: red">Hapus Data ?</span></h2>
+    <br />
+    <button style="background-color: red; color: white;" id="yes" class="k-button">Yes</button>
+    <button style="background-color: green; color: white;" id="no" class="k-button">No</button>
+</div>
+
+<script>
+
+    var buyerId;
+    var buyerBudidayaId;
+    var ddlNegara;
+    var ddlPropinsi;
+    var ddlKota;
+    var ddlKecamatan;
+    var ddlKelurahan;
+    var ddlBudidaya;
+    var uid;
+    var wnd;
+
+    $(document).ready(function () {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+    });
+
+    function openWindow(e) {
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.open().center();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        var grid = $('#grdBuyer').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("FileFoto", filename);
+    }
+
+    /* Grid Buyer */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDetailExpand(e) {
+        buyerId = this.dataItem(e.masterRow).BuyerId;
+    }
+
+    function grdOnDataBound(e) {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            model.BuyerId = model.uid;
+        }
+        buyerId = model.id;
+        ddlNegara = model.Negara;
+        ddlPropinsi = model.Propinsi;
+        ddlKota = model.Kota;
+        ddlKecamatan = model.Kecamatan;
+        ddlKelurahan = model.Kelurahan;
+        uid = model.uid;
+        this.expandRow(this.tbody.find("tr[data-uid='" + uid + "']"));
+    }
+
+    function grdOnChange(e) {
+    }
+
+    function ddlNegaraOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyer').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Negara", ddlItem);
+        data.set("NegaraId", ddlItem.NegaraId)
+    }
+
+    function ddlPropinsiOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyer').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Propinsi", ddlItem);
+        data.set("PropinsiId", ddlItem.PropinsiId)
+    }
+
+    function ddlKotaOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyer').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kota", ddlItem);
+        data.set("KotaId", ddlItem.KotaId);
+    }
+
+    function ddlKecamatanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyer').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kecamatan", ddlItem);
+        data.set("KecamatanId", ddlItem.KecamatanId);
+    }
+
+    function ddlKelurahanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyer').data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kelurahan", ddlItem);
+        data.set("KelurahanId", ddlItem.KelurahanId);
+    }
+
+    function ddlBudidayaOnSelect(e) {
+
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyerBudidaya_'+buyerId).data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        var data = grid.dataItem(row);
+
+        //grid.tbody.find("input[name=Budidaya]").val(ddlItem).change()
+        //grid.tbody.find("input[name=MainBudidayaId]").val(ddlItem.MainBudidayaId).change()
+
+        data.set("Budidaya", ddlItem);
+        data.set("MainBudidayaId", ddlItem.MainBudidayaId);
+    }
+
+    function ddlRekeningOnSelect(e) {
+
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdBuyerBudidaya_' + buyerId).data('kendoGrid');
+        var dataItem = grid.dataSource.get(buyerBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        var data = grid.dataItem(row);
+
+        //grid.tbody.find("input[name=Rekening]").val(ddlItem).change()
+        //grid.tbody.find("input[name=RekeningId]").val(ddlItem.RekeningId).change()
+
+        data.set("Rekening", ddlItem);
+        data.set("RekeningId", ddlItem.RekeningId);
+
+    }
+    function ddlNegaraOnDataBound(e) {
+        var ddl = $('#ddlNegara').data('kendoDropDownList');
+        ddl.search(ddlNegara.Nama);
+    }
+
+    function ddlPropinsiOnDataBound(e) {
+        var ddl = $('#ddlPropinsi').data('kendoDropDownList');
+        ddl.search(ddlPropinsi.Nama);
+    }
+
+    function ddlKotaOnDataBound(e) {
+        var ddl = $('#ddlKota').data('kendoDropDownList');
+        ddl.search(ddlKota.Nama);
+    }
+
+    function ddlKecamatanOnDataBound(e) {
+        var ddl = $('#ddlKecamatan').data('kendoDropDownList');
+        ddl.search(ddlKecamatan.Nama);
+    }
+
+    function ddlKelurahanOnDataBound(e) {
+        var ddl = $('#ddlKelurahan').data('kendoDropDownList');
+        ddl.search(ddlKelurahan.Nama);
+    }
+
+    function ddlBudidayaOnDataBound(e) {
+    }
+
+    function ddlRekeningOnDataBound(e) {
+    }
+
+    function filterPropinsi() {
+        return {
+            negaraId: $("#ddlNegara").val()
+        };
+    }
+
+    function filterKota() {
+        return {
+            propinsiId: $("#ddlPropinsi").val()
+        };
+    }
+
+    function filterKecamatan() {
+
+        return {
+            kotaId: $("#ddlKota").val()
+        };
+    }
+
+    function filterKelurahan() {
+
+        return {
+            kecamatanId: $("#ddlKecamatan").val()
+        };
+    }
+
+    /* Grid Sub Budidaya */
+    function grdBuyerBudidayaOnDataBound(e) {
+
+    }
+
+    function grdBuyerBudidayaOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=BuyerBudidayaId]").val(model.id).change(); // trigger change in order to notify the model binding
+            e.container.find("input[name=BuyerId]").val(buyerId).change(); // trigger change in order to notify the model binding
+            //e.container.find("input[name=MainBudidayaId]").val(ddlMainBudidayaId).change(); // trigger change in order to notify the model binding
+        }
+        buyerBudidayaId = model.id;
+    }
+
+</script>
+
+<style>
+    .photo {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+    }
+
+    .required {
+        font-weight: bold;
+    }
+
+    .accept, .status {
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    #headerBuyer {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: gainsboro;
+    }
+
+    #detailBuyer {
+    }
+
+    .toolbar {
+        float: right;
+    }
+
+    .addRecord {
+        float: left;
+    }
+
+    .category-label {
+        vertical-align: middle;
+        padding-right: .5em;
+    }
+
+    #categories {
+        vertical-align: middle;
+    }
+</style>

@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "DKM Mesjid Miftahul Jannah";
+}
+
+<html>
+<head>
+</head>
+
+<body>
+</body>
+</html>
+
+<script>
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://muslimsalat.p.rapidapi.com/bandung/daily/06-09-2019/false/5.json?method=5&times=daily&date=06-09-2019&location=bandung",
+        "method": "GET",
+        "headers": {
+            "x-rapidapi-host": "muslimsalat.p.rapidapi.com",
+            "x-rapidapi-key": "431c64f89fmsh9b891103371c5b7p190d40jsn82162e96b90a"
+        }
+    }
+
+    $(document).ready(function () {
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+        });
+    });
+</script>
+
+<style>
+    body {
+        background-color: #fff;
+        color: #000;
+        padding: 0;
+        margin: 0;
+    }
+
+    .container {
+        width: 95%;
+        max-height: none;
+        margin: 0 auto;
+        padding-top: 1em;
+    }
+
+        .container .ism-slider {
+            margin-left: 0 auto;
+            margin-right: auto;
+        }
+</style>

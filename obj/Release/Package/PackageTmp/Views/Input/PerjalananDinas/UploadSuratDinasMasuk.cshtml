@@ -1,0 +1,593 @@
+﻿@model Ptpn8.Models.MemoOnline.ScanSuratDinasMasuk
+@*<script src="~/Scripts/SAPHCM/HCM03_Addressess.js"></script>*@
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div class="_headersawit">
+    
+    
+</div>
+
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <div class="_headersawit">
+                
+                <table width="100%;" align="center" style="font-size: small;">
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Tahun Agenda:</label></td>
+                        <td>@(Html.Kendo().NumericTextBoxFor(m => m.thn_agenda).Min(2018).Format("D4").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width:80px" }))</td>
+
+                    </tr>
+                    <tr>
+                        <td width="5%"><label style="text-align: right; font-size: 12px;">Nomor Agenda:</label></td>
+                        <td width="20%">
+                            @(Html.Kendo().NumericTextBoxFor(m => m.no_agenda).Min(1).Format("D4").HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width:80px" }))
+
+                            <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                        </td>
+                        <td width="30%" align="left"></td>
+                    </tr>
+
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Tanggal Terima:</label></td>
+                        <td>@(Html.Kendo().DatePickerFor(m => m.tgl_terima).HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boleh Kosong", style = "width: 100%; " }))</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Penerima:</label></td>
+                        <td>@(Html.Kendo().TextBoxFor(m => m.penerima).HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Tanggal Surat:</label></td>
+                        <td>@(Html.Kendo().DatePickerFor(m => m.tgl_surat).HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Nomor Surat:</label></td>
+                        <td>@(Html.Kendo().TextBoxFor(m => m.no_surat).HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Pengirim:</label></td>
+                        <td>@(Html.Kendo().TextBoxFor(m => m.pengirim).HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Perihal:</label></td>
+                        <td>@(Html.Kendo().TextBoxFor(m => m.perihal).HtmlAttributes(new { required = "required", data_required_msg = "Tidak Boloh Kosong", style = "width: 100%; " }))</td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Scan Halaman 1:</label></td>
+                        <td>
+                            @Html.HiddenFor(m => m.Fileimg1)
+                            @(Html.Kendo().Upload()
+                                            .Name("files")
+                                            .Events(e => e.Success("UploadSuccess"))
+                                            .Multiple(false)
+                                            .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                                            .Async(a => a.Save("SaveFoto1", "Input")
+                                            .Remove("RemoveFoto1", "Input")
+                                            .AutoUpload(true)
+                                        )
+                            )
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Scan Halaman 2:</label></td>
+                        <td>
+                            @Html.HiddenFor(m => m.Fileimg2)
+                            @(Html.Kendo().Upload()
+                                            .Name("files2")
+                                            .Events(e => e.Success("UploadSuccess2"))
+                                            .Multiple(false)
+                                            .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                                            .Async(a => a.Save("SaveFoto2", "Input")
+                                            .Remove("RemoveFoto2", "Input")
+                                            .AutoUpload(true)
+                                        )
+                            )
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Scan Halaman 3:</label></td>
+                        <td>
+                            @Html.HiddenFor(m => m.Fileimg3)
+                            @(Html.Kendo().Upload()
+                                        .Name("files3")
+                                        .Events(e => e.Success("UploadSuccess3"))
+                                        .Multiple(false)
+                                        .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                                        .Async(a => a.Save("SaveFoto3", "Input")
+                                        .Remove("RemoveFoto3", "Input")
+                                        .AutoUpload(true)
+                                    )
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Scan Halaman 4:</label></td>
+                        <td>
+                            @Html.HiddenFor(m => m.Fileimg4)
+                            @(Html.Kendo().Upload()
+                                    .Name("files4")
+                                    .Events(e => e.Success("UploadSuccess4"))
+                                    .Multiple(false)
+                                    .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                                    .Async(a => a.Save("SaveFoto4", "Input")
+                                    .Remove("RemoveFoto4", "Input")
+                                    .AutoUpload(true)
+                                )
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label style="text-align: right; font-size: 12px;">Scan Halaman 5:</label></td>
+                        <td>
+                            @Html.HiddenFor(m => m.Fileimg5)
+                            @(Html.Kendo().Upload()
+                                .Name("files5")
+                                .Events(e => e.Success("UploadSuccess5"))
+                                .Multiple(false)
+                                .HtmlAttributes(new { style = "width: 100px; heigth: 100px    " })
+                                .Async(a => a.Save("SaveFoto5", "Input")
+                                .Remove("RemoveFoto5", "Input")
+                                .AutoUpload(true)
+                            )
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @*@(Html.Kendo().Button().Name("btnSimpan").Content("Simpan").HtmlAttributes(new { style = "width: 150px; height: 60px; background-color: yellow; font-size: 18px;" }).Events(ev => ev.Click("btnSimpanOnClick")))*@
+
+                            <button type="submit" id="btnSimpan" class="k-button" style="background-color: yellow; font-size: 18px; width: 150px; height: 60px; ">Simpan</button>
+
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><label>_</label></td>
+                        <td></td>
+
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+</div>
+
+<script>
+    var menuId = '243514a3-2d09-4661-b362-54dd51ea80c0';
+    var headerBaru=true;
+    var img_1, img_2, img_3, img_4, img_5;
+
+$('.k-window.titlebar').css('style', 'display: none');
+$(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+$(document).ready(function () {
+});
+
+angular.module("__header", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    simpanHeader().done(function (data) {
+                        if (data) {
+                            alert("Sukses");
+                        }
+                        else {
+                            openErrWindow();
+                        }
+                    })
+                    .fail(function (x) {
+                        alert("Error! Hubungi Bagian TI");
+                    });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                    gridDestroy();
+                }
+            }
+        });
+
+$(window).on("beforeunload", function () {
+	return "Please don't leave me!";
+});
+
+$(window).on("unload", function () {
+    hapusPenggunaPortalYangAktif();
+});
+
+function simpanHeader() {
+        var url = '/Input/simpanHeader';
+        var mdl = ViewToModel();
+        return $.ajax({
+            url: url,
+            //contentType: 'application/json; charset=utf-8',
+            data: {
+                _model: JSON.stringify(mdl),
+                _baru: headerBaru,
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function ViewToModel() {
+        var mdl = {
+            thn_agenda: $('#thn_agenda').val(),
+            no_agenda: $('#no_agenda').val(),
+            tgl_terima: $('#tgl_terima').val(),
+            penerima: $('#penerima').val(),
+            tgl_surat: $('#tgl_surat').val(),
+            no_surat: $('#no_surat').val(),
+            kel_pengirim: $('#kel_pengirim').val(),
+            pengirim: $('#pengirim').val(),
+            kel_perihal: $('#kel_perihal').val(),
+            perihal: $('#perihal').val(),
+            img1: img_1,
+            img2: img_2,
+            img3: img_3,
+            img4: img_4,
+            img5: img_5
+        };
+        return mdl;
+    }
+
+function hapusPenggunaPortalYangAktif()
+{
+    var url = '/Account/HapusPenggunaPortalYangAktif';
+    return $.ajax({
+        url: url,
+        data: {
+            _menuId: menuId
+        },
+        type: 'POST',
+        datatype: 'json'
+    });
+}
+
+
+    $(document).ready(function () {
+
+    });
+
+    function btnProsesOnClick()
+    {
+         CariSuratDinasOnSelect();
+    }
+
+    function CariSuratDinasOnSelect(e) {
+        GetSuratDinas().done(function (data) {
+            if (data.length > 0) {
+                var dta = data[0];
+                var tanggal_terima = new Date(parseInt(dta.tgl_terima.substr(6)));
+                var month = tanggal_terima.getMonth() + 1;
+                var day = tanggal_terima.getDate();
+                var year = tanggal_terima.getFullYear();
+                var date = day + "/" + month + "/" + year;
+                $('#tgl_terima').val(date);
+                $('#penerima').val(dta.penerima);
+                
+                var tanggal_surat = new Date(parseInt(dta.tgl_surat.substr(6)));
+                var month2 = tanggal_surat.getMonth() + 1;
+                var day2 = tanggal_surat.getDate();
+                var year2 = tanggal_surat.getFullYear();
+                var date2 = day2 + "/" + month2 + "/" + year2;
+                $('#tgl_surat').val(date2);
+                $('#no_surat').val(dta.no_surat);
+                $('#pengirim').val(dta.pengirim);
+                $('#perihal').val(dta.perihal);
+            }
+            else {
+                $('#tgl_terima').val('');
+                $('#penerima').val('');
+                $('#tgl_surat').val('');
+                $('#no_surat').val('');
+                $('#pengirim').val('');
+                $('#perihal').val('');
+            }
+        });
+    }
+
+    function GetSuratDinas() {
+        var url = '/Input/GetDataFrom';
+        var thn_agenda = $('#thn_agenda').val();
+        var no_agenda = $('#no_agenda').val();
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.MemoOnline.ScanSuratDinasMasuk',
+                scriptSQL: "SELECT [thn_agenda],[no_agenda],[tgl_terima],[penerima],[tgl_surat],[no_surat],[pengirim],[perihal],[img1],[img2],[img3],[img4],[img5] FROM [Sekper].[dbo].[agenda_surat_masuk] " +
+                    "WHERE [thn_agenda]=" + thn_agenda + " and [no_agenda] ="+no_agenda+"",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    
+
+    function SimpanData() {
+        var url = '/Input/ExecSQL';
+        var thn_agenda = $('#thn_agenda').val();
+        var no_agenda = $('#no_agenda').val();
+        var tgl_terima = new Date(parseInt($('#tgl_terima').val().substr(6)));
+        var penerima = $('#penerima').val();
+        var tgl_surat = new Date(parseInt($('#tgl_surat').val().substr(6)));
+        var no_surat = $('#no_surat').val();
+        var pengirim = $('#pengirim').val();
+        var perihal = $('#perihal').val();
+        
+
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec sekper.dbo.Simpan_AgendaSuraDinasMasuk '" + thn_agenda +
+                    "','" +no_agenda + "','" + tgl_terima + "','" + penerima + "','" + tgl_surat + "','" + no_surat +
+                    "','" + pengirim + "','" + perihal + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    //
+        // Please read scanner.js developer's guide at: http://asprise.com/document-scan-upload-image-browser/ie-chrome-firefox-scanner-docs.html
+        //
+
+        /** Initiates a scan */
+        function scanToJpg() {
+            scanner.scan(displayImagesOnPage,
+                    {
+                        "output_settings": [
+                            {
+                                "type": "return-base64",
+                                "format": "jpg"
+                            }
+                        ]
+                    }
+            );
+        }
+
+        /** Processes the scan result */
+        function displayImagesOnPage(successful, mesg, response) {
+            if(!successful) { // On error
+                console.error('Failed: ' + mesg);
+                return;
+            }
+
+            if(successful && mesg != null && mesg.toLowerCase().indexOf('user cancel') >= 0) { // User cancelled.
+                console.info('User cancelled');
+                return;
+            }
+
+            var scannedImages = scanner.getScannedImages(response, true, false); // returns an array of ScannedImage
+            for(var i = 0; (scannedImages instanceof Array) && i < scannedImages.length; i++) {
+                var scannedImage = scannedImages[i];
+                processScannedImage(scannedImage);
+            }
+        }
+
+        /** Images scanned so far. */
+        var imagesScanned = [];
+
+        /** Processes a ScannedImage */
+        function processScannedImage(scannedImage) {
+            imagesScanned.push(scannedImage);
+            var elementImg = scanner.createDomElementFromModel( {
+                'name': 'img',
+                'attributes': {
+                    'class': 'scanned',
+                    'src': scannedImage.src
+                }
+            });
+            
+            // var selectedfile = elementImg;
+            // if (selectedfile.length > 0) {
+            // var imageFile = selectedfile[0];
+            // var fileReader = new FileReader();
+            // fileReader.onload = function(fileLoadedEvent) {
+            //     var srcData = fileLoadedEvent.target.result;
+            //     var newImage = document.createElement('img');
+            //     newImage.src = srcData;
+            //     document.getElementById("dummy").innerHTML = newImage.outerHTML;
+            //     document.getElementById("txt").value = document.getElementById("dummy").innerHTML;
+            // }
+            // fileReader.readAsDataURL(imageFile);
+            // }
+
+            document.getElementById('images').appendChild(elementImg);
+
+            // function saveAs(blob, elementImg) {
+            //     var url = window.URL.createObjectURL(blob);
+
+            //     var anchorElem = document.createElement("a");
+            //     anchorElem.style = "display: none";
+            //     anchorElem.href = url;
+            //     anchorElem.download = elementImg;
+
+            //     document.body.appendChild(anchorElem);
+            //     anchorElem.click();
+
+            //     document.body.removeChild(anchorElem);
+
+            //     setTimeout(function() {
+            //         window.URL.revokeObjectURL(url);
+            //     }, 1000);
+            // }
+            // (function() {
+                // convert base64 string to byte array
+                // var img = elementImg;
+
+                // var c = document.createElement('canvas');
+                // var img = elementImg;
+                // c.height = img.naturalHeight;
+                // c.width = img.naturalWidth;
+                // var ctx = c.getContext('2d');
+
+                // ctx.drawImage(img, 0, 0, c.width, c.height);
+                // var base64String = c.toDataURL();
+                
+                // var byteCharacters = atob(base64String);
+                // var byteNumbers = new Array(byteCharacters.length);
+                // for (var i = 0; i < byteCharacters.length; i++) {
+                //     byteNumbers[i] = byteCharacters.charCodeAt(i);
+                // }
+                // var byteArray = new Uint8Array(byteNumbers);
+                
+                // now that we have the byte array, construct the blob from it
+                // var blob1 = new Blob([byteArray], {type: "application/octet-stream"});
+
+                // var fileName1 = "img.jpg";
+                // saveAs(blob1, fileName1);
+
+                // saving text file
+                // var blob2 = new Blob(["img"], {type: "jpg/plain"});
+                // var fileName2 = "img.jpg";
+                // saveAs(blob2, fileName2);
+            // })();   
+
+            
+
+        }
+        
+        // function encode() {
+        //     var selectedfile = document.getElementById("myinput").files;
+        //     if (selectedfile.length > 0) {
+        //     var imageFile = selectedfile[0];
+        //     var fileReader = new FileReader();
+        //     fileReader.onload = function(fileLoadedEvent) {
+        //         var srcData = fileLoadedEvent.target.result;
+        //         var newImage = document.createElement('img');
+        //         newImage.src = srcData;
+        //         document.getElementById("dummy").innerHTML = newImage.outerHTML;
+        //         document.getElementById("txt").value = document.getElementById("dummy").innerHTML;
+        //     }
+        //     fileReader.readAsDataURL(imageFile);
+        //     }
+        // }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#Fileimg1').val(filename);
+        var id =thn_agenda+no_agenda;
+
+        GetByteFromUpload(filename, id).done(function (data) {
+        img_1 = data.toString();
+        //row.find("input[name=Foto]").val(data).change();
+        }).fail(function () {
+            img_1 = null;
+        });
+    }
+
+    function UploadSuccess2(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#Fileimg2').val(filename);
+        var id =thn_agenda+no_agenda;
+
+        GetByteFromUpload(filename, id).done(function (data) {
+        img_2 = data.toString();
+        //row.find("input[name=Foto]").val(data).change();
+        }).fail(function () {
+            img_2 = null;
+        });
+    }
+
+    function UploadSuccess3(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#Fileimg3').val(filename);
+        var id =thn_agenda+no_agenda;
+
+        GetByteFromUpload(filename, id).done(function (data) {
+        img_3 = data.toString();
+        //row.find("input[name=Foto]").val(data).change();
+        }).fail(function () {
+            img_3 = null;
+        });
+    }
+
+    function UploadSuccess4(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#Fileimg4').val(filename);
+        var id =thn_agenda+no_agenda;
+
+        GetByteFromUpload(filename, id).done(function (data) {
+        img_4 = data.toString();
+        //row.find("input[name=Foto]").val(data).change();
+        }).fail(function () {
+            img_4 = null;
+        });
+    }
+
+    function UploadSuccess5(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        $('#Fileimg5').val(filename);
+        var id =thn_agenda+no_agenda;
+
+        GetByteFromUpload(filename, id).done(function (data) {
+        img_5 = data.toString();
+        //row.find("input[name=Foto]").val(data).change();
+        }).fail(function () {
+            img_5 = null;
+        });
+    }
+
+    function GetByteFromUpload(filename, id) {
+    var url = '/Input/GetByteFromUploadH';
+    return $.ajax({
+        url: url,
+        type: 'POST',
+        datatype: 'json',
+        data: {
+            _filename: filename,
+            _id: id,
+            _menuId: menuId,
+            _classHeaderView : 'Ptpn8.Models.MemoOnline.ScanSuratDinasMasuk' 
+        }
+    });
+}
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    img.scanned {
+        height: 200px; /** Sets the display size */
+        margin-right: 12px;
+    }
+
+    div#images {
+        margin-top: 20px;
+    }
+</style>
+

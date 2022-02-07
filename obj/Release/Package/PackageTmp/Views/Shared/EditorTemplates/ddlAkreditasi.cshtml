@@ -1,0 +1,16 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlAkreditasi")
+        .DataTextField("NM_AKRED")
+        .DataValueField("NM_AKRED")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterAkreditasi").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlAkreditasiOnSelect"); e.Change("ddlAkreditasiOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

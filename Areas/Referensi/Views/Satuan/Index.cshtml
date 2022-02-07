@@ -1,0 +1,88 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model Satuan
+
+@{
+    ViewBag.Title = "Referensi Satuan";
+}
+
+<h2>Referensi Satuan</h2>
+
+<div id="satuanDetail">
+    <div>
+        @(Html.Kendo()
+            .Grid<Satuan>()
+            .Name("grdSatuan")
+
+        .Columns(g =>
+        {
+            g.Bound(i => i.SatuanId).Width(200).Hidden();
+            g.Bound(i => i.Nama).Width(200);
+            g.Bound(i => i.kd_sat).Width(100).Title("Id-SPDK");
+            g.Command(command => { command.Edit(); command.Destroy(); }).Width(180);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+        })
+        .Editable(editable => editable.Mode(GridEditMode.InLine))
+        .Pageable()
+        
+        .Scrollable()
+        .HtmlAttributes(new { style = "height:400px;" })
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); })
+        .DataSource(o => o
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(p => p.SatuanId);
+                model.Field(p => p.SatuanId).Editable(true);
+            })
+
+            .Create(create => create.Action("SatuanCreate", "Satuan", new { @onclick = "grdCreateOnClick" }).Type(HttpVerbs.Post))
+            .Read(read => read.Action("SatuanRead", "Satuan").Type(HttpVerbs.Post))
+            .Update(update => update.Action("SatuanUpdate", "Satuan").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("SatuanDestroy", "Satuan").Type(HttpVerbs.Post))
+            )
+        )
+    </div>
+</div>
+
+<script>
+
+    var SatuanId;
+    var uid;
+
+    /* Grid Organisasi */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDetailExpand(e) {
+        SatuanId = this.dataItem(e.masterRow).SatuanId;
+    }
+
+    function grdOnDataBound(e) {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=SatuanId]").val(model.id).change(); // trigger change in order to notify the model binding
+        }
+        SatuanId = model.id;
+        uid = model.uid;
+    }
+
+    function grdOnChange(e) {
+    }
+
+</script>
+
+<style>
+    #satuanDetail {
+    }
+</style>

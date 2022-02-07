@@ -1,0 +1,10 @@
+﻿@model string
+@(Html.Kendo().DropDownListFor(m => m)
+        .MinLength(2)
+        .Filter("contains")
+        .DataTextField("Nama")
+        .DataSource(ds => ds.Read(r => r.Action("GetLokasiKerja2", "ddl", new { Area = "Referensi" }).Data("filterTujuan").Type(HttpVerbs.Post)))
+        .HtmlAttributes(new { style = "width: 100%" })
+        .Events(e => { e.Select("aucLokasiKerjaTujuanOnSelect"); e.DataBound("aucLokasiKerjaTujuanOnDataBound"); })
+)
+

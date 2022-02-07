@@ -1,0 +1,16 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlStatusPegawai")
+        .DataTextField("NAMA")
+        .DataValueField("NAMA")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterStatusPegawai").Type(HttpVerbs.Post)).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlStatusPegawaiOnSelect"); e.Change("ddlStatusPegawaiOnSelect"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

@@ -1,0 +1,68 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+            .DataTextField("Text")
+            .DataValueField("Value")
+            .BindTo(new List<SelectListItem>()
+            {
+    new SelectListItem() {
+        Text = "%",
+        Value = "%"
+    },
+new SelectListItem() {
+        Text = "Rp.",
+        Value = "Rp."
+    },
+    new SelectListItem() {
+        Text = "Hari",
+        Value = "Hari"
+    },
+    new SelectListItem() {
+        Text = "Rp/Kg",
+        Value = "Rp/Kg"
+    },
+new SelectListItem() {
+        Text = "Kg/Ha",
+        Value = "Kg/Ha"
+    },
+new SelectListItem() {
+        Text = "Kg",
+        Value = "Kg"
+    },
+new SelectListItem() {
+        Text = "Ton",
+        Value = "Ton"
+    },
+    new SelectListItem() {
+        Text = "Skor",
+        Value = "Skor"
+    },
+    new SelectListItem() {
+        Text = "Index",
+        Value = "Index"
+    },
+    new SelectListItem() {
+        Text = "Ratio",
+        Value = "Ratio"
+    },
+    new SelectListItem() {
+        Text = "Jam/Orang",
+        Value = "Jam/Orang"
+    },
+    new SelectListItem() {
+        Text = "Jumlah",
+        Value = "Jumlah"
+    },
+    new SelectListItem() {
+        Text = "Sertifikat SNI",
+        Value = "Sertifikat SNI"
+    },
+    new SelectListItem() {
+        Text = "Sertifikat Halal",
+        Value = "Sertifikat Halal"
+    }
+            })
+            .Events(e => { e.Change("ddlSatuanKPIOnChange"); e.Select("ddlSatuanKPIOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

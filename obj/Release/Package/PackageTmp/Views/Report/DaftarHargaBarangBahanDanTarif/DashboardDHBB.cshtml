@@ -1,0 +1,298 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Dashboard DHBB Online</div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="_detail" style="width:100%;height:490px;">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                .Items(tabstrip =>
+                {
+                tabstrip.Add().Text("I. Rekap").Selected(true)
+                .Content(@<text>
+                    @(Html.Kendo()
+                        .Grid<Ptpn8.DaftarHargaBarangBahanDanTarif.Models.DashboardDHBB>(Guid.Empty.ToString())
+                        .Name("grdDetail")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.KelompokBarang).Width(300).Title("Kelompok Barang").HtmlAttributes(new { style = "text-align: left; font-weight : 700" })
+                            .ClientFooterTemplate("JUMLAH")
+                            .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                            g.Bound(i => i.JumlahBarang).Width(100).Title("Jumlah Barang").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right; color: DarkOliveGreen; font-weight : 700" })
+                            .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                            .FooterHtmlAttributes(new { style = "text-align: center; background: silver;text-align: right;" });
+                            g.Command(com => com.GetType()).Width(300);
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                                    toolbar.Excel();
+                                })
+                        .Events(e => { e.DataBound("grdCariOnDataBound"); e.Change("grdCariOnChange"); })
+                        .Excel(excel => excel.AllPages(true))
+                        .AutoBind(true)
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Groupable()
+                        .Selectable(
+                            selectable => selectable
+                            .Type(GridSelectionType.Cell)
+                        )
+                        .Groupable()
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+                            .Aggregates(ag =>
+                            {
+                                ag.Add(x => x.JumlahBarang).Sum();
+                            })
+                        )
+                    )
+                </text>);
+                tabstrip.Add().Text("II. Grafik").Selected(false)
+                .Content(@<text>
+                    <div class="demo-section k-content wide">
+                        @(Html.Kendo().Chart<Ptpn8.DaftarHargaBarangBahanDanTarif.Models.DashboardDHBB_Chart>()
+                        .Name("chart")
+                        .Title("Jumlah Per Kelompok Barang")
+                        .Legend(legend => legend.Position(ChartLegendPosition.Top))
+                        .DataSource(ds => ds
+                            .Read(read => read.Action("GetDataFrom", "Report").Type(HttpVerbs.Post).Data("filterReport3"))
+                        )
+                        .ChartArea(chartArea => chartArea
+                            .Background("transparent")
+                        )
+                        .Series(series =>
+                        {
+                            series.Bar(model => model.Jumlah).Name("Jumlah").Color("CornflowerBlue");
+                            
+                        })
+                        .CategoryAxis(axis => axis
+                                .Categories(model => model.KelompokBarang)
+
+                                )
+                        .ValueAxis(axis => axis
+                            .Numeric()
+                            .Line(line => line.Visible(false))
+                            .MajorGridLines(lines => lines.Visible(true))
+                        )
+                        .Tooltip(tooltip => tooltip
+                            .Visible(true)
+                            .Template("#= series.name #: #= value #")
+                        )
+        )
+    </div>
+</text>);
+                })
+    )
+</div>
+
+<script>
+    var bagian;
+    var kode, colIdx, pilihan;
+
+    $(document).ready(function () {
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+
+
+        gridStatus = 'belum-ngapa-ngapain';
+    })
+
+    function onButtonClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var file = data.File;
+
+        pdf.open().center();
+
+        var options = {
+            pdfOpenParams: {
+                navpanes: 1,
+                toolbar: 0,
+                statusbar: 0,
+                pagemode: 'none',
+                pagemode: "none",
+                page: 1,
+                zoom: "page-width",
+
+                enableHandToolOnLoad: true
+            } //,
+            //forcePDFJS: true,
+            //PDFJS_URL: "/PDF.js/web/viewer.html"
+        }
+
+
+        PDFObject.embed("/Content/Images/Document/SMPNVIII/" + file, "#testPDFObject", options)
+    }
+
+    function grdCariOnDataBound(e) {
+    }
+
+    function grdCariOnChange(e) {
+        var selected = $.map(this.select(), function (item) {
+            return $(item).text();
+        });
+
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        //colIdx = $("td", row).index(row);
+        var data = grid.dataItem(row);
+        var x = grid.select();
+        var r = x.closest("tr");
+        var xx = grid.dataItem(r);
+        bagian = xx.NamaBagian;
+        kode = selected.toString();
+        if (kode.indexOf("PK") > -1) { pilihan = "PK" }
+        else if (kode.indexOf("IK") > -1) { pilihan = "IK" }
+        else if (kode.indexOf("DP") > -1) { pilihan = "DP" }
+        else if (kode.indexOf("FM") > -1) { pilihan = "FM" }
+        else if (kode.indexOf("Pedoman") > -1) { pilihan = "Pedoman" }
+        else pilihan = "";
+
+
+        $("#tabstrip").data("kendoTabStrip").select(2);
+        var grid = $('#grdDetail2').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    //fungsi menampilkan rincian PK dan IK
+    function filterReport2(e) {
+        if (pilihan == "PK") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and (A.NomorDokumen like 'PK%' or A.NomorDokumen like 'SOP%') and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "IK") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.NomorDokumen like 'IK%' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "DP") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.NomorDokumen like 'DP%' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "FM") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.NomorDokumen like 'FM%' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else if (pilihan == "Pedoman") {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and (A.NomorDokumen like 'KEP%' or A.NomorDokumen like 'SK%') and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+        else {
+            return {
+                strClassView: 'Ptpn8.SMPNVIII.Models.ReportDokumen',
+                scriptSQL: "Select B.NamaUnit as NamaBagian, A.* " +
+                    "from [SPDK_KanpusEF].[dbo].[Dokumen] as A join [ReferensiEF].[dbo].[Unit] as B on A.BagianId=B.OrgId " +
+                    "where B.NamaUnit ='" + bagian + "' and A.Verifikasi=1 " +
+                    "order by A.Nama "
+            }
+        }
+    }
+
+    //fungsi dashboard
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.DaftarHargaBarangBahanDanTarif.Models.DashboardDHBB',
+            scriptSQL: "SELECT [KelompokBarang], COUNT(DHBB_BarangId) as JumlahBarang "+
+                       "FROM [SPDK_KanpusEF].[dbo].[DHBB_Barang] "+
+                       "group by KelompokBarang "+
+                       "order by KelompokBarang"
+        }
+    }
+
+    function filterReport3(e) {
+        return {
+            strClassView: 'Ptpn8.DaftarHargaBarangBahanDanTarif.Models.DashboardDHBB_Chart',
+            scriptSQL: "declare @@dashboard as table "+
+                       "(KelompokBarang nvarchar(max),Jumlah int) "+
+                       "insert @@dashboard Select distinct A.KelompokBarang, count(A.DHBB_BarangId) as Jumlah "+
+                       "from SPDK_KanpusEF.dbo.DHBB_Barang as A "+
+                       "group by A.KelompokBarang " +
+                       "Select * from @@Dashboard "
+        }
+    }
+
+
+
+</script>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div class="notclick" id="testPDFObject" style="height:100%">
+    </div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    <script type='text/javascript'>
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        }, false);
+    </script>
+</div>
+
+
+
+
+

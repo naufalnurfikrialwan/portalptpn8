@@ -1,0 +1,286 @@
+﻿@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+<script src="~/Scripts/PerjanjianKerjasama/UploadPerjanjianKerjasama.js"></script>
+
+@*header*@
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.PerjanjianKerjasama.Models.ViewPerjanjianKerjasama_Dokumen>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.PerjanjianKerjasama_DokumenId).Width(50).Hidden();
+                    g.Bound(i => i.BagianId).Width(50).Hidden();
+                    g.Bound(i => i.NoBaris).Template(t => { }).Title("No.").ClientTemplate("#= renderNumber(data) #").Width(70);
+                    g.Group(i =>
+                    {
+                        i.Title("Rincian Perjanjian Kerjasama");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.NomorPerjanjian).Title("Nomor Perjanjian").Width(120);
+                            c.Bound(j => j.TanggalPenandatangananPerjanjian).Width(100).Title("Tgl Penandatanganan Perjanjian").Format("{0:dd/MM/yyyy}");
+                            c.Bound(j => j.BentukKerjasama).Title("Bentuk Kerjasama").Width(100);
+                            c.Bound(j => j.Perihal).Title("Ruang Lingkup Kerjasama").Width(200);
+                            c.Bound(j => j.JenisPerjanjian).Title("Jenis").Width(150);
+                            c.Bound(j => j.NamaMitra).Title("Mitra").Width(150);
+                            c.Bound(j => j.LokasiPerjanjian).Title("Lokasi Perjanjian").Width(150);
+                            c.Bound(j => j.PIC).Title("PIC").Width(150);
+                        });
+                    });
+                    g.Group(i =>
+                    {
+                        i.Title("Jangka Waktu");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.JangkaWaktuKerjasama).Title("Jangka Waktu").Width(150);
+                            c.Bound(j => j.TanggalMulai).Width(100).Title("Tgl Mulai").Format("{0:dd/MM/yyyy}");
+                            c.Bound(j => j.TanggalBerakhir).Width(100).Title("Tgl Berakhir").Format("{0:dd/MM/yyyy}");
+                        });
+                    });
+                    g.Group(i =>
+                    {
+                        i.Title("Kompensasi");
+                        i.Columns(c =>
+                        {
+                            c.Bound(j => j.BentukKompensasi).Title("Bentuk Kompensasi").Width(150);
+                            c.Bound(j => j.NilaiNominal).Title("Nilai Nominal").Width(150).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" });
+                        });
+                    });
+                    g.Bound(i => i.StatusOtoritas).Title("Status Otoritas").Width(150).Hidden();
+                    g.Bound(i => i.Keterangan).Title("Keterangan").Width(150);
+                    g.Bound(i => i.File).Title("File").Width(120).Hidden();
+                    g.Bound(i => i.PasswordFile).Title("File").Width(120).Hidden();
+                    g.Command(command =>
+                    {
+                        command.Custom("Upload").Text(" Upload File").Click("uploadData")
+                                      .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                        command.Custom("UploadSHP").Text(" Upload File SHP").Click("uploadDataSHP")
+                                      .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: orange; color: white; height: 20px;" });
+                        command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                      .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                        command.Custom("Delete").Text(" Hapus Baris").Click("openWindow")
+                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                    }).Width(200);
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                    "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                    "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                    toolbar.Excel();
+                })
+                .AutoBind(true)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Excel(excel => excel.AllPages(true))
+                .Sortable()
+                .Groupable()
+                .Filterable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+                    e.DataBound("resetRowNumber");
+                })
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    .Sort(s => s.Add(x => x.NomorPerjanjian))
+                    .Batch(true)
+                    .Model(model =>
+                    {
+                        model.Id(p => p.PerjanjianKerjasama_DokumenId);
+                    })
+                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                )
+    )
+</div>
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+                    // Each report viewer must have an id - it will be used by the initialization script
+                    // to find the element and initialize the report viewer.
+                    .Id("reportViewer")
+                    // The URL of the service which will serve reports.
+                    // The URL corresponds to the name of the controller class (ReportsController).
+                    // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                    .ServiceUrl(Url.Content("/api/reports/"))
+                    // The URL for custom report vie    wer template. The template can be edited -
+                    // new functionalities can be added and unneeded ones can be removed.
+                    // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                    //
+                    // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                    .ReportSource(new UriReportSource() { Uri = "../Reports/PerjanjianKerjasama/Dokumen.trdx" })
+                    // Specifies whether the viewer is in interactive or print preview mode.
+                    // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                    // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                    .ViewMode(ViewMode.Interactive)
+                    // Sets the scale mode of the viewer.
+                    // Three modes exist currently:
+                    // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                    // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                    // Specific - Uses the scale to zoom in and out the report.
+                    .ScaleMode(ScaleMode.Specific)
+                    // Zoom in and out the report using the scale
+                    // 1.0 is equal to 100%, i.e. the original size of the report
+                    .Scale(1.0)
+                    // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                    // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                    .PersistSession(false)
+                    // Sets the print mode of the viewer.
+                    .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Invoice dengan No SI ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div id="uploadFile">
+    @(Html.Kendo().Upload()
+            .Name("files")
+            .Async(a => a
+                .Save("SavePerjanjianKerjasama", "Input")
+                .AutoUpload(true)
+            )
+            .Events(e => e.Success("uplOnSuccess"))
+            .Multiple(false)
+    )
+</div>
+<div id="uploadFileSHP">
+    @(Html.Kendo().Upload()
+            .Name("filesSHP")
+            .Async(a => a
+                .Save("SaveSHPPerjanjianKerjasama", "Input")
+                .AutoUpload(true)
+            )
+            .Events(e => e.Success("uplOnSuccessSHP"))
+            .Multiple(false)
+    )
+</div>
+<script>
+    var usrName = "@HttpContext.Current.User.Identity.Name";
+</script>
+
+
+
+
+
+

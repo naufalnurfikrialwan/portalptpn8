@@ -1,0 +1,11 @@
+﻿@model Ptpn8.UploadDataHarian.Models.ref_dik
+@(Html.Kendo()
+    .AutoCompleteFor(m => m.NAMA)
+    .ValuePrimitive(true)
+    .Placeholder("Pilih Pengemudi")
+    .DataTextField("NAMA")
+    .MinLength(2)
+    .Filter("contains")
+    .DataSource(o => { o.Read(r => r.Action("GetDataFrom", "Input").Data("filterPengemudi").Type(HttpVerbs.Post)); })
+    .Events(e => { e.Change("aucPengemudiOnSelect"); e.Select("aucPengemudiOnDataBound"); })
+)

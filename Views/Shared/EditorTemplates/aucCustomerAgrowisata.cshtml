@@ -1,0 +1,12 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Cari ID Pelanggan")
+        .DataTextField("NoIdentitas")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetCustomer_Agrowisata", "ddl", new { Area = "Referensi" }).Data("filterCustomer_Agrowisata")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucCustomer_AgrowisataOnSelect"); e.DataBound("aucCustomer_AgrowisataOnDataBound"); })
+)

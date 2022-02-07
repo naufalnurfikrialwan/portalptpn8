@@ -1,0 +1,21 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m=>m)
+        .Placeholder("Pembeli")
+        .DataTextField("Nama")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetBuyer1", "ddl", new { Area = "Referensi" }).Data("filterBuyer")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucNamaBuyerOnSelect"); e.DataBound("aucNamaBuyerOnDataBound"); })
+)
+
+
+
+
+
+
+
+
+

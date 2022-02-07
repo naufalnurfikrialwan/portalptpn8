@@ -1,0 +1,346 @@
+﻿@using Ptpn8.Areas.Referensi.Models
+@using Ptpn8.Areas.Referensi.Models.CRUD
+
+@model Grade
+@{
+    ViewBag.Title = "Referensi Grade Produk";
+}
+
+<h2>Referensi Grade Produk</h2>
+
+<div id="refGrade" ng-app="_refGrade">
+    <div class="k-content" ng-controller="MyCtrl">
+        <div id="headerGrade">
+            <form kendo-validator="validator" ng-submit="validate($event)">
+                <table>
+                    <tr>
+                        <td><label for="ddlBudidaya">Budidaya:</label></td>
+                        <td>
+                            @(Html.Kendo().DropDownList()
+                                .Name("ddlBudidaya")
+                                .AutoBind(true)
+                                .OptionLabel("Pilih ..")
+                                .DataTextField("Nama")
+                                .DataValueField("MainBudidayaId")
+                                .Template("<table><tr><td><span class=\"k-state-default\"><img src=\"" + Url.Content("~/Content/Images/View/") + "#:MainBudidayaId#.jpg\" alt=\"#:MainBudidayaId#\" /></span></td>" +
+                                    "<td><span class=\"k-state-default\"><h3>#: Nama #</h3></span></td></tr></table>")
+                                .DataSource(o => o.Read(r => r.Action("getBudidaya", "ddl", new { Area = "Referensi" })).ServerFiltering(true))
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Budidaya", style = "width: 300px" })
+                                .Events(e =>
+                                {
+                                    e.Select("ddlBudidayaOnSelect"); e.DataBound("ddlBudidayaOnDataBound");
+                                })
+                            )
+                            <span class="k-invalid-msg" data-for="ddlBudidaya"></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><label for="ddlSubBudidaya">Sub Budidaya:</label></td>
+                        <td>
+                            @(Html.Kendo().DropDownList()
+                        .Name("ddlSubBudidaya")
+                        .AutoBind(true)
+                        .OptionLabel("Pilih Sub ..")
+                        .DataTextField("Nama")
+                        .DataValueField("SubBudidayaId")
+                        .DataSource(o => o.Read(r => r.Action("getSubBudidaya", "ddl", new { Area = "Referensi" }).Data("filterSubBudidaya")).ServerFiltering(true))
+                        .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Sub Budidaya", style = "width: 300px" })
+                        .Events(e =>
+                        {
+                            e.Select("ddlSubBudidayaOnSelect"); e.DataBound("ddlSubBudidayaOnDataBound");
+                        })
+                        .CascadeFrom("ddlBudidaya")
+                        .Enable(false)
+                            )
+                            <span class="k-invalid-msg" data-for="ddlSubBudidaya"></span>
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="confirm">
+                                <button class="k-button k-primary" type="submit">Submit</button>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="detailBudidaya">
+    @(Html.Kendo()
+        .Grid<Grade>()
+        .Name("grdGrade")
+        .Columns(g =>
+        {
+            g.Bound(i => i.GradeId).Width(100).Hidden();
+            g.Bound(i => i.SubBudidayaId).Width(100).Hidden();
+            g.Bound(i => i.kd_grade).Width(80).Title("Id-SPDK");
+            g.Bound(i => i.Nama).Width(200);
+            g.Bound(i => i.Merk).Width(100);
+            g.Bound(i => i.Satuan).Width(80).ClientTemplate("#=Satuan.Nama#").Title("Satuan");
+            g.Bound(i => i.Kemasan).Width(80).ClientTemplate("#=Kemasan.Nama#").Title("Kemasan");
+            g.Bound(i => i.JumlahSatuan).Width(80);
+            g.Bound(i => i.Ukuran).Width(80);
+            g.Bound(i => i.Foto).Width(100).Title("Foto").ClientTemplate(
+                    @"<div class='photo'><img src='" + Url.Content("~/Content/Images/View/") + "#:GradeId#.jpg' alt='#: GradeId #' /></div>");
+            g.Command(command => {
+                command.Edit();
+                //command.Destroy();
+                command.Custom("Delete").Click("openWindow");
+            }).Width(180);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Create();
+        })
+        .AutoBind(false)
+        .Editable(editable => editable.Mode(GridEditMode.InLine).DisplayDeleteConfirmation(false))
+        .Selectable()
+        .Pageable()
+        .HtmlAttributes(new { style="Height: 330px"})
+        .Scrollable()
+        .Events(e => { e.Change("grdOnChange"); e.Edit("grdOnEdit"); e.DetailExpand("grdOnDetailExpand"); e.DataBinding("grdOnDataBinding"); })
+        .DataSource(o => o
+            .Ajax()
+            //.ServerOperation(false)
+            .Model(model =>
+            {
+                model.Id(p => p.GradeId);
+                model.Field(p => p.GradeId).Editable(true);
+                model.Field(p => p.SubBudidayaId).Editable(true);
+                model.Field(p => p.Satuan).DefaultValue(new Satuan());
+                model.Field(p => p.Kemasan).DefaultValue(new Kemasan());
+            })
+            .Read(read => read.Action("GradeRead", "Grade").Data("filterGrid").Type(HttpVerbs.Post))
+            .Create(create => create.Action("GradeCreate", "Grade").Type(HttpVerbs.Post))
+            .Update(update => update.Action("GradeUpdate", "Grade").Type(HttpVerbs.Post))
+            .Destroy(destroy => destroy.Action("GradeDestroy", "Grade").Type(HttpVerbs.Post))
+            .ServerOperation(false)
+            )
+
+    )
+</div>
+
+<div id="modalWindow">
+    <h2><span style="color: red">Hapus 1 Record ?</span></h2>
+    <br />
+    <button style="background-color: red; color: white;" id="yes" class="k-button">Yes</button>
+    <button style="background-color: green; color: white;" id="no" class="k-button">No</button>
+</div>
+
+@* validator *@
+<script>
+    angular.module("_refGrade", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                    $("#grdGrade").data("kendoGrid").dataSource.read({ subBudidayaId: $("#ddlSubBudidaya").val() });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+                    $("#grdGrade").data("kendoGrid").dataSource.data([]);
+                }
+            }
+        });
+</script>
+
+<script>
+    var subBudidayaId;
+    var ddlSatuan;
+    var ddlKemasan;
+    var ddlBudidaya;
+    var ddlSubBudidaya;
+    var uid;
+    var wnd;
+
+    $(document).ready(function () {
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Delete confirmation",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+    });
+
+    function openWindow(e) {
+        e.preventDefault();
+
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wnd.open().center();
+
+        $("#yes").click(function () {
+            grid.removeRow(row);
+            wnd.close();
+        });
+
+        $("#no").click(function () {
+            wnd.close();
+        });
+    }
+
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+
+    function UploadSuccess(e)
+    {
+        var files = e.files;
+        var filename = files[0].name;
+        var grid = $('#grdGrade').data('kendoGrid');
+        var dataItem = grid.dataSource.get(subBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("FileFoto", filename);
+    }
+
+    function grdOnDataBinding(e)
+    {
+
+    }
+
+    function btnSubmit()
+    {
+    }
+
+    function filterGrid() {
+        return {
+            subBudidayaId: $("ddlSubBudidaya").val()
+        };
+    }
+
+    /* Grid Grade */
+    function grdCreateOnClick(e) {
+
+    }
+
+    function grdOnDetailExpand(e) {
+        subBudidayaId = this.dataItem(e.masterRow).SubBudidayaId;
+        uid = this.dataItem(e.masterRow).uid;
+    }
+
+    function grdOnDataBound(e) {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        uid = model.uid;
+        this.expandRow(this.tbody.find("tr[data-uid='" + uid + "']"));
+        if (model.isNew()) {
+            model.id = model.uid;
+            e.container.find("input[name=GradeId]").val(model.id).change();
+            e.container.find("input[name=SubBudidayaId]").val(ddlSubSubBudidayaId).change();
+        }
+        subBudidayaId = model.id;
+        ddlSatuan = model.Satuan;
+        ddlKemasan = model.Kemasan;
+        
+    }
+
+
+    function grdOnChange(e) {
+    }
+
+    function ddlSatuanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdGrade').data('kendoGrid');
+        var dataItem = grid.dataSource.get(subBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Satuan", ddlItem);
+        data.set("SatuanId", ddlItem.SatuanId)
+    }
+
+    function ddlKemasanOnSelect(e) {
+        var ddlItem = this.dataItem(e.item);
+        var grid = $('#grdGrade').data('kendoGrid');
+        var dataItem = grid.dataSource.get(subBudidayaId);
+        var row = grid.tbody.find("tr[data-uid='" + uid + "']");
+        var data = grid.dataItem(row);
+        data.set("Kemasan", ddlItem);
+        data.set("KemasanId", ddlItem.KemasanId);
+    }
+
+    function ddlSatuanOnDataBound(e) {
+        var ddl = $('#ddlSatuan').data('kendoDropDownList');
+        ddl.search(ddlSatuan.Nama);
+    }
+
+    function ddlKemasanOnDataBound(e) {
+        var ddl = $('#ddlKemasan').data('kendoDropDownList');
+        ddl.search(ddlKemasan.Nama);
+    }
+
+    function ddlBudidayaOnSelect(e) {
+        ddlBudidaya = this.dataItem(e.item);
+    }
+
+    function ddlSubBudidayaOnSelect(e) {
+        ddlSubBudidaya = this.dataItem(e.item);
+    }
+
+    function ddlBudidayaOnDataBound(e) {
+    }
+
+    function ddlSubBudidayaOnDataBound(e) {
+    }
+
+    function filterSubBudidaya() {
+
+        return {
+            mainBudidayaId: $("#ddlBudidaya").val()
+        };
+    }
+
+    
+
+</script>
+
+<style>
+    .photo {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        //border-radius: 50%;
+        //background-size: 32px 35px;
+        //background-position: center center;
+        //vertical-align: middle;
+        //line-height: 32px;
+        //box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        //margin-left: 5px;
+    }
+
+    .required {
+        font-weight: bold;
+    }
+
+    .accept, .status {
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    #headerGrade {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: gainsboro;
+    }
+
+    #detailGrade {
+    }
+</style>

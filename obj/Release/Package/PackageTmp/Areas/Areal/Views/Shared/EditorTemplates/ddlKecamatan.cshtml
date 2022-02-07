@@ -1,0 +1,23 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Kecamatan
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .AutoBind(false)
+        .Name("ddlKecamatan")
+        .OptionLabel("Pilih Kecamatan...")
+        .DataTextField("Nama")
+        .DataValueField("KecamatanId")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("getKecamatan", "ddl", new { Area = "Referensi" }).Data("filterKecamatan")).ServerFiltering(true);
+        })
+        .Enable(false)
+        .CascadeFrom("ddlKota")
+        .Events(e => { e.Select("ddlKecamatanOnSelect"); e.DataBound("ddlKecamatanOnDataBound");
+        })
+
+)
+@Html.ValidationMessageFor(m => m)
+
+<script>
+    
+</script>

@@ -1,0 +1,20 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Publik",
+                Value = "Publik"
+            },
+            new SelectListItem() {
+                Text = "Non Publik",
+                Value = "Non Publik"
+            }
+        })
+        .Events(e => { e.Change("ddlStatusOtoritasOnChange"); e.Select("ddlStatusOtoritasOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

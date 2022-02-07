@@ -1,0 +1,23 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Disetujui",
+                Value = "Disetujui"
+            },
+            new SelectListItem() {
+                Text = "Konfirmasi Ganti Waktu/Ruang",
+                Value = "Konfirmasi Ganti Waktu/Ruang"
+            },
+            new SelectListItem() {
+                Text = "Ditolak",
+                Value = "Ditolak"
+            }
+        })
+        .Events(e => { e.Change("ddlVerifikasiRuangRapatOnChange"); e.Select("ddlVerifikasiRuangRapatOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)

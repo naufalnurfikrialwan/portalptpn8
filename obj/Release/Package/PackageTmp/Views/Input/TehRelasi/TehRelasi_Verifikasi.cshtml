@@ -1,0 +1,292 @@
+﻿
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/jquery.maskedinput.js"></script>
+<script src="~/Scripts/TehRelasi/TehRelasi_Verifikasi.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                        .Grid<Ptpn8.TehRelasi.Models.TehRelasiView_HDRPengajuan>(Guid.Empty.ToString())
+                        .Name("grdDetail")
+                        .Columns(g =>
+                        {
+                            g.Bound(i => i.TehRelasi_HDRPengajuanId).Width(50).Hidden();
+                            g.Bound(i => i.UnitId).Width(50).Hidden();
+                            g.Bound(i => i.TahunBuku).Width(100).Title("Tahun").Hidden();
+                            g.Bound(i => i.NomorInput).Width(200).Hidden();
+                            g.Bound(i => i.NomorInputView).Width(200).Hidden();
+                            g.Bound(i => i.VerKaur).Width(70).Title("Verifikasi").ClientTemplate("<input id='#=TehRelasi_HDRPengajuanId#' type='checkbox' #= VerKaur ? checked='checked' :'' # onclick='handleClickBel1(this)'/>");
+                            g.Bound(i => i.No_Pengajuan).Width(70).Title("No Pengajuan");
+                            g.Bound(i => i.Tanggal_Pengajuan).Width(100).Title("Tanggal Pengajuan").Format("{0:dd/MM/yyyy}");
+                            g.Group(i =>
+                            {
+                                i.Title("Detail Relasi");
+                                i.Columns(c =>
+                                {
+                                    c.Bound(j => j.NamaRelasi).Width(150).Title("Nama Relasi");
+                                    c.Bound(j => j.Keterangan).Width(200).Title("Keperluan");
+                                });
+                            });
+                            g.Bound(i => i.UserName).Width(100).Title("Pembuat");
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Excel();
+                            toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                        })
+                        .AutoBind(true)
+                        .Navigatable()
+                        .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                        .Resizable(resizeable => resizeable.Columns(true))
+                        .Scrollable()
+                        .Sortable()
+                        .Excel(excel =>
+                        {
+                            excel.FileName("VerifikasiList.xlsx");
+                            excel.Filterable(true);
+                        }
+                        )
+                        .HtmlAttributes(new { style = "Height: 450px" })
+                        .ClientDetailTemplateId("detailVerifikasi")
+                        .Filterable()
+                        .Groupable()
+                        .Sortable()
+                        .Events(e =>
+                         {
+                             e.Change("grdOnChange");
+                             e.Edit("grdOnEdit");
+                             e.DataBinding("grdOnDataBinding");
+                             e.DetailExpand("grdOnDetailExpand");
+                             e.DataBound("grdOnDataBound");
+                         })
+                        .DataSource(o => o
+                            .Ajax()
+                            .ServerOperation(false)
+                            .Sort(s => s.Add(x => x.Tanggal_Pengajuan))
+                            .Batch(true)
+                            .Model(model =>
+                            {
+                                model.Id(p => p.TehRelasi_HDRPengajuanId);
+                                model.Field(f => f.No_Pengajuan).Editable(false);
+                                model.Field(f => f.Tanggal_Pengajuan).Editable(false);
+                                model.Field(f => f.NamaRelasi).Editable(false);
+                                model.Field(f => f.Keterangan).Editable(false);
+                                model.Field(f => f.UserName).Editable(false);
+                            })
+                            .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                            .Create(create => create.Action("detailCreate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                            .Update(update => update.Action("detailUpdate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                            .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                            )
+    )
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+                                    // Each report viewer must have an id - it will be used by the initialization script
+                                    // to find the element and initialize the report viewer.
+                                    .Id("reportViewer")
+                                    // The URL of the service which will serve reports.
+                                    // The URL corresponds to the name of the controller class (ReportsController).
+                                    // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                                    .ServiceUrl(Url.Content("/api/reports/"))
+                                    // The URL for custom report vie    wer template. The template can be edited -
+                                    // new functionalities can be added and unneeded ones can be removed.
+                                    // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                                    //
+                                    // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                                    .ReportSource(new UriReportSource() { Uri = "../Reports/Agrowisata/VoucherRoom.trdx" })
+                                    // Specifies whether the viewer is in interactive or print preview mode.
+                                    // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                                    // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                                    .ViewMode(ViewMode.Interactive)
+                                    // Sets the scale mode of the viewer.
+                                    // Three modes exist currently:
+                                    // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                                    // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                                    // Specific - Uses the scale to zoom in and out the report.
+                                    .ScaleMode(ScaleMode.Specific)
+                                    // Zoom in and out the report using the scale
+                                    // 1.0 is equal to 100%, i.e. the original size of the report
+                                    .Scale(1.0)
+                                    // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                                    // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                                    .PersistSession(false)
+                                    // Sets the print mode of the viewer.
+                                    .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Faktur dengan No PO ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<script id="detailVerifikasi" type="text/kendo-tmpl">
+    @(Html.Kendo().Grid<Ptpn8.TehRelasi.Models.TehRelasiView_DTLPengajuan>()
+                .Name("grdDetailVerifikasi_#=TehRelasi_HDRPengajuanId#")
+                .Columns(column =>
+                {
+                    column.Bound(o => o.TehRelasi_DTLPengajuanId).Hidden();
+                    column.Bound(o => o.TehRelasi_HDRPengajuanId).Hidden();
+                    column.Bound(o => o.NoBaris).Template(t => { }).Title("No.").ClientTemplate("#= renderNumber(data) #").Width(15);
+                    column.Bound(o => o.Permintaan).Width(120).Title("Product Item");
+                    column.Bound(o => o.Jumlah).Title("Jumlah").Width(100);
+                    column.Bound(o => o.Keterangan).Title("Keterangan").Width(200);
+                })
+                .AutoBind(false)
+                .Events(e => { e.Edit("grdDetailVerifikasiOnEdit"); e.DataBound("grdDetailVerifikasiOnDataBound"); })
+                .DataSource(datasource => datasource
+                    .Ajax()
+                .Sort(s => s.Add(x => x.Permintaan))
+                    .Model(model =>
+                    {
+                        model.Id(p => p.TehRelasi_DTLPengajuanId);
+                        model.Field(f => f.NoBaris).Editable(false);
+                        model.Field(f => f.Permintaan).Editable(false);
+                        model.Field(f => f.Jumlah).Editable(false);
+                        model.Field(f => f.Keterangan).Editable(false);
+
+                    })
+                    .Read(read => read.Action("detailRead", "Input", new { id = "#=TehRelasi_HDRPengajuanId#", _menuId = "2B668C2D-00FF-4240-8EE7-44D99F331E10", _classDetailView = "Ptpn8.TehRelasi.Models.TehRelasiView_DTLPengajuan" }).Type(HttpVerbs.Post))
+                    .Create(create => create.Action("detailCreate", "Input", new { id = "#=TehRelasi_HDRPengajuanId#", _menuId = "2B668C2D-00FF-4240-8EE7-44D99F331E10", _classDetailView = "Ptpn8.TehRelasi.Models.TehRelasiView_DTLPengajuan" }).Type(HttpVerbs.Post))
+                    .Update(update => update.Action("detailUpdate", "Input", new { id = "#=TehRelasi_HDRPengajuanId#", _menuId = "2B668C2D-00FF-4240-8EE7-44D99F331E10", _classDetailView = "Ptpn8.TehRelasi.Models.TehRelasiView_DTLPengajuan" }).Type(HttpVerbs.Post))
+                    .Destroy(destroy => destroy.Action("detailDelete", "Input", new { id = "#=TehRelasi_HDRPengajuanId#", _menuId = "2B668C2D-00FF-4240-8EE7-44D99F331E10", _classDetailView = "Ptpn8.TehRelasi.Models.TehRelasiView_DTLPengajuan" }).Type(HttpVerbs.Post))
+                )
+                .ToClientTemplate()
+    )
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    .kurangDariJatuhTempo {
+        background-color: limegreen;
+    }
+
+    .jatuhTempo {
+        background-color: orange;
+    }
+
+    .lebihJatuhTempo {
+        background-color: lightcoral;
+    }
+</style>
+<script>
+    function handleClickBel1(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(ruangRapatPTPNVIIIId)) == "undefined" ? grid.dataSource.getByUid(ruangRapatPTPNVIIIId) : grid.dataSource.get(ruangRapatPTPNVIIIId);
+
+        if (cb.checked) {
+            model.VerKaur = true;
+        }
+        else {
+            model.VerKaur = false;
+        }
+
+        model.dirty = true;
+    }
+</script>
+
+

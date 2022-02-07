@@ -1,0 +1,57 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Pengembalian Remise - Gaji/Upah",
+                Value = "Pengembalian Remise - Gaji/Upah"
+            },
+            new SelectListItem() {
+                Text = "Pengembalian Remise - Biaya Umum",
+                Value = "Pengembalian Remise - Biaya Umum"
+            },
+            new SelectListItem() {
+                Text = "Pengembalian Remise - Barang Bahan",
+                Value = "Pengembalian Remise - Barang Bahan"
+            },
+            new SelectListItem() {
+                Text = "Pengembalian Remise - Sewa Kendaraan",
+                Value = "Pengembalian Remise - Sewa Kendaraan"
+            },
+            new SelectListItem() {
+                Text = "Pengembalian Remise - Uang Muka",
+                Value = "Pengembalian Remise - Uang Muka"
+            },
+            new SelectListItem() {
+                Text = "Setoran - Piutang Karyawan",
+                Value = "Setoran - Piutang Karyawan"
+            },
+            new SelectListItem() {
+                Text = "Setoran - Pendapatan Gula Kelapa",
+                Value = "Setoran - Pendapatan Gula Kelapa"
+            },
+            new SelectListItem() {
+                Text = "Setoran - Pendapatan Kelapa",
+                Value = "Setoran - Pendapatan Kelapa"
+            },
+            new SelectListItem() {
+                Text = "Setoran - Pendapatan Agrowisata",
+                Value = "Setoran - Pendapatan Agrowisata"
+            },
+            new SelectListItem() {
+                Text = "Setoran - Pendapatan Sewa Lahan/KSO",
+                Value = "Setoran - Pendapatan Sewa Lahan/KSO"
+            },
+            new SelectListItem() {
+                Text = "Setoran - Pendapatan Kinggras/Kayu Manis",
+                Value = "Setoran - Pendapatan Kinggras/Kayu Manis"
+            }
+        })
+        .Events(e => { e.Change("ddlKelompokTransferOnChange"); e.Select("ddlKelompokTransferOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

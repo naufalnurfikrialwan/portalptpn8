@@ -1,0 +1,133 @@
+﻿@{ 
+    string scriptSQL = "select top 1 instruksi from [dbo].[Assesment_TipeSoal] where NamaTipeSoal='Tipe K'";
+    System.Data.SqlClient.SqlConnection con = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["csModalManusia"].ConnectionString);
+    con.Open();
+    System.Data.DataTable tap = new System.Data.DataTable();
+    new System.Data.SqlClient.SqlDataAdapter(scriptSQL, con).Fill(tap);
+    con.Close();
+    System.Data.DataRow dr = tap.Rows[0];
+    string instruksi = (string)dr[0];
+}
+
+<table align="center" width="80%">
+    <tr>
+        <td>
+            <div id="_chapterK" style="display: none;">
+                <div id="ContohChapterK" style="display: none;">
+                    <label style="font-size: xx-large; font-weight: 1000; text-align: center;">CONTOH SOAL CHAPTER K</label>
+                    <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                    <label id="instruksiK1" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                    <label style="font-size: x-large;">Contoh Soal 1 :</label>
+                    <table class="multiplechoice">
+                        <tr><td>Pilihlah salah satu pernyataan berikut yang paling menggambarkan diri Anda!</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterK_a" type="radio" name="ContohSoal1_ChapterK" value="ContohSoal1_ChapterK_a" disabled checked="checked">(a) Saya adalah orang yang humoris</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal1_ChapterK_b" type="radio" name="ContohSoal1_ChapterK" value="ContohSoal1_ChapterK_b" disabled>(b) Saya adalah seorang yang cerdas</td></tr>
+                        <tr><td><label style="color: blue;">Pada soal tersebut, saya merasa merasa saya merupakan orang yang humoris dibandingkan cerdas. Maka dari itu saya memilih pernyataan Saya adalah orang yang humoris (a).</label></td></tr>
+                    </table>
+                    <label style="font-size: x-large;">Contoh Soal 2 :</label>
+                    <table class="multiplechoice">
+                        <tr><td>Pilihlah salah satu pernyataan berikut yang paling menggambarkan diri Anda!</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterK_a" type="radio" name="ContohSoal2_ChapterK" value="ContohSoal2_ChapterK_a" disabled>(a) Saya suka berteman dengan orang banyak</td></tr>
+                        <tr><td><input class="largerRadio" id="ContohSoal2_ChapterK_b" type="radio" name="ContohSoal2_ChapterK" value="ContohSoal2_ChapterK_b" disabled checked="checked">(b) Saya suka menjadi pemimpin</td></tr>
+                        <tr><td><label style="color: blue;">Pada soal tersebut, saya merasa merasa saya suka menjadi pemimpin dibandingkan berteman dengan orang banyak. Maka dari itu saya memilih pernyataan Saya suka menjadi pemimpin (b).</label></td></tr>
+                    </table>
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <button type="button" id="btnMulaiTestChapterK" onclick="btnMulaiTestOnClick('Tipe K')" class="btn-big " style="height: 60px; width: 250px;">Mulai Test Chapter K</button>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+                <div id="TestChapterK" style="display: none;">
+                    @{
+                        Guid paketId = Ptpn8.Models.ModalManusia.CRUDJadwalNIK.CRUD.GetRecord(HttpContext.Current.User.Identity.Name).PaketId;
+                        Ptpn8.Models.ModalManusia.PaketDetail paketDetail;
+                        Guid tipeSoalId = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe K").TipeSoalId;
+                        int jumlahPertanyaan = Ptpn8.Models.ModalManusia.CRUDTipeSoal.CRUD.GetRecord("Tipe K").JumlahPertanyaan;
+                        Ptpn8.Models.ModalManusia.Pertanyaan pertanyaan;
+                        List<Ptpn8.Models.ModalManusia.PertanyaanDetail> pertanyaanDetail;
+                        List<Ptpn8.Models.ModalManusia.Jawaban> jawaban;
+                        <div style="border: 3px solid black; padding: 10px;">
+                            <label style="font-size: xx-large; font-weight: 1000; text-align: center;">SOAL CHAPTER K</label>
+                            <label style="font-size: x-large; font-weight: 600;">INSTRUKSI:</label>
+                            <label id="instruksiK2" style="font-size: x-large; font-weight: 600;margin: 20px 20px 20px 20px">@instruksi</label>
+                            <label style="font-size: x-large; margin: 20px 20px 20px 20px">Pilih pada salah satu jawaban yang menurut anda benar/paling tepat.</label>
+                            <label style="font-size: x-large; margin: 20px 20px 20px 20px">Apabila anda ingin melanjutkan ke soal berikutnya, Click <span style="color: red">"Soal Chapter K Berikutnya"</span> atau <span style="color: red">"Lanjut ke Chapter L"</span></label>
+                        </div>
+                        for (int noUrut = 1; noUrut <= jumlahPertanyaan; noUrut++)
+                        {
+                            paketDetail = Ptpn8.Models.ModalManusia.CRUDPaketDetail.CRUD.GetRecord(paketId, tipeSoalId, noUrut);
+                            pertanyaan = Ptpn8.Models.ModalManusia.CRUDPertanyaan.CRUD.GetRecord(tipeSoalId, noUrut);
+                            pertanyaanDetail = Ptpn8.Models.ModalManusia.CRUDPertanyaanDetail.CRUD.GetRecord(paketDetail.PertanyaanId);
+                            jawaban = Ptpn8.Models.ModalManusia.CRUDJawaban.CRUD.GetRecord(paketDetail.PertanyaanId);
+
+                        <div id="K_@noUrut.ToString()" style="display: none;">
+                            <h2>Soal No @noUrut</h2>
+                            <table class="multiplechoice">
+                                <tr>
+                                    @foreach (var mp1 in pertanyaanDetail)
+                                    {
+                                        <td>@mp1.PertanyaanTeks</td>
+                                    }
+                                </tr>
+
+                                @foreach (var mp2 in jawaban)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label id="K1_@noUrut" style="display: none;">@mp2.PertanyaanId</label>
+                                            <input class="largerRadio" type="radio" name="K_@noUrut" value="@mp2.NoUrut" onclick="jawabanOnClick('K_@noUrut','@(mp2.NoUrut)')" /><span class="jawaban" onclick="pertanyaanOnClick('K_@noUrut','@(mp2.NoUrut - 1)')">(@Convert.ToChar(96 + mp2.NoUrut)) @mp2.JawabanTeks</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                            <br />
+                            @if (noUrut < jumlahPertanyaan)
+                            {
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnK_@noUrut" onclick="btnOnClick1('Tipe K')" class="btn-big" style="font-size: x-large; height: 60px; width: 350px;">Soal Chapter K Berikutnya</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                            else
+                            {
+                                <table width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <button type="button" id="btnK_@noUrut" onclick="btnOnClick('Tipe K')" class="btn-big" style="font-size: x-large; height: 60px; width: 250px;">Lanjut ke Chapter L</button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            }
+                            <br />
+                        </div>
+                        }
+                    }
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+<style>
+    #ContohChapterK {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #TestChapterK {
+        background-color: white;
+        color: black;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+</style>

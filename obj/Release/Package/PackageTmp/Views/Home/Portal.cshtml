@@ -1,0 +1,340 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<head>
+    <title>Your slider in a simple web page</title>
+
+    <style>
+        body {
+            background-color: #fff;
+            color: #000;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 95%;
+            max-height: none;
+            margin: 0 auto;
+            padding-top: 1em;
+            position: relative;
+            text-align: center;
+            color: black;
+            font-size: xx-large;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(10, 175, 230, 1), 0 0 20px rgba(10, 175, 230, 0);
+        }
+
+        .container .ism-slider {
+            margin-left: 0 auto;
+            margin-right: auto;
+        }
+
+        .bottom-left {
+            position: absolute;
+            bottom: 8px;
+            left: 16px;
+        }
+
+        
+    </style>
+
+    <link rel="stylesheet" href="~/Content/ism/css/my-slider.css" />
+    <script src="~/Scripts/Scriptmemo/ism-2.1.js"></script>
+
+</head>
+
+<div>
+
+
+    @{ if (int.Parse(ViewBag.JumlahYangUltah) > 0)
+       {
+            var i = ViewBag.JumlahYangUltah;
+            @(Html.Kendo().TextBox().Name("JumlahYangUltah").Value(i).HtmlAttributes(new { style = "width: 100%; display: none" }))
+            <div class="container">
+                <img id="e" class="mySlides" src="~/Content/Images/Banner HBD PTPN8.jpg" width="100%" />
+                <marquee id="RunningText" class="bottom-left" behavior="scroll" direction="left"></marquee>
+            </div>
+        }
+    }
+    <img id="a" class="mySlides w3-animate-fading" src="~/Content/Images/hut75.png" width="100%">
+    <img id="b" class="mySlides w3-animate-fading" src="~/Content/Images/home2.png" width="100%">
+    <img id="c" class="mySlides w3-animate-fading" src="~/Content/Images/home3.png" width="100%">
+    <img id="d" class="mySlides w3-animate-fading" src="~/Content/Images/home4.png" width="100%">
+</div>
+
+<script id="template" type="text/x-kendo-template">
+    <table width="100%">
+        <tr>
+            <td class="image, img-header" style="background-image: url(#: image_url #); height: 300px;"></td>
+        </tr>
+    </table>
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#btnAplikasi1').click(function (e) {
+            location.href = '@Url.Content("~/Areal/")';
+        });
+        $('#btnAplikasi2').click(function (e) {
+            location.href = '@Url.Content("~/IHTHortikultur/")';
+        });
+        $('#btnAplikasi3').click(function (e) {
+            location.href = '@Url.Content("~/NDNK/Home/")';
+        });
+        $('#btnAplikasi4').click(function (e) {
+            location.href = '@Url.Content("~/Memo/Home/")';
+        });
+
+        
+        ambilDataYangUlangTahun().done(function (dta) {
+            //$('#RunningText').hide();
+            //document.getElementById('RunningText').stop()
+            var runText = dta[0][0];
+            $('#RunningText').text(runText);
+        });
+    });
+
+    $(function() {
+        var _500pxDS = new kendo.data.DataSource({
+            data: [
+                {
+                    image_url: "../../Content/Images/pic1.jpg",
+                    image_src: "../../Content/Images/aplikasiUserManagement150.jpg",
+                    linkText: "Portal aplikasi PT Perkebunan Nusantara VIII merupakan portal berisi difungsikan sebagai aplikasi layanan informasi untuk keperluan internal PT Perkebunan Nusantara VIII",
+                    action: "Index",
+                    controller: "Home"
+                },
+                {
+                    image_url: "../../Content/Images/pic2.jpg",
+                    image_src: "../../Content/Images/aplikasiUserManagement.jpg",
+                    linkText: "Selengkapnya",
+                    action: "Index",
+                    controller: "Home"
+                },
+                {
+                    image_url: "../../Content/Images/pic3.jpg",
+                    image_src: "../../Content/Images/aplikasiUserManagement.jpg",
+                    linkText: "Selengkapnya",
+                    action: "Index",
+                    controller: "Home"
+                },
+                {
+                    image_url: "../../Content/Images/pic4.jpg",
+                    image_src: "../../Content/Images/aplikasiUserManagement.jpg",
+                    linkText: "Selengkapnya",
+                    action: "Index",
+                    controller: "Home"
+                },
+                {
+                    image_url: "../../Content/Images/pic5.jpg",
+                    image_src: "../../Content/Images/aplikasiUserManagement.jpg",
+                    linkText: "Selengkapnya",
+                    action: "Index",
+                    controller: "Home"
+                },
+                {
+                    image_url: "../../Content/Images/pic6.jpg",
+                    image_src: "../../Content/Images/aplikasiUserManagement.jpg",
+                    linkText: "Selengkapnya",
+                    action: "Index",
+                    controller: "Home"
+                },
+            ]
+        });
+
+        $("#scrollview").kendoMobileScrollView({
+            dataSource: _500pxDS,
+            contentHeight: "300px",
+            enablePager: true,
+            template: kendo.template($("#template").html())
+        });
+
+        $("#prev-img").click(function(e) {
+            var scrollView = $("#scrollview").data("kendoMobileScrollView");
+            scrollView.prev();
+        });
+
+        $("#next-img").click(function(e) {
+            var scrollView = $("#scrollview").data("kendoMobileScrollView");
+            scrollView.next();
+        });
+    });
+</script>
+
+<script>
+    var myIndex = 0;
+    carousel();
+
+    function carousel() {
+        var jmlYangUltah = $('#JumlahYangUltah').val();
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+        }
+        myIndex++;
+        if (myIndex > x.length) {myIndex = 1}
+        x[myIndex - 1].style.display = "block";
+        if (x[myIndex - 1].id == "e") {
+            $('#RunningText').show();
+            document.getElementById('RunningText').start();
+            setTimeout(carousel, jmlYangUltah * 25 * 1000);
+        }
+        else {
+            $('#RunningText').hide();
+            document.getElementById('RunningText').stop();
+            setTimeout(carousel, 9000);
+        }
+    }
+
+    function ambilDataYangUlangTahun() {
+        var url = '/Home/ExecSQL1';
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: "exec ERP..CheckRoll_Daftar_Ultah"
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+
+</script>
+
+<style>
+    .demo-section {
+        position: relative;
+    }
+
+    .demo-section > p {
+        text-align: right;
+        margin-top: 10px;
+        font-size: .8em;
+    }
+
+    #prev-img,
+    #next-img {
+        display: block;
+        position: absolute;
+        top: 0px;
+        z-index: 1;
+        height: 300px;
+        width: 50px;
+        opacity: 0.2;
+    }
+
+    #prev-img {
+        left: 10px;
+        background: url('../../Content/Images/icons-png/arrow-l-white.png') no-repeat 50% 50%;
+    }
+
+    #next-img {
+        left: auto;
+        right: 10px;
+        background: url('../../Content/Images/icons-png/arrow-r-white.png') no-repeat 50% 50%;
+    }
+
+    a#prev-img:hover {
+        background: url('../../Content/Images/icons-png/arrow-l-white.png') no-repeat 50% 50% rgba(0,0,0,.3);
+        opacity: 1;
+    }
+
+    a#next-img:hover {
+        background: url('../../Content/Images/icons-png/arrow-r-white.png') no-repeat 50% 50% rgba(0,0,0,.3);
+        opacity: 1;
+    }
+
+    .title {
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        margin: 0;
+        padding: 1em;
+        background-color: lightgray;
+        color: #fff;
+    }
+
+    .img-header {
+        display: block;
+        color: white;
+        font-size: x-large;
+        text-align: center;
+        vertical-align: bottom;
+    }
+
+    .img-content {
+        margin-left: 100px;
+        margin-top: 15px;
+        display: block;
+        color: white;
+        font-size: medium;
+        text-align: left;
+    }
+
+    .image {
+        display: block;
+        width: 100%;
+        background-size: cover;
+    }
+
+    .aplikasi {
+        font-size: x-large;
+        color: white;
+        height: 150px;
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 10px 10px 5px #888888;
+    }
+
+    .aplikasi:hover {
+        font-size: x-large;
+        color: gray;
+        height: 150px;
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 5px 5px 1px #888888;
+    }
+
+    .judulaplikasi {
+        font-size: large;
+        color: black;
+        padding-top: 50px;
+        font-weight: 600;
+    }
+
+    .keteranganaplikasi {
+        font-size: small;
+        color: black;
+        padding-top: 10px;
+    }
+
+    .aksesaplikasi {
+        font-size: large;
+        font-style: italic;
+        font-weight: 600;
+        color: darkgreen;
+        padding-top: 50px;
+    }
+
+    .w3-animate-fading {
+        animation: fading 10s infinite
+    }
+
+    @@keyframes fading {
+        0% {
+            opacity: 0
+        }
+
+        50% {
+            opacity: 1
+        }
+
+        100% {
+            opacity: 0
+        }
+    }
+</style>

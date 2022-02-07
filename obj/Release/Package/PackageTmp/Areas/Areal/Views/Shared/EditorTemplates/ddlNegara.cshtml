@@ -1,0 +1,18 @@
+﻿@model Ptpn8.Areas.Referensi.Models.Negara
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlNegara")
+        .OptionLabel("Pilih negara...")
+        .DataTextField("Nama")
+        .DataValueField("NegaraId")
+        .Value(Model.NegaraId.ToString())
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("getNegara", "ddl", new { Area = "Referensi" })).ServerFiltering(true);
+
+        })
+        .Events(e => { e.Select("ddlNegaraOnSelect"); e.DataBound("ddlNegaraOnDataBound"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

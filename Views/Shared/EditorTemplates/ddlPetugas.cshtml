@@ -1,0 +1,101 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "DRS. H. AGUS WISMA DJ, AK, MM",
+                Value = "DRS. H. AGUS WISMA DJ, AK, MM"
+            },
+            new SelectListItem() {
+                Text = "ISAM SOPIANI I, SE",
+                Value = "ISAM SOPIANI I, SE"
+            },
+            new SelectListItem() {
+                Text = "MOHAMMAD SUHENDAR",
+                Value = "MOHAMMAD SUHENDAR"
+            },
+            new SelectListItem() {
+                Text = "BUDI HENDRA BUDIMAN",
+                Value = "BUDI HENDRA BUDIMAN"
+            },
+            new SelectListItem() {
+                Text = "YUDHA WASTU RIVA'I",
+                Value = "YUDHA WASTU RIVA'I"
+            },
+            new SelectListItem() {
+                Text = "EEP KURNIAWAN",
+                Value = "EEP KURNIAWAN"
+            },
+            new SelectListItem() {
+                Text = "TAMMY GAUTHAMA, S.SOS",
+                Value = "TAMMY GAUTHAMA, S.SOS"
+            },
+            new SelectListItem() {
+                Text = "DEDE SYARIPUDIN",
+                Value = "DEDE SYARIPUDIN"
+            },
+             new SelectListItem() {
+                Text = "MUHAMMAD FAUZI, S.SI",
+                Value = "MUHAMMAD FAUZI, S.SI"
+            },
+              new SelectListItem() {
+                Text = "ANA MUTAQIN",
+                Value = "ANA MUTAQIN"
+            },
+               new SelectListItem() {
+                Text = "VIQY ARTHA BAYU, SE",
+                Value = "VIQY ARTHA BAYU, SE"
+            },
+                new SelectListItem() {
+                Text = "GINNA INDAH W. A, S.PD",
+                Value = "GINNA INDAH W. A, S.PD"
+            },
+                 new SelectListItem() {
+                Text = "BAYU OKFANDY S, S.SI",
+                Value = "BAYU OKFANDY S, S.SI"
+            },
+                new SelectListItem() {
+                Text = "HAPSAKTI PRADITA T, S.KOM",
+                Value = "HAPSAKTI PRADITA T, S.KOM"
+            },
+            new SelectListItem() {
+                Text = "HENDRY ANGGARIAWAN, S.KOM",
+                Value = "HENDRY ANGGARIAWAN, S.KOM"
+            },
+            new SelectListItem() {
+                Text = "NENTY MULYAWATY",
+                Value = "NENTY MULYAWATY"
+            },
+            new SelectListItem() {
+                Text = "RONNY ANDRIYANSAH, ST",
+                Value = "RONNY ANDRIYANSAH, ST"
+            },
+            new SelectListItem() {
+                Text = "AYI AGUS R.",
+                Value = "AYI AGUS R."
+            },
+            new SelectListItem() {
+                Text = "PKL",
+                Value = "PKL"
+            },
+            new SelectListItem() {
+                Text = "ANANDA PUTRI UTAMI",
+                Value = "ANANDA PUTRI UTAMI"
+            },
+            new SelectListItem() {
+                Text = "DIDAN PRATAMA PAMBUDI",
+                Value = "DIDAN PRATAMA PAMBUDI"
+            },
+            new SelectListItem() {
+                Text = "MIRA SUMIRAH",
+                Value = "MIRA SUMIRAH"
+            }
+        })
+        .Events(e => { e.Change("ddlPetugasOnChange"); e.Select("ddlPetugasOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+
+

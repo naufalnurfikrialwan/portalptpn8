@@ -1,0 +1,137 @@
+﻿
+@*  class="pane-content">*@
+<div> 
+    <table width="100%" style="background-color:cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+        <tr>
+            <td width="100%">
+                <div>
+                    <label style="background-color:gray; color: white; border-radius: 3px;"><span style="margin-left: 5px;">Rentang Waktu</span></label>
+                </div>
+                <div style="margin: 5px 5px 10px 5px ">
+                    @(Html.Kendo().DropDownList()
+                    .Name("Bulan")
+                    .AutoBind(true)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .BindTo(new List<SelectListItem>() {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "1"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "2"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "3"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "4"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "5"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "6"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "7"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "8"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "9"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "Nopember",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                    })
+                    .Value(DateTime.Now.Month.ToString())
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Bulan", style = "width: 60%" })
+                    )
+                    -
+                    @(Html.Kendo().IntegerTextBox()
+                        .Name("Tahun")
+                        .Value(DateTime.Now.Year)
+                        .HtmlAttributes(new { style = "width: 30%;" })
+                        .Format("{0:0000}")
+                        .Min(2016)
+                    )
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%" style="background-color: cornflowerblue; color: white; margin-top: 5px; border-radius: 5px;">
+        <tr>
+            <td>
+                <div style="margin: 5px 5px 10px 5px ">
+                    <input type="button" id="btnProses" class="k-button" value="Proses" style="width: 100%;" onclick="btnProsesOnClick()" />
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+<script>
+    var kodeKebun, tanggal, namaFileZIP;
+    $(document).ajaxStart(function () {
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+    });
+    $(document).ready(function () {
+    });
+
+    function btnProsesOnClick()
+    {
+        var year = $('#Tahun').val();
+        var month = $('#Bulan').data('kendoDropDownList').value();
+        var daysInMonth = new Date(year, month, 0).getDate();
+        var dateServer = new Date(tanggalServer);
+        var yearServer = dateServer.getFullYear();
+        var monthServer = dateServer.getMonth() + 1;
+        var dayServer = dateServer.getDate();
+        var grid = $('#grdDetail').data('kendoGrid');
+
+        for (var i = 1; i <= 31; i++)
+        {
+            grid.hideColumn("Tanggal" + kendo.toString(i, '00'));
+        }
+
+        for (var i = 1; i <= daysInMonth; i++) {
+            grid.showColumn("Tanggal" + kendo.toString(i, '00'));
+        }
+
+        if (yearServer == year && monthServer == month && dayServer<31)
+        {
+            for(var i = dayServer;i<=daysInMonth;i++)
+            {
+                grid.hideColumn("Tanggal"+kendo.toString(i,'00'));
+            }
+        }
+
+
+        grid.dataSource.read();
+    }
+</script>
+

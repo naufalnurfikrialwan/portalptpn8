@@ -1,0 +1,258 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/PerjalananDinas/RekapBiayaBulananPengemudiKebun.js"></script>
+@(
+    // All deferred initialization statements will be rendered here
+    Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Rekapitulasi Perjalanan Dinas Wilayah Pengemudi</div>
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().TextBox().Name("KebunId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    @(Html.Kendo().TextBox().Name("Kd_Kbn").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2019)
+                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                    .AutoBind(true)
+                    .Name("Bulan")
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                    .BindTo(new List<SelectListItem>()
+                    {
+                        new SelectListItem() {
+                            Text = "Januari",
+                            Value = "01"
+                        },
+                        new SelectListItem() {
+                            Text = "Februari",
+                            Value = "02"
+                        },
+                        new SelectListItem() {
+                            Text = "Maret",
+                            Value = "03"
+                        },
+                        new SelectListItem() {
+                            Text = "April",
+                            Value = "04"
+                        },
+                        new SelectListItem() {
+                            Text = "Mei",
+                            Value = "05"
+                        },
+                        new SelectListItem() {
+                            Text = "Juni",
+                            Value = "06"
+                        },
+                        new SelectListItem() {
+                            Text = "Juli",
+                            Value = "07"
+                        },
+                        new SelectListItem() {
+                            Text = "Agustus",
+                            Value = "08"
+                        },
+                        new SelectListItem() {
+                            Text = "September",
+                            Value = "09"
+                        },
+                        new SelectListItem() {
+                            Text = "Oktober",
+                            Value = "10"
+                        },
+                        new SelectListItem() {
+                            Text = "Nopember",
+                            Value = "11"
+                        },
+                        new SelectListItem() {
+                            Text = "Desember",
+                            Value = "12"
+                        }
+                        })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                    <button type="button" id="btnPrintHeader" onclick="btnPrintHeaderOnClick()" class="k-button" style="color: white; background-color: gray; font-size: small; height: 30px;"><span class="k-font-icon k-i-print"></span>Cetak</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+        .Grid<Ptpn8.PerjalananDinas.Models.RekapBiayaKebun>(Guid.Empty.ToString())
+        .Name("grdDetail")
+        .Columns(g =>
+        {
+            g.Bound(i => i.NomorPermintaan).Width(100).Title("No Permintaan");
+            g.Bound(i => i.Berangkat).Width(100).Format("{0:dd-MM-yyyy}").Title("Berangkat");
+            g.Bound(i => i.Kembali).Width(100).Format("{0:dd-MM-yyyy}").Title("Kembali");
+            g.Bound(i => i.JenisTujuan).Width(100).Title("Jenis Tujuan");
+            g.Bound(i => i.StatusKM).Width(100).Title("Status KM");
+            g.Bound(i => i.Tujuan).Width(100).Title("Tujuan");
+            g.Bound(i => i.DapatBiayaPenginapan).Title("Mess/Hotel").Width(100).ClientTemplate("#= DapatBiayaPenginapan ? 'Hotel':'Mess' #");
+            g.Bound(i => i.NIK).Width(100).Title("NIK");
+            g.Bound(i => i.Nama).Width(100).Title("Nama");
+            g.Bound(i => i.Jabatan).Width(200).Title("Jabatan").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("JUMLAH")
+                .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+            g.Bound(i => i.UangSaku).Width(100).Title("Uang Saku").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangMakan).Width(100).Title("Uang Makan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangCucian).Width(100).Title("Uang Cucian").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangTransport).Width(100).Title("Uang Transport").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangLain).Width(100).Title("Penggantian Uang/Bensin/Tol").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.UangPenginapan).Width(100).Title("Uang Penginapan").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+               .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+               .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+            g.Bound(i => i.JumlahBPD).Width(100).Title("Jumlah BPD").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Excel();
+        })
+        .Excel(excel => excel.AllPages(true))
+        .AutoBind(false)
+        .Navigatable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .Sortable()
+        .Groupable()
+        .HtmlAttributes(new { style = "Height: 450px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+            .Aggregates(ag =>
+            {
+                ag.Add(x => x.UangSaku).Sum();
+                ag.Add(x => x.UangMakan).Sum();
+                ag.Add(x => x.UangCucian).Sum();
+                ag.Add(x => x.UangTransport).Sum();
+                ag.Add(x => x.UangLain).Sum();
+                ag.Add(x => x.UangPenginapan).Sum();
+                ag.Add(x => x.JumlahBPD).Sum();
+            })
+        )
+    )
+
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+            // Each report viewer must have an id - it will be used by the initialization script
+            // to find the element and initialize the report viewer.
+            .Id("reportViewer")
+            // The URL of the service which will serve reports.
+            // The URL corresponds to the name of the controller class (ReportsController).
+            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+            .ServiceUrl(Url.Content("/api/reports/"))
+            // The URL for custom report vie    wer template. The template can be edited -
+            // new functionalities can be added and unneeded ones can be removed.
+            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+            //
+            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+            .ReportSource(new UriReportSource() { Uri = "../Reports/PerjalananDinas/RekapPerjalananDinasPengemudiWilayah.trdx" })
+            // Specifies whether the viewer is in interactive or print preview mode.
+            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+            .ViewMode(ViewMode.Interactive)
+            // Sets the scale mode of the viewer.
+            // Three modes exist currently:
+            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+            // Specific - Uses the scale to zoom in and out the report.
+            .ScaleMode(ScaleMode.Specific)
+            // Zoom in and out the report using the scale
+            // 1.0 is equal to 100%, i.e. the original size of the report
+            .Scale(1.0)
+            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+            .PersistSession(false)
+            // Sets the print mode of the viewer.
+            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+<script>
+    var usrName = "@HttpContext.Current.User.Identity.Name";
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.PerjalananDinas.Models.RekapBiayaKebun',
+            scriptSQL: "declare @@REFDIK as table (reg varchar(max), nama varchar(max), jabatan varchar(max), golongan varchar(max)) " +
+	                   "delete @@REFDIK " +
+	                   "insert into @@REFDIK " +
+	                   "select A.reg, A.nama, A.nama_jab, A.gol from [SPDK_KanpusEF].dbo.Ref_Dik as A " +
+	                   "where Year(A.TANGGAL)='" + $('#Tahun').val() + "' and Month(A.TANGGAL)= '" + $('#Bulan').val() + "'" +
+	                   "insert into @@REFDIK " +
+	                   "select A.reg, A.nama, A.nama_jab, A.gol from [SPDK_KanpusEF].dbo.Ref_DikKLM as A " +
+	                   "where Year(A.TANGGAL)='" + $('#Tahun').val() + "' and Month(A.TANGGAL)= '" + $('#Bulan').val() + "'" +
+                       "Select A.NomorAlokasi as NomorPermintaan,A.Berangkat, A.Kembali, A.JenisTujuan, A.KMdanMenginap as StatusKM, (case when (A.Tujuan != '') then A.Tujuan else A.TujuanDalamWilayah end) as Tujuan, A.DapatPenginapan,A.NIK, B.NAMA as Nama, B.jabatan as Jabatan, A.UangSaku, A.UangMakan, A.UangCucian,A.UangTransport,A.UangLain,A.UangPenginapan, A.UangSaku+ A.UangMakan+ A.UangCucian+A.UangTransport+A.UangLain+A.UangPenginapan As JumlahBPD " +
+                       "from [SPDK_KanpusEF].[dbo].[AlokasiPengemudiKebun] as A " +
+                       "join @@REFDIK as B " +
+                       "on A.NIK=B.REG " +
+                       "where Month(A.Berangkat)='" + $('#Bulan').val() + "' and Year(A.Berangkat)='" + $('#Tahun').val() + "' and A.NomorAlokasi !='' and A.KebunId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )"
+        }
+    }
+</script>
+
+
+
+

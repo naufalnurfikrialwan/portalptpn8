@@ -1,0 +1,501 @@
+﻿@model Ptpn8.CalculatorMPP.Models.MPPView_RasioKebun
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/CalculatorMPP/InputDataKebun.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<!--header-->
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div>
+                @(Html.Kendo().TextBoxFor(m => m.MPP_RasioKebunId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @*@(Html.Kendo().TextBoxFor(m => m.UnitId).Value(Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).PosisiLokasiKerjaId).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))*@
+                @(Html.Kendo().TextBoxFor(m => m.NomorInput).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserName).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.TglVerKaur).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.UserNameKaur).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBoxFor(m => m.VerKaur).HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="50%;" align="left">
+
+                    <tr>
+                        <td width="16%">
+                            <label style="text-align:left">Tahun/Nomor Input</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td style="font-size:small">
+                            @(Html.Kendo().NumericTextBoxFor(m => m.TahunBuku).Min(2019).Format("D4")
+                                .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                                .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                            )
+                            -
+                            @(Html.Kendo().DropDownListFor(m => m.NomorInputView)
+                                .OptionLabel("Pilih No Input")
+                                .AutoBind(false)
+                                .DataValueField("NomorInput")
+                                .DataTextField("NomorInputView")
+                                .DataSource(o =>
+                                {
+                                    o.Read(r => r.Action("getNomorInput", "Input").Data("filterNomorInput").Type(HttpVerbs.Post));
+                                })
+                                .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Data", style = "width: 64%" })
+                                .SelectedIndex(0)
+                                .Events(e =>
+                                {
+                                    e.Change("NomorInputViewOnSelect");
+                                    e.Select("NomorInputViewOnSelect");
+                                    e.DataBound("NomorInputViewOnDataBound");
+                                })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">No/Tgl Register</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo()
+                                .AutoCompleteFor(m => m.No_Register)
+                                .DataTextField("No_Pengajuan")
+                                .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                .DataSource(o => { o.Read(r => r.Action("getNomorInput", "Input").Data("filterNomorInput").Type(HttpVerbs.Post)); })
+                            )
+                            /
+                            @(Html.Kendo().DateTimePickerFor(m => m.Tanggal_Register).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 24%" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Unit</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().DropDownList()
+                                .AutoBind(true)
+                                .Name("UnitId")
+                                .DataTextField("Text")
+                                .DataValueField("Value")
+                                .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                    new SelectListItem() {
+                                        Text = "BUKITUNGGUL",
+                                        Value = "D2C948B7-E018-4658-9DF7-4A97CBE03FAC"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "CIANTEN",
+                                        Value = "61061F02-7C76-47EA-BCE0-1581E4258840"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "CIATER",
+                                        Value = "0E00D938-1469-4A72-9783-66980FD1543B"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "CISARUNI",
+                                        Value = "44C761FC-CE78-4586-875D-0FDEB63F6386"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "DAYEUHMANGGUNG",
+                                        Value = "23AF990B-1E9C-4F5D-BC88-8FEEA41718BC"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "GEDEH",
+                                        Value = "8D6E7843-4936-47E9-9A55-A2A407C3DFFD"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "GOALPARA",
+                                        Value = "47B32D71-AC95-4840-BB17-337D6868FFAD"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "GUNUNGMAS",
+                                        Value = "74D6ED37-AA42-4204-91EB-7CBD09C289EF"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "KERTAMANAH",
+                                        Value = "0A0B85D7-93CB-4DEB-BAD6-7BECF64DEC6F"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "MALABAR",
+                                        Value = "45D8ECB0-C44B-4675-9191-E6076C09FAD1"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "MONTAYA",
+                                        Value = "CA6B51B4-0D30-496F-9043-C6DA1CE83987"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PANGLEJAR",
+                                        Value = "AEEBD107-3CE3-4563-B27D-8D477A51562B"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PANYAIRAN",
+                                        Value = "D0A638E6-47BC-4DCB-ADEF-70D37229C967"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PAPANDAYAN",
+                                        Value = "F354D6E1-FEBD-41B6-A18D-F0B4035896ED"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PARAKANSALAK",
+                                        Value = "864DBF2D-E977-4E51-B9BD-76A796B4F5FF"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PASIRMALANG",
+                                        Value = "717F6E4E-1753-408A-AE4D-D0F2DFBEE07B"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PASIRNANGKA",
+                                        Value = "D85E76AD-6A03-4891-B935-3F4FF0243ABD"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "PURBASARI",
+                                        Value = "F51F8B90-22E0-487B-A5DF-06DB937021E7"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "RANCABALI",
+                                        Value = "194EF392-6E3B-46C1-B8D2-3E4F431F1C2E"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "RANCABOLANG",
+                                        Value = "BA6206D9-3900-4762-84ED-6BE73AA73CD8"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "SEDEP",
+                                        Value = "AEC49C77-6263-40E7-9B6E-A53756FF3449"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "SINUMBRA",
+                                        Value = "72068250-6944-4B18-A0BF-73BE51C3383C"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "TALUNSANTOSA",
+                                        Value = "8BD34D07-827D-46FD-BF9D-05BEAB6BC3AC"
+                                    },
+                                    new SelectListItem() {
+                                        Text = "TAMBAKSARI",
+                                        Value = "B450EA23-33B4-4259-854A-65E9FBC0A53B"
+                                    }
+                                })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Hari Kerja Efektif</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.HariKerjaEfektif).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Tipe Kebun</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().DropDownList()
+                                        .AutoBind(true)
+                                        .Name("TipeKebun")
+                                        .DataTextField("Text")
+                                        .DataValueField("Value")
+                                        .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                                        .BindTo(new List<SelectListItem>()
+                                        {
+                                            new SelectListItem() {
+                                                Text = "Besar",
+                                                Value = "Besar"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Sedang",
+                                                Value = "Sedang"
+                                            },
+                                            new SelectListItem() {
+                                                Text = "Kecil",
+                                                Value = "Kecil"
+                                            }
+                                        })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Jml Afdeling</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.JumlahAfdeling).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Jml PLTA</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.JumlahPLTA).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Jml Produksi Bsh (Kg)</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.JumlahProduksiBasah).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Luas Areal TM (Ha)</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.LuasArealKebunEfektif).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Komps Panen Gunting (%)</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.KompisisiGuntingPotongManual).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Komps Panen Mesin (%)</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.KompisisiMesinPotong).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Komps Pangkas Manual (%)</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.KompisisiPangkasManual).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Komps Pangkas Mesin (%)</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.KompisisiPangkasMesin).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Jml Titik Penjagaan</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.JumlahTitikPenjagaan).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Jml Truk</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.JumlahTruk).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey">
+                            <label style="text-align:left">Jml Mobil</label>
+                        </td>
+                        <td width="2%">
+                            <label style="text-align:center">:</label>
+                        </td>
+                        <td width="50%" class="_nonkey">
+                            @(Html.Kendo().TextBoxFor(m => m.JumlahMobil).HtmlAttributes(new { style = "width:25%", @class = "allcaps" }))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="16%" class="_nonkey"></td>
+                        <td width="2%">
+                        </td>
+                        <td width="50%" align="center">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                                <button type="button" id="btnDeleteHeader" onclick="btnDeleteHeaderOnClick()" class="k-button" style="color: white; background-color: red; font-size: small; height: 30px;"><span class="k-font-icon k-i-trash"></span>Hapus Permintaan</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+</style>
+
+
+
+
+
+

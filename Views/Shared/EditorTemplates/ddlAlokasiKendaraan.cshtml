@@ -1,0 +1,36 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "KENDARAAN DINAS",
+                Value = "KENDARAAN DINAS"
+            },
+            new SelectListItem() {
+                Text = "ANGKUTAN UMUM",
+                Value = "ANGKUTAN UMUM"
+            },
+            new SelectListItem() {
+                Text = "KENDARAAN PRIBADI",
+                Value = "KENDARAAN PRIBADI"
+            },
+            new SelectListItem() {
+                Text = "KENDARAAN RENTAL",
+                Value = "KENDARAAN RENTAL"
+            },
+            new SelectListItem() {
+                Text = "KENDARAAN KEBUN",
+                Value = "KENDARAAN KEBUN"
+            },
+            new SelectListItem() {
+                Text = "KENDARAAN UNIT/WILAYAH",
+                Value = "KENDARAAN UNIT/WILAYAH"
+            }
+        })
+        .Events(e => { e.Change("ddlAlokasiKendaraanOnChange"); e.Select("ddlAlokasiKendaraanOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

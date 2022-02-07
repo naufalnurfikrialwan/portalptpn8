@@ -1,0 +1,29 @@
+﻿<div id="modalWindowHlpBuyer">
+    @(Html.Kendo().Grid<Rekening>()
+        .Name("grdHlpBuyer")
+        .AutoBind(true)
+        .ColumnMenu(c => c.Columns(true))
+        .Pageable()
+        .Sortable()
+        .Columns(i =>
+        {
+            i.Bound(o => o.KodeRekening).Width(150);
+            i.Bound(o => o.Nama).Width(300);
+            i.Bound(o => o.KelompokRekening).Width(300);
+        })
+        .DataSource(j => j
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(k => k.KodeRekening);
+            })
+            .Read(r => r.Action("", ""))
+
+
+        })
+
+
+    )
+    <button id="ok" class="k-button">Ok</button>
+    <button id="cancel" class="k-button">Cancel</button>
+</div>

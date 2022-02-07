@@ -1,0 +1,90 @@
+﻿
+<div id="detail">
+    @(Html.Kendo().Grid<Ptpn8.Agrowisata.Models.DashboardKetersediaanKamar>()
+        .Name("grdDetail")
+        .ToolBar(tools => { tools.Excel(); })
+        .Excel(excel => excel
+            .FileName("DashboardKetersediaanKamar.xlsx")
+            .Filterable(true)
+        )
+        .Columns(g =>
+        {
+            g.Bound(i => i.TipeKamarId).Hidden();
+            g.Bound(i => i.JenisKamar).Title("Unit").Width(250).Locked(true).HtmlAttributes(new { style = "font-weight:600" });
+            g.Group(i => i.HeaderTemplate("<label style='font-size: medium; text-align:center;'>Tanggal</label>")
+                .Columns(h =>
+                {
+                    for (int ii = 1; ii <= 46; ii++)
+                    {
+                        h.Bound("No_" + ii.ToString("00")).Title(ii.ToString("00")).Width(80)
+                        .ClientTemplate("#= WarnaKolom(No_" + ii.ToString("00") + ") #").HtmlAttributes(new { style = "text-align: center;" });
+                    }
+                }));
+        })
+        .AutoBind(false)
+        .Navigatable()
+        .Sortable()
+        .Resizable(resizeable => resizeable.Columns(true))
+        .Scrollable()
+        .HtmlAttributes(new { style = "Height: 590px" })
+        .DataSource(o => o
+            .Ajax()
+            .ServerOperation(false)
+            .Batch(true)
+            .Read(read => read.Action("GetDataFromGRID", "Report").Data("filterGRD").Type(HttpVerbs.Post))
+            .Model(model =>
+            {
+                model.Id(p => p.TipeKamarId);
+            })
+        )
+    )
+</div>
+
+
+<script>
+    $(document).ajaxStart(function () {
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+        });
+
+    function a(n) {
+        return "a_"+n.toString();
+    }
+
+    function filterGRD(e) {
+        var _bln = $('#Bulan').val();
+        var _thn = $('#Tahun').val();
+        var _scriptSQL = "set dateformat DMY; exec [SPDK_KanpusEF].[dbo].[Agrowisata_CekOkupansi] '" + kebunId + "'," + _bln + "," + _thn
+        return {
+            strClassView: "Ptpn8.Agrowisata.Models.DashboardKetersediaanKamar",
+            scriptSQL: _scriptSQL,
+            _menuId: menuID
+        };
+    }
+
+    function WarnaKolom(str) {
+        if (str != null) {
+            if (str.indexOf('CHECK IN')>0 || str == 'OCCUPIED')
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str + "</div>";
+            else if (str == 'CHECK OUT')
+                return "<div class='breakWord20' style='color: white; background-color: orange;'>" + str + "</div>";
+            else
+                return "<div class='breakWord20' style='color: white; background-color: green;'></div>";
+        }
+        else return "<div class='breakWord20' style='color: white; background-color: green;'></div>";
+    }
+</script>
+
+<style>
+    .breakWord20 {
+        word-break: break-all !important;
+        word-wrap: break-word !important;
+        vertical-align: top;
+    }
+
+    .k-grid-header .k-header {
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+</style>

@@ -1,0 +1,13 @@
+﻿@model string
+@(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Cari Kamar")
+        .DataTextField("JenisKamar")
+        .MinLength(2)
+        .Filter("contains")
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetTipeKamar", "ddl", new { Area = "Referensi" }).Data("filterTipeKamar")).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucTipeKamarOnSelect"); e.DataBound("aucTipeKamarOnDataBound"); })
+)
+

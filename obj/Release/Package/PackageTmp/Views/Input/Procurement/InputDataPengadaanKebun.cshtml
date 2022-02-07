@@ -1,0 +1,616 @@
+﻿
+@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+<!--header-->
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="">
+                <table width="40%">
+                    <tr>
+                        <td width="3%">
+                            <label>Tahun:</label>
+                        </td>
+                        <td width="20%">
+                            @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2020)
+                                                .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label style="text-align:left">Bulan:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().DropDownList().Name("ddlBulan").DataTextField("Text").DataValueField("Value")
+                                //.Events(ev => ev.Select("ddlBulanOnSelect"))
+                                //.HtmlAttributes(new { style = "font-size: medium;" })
+                                .SelectedIndex(DateTime.Now.Month - 1)
+                                .BindTo(new List<SelectListItem>()
+                                {
+                                new SelectListItem() {
+                                    Text = "Januari",
+                                    Value = "1"
+                                },
+                                new SelectListItem() {
+                                    Text = "Februari",
+                                    Value = "2"
+                                },
+                                new SelectListItem() {
+                                    Text = "Maret",
+                                    Value = "3"
+                                },
+                                new SelectListItem() {
+                                    Text = "April",
+                                    Value = "4"
+                                },
+                                new SelectListItem() {
+                                    Text = "Mei",
+                                    Value = "5"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juni",
+                                    Value = "6"
+                                },
+                                new SelectListItem() {
+                                    Text = "Juli",
+                                    Value = "7"
+                                },
+                                new SelectListItem() {
+                                    Text = "Agustus",
+                                    Value = "8"
+                                },
+                                new SelectListItem() {
+                                    Text = "September",
+                                    Value = "9"
+                                },
+                                new SelectListItem() {
+                                    Text = "Oktober",
+                                    Value = "10"
+                                },
+                                new SelectListItem() {
+                                    Text = "November",
+                                    Value = "11"
+                                },
+                                new SelectListItem() {
+                                    Text = "Desember",
+                                    Value = "12"
+                                }
+                            })
+                            )
+                        </td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.Procurement.Models.ViewProcurement_DTLDataPengadaan>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.Procurement_DTLDataPengadaanId).Width(50).Hidden();
+                    g.Bound(i => i.UnitId).Width(50).Hidden();
+                    g.Bound(i => i.Tahun).Title("Tahun").Width(80).Hidden();
+                    g.Bound(i => i.Bulan).Title("Bulan").Width(80).Hidden();
+                    g.Bound(i => i.NoBaris).Template(t => { }).Title("No Baris").ClientTemplate("#= renderNumber(data) #").Width(50).Hidden();
+                    g.Bound(i => i.Nama).Title("Nama Barang/Jasa").Width(300)
+                        .ClientFooterTemplate("Total Transaksi/Bulan")
+                        .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                    g.Bound(i => i.NilaiTransaksi).Title("Nilai Transaksi").Width(150).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                        .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                        .FooterHtmlAttributes(new { style = "text-align: center; background: silver;text-align: right;" });
+                    g.Bound(i => i.TanggalTransaksi).Width(150).Title("Tanggal Transaksi").Format("{0:dd-MM-yyyy}");       
+                    g.Bound(i => i.NamaPenyedia).Width(200).Title("Nama Penyedia");
+                    g.Command(command =>
+                    {
+                        command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                    }).Width(200);
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                    "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                    "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                })
+                .AutoBind(false)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+            .Sortable()
+            .Groupable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+                })
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    .Sort(s => s.Add(x => x.TanggalTransaksi))
+                    .Batch(true)
+                    .Model(model =>
+                    {
+                        model.Id(p => p.Procurement_DTLDataPengadaanId);
+                    })
+                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                    .Aggregates(ag =>
+                    {
+                        ag.Add(x => x.NilaiTransaksi).Sum();
+                    })
+                )
+    )
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        @*<tr>
+                <td width="1%"></td>
+                <td><span style="font-size: medium; font-weight: 500;">Faktur dengan No PO ini masih ada.</span></td>
+                <td width="1%"></td>
+            </tr>*@
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    var wndLeaveGrid, wnd, wndDetail, prt, err, del;
+    var buyer;
+    var procurement_HDRDataPengadaanId, kebunId, procurement_DTLDataPengadaanId;
+    var _NomorInputView;
+    var model;
+    var headerBaru, detailBaru;
+    var rowNumber = 0;
+    var menuId = '32322b37-0090-4335-ae61-56d5ba6c50bf';
+
+    function renderNumber(data) {
+        var no = ++rowNumber;
+        data.NoBaris = no;
+        return no;
+    }
+
+    $('.k-window.titlebar').css('style', 'display: none');
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+
+    $(document).ajaxStart(function () {
+        $("#_header").addClass('disabledbutton');
+        $("#_detail").addClass('disabledbutton');
+        $("#_footer").addClass('disabledbutton');
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+        $("#_header").removeClass('disabledbutton');
+        $("#_detail").removeClass('disabledbutton');
+        $("#_footer").removeClass('disabledbutton');
+    });
+
+    $(document).ready(function () {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        wndDetail = $("#konfirmasiDetail").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        err = $("#errWindow").kendoWindow({
+            title: "Error Data",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        del = $("#delWindow").kendoWindow({
+            title: "Hapus Header",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        wndLeaveGrid = $("#konfirmasiLeaveGrid").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        //gridStatus = 'belum-ngapa-ngapain';
+    });
+
+    $(window).on("beforeunload", function () {
+        return "Please don't leave me!";
+    });
+
+    $(window).on("unload", function () {
+        hapusPenggunaPortalYangAktif();
+    });
+
+
+    angular.module("__header", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    tahun = $('#Tahun').val();
+                    bulan = $('#ddlBulan').data('kendoDropDownList').value();
+                    $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                    $('#grdDetail').removeClass('disabledbutton');
+                    $("#grdDetail").data("kendoGrid").dataSource.read({
+                        id: $('#Procurement_DTLDataPengadaanId').val()
+                    });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                    gridDestroy();
+                }
+            }
+        });
+
+
+    function hapusPenggunaPortalYangAktif() {
+        var url = '/Account/HapusPenggunaPortalYangAktif';
+        return $.ajax({
+            url: url,
+            data: {
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function disableHeader() {
+        $("._key").find('span').addClass('disabledbutton');
+        $("._key").addClass('disabledbutton');
+        $("._nonkey").find('span').addClass('disabledbutton');
+        $("._nonkey").addClass('disabledbutton');
+        $('#btnSubmitHeader').addClass('disabledbutton');
+        $('#grdDetail').addClass('disabledbutton');
+    }
+
+    function enableHeader() {
+        $("._key").find('span').removeClass('disabledbutton');
+        $("._key").removeClass('disabledbutton');
+        $("._nonkey").find('span').removeClass('disabledbutton');
+        $("._nonkey").removeClass('disabledbutton');
+        $('#btnSubmitHeader').removeClass('disabledbutton');
+    }
+
+
+    function openWindow(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            $('#grdDetail').data('kendoGrid').removeRow(row);
+            gridStatus = 'sudah-diapa-apain';
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+    }
+
+    function openWindowLeaveGrid(e) {
+        e.preventDefault();
+        wndLeaveGrid.open().center();
+        $("#yesLeaveGrid").click(function () {
+            wndLeaveGrid.close();
+            sendData();
+        });
+        $("#noLeaveGrid").click(function () {
+            gridStatus = 'belum-ngapa-ngapain';
+            wndLeaveGrid.close();
+        });
+    }
+
+    function openErrWindow(e) {
+        err.open().center();
+        $("#ok").click(function () {
+            err.close();
+        });
+    }
+
+    function openDelWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function openDelDetailWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function filterGridUpdate(e) {
+        var mdl = e.models;
+        var arr = [];
+        for (var i = 0; i < mdl.length; i++) {
+            arr.push(JSON.stringify(mdl[i]));
+        }
+        return {
+            _model: arr,
+            _menuId: menuId
+        };
+    }
+
+    function filterGridDestroy(e) {
+        return {
+            _model: JSON.stringify(e),
+            _menuId: menuId
+        };
+    }
+
+    function gridDestroy() {
+        $("#grdDetail").data("kendoGrid").dataSource.read([]);
+    }
+
+    /* Grid Buyer */
+
+    function grdOnChange(e) {
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+        if (model.isNew()) {
+            model.Procurement_DTLDataPengadaanId = model.uid;
+            model.UnitId = unitId;
+        }
+        procurement_DTLDataPengadaanId = model.Procurement_DTLDataPengadaanId;
+        gridStatus = 'sudah-diapa-apain';
+    }
+
+    function grdOnDataBinding(e) {
+    }
+
+    function filterdetailRead() {
+        return {
+            _menuId: menuId, // teh
+            _filter: ['Year(TanggalTransaksi)', tahun, 'Month(TanggalTransaksi)', bulan]
+        };
+    }
+
+    function filterdetailCreate(e) {
+        return { _menuId: menuId };
+    }
+
+    function sendData() {
+        var grid = $("#grdDetail").data("kendoGrid"),
+            parameterMap = grid.dataSource.transport.parameterMap;
+
+        //get the new and the updated records
+        var currentData = grid.dataSource.data();
+
+        var updatedRecords = [];
+        var newRecords = [];
+        var spupdated = [];
+        var spnew = [];
+
+        for (var i = 0; i < currentData.length; i++) {
+            if (currentData[i].isNew()) {
+                newRecords.push(JSON.stringify(currentData[i]));
+            } else if (currentData[i].dirty) {
+                updatedRecords.push(JSON.stringify(currentData[i]));
+                //spupdated.push("Update [SPDK_KanpusEF].[dbo].[KPI_InisiasiKPI] set Dikirim=1 Where Tahun=" + $('#Tahun').val() + " and Bulan =" + $('#ddlBulan').data('kendoDropDownList').value());
+            }
+        }
+
+        //this records are deleted
+        var deletedRecords = [];
+        var spdeleted = [];
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            deletedRecords.push(JSON.stringify(grid.dataSource._destroyed[i]));
+        }
+
+        var data = {};
+        $.extend(data,
+            parameterMap({ updated: updatedRecords }),
+            parameterMap({ deleted: deletedRecords }),
+            parameterMap({ new: newRecords }),
+            parameterMap({ spupdated: spupdated }),
+            parameterMap({ spdeleted: spdeleted }),
+            parameterMap({ spnew: spnew }),
+            parameterMap({ mnid: menuId })
+        );
+
+        _sendData(data).done(function (msg) {
+            if (msg == "Success") {
+                grid.dataSource.read([]);
+                //disableHeader();
+                gridStatus = 'belum-ngapa-ngapain';
+            }
+            else {
+                $('#errMsg').text(msg);
+                gridStatus = 'sudah-nyoba-disimpan-tapi-model-masih-salah';
+                openErrWindow();
+            }
+        }).fail(function (x) {
+            $('#errMsg').text(msg);
+            openErrWindow();
+            grid.dataSource.read([]);
+            //disableHeader();
+            gridStatus = 'sudah-nyoba-disimpan-tapi-gagal';
+        });
+
+    }
+
+    function _sendData(data) {
+        return $.ajax({
+            url: "/Input/UpdateCreateDelete",
+            data: data,
+            type: "POST"
+        })
+    }
+
+    function ddlBulanOnChange(e) {
+        var bulan = $('#Bulan').val();
+        var grid = $('#grdDetail').data('kendoGrid');
+        var dataItem = typeof (grid.dataSource.get(procurement_DTLDataPengadaanId)) == "undefined" ? grid.dataSource.getByUid(procurement_DTLDataPengadaanId) : grid.dataSource.get(procurement_DTLDataPengadaanId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        var data = grid.dataItem(row);
+    }
+
+    function toDate(value) {
+        //var dateRegExp = /^\/Date\((.*?)\)\/$/;
+        //var date = dateRegExp.exec(value);
+
+        try {
+            return new Date(parseInt(value.substr(6)));
+        }
+        catch (err) {
+            return value;
+        }
+
+    }
+
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+
+    ._headerteh, #kriteria {
+        padding: 5px 5px;
+        border-radius: 2px;
+        background-color: #82E0AA;
+    }
+</style>
+
+

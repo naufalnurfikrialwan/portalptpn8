@@ -1,0 +1,132 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+            // All deferred initialization statements will be rendered here
+            Html.TelerikReporting().DeferredScripts()
+)
+
+@(Html.Kendo().TextBox().Name("Bulan").Value("6").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+@(Html.Kendo().TextBox().Name("Tahun").Value("2020").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Daftar Karyawan</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Unit/Kebun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                            .Name("NamaKebun")
+                            .DataTextField("Description")
+                            .DataSource(o => o.Read(r => r.Action("GetDataFrom", "Report").Data("filterKebun").Type(HttpVerbs.Post)).ServerFiltering(true))
+                            .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 200px" })
+                            .Events(e =>
+                            {
+                                e.DataBound("NamaKebunOnSelect");
+                                e.Change("NamaKebunOnSelect");
+                            })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+            .Grid<Ptpn8.Migrasi.Models.Checkroll_DIK_SAP>
+    ()
+    .Name("grdDetail")
+    .Columns(g =>
+    {
+        g.Bound(i => i.NIK_SPDK).Width(150).Filterable(false).Sortable(false).Title("Foto").ClientTemplate(@"<div class='photo'><img id='#:NIK_SPDK#' src='" + Url.Content("~/Content/Images/FotoDiri/01") + "#:NIK_SPDK#.jpg?timespan=#:new Date().getTime()#' alt='#: NIK_SPDK #' /></div>");
+        g.Bound(i => i.NIK_SPDK).Width(200).Title("Identitas").ClientTemplate(@"#= NIK_SPDK #"+"</br>"+"#= Full_Name #"+"</br>"+"#= Position1 #"+ "</br>"+ "#= PS_group #" + "/" + "#= Lv #");
+        //g.Bound(i => i.PS_group).Width(100).Title("Golongan").ClientTemplate("#= PS_group #"+ "/" +"#= Lv #");
+        g.Bound(i => i.Position).Width(100).Title("ALamat").ClientTemplate(@"#= Position #" + "</br>" + "#= Job1 #" + "</br>" + "#= Cost_Ctr #");
+        g.Bound(i => i.Birth_date).Width(200).Title("Tempat/Tanggal Lahir").ClientTemplate(@"#= Marital_Status_Key #" + "</br>" + "#= kendo.toString(Birth_date,'dd-MM-yyyy')  #" );
+        //.Format("{0:dd-MM-yyyy}");
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Excel();
+    })
+    .Excel(excel => excel.AllPages(true))
+    .AutoBind(false)
+    .Navigatable()
+    .Resizable(resizeable => resizeable.Columns(true))
+    .Scrollable()
+    .Sortable()
+    .Groupable()
+    .HtmlAttributes(new { style = "Height: 450px" })
+    .DataSource(o => o
+    .Ajax()
+    .ServerOperation(false)
+    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+    )
+    )
+</div>
+
+<script>
+    var unitId;
+    function btnProsesOnClick() {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function NamaKebunOnSelect(e) {
+        var kebun = this.dataItem(e.item);
+        if (typeof (kebun) != 'undefined') {
+            unitId = kebun.Plant;
+        }
+    }
+
+    function filterKebun() {
+        return {
+            strClassView: 'Ptpn8.Migrasi.Models.BKM_Plant',
+            scriptSQL: 'SELECT Plant,[Description] FROM [SPDK_KanpusEF].[dbo].[BKM_Plant] order by Plant'
+        };
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.Migrasi.Models.Checkroll_DIK_SAP',
+            scriptSQL:
+                "SELECT [NIK SPDK] as NIK_SPDK, [Full Name] as Full_Name, [Birth Date] as Birth_Date, case when B.TempatLahir is null then 'BANDUNG' else case when B.TempatLahir like 'X%' then 'BANDUNG' else B.TempatLahir end end as Marital_Status_Key, [PA], [Personnel Area] as Personnel_Area, [PSubarea], [Personnel Subarea] as Personnel_Subarea, [EEGrp], [Employee Group] as Employee_Group, " +
+                "[ESgrp], [Employee Subgroup] as Employee_Subgroup, [Org#unit] as Org_unit, [Organizational Unit] as Organizational_Unit, case when B.AlamatRumah is null then '' else B.AlamatRumah end as Position, [Position1], [Job], case when B.Handphone is null then '' else B.Handphone end as Job1, case when B.Email is null then '' else B.Email end as Cost_Ctr, " +
+                "[Cost Center] as Cost_Center, [PArea], [Payroll Area] as Payroll_Area, " +
+                "[Bank Keys] as Bank_Keys, [Bank Account] as Bank_Account, [PS group] as PS_group, [Lv], [Taxid], [Married for Tax Purposes] as Married_for_Tax_Purposes, [Spouse Benefit] as Spouse_Benefit, [Number of Dependents] as Number_of_Dependents, [TD], [JAM ID] as JAM_ID, [BPJS ID] as BPJS_ID, [InsSc], [ACCID], [Bulan], [Tahun] " +
+                "FROM [SPDK_KanpusEF].[dbo].[CheckRoll_DIK_SAP] A LEFT JOIN [SPDK_KanpusEF].[dbo].[CV_KeteranganPerorangan] B  ON A.[NIK SPDK]=substring(B.NIK,3,12) " + 
+                "where PSubarea = '" + unitId + "' and bulan = " + $('#Bulan').val() + " and tahun = " + $('#Tahun').val() + " and [Employee Group]!='Direksi' " +
+                "order by[PS group]desc, Lv desc"
+
+        }
+    }
+
+    function WarnaKolom(str) {
+        if (str != null) {
+            if (str.indexOf('MANGKIR') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str.substring(0, 1) + "</div>";
+            else if (str.indexOf('KERJA') > -1 || str.indexOf('SAKIT') > -1 || str.indexOf('IJIN') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: green;'>" + str.substring(0, 1) + "</div>";
+            else if (str.indexOf('CUTI') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: blue;'>" + str.substring(0, 1) + "</div>";
+            else
+                return "<div class='breakWord20' style='color: white; background-color: black;'>" + str.substring(0, 1) + "</div>";
+        }
+    }
+</script>
+

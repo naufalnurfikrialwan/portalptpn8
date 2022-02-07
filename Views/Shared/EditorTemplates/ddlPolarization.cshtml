@@ -1,0 +1,28 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .DataTextField("Text")
+        .DataValueField("Value")
+        .BindTo(new List<SelectListItem>()
+        {
+            new SelectListItem() {
+                Text = "Maximize",
+                Value = "Maximize"
+            },
+            new SelectListItem() {
+                Text = "Minimize",
+                Value = "Minimize"
+            },
+            new SelectListItem() {
+                Text = "Stabilize",
+                Value = "Stabilize"
+            },
+            new SelectListItem() {
+                Text = "Minimize t=0",
+                Value = "Minimize t=0"
+            }
+        })
+        .Events(e => { e.Change("ddlPolarizationOnChange"); e.Select("ddlPolarizationOnChange"); })
+)
+@Html.ValidationMessageFor(m => m)
+

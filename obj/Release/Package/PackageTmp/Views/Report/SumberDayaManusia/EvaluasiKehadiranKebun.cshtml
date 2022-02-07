@@ -1,0 +1,249 @@
+﻿<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+<div id="_header">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">Evaluasi Kehadiran Karyawan Kebun</div>
+            </td>
+        </tr>
+    </table>
+    <table width="50%">
+        <tr>
+            <td width="5%">
+                <label>Kebun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                    .Name("NamaKebun")
+                    .DataTextField("Nama")
+                    .DataSource(o => o.Read(r => r.Action("GetKebun1", "ddl", new { Area = "Referensi" }).Data("filterKebun")).ServerFiltering(true))
+                    .HtmlAttributes(new { required = "required", data_required_msg = "Pilih Kebun", style = "width: 40%" })
+                    .Events(e =>
+                    {
+                        e.DataBound("NamaKebunOnSelect");
+                        e.Change("NamaKebunOnSelect");
+                    })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Tahun:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().NumericTextBox().Name("Tahun").Min(2017).Format("D4").Value(2020)
+                                        .HtmlAttributes(new { style = "width:15%", @class = "allcaps" })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td width="5%">
+                <label>Bulan:</label>
+            </td>
+            <td width="20%">
+                @(Html.Kendo().DropDownList()
+                                    .AutoBind(true)
+                                    .Name("Bulan")
+                                    .DataTextField("Text")
+                                    .DataValueField("Value")
+                                    .HtmlAttributes(new { style = "width:55%", @class = "allcaps" })
+                                    .BindTo(new List<SelectListItem>()
+                                    {
+                                        new SelectListItem() {
+                                            Text = "Januari",
+                                            Value = "01"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Februari",
+                                            Value = "02"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Maret",
+                                            Value = "03"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "April",
+                                            Value = "04"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Mei",
+                                            Value = "05"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Juni",
+                                            Value = "06"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Juli",
+                                            Value = "07"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Agustus",
+                                            Value = "08"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "September",
+                                            Value = "09"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Oktober",
+                                            Value = "10"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Nopember",
+                                            Value = "11"
+                                        },
+                                        new SelectListItem() {
+                                            Text = "Desember",
+                                            Value = "12"
+                                        }
+                                        })
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <div class="confirm">
+                    <button id="btnSubmitHeader" class="submit k-button" type="button" onclick="btnProsesOnClick()">Proses</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="_detail">
+    @(Html.Kendo()
+    .Grid<Ptpn8.SumberDayaManusia.Models.EvaluasiKehadiranKebun>
+    (Guid.Empty.ToString())
+    .Name("grdDetail")
+    .Columns(g =>
+    {
+        g.Bound(i => i.kebun).Width(100).Title("Kebun").Locked(true).Hidden();
+        g.Bound(i => i.afdeling).Width(100).Title("Afdeling").Locked(true);
+        g.Bound(i => i.register).Width(100).Title("Register").Locked(true);
+        g.Bound(i => i.nama).Width(150).Title("Nama").Locked(true);
+        g.Bound(i => i.golongan).Width(50).Title("Gol.").Locked(true);
+        g.Group(i =>
+        {
+            i.Title("Keterangan").Locked(true);
+            i.Columns(c =>
+            {
+                c.Bound(j => j.cuti).Width(75).Title("Cuti").HtmlAttributes(new { style = "text-align: center; color: blue; font-weight : 700" });
+                c.Bound(j => j.sakit).Width(75).Title("Sakit").HtmlAttributes(new { style = "text-align: center; color: green; font-weight : 700" });
+                c.Bound(j => j.ijin).Width(75).Title("Ijin").HtmlAttributes(new { style = "text-align: center; color: green; font-weight : 700" });
+                c.Bound(j => j.mangkir).Width(75).Title("Mangkir").HtmlAttributes(new { style = "text-align: center; color: red; font-weight : 700" });
+                c.Bound(j => j.kerja).Width(75).Title("Kerja").HtmlAttributes(new { style = "text-align: center; color: green; font-weight : 700" });
+                c.Bound(j => j.libur).Width(75).Title("Libur").HtmlAttributes(new { style = "text-align: center; color: black; font-weight : 700" });
+            });
+        });
+        g.Group(i =>
+        {
+            i.Title("Tanggal");
+            i.Columns(c =>
+            {
+                c.Bound(j => j.Tgl_01).Width(100).Title("01").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_01) #");
+                c.Bound(j => j.Tgl_02).Width(100).Title("02").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_02) #");
+                c.Bound(j => j.Tgl_03).Width(100).Title("03").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_03) #");
+                c.Bound(j => j.Tgl_04).Width(100).Title("04").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_04) #");
+                c.Bound(j => j.Tgl_05).Width(100).Title("05").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_05) #");
+                c.Bound(j => j.Tgl_06).Width(100).Title("06").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_06) #");
+                c.Bound(j => j.Tgl_07).Width(100).Title("07").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_07) #");
+                c.Bound(j => j.Tgl_08).Width(100).Title("08").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_08) #");
+                c.Bound(j => j.Tgl_09).Width(100).Title("09").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_09) #");
+                c.Bound(j => j.Tgl_10).Width(100).Title("10").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_10) #");
+                c.Bound(j => j.Tgl_11).Width(100).Title("11").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_11) #");
+                c.Bound(j => j.Tgl_12).Width(100).Title("12").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_12) #");
+                c.Bound(j => j.Tgl_13).Width(100).Title("13").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_13) #");
+                c.Bound(j => j.Tgl_14).Width(100).Title("14").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_14) #");
+                c.Bound(j => j.Tgl_15).Width(100).Title("15").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_15) #");
+                c.Bound(j => j.Tgl_16).Width(100).Title("16").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_16) #");
+                c.Bound(j => j.Tgl_17).Width(100).Title("17").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_17) #");
+                c.Bound(j => j.Tgl_18).Width(100).Title("18").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_18) #");
+                c.Bound(j => j.Tgl_19).Width(100).Title("19").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_19) #");
+                c.Bound(j => j.Tgl_20).Width(100).Title("20").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_20) #");
+                c.Bound(j => j.Tgl_21).Width(100).Title("21").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_21) #");
+                c.Bound(j => j.Tgl_22).Width(100).Title("22").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_22) #");
+                c.Bound(j => j.Tgl_23).Width(100).Title("23").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_23) #");
+                c.Bound(j => j.Tgl_24).Width(100).Title("24").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_24) #");
+                c.Bound(j => j.Tgl_25).Width(100).Title("25").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_25) #");
+                c.Bound(j => j.Tgl_26).Width(100).Title("26").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_26) #");
+                c.Bound(j => j.Tgl_27).Width(100).Title("27").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_27) #");
+                c.Bound(j => j.Tgl_28).Width(100).Title("28").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_28) #");
+                c.Bound(j => j.Tgl_29).Width(100).Title("29").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_29) #");
+                c.Bound(j => j.Tgl_30).Width(100).Title("30").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_30) #");
+                c.Bound(j => j.Tgl_31).Width(100).Title("31").HtmlAttributes(new { style = "text-align: right" }).ClientTemplate("#= WarnaKolom(Tgl_31) #");
+            });
+        });
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Excel();
+    })
+    .Excel(excel => excel.AllPages(true))
+    .AutoBind(false)
+    .Navigatable()
+    .Resizable(resizeable => resizeable.Columns(true))
+    .Scrollable()
+    .Sortable()
+    .Groupable()
+    .HtmlAttributes(new { style = "Height: 450px" })
+    .DataSource(o => o
+    .Ajax()
+    .Group(g => g.Add(gg => gg.afdeling))
+    .ServerOperation(false)
+    .Read(read => read.Action("detailRead", "Report").Data("filterReport").Type(HttpVerbs.Post))
+    )
+    )
+</div>
+
+<script>
+    var unitId;
+    function btnProsesOnClick()
+    {
+        var grid = $('#grdDetail').data('kendoGrid');
+        grid.dataSource.read();
+    }
+
+    function NamaKebunOnSelect(e) {
+        var kebun = this.dataItem(e.item);
+        if (typeof (kebun) != 'undefined') {
+            unitId= kebun.kd_kbn;
+        }
+    }
+
+    function filterKebun() {
+        return {
+            key: "NamaKebun",
+            value: $("#NamaKebun").val()
+        };
+    }
+
+    function filterReport(e) {
+        return {
+            strClassView: 'Ptpn8.SumberDayaManusia.Models.EvaluasiKehadiranKebun',
+            scriptSQL: "EXEC SPDK_KanpusEF.dbo.EvaluasiKehadiran '" + $('#Bulan').val() + "','" + $('#Tahun').val() + "','"+unitId+"'"
+        }
+    }
+
+    function WarnaKolom(str) {
+        if (str != null) {
+            if (str.indexOf('MANGKIR') > -1)
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str + "</div>";
+            else
+                return "<div class='breakWord20' style='color: black'>" + str + "</div>";
+        }
+        else return "<div class='breakWord20' style='color: black'>" + str + "</div>";
+    }
+</script>
+
+
+
+
+
+

@@ -1,0 +1,474 @@
+﻿@model Ptpn8.Models.View_CV.View_KeteranganPerorangan
+<script src="~/Scripts/CV/CV_PeminatanPosisiDirektur.js"></script>
+
+@*header*@
+
+<table width="100%" class="hdr">
+    <tr>
+        <td>
+            <div style="text-align:center">@ViewBag.Title</div>
+        </td>
+    </tr>
+</table>
+
+<div class="_headersawit">
+
+    <table width="50%;" align="center">
+        <tr>
+            <td width="100%;">
+                <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%;" align="center" style="font-size: small;">
+        <tr>
+            <td width="5%"><label style="text-align: right; font-size: 12px;">NIK:</label></td>
+            <td width="20%">
+                <label id="NIK" style="text-align: left; color: green; font-size: 24px;">@HttpContext.Current.User.Identity.Name</label>
+            </td>
+            <td width="30%" align="left"></td>
+        </tr>
+        <tr>
+            <td><label style="text-align: right; font-size: 12px;">Nama Lengkap:</label></td>
+            <td><label id="NamaLengkap" style="text-align: left; color: blue;"></label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 18px; color: darkcyan ;">Lengkapi Isian Di Bawah Ini :</label></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><label style="text-align: left; font-size: 11px; color: darkcyan ;">(Diperbolehkan memilih lebih dari satu (Khusus BOD-1))</label></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <div class="_headersawit">
+                @(Html.Kendo().TextBox().Name("PeminatanPosisiDirekturId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+                @(Html.Kendo().TextBox().Name("KeteranganPeroranganId").HtmlAttributes(new { @readonly = "true", style = "width: 100%; display: none" }))
+
+
+                <table width="100%;" align="center" style="font-size: small;">
+                    <tr>
+                        <td><label style="text-align: left; font-size: 15px;">Peminatan Posisi Direktur:</label></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table width="100%" style="border:solid; border-width: thin; text-align: center;">
+                                <tr>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Direktur Utama</label>
+                                        <input type="checkbox" id="DirekturUtama" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">                                        
+                                        <label>Pemasaran</label>
+                                        <input type="checkbox" id="Pemasaran" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;" >                                      
+                                        <label>Investasi</label>
+                                        <input type="checkbox" id="Investasi" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">                                        
+                                        <label>Teknologi Informasi</label>
+                                        <input type="checkbox" id="TeknologiInformasi" value="1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Keuangan</label>
+                                        <input type="checkbox" id="Keuangan" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Pengembangan Bisnis</label>
+                                        <input type="checkbox" id="PengembanganBisnis" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Procurement/Pengadaan</label>
+                                        <input type="checkbox" id="Procurement" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Operasional</label>
+                                        <input type="checkbox" id="Operasional" value="1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Commercial Banking</label>
+                                        <input type="checkbox" id="CommercialBanking" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Produksi</label>
+                                        <input type="checkbox" id="Produksi" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Keamanan dan Keselamatan Kerja</label>
+                                        <input type="checkbox" id="KeamananDanKeselamatanKerja" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Manajemen Aset</label>
+                                        <input type="checkbox" id="ManajemenAset" value="1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Consumer Banking</label>
+                                        <input type="checkbox" id="ConsumerBanking" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Teknik</label>
+                                        <input type="checkbox" id="Teknik" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Logistik</label>
+                                        <input type="checkbox" id="Logistik" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Pelayanan/Services</label>
+                                        <input type="checkbox" id="Pelayanan" value="1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Digital Banking</label>
+                                        <input type="checkbox" id="DigitalBanking" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Risiko Perusahaan</label>
+                                        <input type="checkbox" id="RisikoPerusahaan" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Strategic Portfolio</label>
+                                        <input type="checkbox" id="StrategicPortfolio" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Kepatuhan/Hukum/Legal</label>
+                                        <input type="checkbox" id="Kepatuhan" value="1">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Treasury</label>
+                                        <input type="checkbox" id="Treasury" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Human Capital (SDM)</label>
+                                        <input type="checkbox" id="HumanCapital" value="1">
+                                    </td>
+                                    <td style="border: solid; border-width: thin;">
+                                        <label>Supply Chain Management</label>
+                                        <input type="checkbox" id="SupplyChainManagement" value="1">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            @*@(Html.Kendo().Button().Name("btnSimpan").Content("Simpan").HtmlAttributes(new { style = "width: 150px; height: 60px; background-color: yellow; font-size: 18px;" }).Events(ev => ev.Click("btnSimpanOnClick")))*@
+
+                            <button type="submit" id="btnSimpan" class="k-button" style="background-color: yellow; font-size: 18px; width: 150px; height: 60px; ">Simpan</button>
+
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><label></label></td>
+                        <td></td>
+
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+</div>
+
+<script>
+    var nik, keteranganperoranganid;
+    $(document).ready(function () {
+        CV_KeteranganPeroranganOnSelect();
+    });
+
+    function CV_KeteranganPeroranganOnSelect(e) {
+        GetCV_KeteranganPerorangan().done(function (data) {
+            if (data != 0) {
+                var dta = data[0];
+                keteranganperoranganid=dta.KeteranganPeroranganId;
+                $('#NIK').text(dta.NIK);
+                $('#NamaLengkap').text(dta.NamaLengkap);
+                GetCV_PeminatanPosisiDirektur(dta.NIK).done(function (data) {
+                    if (data != 0) {
+                        dta = data[0];
+                        $('#PeminatanPosisiDirekturId').val(dta.PeminatanPosisiDirekturId);
+                        var DirekturUtama = dta.DirekturUtama;
+                        if (DirekturUtama == 1) {
+                            $("#DirekturUtama").prop('checked', true);
+                        }
+                        var Keuangan = dta.Keuangan;
+                        if (Keuangan == 1) {
+                            $("#Keuangan").prop('checked', true);
+                        }
+                        var CommercialBanking = dta.CommercialBanking;
+                        if (CommercialBanking == 1) {
+                            $("#CommercialBanking").prop('checked', true);
+                        }
+                        var ConsumerBanking = dta.ConsumerBanking;
+                        if (ConsumerBanking == 1) {
+                            $("#ConsumerBanking").prop('checked', true);
+                        }
+                        var DigitalBanking = dta.DigitalBanking;
+                        if (DigitalBanking == 1) {
+                            $("#DigitalBanking").prop('checked', true);
+                        }
+                        var Treasury = dta.Treasury;
+                        if (Treasury == 1) {
+                            $("#Treasury").prop('checked', true);
+                        }
+                        var Pemasaran = dta.Pemasaran;
+                        if (Pemasaran == 1) {
+                            $("#Pemasaran").prop('checked', true);
+                        }
+                        var PengembanganBisnis = dta.PengembanganBisnis;
+                        if (PengembanganBisnis == 1) {
+                            $("#PengembanganBisnis").prop('checked', true);
+                        }
+                        var Produksi = dta.Produksi;
+                        if (Produksi == 1) {
+                            $("#Produksi").prop('checked', true);
+                        }
+                        var Teknik = dta.Teknik;
+                        if (Teknik == 1) {
+                            $("#Teknik").prop('checked', true);
+                        }
+                        var RisikoPerusahaan = dta.RisikoPerusahaan;
+                        if (RisikoPerusahaan == 1) {
+                            $("#RisikoPerusahaan").prop('checked', true);
+                        }
+                        var HumanCapital = dta.HumanCapital;
+                        if (HumanCapital == 1) {
+                            $("#HumanCapital").prop('checked', true);
+                        }
+                        var Investasi = dta.Investasi;
+                        if (Investasi == 1) {
+                            $("#Investasi").prop('checked', true);
+                        }
+                        var Procurement = dta.Procurement;
+                        if (Procurement == 1) {
+                            $("#Procurement").prop('checked', true);
+                        }
+                        var KeamananDanKeselamatanKerja = dta.KeamananDanKeselamatanKerja;
+                        if (KeamananDanKeselamatanKerja == 1) {
+                            $("#KeamananDanKeselamatanKerja").prop('checked', true);
+                        }
+                        var Logistik = dta.Logistik;
+                        if (Logistik == 1) {
+                            $("#Logistik").prop('checked', true);
+                        }
+                        var StrategicPortfolio = dta.StrategicPortfolio;
+                        if (StrategicPortfolio == 1) {
+                            $("#StrategicPortfolio").prop('checked', true);
+                        }
+                        var SupplyChainManagement = dta.SupplyChainManagement;
+                        if (SupplyChainManagement == 1) {
+                            $("#SupplyChainManagement").prop('checked', true);
+                        }
+                        var TeknologiInformasi = dta.TeknologiInformasi;
+                        if (TeknologiInformasi == 1) {
+                            $("#TeknologiInformasi").prop('checked', true);
+                        }
+                        var Operasional = dta.Operasional;
+                        if (Operasional == 1) {
+                            $("#Operasional").prop('checked', true);
+                        }
+                        var ManajemenAset = dta.ManajemenAset;
+                        if (ManajemenAset == 1) {
+                            $("#ManajemenAset").prop('checked', true);
+                        }
+                        var Pelayanan = dta.Pelayanan;
+                        if (Pelayanan == 1) {
+                            $("#Pelayanan").prop('checked', true);
+                        }
+                        var Kepatuhan = dta.Kepatuhan;
+                        if (Kepatuhan == 1) {
+                            $("#Kepatuhan").prop('checked', true);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function GetCV_KeteranganPerorangan() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_KeteranganPerorangan',
+                scriptSQL: "SELECT top 1 KeteranganPeroranganId,NIK,NamaLengkap FROM [SPDK_KanpusEF].[dbo].[CV_KeteranganPerorangan] " +
+                    "WHERE NIK='" + nik + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetCV_PeminatanPosisiDirektur() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.Models.View_CV.View_PeminatanPosisiDirektur',
+                scriptSQL: "SELECT top 1 * FROM [SPDK_KanpusEF].[dbo].[CV_PeminatanPosisiDirektur] " +
+                    "WHERE keteranganperoranganid='" + keteranganperoranganid + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function SimpanData() {
+        var url = '/Input/ExecSQL';
+        var PeminatanPosisiDirekturId = $('#PeminatanPosisiDirekturId').val();
+        
+        var KeteranganPeroranganId = keteranganperoranganid;
+        if ($('#DirekturUtama').is(":checked")) {
+            var DirekturUtama = 1;
+        } else var DirekturUtama = 0;
+        if ($('#Keuangan').is(":checked")) {
+            var Keuangan = 1;
+        } else var Keuangan = 0;
+        if ($('#CommercialBanking').is(":checked")) {
+            var CommercialBanking = 1;
+        } else var CommercialBanking = 0;
+        if ($('#ConsumerBanking').is(":checked")) {
+            var ConsumerBanking = 1;
+        } else var ConsumerBanking = 0;
+        if ($('#DigitalBanking').is(":checked")) {
+            var DigitalBanking = 1;
+        } else var DigitalBanking = 0;
+        if ($('#Treasury').is(":checked")) {
+            var Treasury = 1;
+        } else var Treasury = 0;
+        if ($('#Pemasaran').is(":checked")) {
+            var Pemasaran = 1;
+        } else var Pemasaran = 0;
+        if ($('#PengembanganBisnis').is(":checked")) {
+            var PengembanganBisnis = 1;
+        } else var PengembanganBisnis = 0;
+        if ($('#Produksi').is(":checked")) {
+            var Produksi = 1;
+        } else var Produksi = 0;
+        if ($('#Teknik').is(":checked")) {
+            var Teknik = 1;
+        } else var Teknik = 0;
+        if ($('#RisikoPerusahaan').is(":checked")) {
+            var RisikoPerusahaan = 1;
+        } else var RisikoPerusahaan = 0;
+        if ($('#HumanCapital').is(":checked")) {
+            var HumanCapital = 1;
+        } else var HumanCapital = 0;
+        if ($('#Investasi').is(":checked")) {
+            var Investasi = 1;
+        } else var Investasi = 0;
+        if ($('#Procurement').is(":checked")) {
+            var Procurement = 1;
+        } else var Procurement = 0;
+        if ($('#KeamananDanKeselamatanKerja').is(":checked")) {
+            var KeamananDanKeselamatanKerja = 1;
+        } else var KeamananDanKeselamatanKerja = 0;
+        if ($('#Logistik').is(":checked")) {
+            var Logistik = 1;
+        } else var Logistik = 0;
+        if ($('#StrategicPortfolio').is(":checked")) {
+            var StrategicPortfolio = 1;
+        } else var StrategicPortfolio = 0;
+        if ($('#SupplyChainManagement').is(":checked")) {
+            var SupplyChainManagement = 1;
+        } else var SupplyChainManagement = 0;
+        if ($('#TeknologiInformasi').is(":checked")) {
+            var TeknologiInformasi = 1;
+        } else var TeknologiInformasi = 0;
+        if ($('#Operasional').is(":checked")) {
+            var Operasional = 1;
+        } else var Operasional = 0;
+        if ($('#ManajemenAset').is(":checked")) {
+            var ManajemenAset = 1;
+        } else var ManajemenAset = 0;
+        if ($('#Pelayanan').is(":checked")) {
+            var Pelayanan = 1;
+        } else var Pelayanan = 0;
+        if ($('#Kepatuhan').is(":checked")) {
+            var Kepatuhan = 1;
+        } else var Kepatuhan = 0;
+
+        if (PeminatanPosisiDirekturId == "") {
+            PeminatanPosisiDirekturId = guid();
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "insert into [SPDK_KanpusEF].[dbo].[CV_PeminatanPosisiDirektur] " +
+                        "values ( " +
+                        "'" + PeminatanPosisiDirekturId + "','" + KeteranganPeroranganId + "','" + DirekturUtama + "','" + Keuangan + "','" + CommercialBanking + "','" + ConsumerBanking + "','" + DigitalBanking + "','" + Treasury + "','" + Pemasaran + "','" + PengembanganBisnis + "','" + Produksi + "','" + Teknik + "','" + RisikoPerusahaan + "','" + HumanCapital + "','" + Investasi + "','" + Procurement + "','" + KeamananDanKeselamatanKerja + "','" + Logistik + "','" + StrategicPortfolio + "','" + SupplyChainManagement + "','" + TeknologiInformasi + "','" + Operasional + "','" + ManajemenAset + "','" + Pelayanan + "','" + Kepatuhan + "' )",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+        }
+        else {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec [SPDK_KanpusEF].[dbo].[SimpanCV_PeminatanPosisiDirektur] " +
+                        "'" + PeminatanPosisiDirekturId + "','" + KeteranganPeroranganId + "','" + DirekturUtama + "','" + Keuangan + "','" + CommercialBanking + "','" + ConsumerBanking + "','" + DigitalBanking + "','" + Treasury + "','" + Pemasaran + "','" + PengembanganBisnis + "','" + Produksi + "','" + Teknik + "','" + RisikoPerusahaan + "','" + HumanCapital + "','" + Investasi + "','" + Procurement + "','" + KeamananDanKeselamatanKerja + "','" + Logistik + "','" + StrategicPortfolio + "','" + SupplyChainManagement + "','" + TeknologiInformasi + "','" + Operasional + "','" + ManajemenAset + "','" + Pelayanan + "','" + Kepatuhan + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+        }
+    }
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+</script>
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+
+
+
+

@@ -1,0 +1,31 @@
+﻿@(Html.Kendo().DropDownList()
+    .Name("MetodePembayaran")
+    .AutoBind(true)
+    .DataTextField("Text")
+    .DataValueField("Value")
+    .HtmlAttributes(new { style = "width:100%", @class = "allcaps" })
+    .BindTo(new List<SelectListItem>() {
+        new SelectListItem() {
+            Text = "Cash",
+            Value = "Cash"
+        },
+        new SelectListItem() {
+            Text = "Transfer",
+            Value = "Transfer"
+        },
+        new SelectListItem() {
+            Text = "Voucher",
+            Value = "Voucher"
+        },
+        new SelectListItem() {
+            Text = "Debit",
+            Value = "Debit"
+        },
+        new SelectListItem() {
+            Text = "Credit Card",
+            Value = "Credit Card"
+        }
+    })
+)
+
+

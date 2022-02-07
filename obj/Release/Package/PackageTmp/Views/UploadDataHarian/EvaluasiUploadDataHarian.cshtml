@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Evaluasi Upload Data Harian";
+}
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 5%; " />
+
+@(Html.Kendo().TextBox().HtmlAttributes(new { style = "display: none;" }).Name("KodeUnit").Value(@ViewBag.KodeUnit))
+
+<table width="100%;">
+    <tr><td style="text-align: center; font-weight:600; font-size: large; background: lightgray;vertical-align:middle;">Upload Data Harian</td></tr>
+</table>
+
+<div id="splitter">
+    @(Html.Kendo().TextBox().Name("tanggalServer").Value(System.DateTime.Now.ToString("yyyy/MM/dd HH:mm")).HtmlAttributes(new { style="display:none;"}))
+    @(Html.Kendo().Splitter().Name("horizontal").HtmlAttributes(new { style = "height: 600px;" }).Panes(hz =>
+        {
+            hz.Add().Size("15%").HtmlAttributes(new { id = "left-pane" })
+                .Collapsible(true).Content(@<text>
+                    @Html.Partial("~/Views/UploadDataHarian/EvaluasiUploadDataHarian_left_pane.cshtml")
+                </text>);
+            hz.Add().Size("85%").HtmlAttributes(new { id = "middle-pane" })
+                .Collapsible(false).Content(@<text>
+                    @Html.Partial("~/Views/UploadDataHarian/EvaluasiUploadDataHarian_middle_pane.cshtml")
+                </text>);
+        }))
+</div>
+<script>
+    var menuID;
+    var tanggalServer;
+
+    $(document).ajaxStart(function () {
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+    });
+
+    $(document).ready(function () {
+        menuID = "c605491c-ac42-4903-8361-672ab1dd7beb";
+        tanggalServer = $('#tanggalServer').val();
+    });
+</script>

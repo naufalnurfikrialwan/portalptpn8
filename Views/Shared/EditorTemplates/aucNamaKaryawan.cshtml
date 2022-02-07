@@ -1,0 +1,22 @@
+﻿@model string
+<div class="demo-section k-content">
+    @(Html.Kendo().AutoCompleteFor(m => m)
+        .Placeholder("Nama Karyawan")
+        .DataTextField("NAMA")
+        .MinLength(4)
+        .Filter("contains")
+        .HtmlAttributes(new { style = "width:100%" })
+        .Height(400)
+        .Delay(1000)
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read => read.Action("GetDataFrom", "Input").Data("filterNamaKaryawan").Type(HttpVerbs.Post)).ServerFiltering(true);
+        })
+        .Events(e => { e.Select("aucNamaKaryawanOnSelect"); e.DataBound("aucNamaKaryawanOnDataBound"); })
+        .FooterTemplate("Total <strong>#: instance.dataSource.total() #</strong> items found")
+        .Template("<span class=\"k-state-default\"><h5>#: data.NAMA #</h5></span>" +
+            "<span class=\"k-state-default\">#: data.REG+' '+data.GOL+'/'+data.MK+' '+data.NAMA_JAB+' '+data.KD_KBN #</span>" 
+        )
+    )
+</div>
+

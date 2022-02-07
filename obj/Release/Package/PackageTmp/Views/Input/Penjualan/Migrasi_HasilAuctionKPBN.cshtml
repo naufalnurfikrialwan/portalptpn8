@@ -1,0 +1,918 @@
+﻿@**@
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                    // All deferred initialization statements will be rendered here
+                    Html.TelerikReporting().DeferredScripts()
+)
+
+
+@*header*@
+<div id="_headerkopi" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="_headerkopi">
+
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%;">
+                            <label id="msgInputView" style="text-align:center; color: white; background-color: red; font-size: medium;"></label>
+                        </td>
+                    </tr>
+                </table>
+
+                <table width="40%">
+                    <tr>
+                        <td width="3%">
+                            <label>Tahun:</label>
+                        </td>
+                        <td width="20%">
+                            @(Html.Kendo().NumericTextBox().Name("TahunBuku").Min(2016).Format("D4").Value(DateTime.Now.Year)
+                                        .HtmlAttributes(new { style = "width:25%", @class = "allcaps" })
+                                        .Events(e => { e.Change("TahunBukuOnChange"); e.Spin("TahunBukuOnChange"); })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width=>
+                            <label>Nomor Pengajuan:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().AutoComplete().Name("NomorKatalog")
+                                        .MinLength(1)
+                                        .Filter("contains")
+                                        .DataTextField("NomorKatalog")
+                                        .Placeholder("Cari Nomor")
+                                        .Events(ev => { ev.Change("aucNoKatalogOnSelect"); })
+                                        .HtmlAttributes(new { style = "width: 55%", @class = "allcaps" })
+                                        .DataSource(o =>
+                                        {
+                                            o.Read(r => r.Action("GetDataFrom", "Input").Data("filterNoKatalog").Type(HttpVerbs.Post));
+
+                                        })
+                            )
+                        </td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button type="submit" id="btnSubmitHeader" class="k-button" style="color: white; background-color: green; font-size: small; height: 30px; margin-left: 20px;"><span class="k-font-icon k-i-restore"></span>Submit</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                                .Grid<Ptpn8.Models.Migrasi.View_Migrasi_DTL_BuatKatalog>(Guid.Empty.ToString())
+                                .Name("grdDetail")
+                                .Columns(g =>
+                                {
+                                    g.Bound(i => i.Migrasi_HDR_BuatKatalogId).Width(50).Hidden();
+                                    g.Bound(i => i.Migrasi_DTL_BuatKatalogId).Width(50).Hidden();
+                                    g.Bound(i => i.Migrasi_AlokasiId).Width(50).Hidden();
+                                    g.Bound(i => i.NamaMerk).Width(120).Title("Kebun");
+                                    g.Bound(i => i.Chop).Width(60).Title("No Chop").HtmlAttributes(new { required = "required", data_required_msg = "Masukan No Chop", style = "text-align: right;" });
+                                    g.Bound(i => i.NamaGrade).Width(120).Title("Grade")
+                                        .ClientFooterTemplate("Jumlah Total")
+                                        .ClientGroupFooterTemplate("Jumlah Total")
+                                        .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                                    g.Bound(i => i.QtySacks).Width(70).Title("Sack").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                    g.Bound(i => i.Brutto).Width(80).Title("Brutto").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                    g.Bound(i => i.Netto).Width(80).Title("Brutto").Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;" })
+                                        .ClientGroupFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .ClientFooterTemplate("#= kendo.toString(sum,'n0') #")
+                                        .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                                    g.Bound(i => i.Karung).Width(100).Title("Karung");
+                                    g.Bound(i => i.StatusAuction).Width(100).Title("Status Auction").ClientTemplate("#= WarnaKolom(StatusAuction) #").HtmlAttributes(new { style = "text-align: center; font-weight : 700" });
+                                    g.Bound(i => i.TanggalKontrakKPBN).Width(120).Title("Status Auction").Hidden();
+                                    g.Command(command =>
+                                    {
+                                        command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                                    }).Width(200);
+                                })
+                                .ToolBar(toolbar =>
+                                {
+                                    toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                                    "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
+                                                    "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                })
+                                .AutoBind(false)
+                                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                .Navigatable()
+                                .Resizable(resizeable => resizeable.Columns(true))
+                                .Scrollable()
+                                .Sortable()
+                                .Groupable()
+                                .HtmlAttributes(new { style = "Height: 450px" })
+                                .Events(e =>
+                                {
+                                    e.Change("grdOnChange");
+                                    e.Edit("grdOnEdit");
+                        //e.DataBound("resetRowNumber");
+                    })
+                                .DataSource(o => o
+                                    .Ajax()
+                                    .ServerOperation(false)
+                                    .Sort(s => s.Add(x => x.NamaMerk))
+                                    .Batch(true)
+                                    .Model(model =>
+                                    {
+                                        model.Id(p => p.Migrasi_DTL_BuatKatalogId);
+                                        model.Field(f => f.NamaMerk).Editable(false);
+                                        model.Field(f => f.Chop).Editable(false);
+                                        model.Field(f => f.NamaGrade).Editable(false);
+                                        model.Field(f => f.QtySacks).Editable(false);
+                                        model.Field(f => f.Brutto).Editable(false);
+                                        model.Field(f => f.Netto).Editable(false);
+                                        model.Field(f => f.Karung).Editable(false);
+                                    })
+                                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                                    .Aggregates(ag =>
+                                    {
+                                        ag.Add(x => x.QtySacks).Sum();
+                                        ag.Add(x => x.Brutto).Sum();
+                                        ag.Add(x => x.Netto).Sum();
+                                    })
+
+                                )
+    )
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+                                    // Each report viewer must have an id - it will be used by the initialization script
+                                    // to find the element and initialize the report viewer.
+                                    .Id("reportViewer")
+                                    // The URL of the service which will serve reports.
+                                    // The URL corresponds to the name of the controller class (ReportsController).
+                                    // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                                    .ServiceUrl(Url.Content("/api/reports/"))
+                                    // The URL for custom report vie    wer template. The template can be edited -
+                                    // new functionalities can be added and unneeded ones can be removed.
+                                    // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                                    //
+                                    // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                                    .ReportSource(new UriReportSource() { Uri = "../Reports/Alokasi/AlokasiKPBN.trdx" })
+                                    // Specifies whether the viewer is in interactive or print preview mode.
+                                    // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                                    // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                                    .ViewMode(ViewMode.Interactive)
+                                    // Sets the scale mode of the viewer.
+                                    // Three modes exist currently:
+                                    // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                                    // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                                    // Specific - Uses the scale to zoom in and out the report.
+                                    .ScaleMode(ScaleMode.Specific)
+                                    // Zoom in and out the report using the scale
+                                    // 1.0 is equal to 100%, i.e. the original size of the report
+                                    .Scale(1.0)
+                                    // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                                    // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                                    .PersistSession(false)
+                                    // Sets the print mode of the viewer.
+                                    .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Faktur dengan No PO ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+@* Auction KPBN *@
+<div id="winAlokasi1" title="Input Detail Hasil Auction" style="font-size: medium;">
+    <table width="100%">
+        <tr>
+            <td width="40%"><label>Tanggal Kontrak KPBN:</label></td>
+            <td>
+                @(Html.Kendo().DateTimePicker().Name("TanggalKontrakKPBN").Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 70%" }).Value(DateTime.Now))
+            </td>
+        </tr>
+        <tr>
+            <td><label>No Kontrak KPBN:</label></td>
+            <td>
+                @(Html.Kendo().TextBox().Name("KontrakKPBN").HtmlAttributes(new { style = "width:70%", @class = "allcaps" }))
+            </td>
+        </tr>
+        <tr>
+            <td><label>Harga Satuan/Kg (Cent):</label></td>
+            <td>
+                @(Html.Kendo().NumericTextBox<double>().Name("HargaSatuan").Format("#.00").HtmlAttributes(new { style = "width:70%", @class = "allcaps" }))
+            </td>
+        </tr>
+        <tr>
+            <td><label>Pembeli</label></td>
+            <td>
+                @(Html.Kendo().TextBox().Name("BuyerId").HtmlAttributes(new { style = "display:none;" }))
+                @(Html.Kendo().AutoComplete().Name("NamaBuyer")
+                                                .MinLength(2)
+                                                .Filter("contains")
+                                                .DataTextField("Nama")
+                                                .DataSource(o => o.Read(r => r.Action("GetBuyer1", "ddl", new { Area = "Referensi" }).Data("filterBuyer")).ServerFiltering(true))
+                                                .HtmlAttributes(new { required = "required", data_required_msg = "Isi Buyer", style = "width: 70%", @class = "allcaps" })
+                                                .Placeholder("Pilih Buyer")
+                                                .Events(e => e.Change("BuyerOnSelect"))
+                )
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button id="submit1" class="submit k-button">Submit</button>
+                <button id="cancel1" class="delete k-button">Cancel</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+<script>
+    var wndLeaveGrid, wnd, wndDetail, prt, err, del;
+    var kebun;
+    var migrasi_HDR_BuatKatalogId, migrasi_DTL_BuatKatalogId, no_katalog, migrasi_Alokasi343Id, tahunBuku, currentRow;
+    var _NomorInputView;
+    var model;
+    var headerBaru, detailBaru;
+    var rowNumber = 0;
+    var menuId = 'b3a69e66-3fe3-473d-ad11-58783ee663d7';
+
+    $('.k-window.titlebar').css('style', 'display: none');
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+    $(document).ajaxStart(function () {
+        //$("#_header").addClass('disabledbutton');
+        //$("#_detail").addClass('disabledbutton');
+        $("#_footer").addClass('disabledbutton');
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+        //$("#_header").removeClass('disabledbutton');
+        //$("#_detail").removeClass('disabledbutton');
+        $("#_footer").removeClass('disabledbutton');
+    });
+    function hapusPenggunaPortalYangAktif() {
+        var url = '/Account/HapusPenggunaPortalYangAktif';
+        return $.ajax({
+            url: url,
+            data: {
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+    $(document).ready(function () {
+        //disableHeader();
+        win1 = $("#winAlokasi1").kendoWindow({
+            title: "Input Detail Hasil Auction",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 500
+        }).data("kendoWindow");
+
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        wndDetail = $("#konfirmasiDetail").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        err = $("#errWindow").kendoWindow({
+            title: "Error Data",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        prt = $("#printWindow").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+        del = $("#delWindow").kendoWindow({
+            title: "Hapus Header",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        wndLeaveGrid = $("#konfirmasiLeaveGrid").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        gridStatus = 'belum-ngapa-ngapain';
+
+
+        // copykan ke semua view 22/09/16 16:40
+
+        //////// sampe sini
+    });
+
+    // copykan ke semua view
+
+
+    $(window).on("beforeunload", function () {
+        return "Please don't leave me!";
+    });
+
+    $(window).on("unload", function () {
+        hapusPenggunaPortalYangAktif();
+    });
+
+
+    angular.module("__header", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    //$(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                    //$('#grdDetail').removeClass('disabledbutton');
+                    $("#grdDetail").data("kendoGrid").dataSource.read({
+                    });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                    gridDestroy();
+                }
+            }
+        });
+
+    function openWindow(e) {
+
+        e.preventDefault();
+        //var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        var grid = $('#grdDetail').data('kendoGrid');
+        var dataItem = grid.dataSource.getByUid(row.data().uid);
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            PeriksaConstraintDetail(dataItem).done(function (data) {
+                if (data == 0) {
+                    grid.removeRow(row);
+                    gridStatus = 'sudah-diapa-apain';
+                }
+                else {
+                    openDelDetailWindow();
+                }
+            }).fail(function (x) {
+                alert('Error! Hubungi Bagian TI');
+            });
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+    }
+
+    function openWindowLeaveGrid(e) {
+        e.preventDefault();
+        wndLeaveGrid.open().center();
+        $("#yesLeaveGrid").click(function () {
+            wndLeaveGrid.close();
+            sendData();
+        });
+        $("#noLeaveGrid").click(function () {
+            gridStatus = 'belum-ngapa-ngapain';
+            wndLeaveGrid.close();
+        });
+    }
+
+    function openErrWindow(e) {
+        err.open().center();
+        $("#ok").click(function () {
+            err.close();
+        });
+    }
+
+    function openDelWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function openDelDetailWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function gridDestroy() {
+        $("#grdDetail").data("kendoGrid").dataSource.read([]);
+    }
+
+
+    function cariUserYangLagiNgedit() {
+        var url = '/Input/CariUserYangLagiNgedit';
+        return $.ajax({
+            url: url,
+            //contentType: 'application/json; charset=utf-8',
+            data: {
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+
+    }
+
+    function btnPrintHeaderOnClick() {
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: { Migrasi_HDR_BuatKatalogId: $('#Migrasi_HDR_BuatKatalogId').val() }
+        });
+        viewer.refreshReport();
+        prt.open().center();
+    }
+
+    function ddlBudidayaOnSelect(e) {
+        ddlBudidaya = this.dataItem(e.item);
+    }
+
+    function ddlBudidayaOnDataBound(e) {
+    }
+
+    function disableHeader() {
+        $("._key").find('span').addClass('disabledbutton');
+        $("._key").addClass('disabledbutton');
+        $("._nonkey").find('span').addClass('disabledbutton');
+        $("._nonkey").addClass('disabledbutton');
+
+        $('#btnSubmitHeader').addClass('disabledbutton');
+        $('#btnDeleteHeader').addClass('disabledbutton');
+        $('#btnPrintHeader').addClass('disabledbutton');
+        $('#grdDetail').addClass('disabledbutton');
+    }
+
+    function enableHeader() {
+        $("._key").find('span').removeClass('disabledbutton');
+        $("._key").removeClass('disabledbutton');
+        $("._nonkey").find('span').removeClass('disabledbutton');
+        $("._nonkey").removeClass('disabledbutton');
+        $('#btnSubmitHeader').removeClass('disabledbutton');
+        $('#btnDeleteHeader').removeClass('disabledbutton');
+        $('#btnPrintHeader').removeClass('disabledbutton');
+    }
+
+    function cekData(nomorInputView) {
+        if (nomorInputView.indexOf("Data Baru") > -1)   // Data Baru
+        {
+            headerBaru = true;
+            enableHeader();
+            $('#btnSubmitHeader').removeClass('disabledbutton');
+            $('#btnDeleteHeader').removeClass('disabledbutton');
+            $('#btnPrintHeader').removeClass('disabledbutton');
+            $('#btnSubmitHeader').attr('disabled', false);
+            $('#btnDeleteHeader').attr('disabled', true);
+            $('#btnPrintHeader').attr('disabled', true);
+            $('#grdDetail').addClass('disabledbutton');
+            gridDestroy();
+        }
+        else // Data Lama
+        {
+            headerBaru = false;
+            disableHeader();
+            $("._nonkey").find('span').removeClass('disabledbutton');
+            $("._nonkey").removeClass('disabledbutton');
+            $('#btnSubmitHeader').removeClass('disabledbutton');
+            $('#btnDeleteHeader').removeClass('disabledbutton');
+            $('#btnPrintHeader').removeClass('disabledbutton');
+            $('#btnSubmitHeader').attr('disabled', false);
+            $('#btnDeleteHeader').attr('disabled', false);
+            $('#btnPrintHeader').attr('disabled', false);
+            $('#grdDetail').addClass('disabledbutton');
+            gridDestroy();
+        }
+    }
+
+    function filterNomorInput(e) {
+        var mdl = JSON.stringify(ViewToModel());
+        return { _model: mdl, _menuId: menuId };
+    }
+
+
+    // Detail
+
+    function grdOnChange(e) {
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+        if (model.isNew()) {
+            model.Migrasi_DTL_BuatKatalogId = model.uid;
+            model.Migrasi_HDR_BuatKatalogId = migrasi_HDR_BuatKatalogId;
+        }
+        migrasi_DTL_BuatKatalogId = model.Migrasi_DTL_BuatKatalogId;
+        gridStatus = 'sudah-diapa-apain';
+
+    }
+
+
+
+
+    function grdOnDataBinding(e) {
+
+    }
+
+
+
+    //autocomplete Satuan
+
+
+    function filterGridUpdate(e) {
+        var mdl = e.models;
+        var arr = [];
+        for (var i = 0; i < mdl.length; i++) {
+            arr.push(JSON.stringify(mdl[i]));
+        }
+        return {
+            _model: arr,
+            _menuId: menuId
+        };
+    }
+
+    function filterGridDestroy(e) {
+        return {
+            _model: JSON.stringify(e),
+            _menuId: menuId
+        };
+    }
+
+
+
+    function TahunBukuOnChange(e) {
+        tahunBuku = $('#TahunBuku').val();
+        $('#NomorKatalog').data('kendoAutoComplete').dataSource.read();
+    }
+
+    function sendData() {
+        var grid = $("#grdDetail").data("kendoGrid"),
+            parameterMap = grid.dataSource.transport.parameterMap;
+
+        //get the new and the updated records
+        var currentData = grid.dataSource.data();
+        var updatedRecords = [];
+        var newRecords = [];
+
+        for (var i = 0; i < currentData.length; i++) {
+            if (currentData[i].isNew()) {
+                newRecords.push(JSON.stringify(currentData[i]));
+            } else if (currentData[i].dirty) {
+                updatedRecords.push(JSON.stringify(currentData[i]));
+            }
+        }
+
+        //this records are deleted
+        var deletedRecords = [];
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            deletedRecords.push(JSON.stringify(grid.dataSource._destroyed[i]));
+        }
+
+        var data = {};
+        $.extend(data, parameterMap({ updated: updatedRecords }), parameterMap({ deleted: deletedRecords }), parameterMap({ new: newRecords }), parameterMap({ mnid: menuId }));
+        _sendData(data).done(function (msg) {
+            if (msg == "Success") {
+                grid.dataSource.read([]);
+                //disableHeader();
+                gridStatus = 'belum-ngapa-ngapain';
+            }
+            else {
+                $('#errMsg').text(msg);
+                gridStatus = 'sudah-nyoba-disimpan-tapi-model-masih-salah';
+                openErrWindow();
+            }
+        }).fail(function (x) {
+            $('#errMsg').text(msg);
+            openErrWindow();
+            grid.dataSource.read([]);
+            //disableHeader();
+            gridStatus = 'sudah-nyoba-disimpan-tapi-gagal';
+        });
+    }
+
+    function _sendData(data) {
+        return $.ajax({
+            url: "/Input/UpdateCreateDelete",
+            data: data,
+            type: "POST"
+        })
+    }
+
+
+    //// sampe sini
+    function hapusSeluruh(e) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            var grid = $('#grdDetail').data('kendoGrid');
+            var row = grid.tbody.find("tr:first");
+            do {
+                $('#grdDetail').data('kendoGrid').removeRow(row);
+                row = grid.tbody.find("tr:first");
+            }
+            while (grid.tbody.contents().length > 0)
+
+            gridStatus = 'sudah-diapa-apain';
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+    }
+
+
+    function filterdetailRead(e) {
+        return {
+            _menuId: menuId,
+            _filter: ['Migrasi_HDR_BuatKatalogId', migrasi_HDR_BuatKatalogId]
+        };
+    }
+
+    function filterdetailCreate(e) {
+        return { _menuId: menuId };
+    }
+
+    function filterNoKatalog() {
+        var d = new Date();
+        var n = d.getFullYear();
+        if (tahunBuku == null) {
+            return {
+                strClassView: 'Ptpn8.Models.Migrasi.View_Migrasi_HDR_BuatKatalog',
+                scriptSQL: "select distinct A.Migrasi_HDR_BuatKatalogId, A.NomorKatalog from [ERP].[dbo].[Migrasi_HDR_BuatKatalog] as A " +
+                    "join [ERP].[dbo].[Migrasi_DTL_BuatKatalog] as B on A.Migrasi_HDR_BuatKatalogId=B.Migrasi_HDR_BuatKatalogId " +
+                    "join [ERP].[dbo].[Migrasi_Alokasi] as C on B.Migrasi_AlokasiId=C.Migrasi_AlokasiId " +
+                    "join [ERP].[dbo].[Migrasi_Alokasi343] as D on C.Migrasi_AlokasiId=D.Migrasi_AlokasiId " +
+                    "where D.Migrasi_Alokasi343Id = (select top 1 AA.Migrasi_Alokasi343Id from [ERP].[dbo].[Migrasi_Alokasi343] as AA where AA.Migrasi_Alokasi343Id = D.Migrasi_Alokasi343Id and Year(AA.TanggalAuction)=" + n + " order by AA.Migrasi_Alokasi343Id )",
+                _menuId: menuId
+            }
+        }
+        else {
+            return {
+                strClassView: 'Ptpn8.Models.Migrasi.View_Migrasi_HDR_BuatKatalog',
+                scriptSQL: "select distinct A.Migrasi_HDR_BuatKatalogId, A.NomorKatalog from [ERP].[dbo].[Migrasi_HDR_BuatKatalog] as A " +
+                    "join [ERP].[dbo].[Migrasi_DTL_BuatKatalog] as B on A.Migrasi_HDR_BuatKatalogId=B.Migrasi_HDR_BuatKatalogId " +
+                    "join [ERP].[dbo].[Migrasi_Alokasi] as C on B.Migrasi_AlokasiId=C.Migrasi_AlokasiId " +
+                    "join [ERP].[dbo].[Migrasi_Alokasi343] as D on C.Migrasi_AlokasiId=D.Migrasi_AlokasiId " +
+                    "where D.Migrasi_Alokasi343Id = (select top 1 AA.Migrasi_Alokasi343Id from [ERP].[dbo].[Migrasi_Alokasi343] as AA where AA.Migrasi_Alokasi343Id = D.Migrasi_Alokasi343Id and Year(AA.TanggalAuction)=" + tahunBuku + " order by AA.Migrasi_Alokasi343Id )",
+                _menuId: menuId
+            }
+        }
+    }
+
+    function aucNoKatalogOnSelect(e) {
+        var katalog = this.dataItem(e.item);
+        migrasi_HDR_BuatKatalogId = katalog.Migrasi_HDR_BuatKatalogId;
+        no_katalog = katalog.NomorKatalog;
+        //migrasi_Alokasi343Id = katalog.Migrasi_Alokasi343Id;
+
+    }
+
+    function ddlStatusAuctionOnChange(e) {
+        var statusAuction = $('#StatusAuction').val();
+        var grid = $('#grdDetail').data('kendoGrid');
+        var dataItem = typeof (grid.dataSource.get(migrasi_DTL_BuatKatalogId)) == "undefined" ? grid.dataSource.getByUid(migrasi_DTL_BuatKatalogId) : grid.dataSource.get(migrasi_DTL_BuatKatalogId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+        var data = grid.dataItem(row);
+
+        if (statusAuction == 'BID') {
+            read1(currentRow).done(function () {
+            win1.open().center();
+            $("#submit1").click(function () {
+                submit1(currentRow).done(function () {
+                    var grid = $('#grdDetail').data('kendoGrid');
+                    var dataItem = typeof (grid.dataSource.get(migrasi_DTL_BuatKatalogId)) == "undefined" ? grid.dataSource.getByUid(migrasi_DTL_BuatKatalogId) : grid.dataSource.get(migrasi_DTL_BuatKatalogId);
+                    var tgl = ($('#TanggalKontrakKPBN').val()).toString();
+                    dataItem.set("TanggalKontrakKPBN", tgl.substr(0, 10));
+                    dataItem.set("KontrakKPBN", $('#KontrakKPBN').val());
+                    dataItem.set("HargaSatuan", $('#HargaSatuan').val());
+                    dataItem.set("BuyerId", $('#BuyerId').val());
+                    //dataItem.set("MvT343", '<label>Tgl Auction:</label><label>' + tgl.substr(0, 10) + '</label><label>' + 'No Katalog:</label><label>' + $('#No_Katalog').val()) + '</label>';
+                    //dataItem.set("MvT349", '');
+
+                    win1.close();
+                });
+            });
+            $("#cancel1").click(function () {
+                win1.close();
+                });
+            });
+        }
+    }
+
+    function read1(dataItem) {
+        var url = '/Input/ExecSQL';
+        return $.ajax({
+            url: url,
+            success: function (dt) {
+                if (dt.length > 0) {
+                    $('#TanggalKontrakKPBN').val(dt[0][0]);
+                    $('#KontrakKPBN').val(dt[0][1]);
+                    $('#HargaSatuan').data('kendoNumericTextBox').value(dt[0][2]);
+                    $('#BuyerId').val(dt[0][3]);
+                    $('#NamaBuyer').val(dt[0][4]);
+                }
+            },
+            data: {
+                scriptSQL: "select top 1 A.TanggalKontrakKPBN, A.KontrakKPBN, A.HargaSatuan, A.BuyerId, B.Nama as NamaBuyer from ERP..Migrasi_DTL_BuatKatalog A join ReferensiEF..Buyer B on A.BuyerID=B.BuyerID where Migrasi_DTL_BuatKatalogId='" + migrasi_DTL_BuatKatalogId + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function submit1(currentData) {
+        var url = '/Input/ExecSQL';
+        var grid = $('#grdDetail').data('kendoGrid');
+        var TanggalKontrakKPBN = $('#TanggalKontrakKPBN').val();
+        var KontrakKPBN = $('#KontrakKPBN').val();
+        var HargaSatuan = $('#HargaSatuan').val();
+        HargaSatuan = HargaSatuan.replace(",", ".");
+        var Pembeli = $('#BuyerId').val();
+        var scrSQL = "set dateformat DMY; exec ERP..Migrasi_SimpanHasilAuctionKPBN '" + migrasi_DTL_BuatKatalogId + "','" + TanggalKontrakKPBN + "','" + KontrakKPBN + "'," + HargaSatuan + ",'" + Pembeli + "'";
+        return $.ajax({
+            url: url,
+            data: {
+                scriptSQL: scrSQL,
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function filterBuyer() {
+        return {
+            value: $("#NamaBuyer").val(),
+            mainBudidayaId: '3D662350-146F-48B0-A181-5A840330C451' //teh
+        };
+    }
+
+    function BuyerOnSelect(e) {
+        var buyer = this.dataItem(e.item);
+        $('#BuyerId').val(buyer.BuyerId)
+        $('#NamaBuyer').val(buyer.Nama);
+    }
+
+    function WarnaKolom(str) {
+        if (str != null) {
+            if (str == 'BID')
+                return "<div class='breakWord20' style='color: white; background-color: green;'>" + str + "</div>";
+            else if (str == 'NO BID')
+                return "<div class='breakWord20' style='color: white; background-color: red;'>" + str + "</div>";
+            else if (str == 'WD')
+                return "<div class='breakWord20' style='color: white; background-color: orange;'>" + str + "</div>";
+            else
+                return "<div class='breakWord20' style='color: white; background-color: black;'>" + str + "</div>";
+        }
+    }
+</script>
+

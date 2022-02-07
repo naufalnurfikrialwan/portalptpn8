@@ -1,0 +1,1018 @@
+﻿@**@
+
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+        // All deferred initialization statements will be rendered here
+        Html.TelerikReporting().DeferredScripts()
+)
+
+@*header*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+        <form kendo-validator="validator" ng-submit="validate($event)">
+            <table width="100%" class="hdr">
+                <tr>
+                    <td>
+                        <div style="text-align:center">@ViewBag.Title</div>
+                    </td>
+                </tr>
+            </table>
+            <div class="">
+                <table width="50%">
+                    <tr>
+                        <td width="20%">
+                            <label style="text-align:left">Pembayaran:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().DropDownList().Name("ddlPembayaran").DataTextField("Text").DataValueField("Value")
+                                                .Events(ev => ev.Select("ddlPembayaranOnSelect"))
+                                                .SelectedIndex(10)
+                                                //.HtmlAttributes(new { style = "font-size: medium;" })
+                                                .BindTo(new List<SelectListItem>()
+                                                {
+                                                                            new SelectListItem() {
+                                                                                Text = "Sewa Pohon Karet",
+                                                                                Value = "Sewa Pohon Karet"
+                                                                            },
+                                                                            new SelectListItem() {
+                                                                                Text = "Lump",
+                                                                                Value = "Lump"
+                                                                            },
+                                                                            new SelectListItem() {
+                                                                                Text = "Pucuk Teh",
+                                                                                Value = "Pucuk Teh"
+                                                                            },
+                                                                            new SelectListItem() {
+                                                                                Text = "Kulit Kina",
+                                                                                Value = "Kulit Kina"
+                                                                            },
+                                                                            new SelectListItem() {
+                                                                                Text = "Kopi",
+                                                                                Value = "Kopi"
+                                                                            },
+                                                                            new SelectListItem() {
+                                                                                Text = "TBS",
+                                                                                Value = "TBS"
+                                                                            },
+                                                                            new SelectListItem() {
+                                                                                Text = "Non Kontrak",
+                                                                                Value = "Non Kontrak"
+                                                                            }
+                                            })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">
+                            <label>Nomor Pengajuan:</label>
+                        </td>
+                        <td>
+                            @(Html.Kendo().AutoComplete().Name("aucNomorPerjanjian")
+                                                .MinLength(2)
+                                                .Filter("contains")
+                                                .DataTextField("No_Perjanjian")
+                                                .Placeholder("Cari Nomor")
+                                                .Events(ev => { ev.Change("aucNomorPerjanjianOnSelect"); })
+                                                .HtmlAttributes(new { style = "width: 55%", @class = "allcaps" })
+                                                .DataSource(o =>
+                                                {
+                                                    o.Read(r => r.Action("GetDataFrom", "Input").Data("filterNomorPerjanjian").Type(HttpVerbs.Post));
+
+                                                })
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">
+                            <label>Nilai Sblm PPN:</label>
+                        </td>
+                        <td>
+                            <label id="Nilai" style="text-align: left; color: darkgreen;"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">
+                            <label>PPN:</label>
+                        </td>
+                        <td>
+                            <label id="PPN" style="text-align: left; color: darkgreen;"></label>
+                        </td>
+                    </tr>
+                </table>
+                <table width="50%;" align="center" style="margin-bottom: 5px;">
+                    <tr>
+                        <td width="100%" align="center">
+                            <div class="confirm">
+                                <button id="btnSubmitHeader" class="submit k-button" type="submit">Proses</button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo()
+                .Grid<Ptpn8.MonitoringPendapatanLain.Models.ViewMonitoringPendapatanLain_Pembayaran>(Guid.Empty.ToString())
+                .Name("grdDetail")
+                .Columns(g =>
+                {
+                    g.Bound(i => i.MonitoringPendapatanLain_PembayaranId).Width(50).Hidden();
+                    g.Bound(i => i.UnitId).Width(50).Hidden();
+                    g.Bound(i => i.No_Perjanjian).Title("No Perjanjian").Width(180).Hidden();
+                    g.Bound(i => i.Tanggal_Pembayaran).Title("Tgl. Pembayaran").Width(180)
+                    .ClientFooterTemplate("JUMLAH")
+                    .FooterHtmlAttributes(new { style = "text-align: center; background: silver;" });
+                    g.Bound(i => i.Jumlah).Title("Nilai Sebelum PPN").Width(110).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;  font-weight : 700; color:blue" })
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                    g.Bound(i => i.PPN).Title("PPN").Width(110).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;  font-weight : 700; color:blue" })
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                    g.Bound(i => i.PPH).Title("Potongan PPH").Width(110).Format("{0:N0}").HtmlAttributes(new { style = "text-align: right;  font-weight : 700; color:blue" })
+                    .ClientFooterTemplate("#= kendo.toString(sum,'n2') #")
+                    .FooterHtmlAttributes(new { style = "text-align: right; background: silver;" });
+                    g.Bound(i => i.Keterangan).Title("Keterangan").Width(250);
+                    g.Bound(j => j.File).Title("File").Width(120).Hidden();
+                    g.Bound(j => j.VerKaur).Title("Ver Kaur").Width(120).Hidden();
+                    g.Command(command =>
+                    {
+                        command.Custom("Upload").Text(" Upload File").Click("uploadData")
+                                              .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                        command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+                                      .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                        command.Custom("Delete").Text("Hapus Baris").Click("openWindow")
+                            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
+                    }).Width(250);
+                })
+                .ToolBar(toolbar =>
+                {
+                    toolbar.Template("<a class='k-button k-grid-add' style='background-color: blue; color: white; font-size:small;' href='#'></span><span class='k-font-icon k-i-plus'></span>Tambah Baris</a>" +
+                                    "<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                    toolbar.Excel();
+                })
+                .AutoBind(false)
+                .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                .Navigatable()
+                .Resizable(resizeable => resizeable.Columns(true))
+                .Scrollable()
+                .Excel(excel => excel.AllPages(true))
+                .Sortable()
+                .Groupable()
+                .Filterable()
+                .HtmlAttributes(new { style = "Height: 450px" })
+                .Events(e =>
+                {
+                    e.Change("grdOnChange");
+                    e.Edit("grdOnEdit");
+
+                })
+                .DataSource(o => o
+                    .Ajax()
+                    .ServerOperation(false)
+                    .Sort(s => s.Add(x => x.Tanggal_Pembayaran))
+                    .Batch(true)
+                    .Model(model =>
+                    {
+                        model.Id(p => p.MonitoringPendapatanLain_PembayaranId);
+                    })
+                    .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+                    .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))
+                    .Update(update => update.Action("detailUpdate", "Input").Data("filterGridUpdate").Type(HttpVerbs.Post))
+                    .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterGridDestroy").Type(HttpVerbs.Post))
+                    .Aggregates(ag =>
+                    {
+                        ag.Add(x => x.Jumlah).Sum();
+                        ag.Add(x => x.PPN).Sum();
+                        ag.Add(x => x.PPH).Sum();
+                    })
+                    )
+    )
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Invoice dengan No SI ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="uploadFile">
+
+    @(Html.Kendo().Upload()
+                    .Name("files")
+                    .Async(a => a
+                        .Save("SaveFile", "Input", new { fn = "~/Content/Images/FileBuktiPembayaran" })
+                        .AutoUpload(true)
+                    )
+                    .Events(e => { e.Success("uplOnSuccess"); e.Upload("onUpload"); })
+                    .Multiple(false)
+    )
+</div>
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<style>
+    .belumDisetujui {
+        background-color: lightcoral;
+    }
+
+    .sudahDisetujui {
+        background-color: lightgreen;
+    }
+</style>
+<script>
+var wndLeaveGrid, wnd, wndDetail, prt, err, del;
+var _NomorInputView;
+var model;
+var headerBaru, detailBaru;
+var rowNumber = 0;
+var menuId = '94b92759-003d-41e8-ae60-82286062cb00';
+var monitoringPendapatanLain_PembayaranId, pembayaran, no_Perjanjian, unitid, monitoringPendapatanLain_HDRId;
+var usrName = "@HttpContext.Current.User.Identity.Name";
+
+function renderNumber(data) {
+    var no = ++rowNumber;
+    data.NoBaris = no;
+    return no;
+}
+
+$('.k-window.titlebar').css('style', 'display: none');
+$(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+
+$(document).ajaxStart(function () {
+    $("#_header").addClass('disabledbutton');
+    $("#_detail").addClass('disabledbutton');
+    $("#_footer").addClass('disabledbutton');
+    $("#progress").show();
+}).ajaxStop(function () {
+    $("#progress").hide();
+    $("#_header").removeClass('disabledbutton');
+    $("#_detail").removeClass('disabledbutton');
+    $("#_footer").removeClass('disabledbutton');
+});
+
+$(document).ready(function () {
+    wnd = $("#modalWindow").kendoWindow({
+        title: "Konfirmasi",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 300
+    }).data("kendoWindow");
+
+    wndDetail = $("#konfirmasiDetail").kendoWindow({
+        title: "Konfirmasi",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 300
+    }).data("kendoWindow");
+
+    err = $("#errWindow").kendoWindow({
+        title: "Error Data",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 300
+    }).data("kendoWindow");
+
+    del = $("#delWindow").kendoWindow({
+        title: "Hapus Header",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 400,
+        height: 150
+    }).data("kendoWindow");
+
+    uploadFile = $("#uploadFile").kendoWindow({
+        title: "Upload File",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 500,
+        height: 300
+    }).data("kendoWindow");
+
+    pdf = $("#pdfWindow").kendoWindow({
+        title: "PDF Viewer",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 900,
+        height: 550
+    }).data("kendoWindow");
+
+    wndLeaveGrid = $("#konfirmasiLeaveGrid").kendoWindow({
+        title: "Konfirmasi",
+        modal: true,
+        visible: false,
+        resizable: false,
+        width: 400,
+        height: 150
+    }).data("kendoWindow");
+
+    gridStatus = 'belum-ngapa-ngapain';
+});
+
+$(window).on("beforeunload", function () {
+    return "Please don't leave me!";
+});
+
+$(window).on("unload", function () {
+    hapusPenggunaPortalYangAktif();
+});
+
+
+angular.module("__header", ["kendo.directives"])
+    .controller("MyCtrl", function ($scope) {
+        $scope.validate = function (event) {
+            event.preventDefault();
+            if ($scope.validator.validate()) {
+                no_Perjanjian = $('#aucNomorPerjanjian').data('kendoAutoComplete').value();
+                $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                $('#grdDetail').removeClass('disabledbutton');
+                $("#grdDetail").data("kendoGrid").dataSource.read({
+                });
+            } else {
+                $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                gridDestroy();
+            }
+        }
+    });
+
+
+function hapusPenggunaPortalYangAktif() {
+    var url = '/Account/HapusPenggunaPortalYangAktif';
+    return $.ajax({
+        url: url,
+        data: {
+            _menuId: menuId
+        },
+        type: 'POST',
+        datatype: 'json'
+    });
+}
+
+function disableHeader() {
+    $("._key").find('span').addClass('disabledbutton');
+    $("._key").addClass('disabledbutton');
+    $("._nonkey").find('span').addClass('disabledbutton');
+    $("._nonkey").addClass('disabledbutton');
+    $('#btnSubmitHeader').addClass('disabledbutton');
+    $('#grdDetail').addClass('disabledbutton');
+}
+
+function enableHeader() {
+    $("._key").find('span').removeClass('disabledbutton');
+    $("._key").removeClass('disabledbutton');
+    $("._nonkey").find('span').removeClass('disabledbutton');
+    $("._nonkey").removeClass('disabledbutton');
+    $('#btnSubmitHeader').removeClass('disabledbutton');
+}
+
+
+function openWindow(e) {
+    e.preventDefault();
+    var grid = this;
+    var row = $(e.currentTarget).closest("tr");
+    wndDetail.open().center();
+    $("#yesDetail").click(function () {
+        wndDetail.close();
+        $('#grdDetail').data('kendoGrid').removeRow(row);
+        gridStatus = 'sudah-diapa-apain';
+    });
+    $("#noDetail").click(function () {
+        wndDetail.close();
+    });
+}
+
+function openWindowLeaveGrid(e) {
+    e.preventDefault();
+    wndLeaveGrid.open().center();
+    $("#yesLeaveGrid").click(function () {
+        wndLeaveGrid.close();
+        sendData();
+    });
+    $("#noLeaveGrid").click(function () {
+        gridStatus = 'belum-ngapa-ngapain';
+        wndLeaveGrid.close();
+    });
+}
+
+function openErrWindow(e) {
+    err.open().center();
+    $("#ok").click(function () {
+        err.close();
+    });
+}
+
+function openDelWindow(e) {
+    del.open().center();
+    $("#okDel").click(function () {
+        del.close();
+    });
+}
+
+function openDelDetailWindow(e) {
+    del.open().center();
+    $("#okDel").click(function () {
+        del.close();
+    });
+}
+
+function filterGridUpdate(e) {
+    var mdl = e.models;
+    var arr = [];
+    for (var i = 0; i < mdl.length; i++) {
+        arr.push(JSON.stringify(mdl[i]));
+    }
+    return {
+        _model: arr,
+        _menuId: menuId
+    };
+}
+
+function filterGridDestroy(e) {
+    return {
+        _model: JSON.stringify(e),
+        _menuId: menuId
+    };
+}
+
+function gridDestroy() {
+    $("#grdDetail").data("kendoGrid").dataSource.read([]);
+}
+
+/* Grid Buyer */
+
+function grdOnChange(e) {
+}
+
+function grdOnEdit(e) {
+    var model = e.model;
+    this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+    if (model.isNew()) {
+        model.MonitoringPendapatanLain_PembayaranId = model.uid;
+        model.No_Perjanjian = no_Perjanjian;
+        model.UnitId = unitid;
+        model.MonitoringPendapatanLain_HDRId = monitoringPendapatanLain_HDRId;
+    }
+    monitoringPendapatanLain_PembayaranId = model.MonitoringPendapatanLain_PembayaranId;
+    gridStatus = 'sudah-diapa-apain';
+}
+
+function grdOnDataBinding(e) {
+}
+
+function filterdetailRead() {
+    return {
+        _menuId: menuId,
+        _filter: ['No_Perjanjian', no_Perjanjian,'UnitId',unitid]
+    };
+}
+
+function filterdetailCreate(e) {
+    return { _menuId: menuId };
+}
+
+function sendData() {
+    var grid = $("#grdDetail").data("kendoGrid"),
+        parameterMap = grid.dataSource.transport.parameterMap;
+
+    //get the new and the updated records
+    var currentData = grid.dataSource.data();
+
+    var updatedRecords = [];
+    var newRecords = [];
+    var spupdated = [];
+    var spnew = [];
+
+    for (var i = 0; i < currentData.length; i++) {
+        if (currentData[i].isNew()) {
+            newRecords.push(JSON.stringify(currentData[i]));
+        } else if (currentData[i].dirty) {
+            updatedRecords.push(JSON.stringify(currentData[i]));
+        }
+    }
+
+    //this records are deleted
+    var deletedRecords = [];
+    var spdeleted = [];
+    for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+        deletedRecords.push(JSON.stringify(grid.dataSource._destroyed[i]));
+    }
+
+    var data = {};
+    $.extend(data,
+        parameterMap({ updated: updatedRecords }),
+        parameterMap({ deleted: deletedRecords }),
+        parameterMap({ new: newRecords }),
+        parameterMap({ spupdated: spupdated }),
+        parameterMap({ spdeleted: spdeleted }),
+        parameterMap({ spnew: spnew }),
+        parameterMap({ mnid: menuId })
+        );
+
+    _sendData(data).done(function (msg) {
+        if (msg == "Success") {
+            grid.dataSource.read([]);
+            //disableHeader();
+            gridStatus = 'belum-ngapa-ngapain';
+        }
+        else {
+            $('#errMsg').text(msg);
+            gridStatus = 'sudah-nyoba-disimpan-tapi-model-masih-salah';
+            openErrWindow();
+        }
+    }).fail(function (x) {
+        $('#errMsg').text(msg);
+        openErrWindow();
+        grid.dataSource.read([]);
+        //disableHeader();
+        gridStatus = 'sudah-nyoba-disimpan-tapi-gagal';
+    });
+
+}
+
+function _sendData(data) {
+    return $.ajax({
+        url: "/Input/UpdateCreateDelete",
+        data: data,
+        type: "POST"
+    })
+}
+
+    function ddlPembayaranOnSelect(e) {
+        pembayaran = $('#ddlPembayaran').val();
+        $('#aucNomorPerjanjian').data('kendoAutoComplete').dataSource.read();
+            
+    }
+
+    function filterNomorPerjanjian() {
+        if (pembayaran == 'Sewa Pohon Karet') {
+            return {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.MonitoringPendapatanLain_ViewHDR_SewaPohonKaret',
+                scriptSQL: "select No_Perjanjian,UnitId, MonitoringPendapatanLain_HDR_SewaPohonKaretId from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_SewaPohonKaret]" +
+                    " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )",
+                _menuId: menuId
+            }
+        }
+        else if (pembayaran == 'Lump') {
+            return {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.MonitoringPendapatanLain_ViewHDR_PenjualanLump',
+                scriptSQL: "select No_Perjanjian,UnitId, MonitoringPendapatanLain_HDR_PenjualanLumpId from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanLump]" +
+                    " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )",
+                _menuId: menuId
+            }
+        }
+        else if (pembayaran == 'Pucuk Teh') {
+            return {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.MonitoringPendapatanLain_ViewHDR_PenjualanPucukTeh',
+                scriptSQL: "select No_Perjanjian,UnitId, MonitoringPendapatanLain_HDR_PenjualanPucukTehId from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanPucukTeh]" +
+                    " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )",
+                _menuId: menuId
+            }
+        }
+        else if (pembayaran == 'Kulit Kina') {
+            return {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.MonitoringPendapatanLain_ViewHDR_PenjualanKulitKina',
+                scriptSQL: "select No_Perjanjian,UnitId, MonitoringPendapatanLain_HDR_PenjualanKulitKinaId from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanKulitKina]" +
+                    " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )",
+                _menuId: menuId
+            }
+        }
+        else if (pembayaran == 'Kopi') {
+            return {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.MonitoringPendapatanLain_ViewHDR_PenjualanKopi',
+                scriptSQL: "select No_Perjanjian,UnitId, MonitoringPendapatanLain_HDR_PenjualanKopiId from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanKopi]" +
+                    " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )",
+                _menuId: menuId
+            }
+        }
+        else if (pembayaran == 'TBS') {
+            return {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.MonitoringPendapatanLain_ViewHDR_PenjualanTBS',
+                scriptSQL: "select No_Perjanjian,UnitId, MonitoringPendapatanLain_HDR_PenjualanTBSId from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanTBS]" +
+                    " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )",
+                _menuId: menuId
+            }
+        }
+        else {
+            return {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.MonitoringPendapatanLain_ViewHDR_PendapatanNonKontrak',
+                scriptSQL: "select '0000'+ CAST(Nomorinput AS nvarchar(max))+' - '+namamitra as No_Perjanjian,UnitId, MonitoringPendapatanLain_HDR_PendapatanNonKontrakId from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PendapatanNonKontrak]" +
+                    " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' )",
+                _menuId: menuId
+            }
+        }
+    }
+
+    function aucNomorPerjanjianOnSelect(e) {
+        if (pembayaran == 'Sewa Pohon Karet') {
+            var no_perjanjian = this.dataItem(e.item);
+            no_Perjanjian = no_perjanjian.No_Perjanjian;
+            unitid = no_perjanjian.UnitId;
+            monitoringPendapatanLain_HDRId = no_perjanjian.MonitoringPendapatanLain_HDR_SewaPohonKaretId;
+            GetInfoSewaPohonKaret().done(function (hasil) {
+            if (hasil) {
+                var dta = hasil[0];
+                var nilai = 'Rp. ' + dta.NilaiSebelumPPN;
+                $('#Nilai').text(nilai);
+                var ppn = 'Rp. ' + dta.PPN;
+                $('#PPN').text(ppn);               
+                }
+            });        
+        }
+        else if (pembayaran == 'Lump') {
+            var no_perjanjian = this.dataItem(e.item);
+            no_Perjanjian = no_perjanjian.No_Perjanjian;
+            unitid = no_perjanjian.UnitId;
+            monitoringPendapatanLain_HDRId = no_perjanjian.MonitoringPendapatanLain_HDR_PenjualanLumpId;
+            GetInfoLump().done(function (hasil) {
+            if (hasil) {
+                var dta = hasil[0];
+                var nilai = 'Rp. ' + dta.NilaiSebelumPPN;
+                $('#Nilai').text(nilai);
+                var ppn = 'Rp. ' + dta.PPN;
+                $('#PPN').text(ppn);               
+                }
+            }); 
+        }
+        else if (pembayaran == 'Pucuk Teh') {
+            var no_perjanjian = this.dataItem(e.item);
+            no_Perjanjian = no_perjanjian.No_Perjanjian;
+            unitid = no_perjanjian.UnitId;
+            monitoringPendapatanLain_HDRId = no_perjanjian.MonitoringPendapatanLain_HDR_PenjualanPucukTehId;
+            GetInfoPucukTeh().done(function (hasil) {
+            if (hasil) {
+                var dta = hasil[0];
+                var nilai = 'Rp. ' + dta.NilaiSebelumPPN;
+                $('#Nilai').text(nilai);
+                var ppn = 'Rp. ' + dta.PPN;
+                $('#PPN').text(ppn);               
+                }
+            }); 
+        }
+        else if (pembayaran == 'Kulit Kina') {
+            var no_perjanjian = this.dataItem(e.item);
+            no_Perjanjian = no_perjanjian.No_Perjanjian;
+            unitid = no_perjanjian.UnitId;
+            monitoringPendapatanLain_HDRId = no_perjanjian.MonitoringPendapatanLain_HDR_PenjualanKulitKinaId;
+            GetInfoKulitKina().done(function (hasil) {
+            if (hasil) {
+                var dta = hasil[0];
+                var nilai = 'Rp. ' + dta.NilaiSebelumPPN;
+                $('#Nilai').text(nilai);
+                var ppn = 'Rp. ' + dta.PPN;
+                $('#PPN').text(ppn);               
+                }
+            }); 
+        }
+        else if (pembayaran == 'Kopi') {
+            var no_perjanjian = this.dataItem(e.item);
+            no_Perjanjian = no_perjanjian.No_Perjanjian;
+            unitid = no_perjanjian.UnitId;
+            monitoringPendapatanLain_HDRId = no_perjanjian.MonitoringPendapatanLain_HDR_PenjualanKopiId;
+            GetInfoKopi().done(function (hasil) {
+            if (hasil) {
+                var dta = hasil[0];
+                var nilai = 'Rp. ' + dta.NilaiSebelumPPN;
+                $('#Nilai').text(nilai);
+                var ppn = 'Rp. ' + dta.PPN;
+                $('#PPN').text(ppn);               
+                }
+            }); 
+        }
+        else if (pembayaran == 'TBS') {
+            var no_perjanjian = this.dataItem(e.item);
+            no_Perjanjian = no_perjanjian.No_Perjanjian;
+            unitid = no_perjanjian.UnitId;
+            monitoringPendapatanLain_HDRId = no_perjanjian.MonitoringPendapatanLain_HDR_PenjualanTBSId;
+            GetInfoTBS().done(function (hasil) {
+            if (hasil) {
+                var dta = hasil[0];
+                var nilai = 'Rp. ' + dta.NilaiSebelumPPN;
+                $('#Nilai').text(nilai);
+                var ppn = 'Rp. ' + dta.PPN;
+                $('#PPN').text(ppn);               
+                }
+            }); 
+        }
+        else if (pembayaran == 'Non Kontrak') {
+            var no_perjanjian = this.dataItem(e.item);
+            no_Perjanjian = no_perjanjian.No_Perjanjian;
+            unitid = no_perjanjian.UnitId;
+            monitoringPendapatanLain_HDRId = no_perjanjian.MonitoringPendapatanLain_HDR_PendapatanNonKontrakId;
+            GetInfoNonKontrak().done(function (hasil) {
+            if (hasil) {
+                var dta = hasil[0];
+                var nilai = 'Rp. ' + dta.NilaiSebelumPPN;
+                $('#Nilai').text(nilai);
+                var ppn = 'Rp. ' + dta.PPN;
+                $('#PPN').text(ppn);               
+                }
+            }); 
+        }
+    }
+
+    function GetInfoSewaPohonKaret() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.Info_Nilai',
+                scriptSQL: "Declare @@tabelhasil as table (NilaiSebelumPPN nvarchar(max), PPN nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "select replace(convert(varchar, convert(Money,sum(B.Tagihan_Sewa)), 1), '.00', '') as NilaiSebelumPPN, replace(convert(varchar, convert(Money,sum(B.Tagihan_PPN)), 1), '.00', '') as PPN from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_SewaPohonKaret] as A JOIN [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_DTL_SewaPohonKaret] as B on A.MonitoringPendapatanLain_HDR_SewaPohonKaretId=B.MonitoringPendapatanLain_HDR_SewaPohonKaretId" +
+                " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' ) and A.MonitoringPendapatanLain_HDR_SewaPohonKaretId='"+monitoringPendapatanLain_HDRId+"' "+
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetInfoLump() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.Info_Nilai',
+                scriptSQL: "Declare @@tabelhasil as table (NilaiSebelumPPN nvarchar(max), PPN nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "select replace(convert(varchar, convert(Money,sum(B.Tagihan_NilaiSebelumPPN)), 1), '.00', '') as NilaiSebelumPPN, replace(convert(varchar, convert(Money,sum(B.Tagihan_PPN)), 1), '.00', '') as PPN from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanLump] as A JOIN [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_DTL_PenjualanLump] as B on A.MonitoringPendapatanLain_HDR_PenjualanLumpId=B.MonitoringPendapatanLain_HDR_PenjualanLumpId" +
+                " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' ) and A.MonitoringPendapatanLain_HDR_PenjualanLumpId='"+monitoringPendapatanLain_HDRId+"' "+
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetInfoPucukTeh() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.Info_Nilai',
+                scriptSQL: "Declare @@tabelhasil as table (NilaiSebelumPPN nvarchar(max), PPN nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "select replace(convert(varchar, convert(Money,sum(B.Tagihan_NilaiSebelumPPN)), 1), '.00', '') as NilaiSebelumPPN, replace(convert(varchar, convert(Money,sum(B.Tagihan_PPN)), 1), '.00', '') as PPN from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanPucukTeh] as A JOIN [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_DTL_PenjualanPucukTeh] as B on A.MonitoringPendapatanLain_HDR_PenjualanPucukTehId=B.MonitoringPendapatanLain_HDR_PenjualanPucukTehId" +
+                " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' ) and A.MonitoringPendapatanLain_HDR_PenjualanPucukTehId='"+monitoringPendapatanLain_HDRId+"' "+
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetInfoKulitKina() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.Info_Nilai',
+                scriptSQL: "Declare @@tabelhasil as table (NilaiSebelumPPN nvarchar(max), PPN nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "select replace(convert(varchar, convert(Money,sum(B.Tagihan_NilaiSebelumPPN)), 1), '.00', '') as NilaiSebelumPPN, replace(convert(varchar, convert(Money,sum(B.Tagihan_PPN)), 1), '.00', '') as PPN from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanKulitKina] as A JOIN [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_DTL_PenjualanKulitKina] as B on A.MonitoringPendapatanLain_HDR_PenjualanKulitKinaId=B.MonitoringPendapatanLain_HDR_PenjualanKulitKinaId" +
+                " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' ) and A.MonitoringPendapatanLain_HDR_PenjualanKulitKinaId='"+monitoringPendapatanLain_HDRId+"' "+
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetInfoKopi() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.Info_Nilai',
+                scriptSQL: "Declare @@tabelhasil as table (NilaiSebelumPPN nvarchar(max), PPN nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "select replace(convert(varchar, convert(Money,sum(B.Tagihan_NilaiSebelumPPN)), 1), '.00', '') as NilaiSebelumPPN, replace(convert(varchar, convert(Money,sum(B.Tagihan_PPN)), 1), '.00', '') as PPN from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanKopi] as A JOIN [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_DTL_PenjualanKopi] as B on A.MonitoringPendapatanLain_HDR_PenjualanKopiId=B.MonitoringPendapatanLain_HDR_PenjualanKopiId" +
+                " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' ) and A.MonitoringPendapatanLain_HDR_PenjualanKopiId='"+monitoringPendapatanLain_HDRId+"' "+
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetInfoTBS() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.Info_Nilai',
+                scriptSQL: "Declare @@tabelhasil as table (NilaiSebelumPPN nvarchar(max), PPN nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "select replace(convert(varchar, convert(Money,sum(B.Tagihan_NilaiSebelumPPN)), 1), '.00', '') as NilaiSebelumPPN, replace(convert(varchar, convert(Money,sum(B.Tagihan_PPN)), 1), '.00', '') as PPN from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PenjualanTBS] as A JOIN [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_DTL_PenjualanTBS] as B on A.MonitoringPendapatanLain_HDR_PenjualanTBSId=B.MonitoringPendapatanLain_HDR_PenjualanTBSId" +
+                " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' ) and A.MonitoringPendapatanLain_HDR_PenjualanTBSId='"+monitoringPendapatanLain_HDRId+"' "+
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function GetInfoNonKontrak() {
+        var url = '/Input/GetDataFrom';
+        nik = "@HttpContext.Current.User.Identity.Name";
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.MonitoringPendapatanLain.Models.Info_Nilai',
+                scriptSQL: "Declare @@tabelhasil as table (NilaiSebelumPPN nvarchar(max), PPN nvarchar(max)) "+
+                "insert @@tabelhasil "+
+                "select replace(convert(varchar, convert(Money,sum(B.NilaiSebelumPPN)), 1), '.00', '') as NilaiSebelumPPN, replace(convert(varchar, convert(Money,sum(B.PPN)), 1), '.00', '') as PPN from [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_HDR_PendapatanNonKontrak] as A JOIN [SPDK_KanpusEF].[dbo].[MonitoringPendapatanLain_DTL_PendapatanNonKontrak] as B on A.MonitoringPendapatanLain_HDR_PendapatanNonKontrakId=B.MonitoringPendapatanLain_HDR_PendapatanNonKontrakId" +
+                " where UnitId = (select posisilokasikerjaid from [Identity].[dbo].[AspNetUsers] where UserName ='" + usrName + "' ) and A.MonitoringPendapatanLain_HDR_PendapatanNonKontrakId='"+monitoringPendapatanLain_HDRId+"' "+
+                "SELECT * FROM @@tabelhasil",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function uplOnSuccess(e) {
+        uploadFile.close();
+        var grid = $('#grdDetail').data('kendoGrid');
+        var dataItem = typeof (grid.dataSource.get(monitoringPendapatanLain_PembayaranId)) == "undefined" ? grid.dataSource.getByUid(monitoringPendapatanLain_PembayaranId) : grid.dataSource.get(monitoringPendapatanLain_PembayaranId);
+        dataItem.File = monitoringPendapatanLain_PembayaranId + ".pdf";
+        dataItem.dirty = true;
+        grid.refresh();
+    }
+
+    function onUpload(e) {
+        var namafile;
+        var grid = $('#grdDetail').data('kendoGrid');
+        var dataItem = typeof (grid.dataSource.get(monitoringPendapatanLain_PembayaranId)) == "undefined" ? grid.dataSource.getByUid(monitoringPendapatanLain_PembayaranId) : grid.dataSource.get(monitoringPendapatanLain_PembayaranId);
+        namafile = dataItem.MonitoringPendapatanLain_PembayaranId + ".pdf"
+        e.data = {
+            namaFile: namafile
+        }
+    }
+
+    function uploadData(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        var data = grid.dataItem(row);
+        monitoringPendapatanLain_PembayaranId = data.MonitoringPendapatanLain_PembayaranId;
+        uploadFile.open().center();
+    }
+
+    function onButtonClick(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+
+        var data = grid.dataItem(row);
+        var file = data.File;
+
+        //window.location.href = "/Content/Images/Document/" + file; //pass the desired url for the view
+        pdf.open().center();
+
+        var options = {
+            pdfOpenParams: {
+                navpanes: 1,
+                toolbar: 0,
+                statusbar: 0,
+                pagemode: 'none',
+                pagemode: "none",
+                page: 1,
+                preventDefault: 1,
+                zoom: "page-width",
+                enableHandToolOnLoad: true
+            } //,
+            //forcePDFJS: true,
+            //PDFJS_URL: "/PDF.js/web/viewer.html"
+        }
+
+
+        PDFObject.embed("/Content/Images/FileBuktiPembayaran/" + file, "#testPDFObject", options)
+
+    }
+</script>
+
+
+
+
+
+
+

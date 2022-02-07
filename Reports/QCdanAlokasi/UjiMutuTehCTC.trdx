@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report DataSourceName="HDR" Width="31.6503960261632cm" Name="UjiMutu" SnapGridSize="0.1cm" xmlns="http://schemas.telerik.com/reporting/2012/4.1">
+  <DataSources>
+    <SqlDataSource QueryDesignerState="null" ConnectionString="Data Source=192.168.17.17;Initial Catalog=SPDK_KanpusEF;User ID=budi;Password=Wardanie1" ProviderName="System.Data.SqlClient" SelectCommand="dbo.ReportHDR_UjiMutu" SelectCommandType="StoredProcedure" Name="HDR">
+      <Parameters>
+        <SqlDataSourceParameter DbType="Guid" Name="@HDR_UjiMutuId">
+          <Value>
+            <String>= Parameters.HDR_UjiMutuId.Value</String>
+          </Value>
+        </SqlDataSourceParameter>
+      </Parameters>
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <PageHeaderSection Height="3.85cm" Name="pageHeaderSection1">
+      <Items>
+        <TextBox Width="31.3174065267628cm" Height="0.399999439716339cm" Left="0.00010012308478125cm" Top="0.9528122525625cm" Value="HASIL PENILAIAN PENGUJIAN MUTU TEH PTP NUSANTARA VIII" Name="textBox80">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <Font Name="Tahoma" Size="10pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.24781346321106cm" Height="0.39667534828186cm" Left="12.9000003532569cm" Top="2cm" Value="TANGGAL :" Format="{0:D}" Name="textBox79">
+          <Style TextAlign="Center">
+            <Font Name="Tahoma" Size="10pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="3.86020469665527cm" Height="0.396675290261125cm" Left="15.1480139142827cm" Top="2cm" Value="= Fields.Tanggal_Uji" Format="{0:dd MMMM yyyy}" Name="textBox78" />
+        <TextBox Width="4.09999994953474cm" Height="1.13281256544714cm" Left="0cm" Top="2.59999989906947cm" Value="KEBUN" Name="textBox2">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.19979835192923cm" Height="1.13281257101024cm" Left="4.13281246451661cm" Top="2.59999989906947cm" Value="CHOP" Name="textBox3">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.36718830358299cm" Height="1.13281257101024cm" Left="5.3328110514892cm" Top="2.59999989906947cm" Value="JENIS" Name="textBox5">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6.68261365660709cm" Height="1.13cm" Left="6.70019969105165cm" Top="2.59999989906947cm" Value="APPEARANCE" Name="textBox6">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5cm" Height="1.13cm" Left="13.3830134928978cm" Top="2.59999990463257cm" Value="TASTE" Name="textBox9">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="5cm" Height="1.13cm" Left="18.3832136381368cm" Top="2.59999990463257cm" Value="INFUSED" Name="textBox10">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.77083541423253cm" Height="1.13281257101024cm" Left="23.3834137833758cm" Top="2.59999989906947cm" Value="KET" Name="textBox11">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="4.19494775381499cm" Height="0.600000308354684cm" Left="25.1544490429515cm" Top="2.59999990463257cm" Value="QUALITY SCORE" Name="textBox12">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.945553011113842cm" Height="0.532611833698429cm" Left="25.1544490429515cm" Top="3.20020024616956cm" Value="APP" Name="textBox13">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.95cm" Height="0.532611846923828cm" Left="26.1002020124538cm" Top="3.20020024616956cm" Value="LIQ" Name="textBox14">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.95cm" Height="0.532611846923828cm" Left="27.0504023847865cm" Top="3.20020024616956cm" Value="INF" Name="textBox15">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.34879562122993cm" Height="0.532611846923828cm" Left="28.0006027571193cm" Top="3.20020024616956cm" Value="TOTAL" Name="textBox16">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.25040034151595cm" Height="1.13281261920929cm" Left="29.3495976909113cm" Top="2.59999949534736cm" Value="KRITERIA PENILAIAN" Name="textBox17">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="True" />
+          </Style>
+        </TextBox>
+        <TextBox Width="6.10821963088696cm" Height="0.600000252326322cm" Left="12.8999998486042cm" Top="1.39979955196938cm" Value="= Fields.NamaSubBudidaya" Name="textBox56">
+          <Style TextAlign="Center" VerticalAlign="Middle" />
+        </TextBox>
+      </Items>
+    </PageHeaderSection>
+    <DetailSection Height="0.400000360012029cm" Name="detailSection1">
+      <Style>
+        <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+        <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+        <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+        <Font Bold="False" />
+      </Style>
+      <Items>
+        <TextBox Width="1.36718828133617cm" Height="0.400000230471279cm" Left="5.3328110514892cm" Top="0cm" Value="= Fields.NamaGrade" Name="textBox4">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.19979817740003cm" Height="0.40000016502195cm" Left="4.13281246451661cm" Top="0cm" Value="= Fields.Chop" Name="textBox69">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="4.43201288000024cm" Height="0.400000349680569cm" Left="6.70019969105165cm" Top="0cm" Value="= Fields.Text_Appearance" Format="{0}" Name="textBox70">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.400000355907235cm" Left="11.1324128805523cm" Top="0cm" Value="= IIF(Fields.Score_Appearance &lt; 51 and Fields.Score_Appearance &gt; 40,&#xD;&#xA;'A','')" Format="{0:#.}" Name="textBox71">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.399900226595789cm" Left="11.8826133538155cm" Top="0cm" Value="= IIF(Fields.Score_Appearance &lt; 41 and Fields.Score_Appearance &gt; 30,&#xD;&#xA;'B','')" Format="{0:#.}" Name="textBox7">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.399899977845749cm" Left="12.6328138270788cm" Top="0cm" Value="= IIF(Fields.Score_Appearance &lt; 31 and Fields.Score_Appearance &gt; 20,&#xD;&#xA;'C','')" Format="{0:#.}" Name="textBox8">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.400000100930529cm" Left="16.8828143064988cm" Top="0cm" Value="= IIF(Fields.Score_Liquor &lt; 32 and Fields.Score_Liquor &gt; 23,&#xD;&#xA;'B','')" Format="{0:#.}" Name="textBox19">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.400000100930529cm" Left="17.6330139723178cm" Top="0cm" Value="= IIF(Fields.Score_Liquor &lt; 24 and Fields.Score_Liquor &gt; 15,&#xD;&#xA;'C','')" Format="{0:#.}" Name="textBox18">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.399899977845749cm" Left="22.6332141175568cm" Top="0cm" Value="= IIF(Fields.Score_Infusion &lt; 6 and Fields.Score_Infusion &gt; 3,&#xD;&#xA;'C','')" Format="{0:#.}" Name="textBox22">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.399899977845749cm" Left="21.8830144517378cm" Top="0cm" Value="= IIF(Fields.Score_Infusion &lt; 8 and Fields.Score_Infusion &gt; 5,&#xD;&#xA;'B','')" Format="{0:#.}" Name="textBox23">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.399899977845749cm" Left="21.1328147859188cm" Top="0cm" Value="= IIF(Fields.Score_Infusion &lt; 11 and Fields.Score_Infusion &gt; 7,&#xD;&#xA;'A','')" Format="{0:#.}" Name="textBox24">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.74940003083737cm" Height="0.399900226595789cm" Left="18.3832136381368cm" Top="0cm" Value="= Fields.Text_Infusion" Format="{0}" Name="textBox25">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.77083496934028cm" Height="0.399900226595789cm" Left="23.3834137833758cm" Top="0cm" Value="= Fields.Keterangan" Format="{0}" Name="textBox26">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.945552630972096cm" Height="0.400000349680569cm" Left="25.1544490429515cm" Top="0cm" Value="= Fields.Score_Appearance" Format="{0:#.}" Name="textBox27">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.949999980419778cm" Height="0.400000349680569cm" Left="26.1002020124538cm" Top="0cm" Value="= Fields.Score_Liquor" Format="{0:#.}" Name="textBox28">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.950001065422964cm" Height="0.399900226595789cm" Left="27.0504023847865cm" Top="0cm" Value="= Fields.Score_Infusion" Format="{0:#.}" Name="textBox29">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="1.3487966866529cm" Height="0.399900226595789cm" Left="28.0006027571193cm" Top="0cm" Value="= Fields.Score_Total" Format="{0:#.}" Name="textBox30">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.399900226595789cm" Left="29.3495998356851cm" Top="0cm" Value="= IIF(Fields.Score_Total &lt; 101 and Fields.Score_Total &gt; 80,&#xD;&#xA;'A','0')" Format="{0}" Name="textBox31">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.400000349680569cm" Left="30.0997995015041cm" Top="0cm" Value="= IIF(Fields.Score_Total &lt; 81 and Fields.Score_Total &gt; 60,&#xD;&#xA;'B','0')" Format="{0}" Name="textBox32">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.400000349680569cm" Left="30.8499991673231cm" Top="0cm" Value="= IIF(Fields.Score_Total &lt; 61 and Fields.Score_Total &gt; 40,&#xD;&#xA;'C','0')" Format="{0}" Name="textBox33">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="2.74940003083737cm" Height="0.400000349680569cm" Left="13.3830134928978cm" Top="0cm" Value="= Fields.Text_Liquor" Format="{0}" Name="textBox21">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="0.75cm" Height="0.400000100930529cm" Left="16.1326146406797cm" Top="0cm" Value="= IIF(Fields.Score_Liquor &lt; 41 and Fields.Score_Liquor &gt; 31,&#xD;&#xA;'A','')" Format="{0:#.}" Name="textBox20">
+          <Style TextAlign="Center" VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+        <TextBox Width="4.09989988057221cm" Height="0.4cm" Left="0.00010012308484875cm" Top="0cm" Value="" Name="textBox54">
+          <Style VerticalAlign="Middle">
+            <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+            <Font Size="8pt" Bold="False" />
+          </Style>
+        </TextBox>
+      </Items>
+    </DetailSection>
+  </Items>
+  <StyleSheet>
+    <StyleRule>
+      <Style>
+        <Padding Left="2pt" Right="2pt" />
+      </Style>
+      <Selectors>
+        <TypeSelector Type="TextItemBase" />
+        <TypeSelector Type="HtmlTextBox" />
+      </Selectors>
+    </StyleRule>
+  </StyleSheet>
+  <PageSettings PaperKind="Legal" Landscape="True" ContinuousPaper="False">
+    <Margins>
+      <MarginsU Left="3.2cm" Right="0.2cm" Top="0cm" Bottom="1cm" />
+    </Margins>
+  </PageSettings>
+  <Groups>
+    <Group Name="group">
+      <GroupHeader>
+        <GroupHeaderSection Height="0.40010012308478cm" Name="groupHeaderSection">
+          <Items>
+            <TextBox Width="31.5998013403376cm" Height="0.4cm" Left="0.00010012308478013cm" Top="0cm" Value="= Fields.NamaMerk" Name="textBox1">
+              <Style BackgroundColor="253, 234, 218" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" />
+              </Style>
+            </TextBox>
+          </Items>
+        </GroupHeaderSection>
+      </GroupHeader>
+      <GroupFooter>
+        <GroupFooterSection Height="0.132291662986908cm" Name="groupFooterSection" />
+      </GroupFooter>
+      <Groupings>
+        <Grouping Expression="= Fields.NamaMerk" />
+      </Groupings>
+      <Sortings>
+        <Sorting Expression="= Fields.NamaMerk" Direction="Asc" />
+      </Sortings>
+    </Group>
+    <Group Name="group1">
+      <GroupHeader>
+        <GroupHeaderSection Height="0cm" Name="groupHeaderSection1" />
+      </GroupHeader>
+      <GroupFooter>
+        <GroupFooterSection Height="0.400000353256852cm" Name="groupFooterSection1">
+          <Style>
+            <BorderStyle Top="None" Bottom="None" Left="None" Right="None" />
+            <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+            <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+          </Style>
+          <Items>
+            <TextBox Width="6.99940067212901cm" Height="0.399900107386499cm" Left="4.13281246451661cm" Top="0cm" Value="Rerata :" Name="textBox34">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999377270299cm" Height="0.399800507233124cm" Left="12.6328138270788cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Appearance &gt; 20 and Fields.Score_Appearance &lt; 31,1,0))" Format="{0:#.}" Name="textBox35">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999377270299cm" Height="0.399800507233124cm" Left="11.8826141612597cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Appearance &gt; 30 and Fields.Score_Appearance &lt; 41,1,0))" Format="{0:#.}" Name="textBox36">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.750000184714531cm" Height="0.399800507233124cm" Left="11.1324128805523cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Appearance &gt; 40 and Fields.Score_Appearance &lt; 51,1,0))" Format="{0:#.}" Name="textBox37">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999427735564cm" Height="0.400000349680569cm" Left="17.6330139723178cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Liquor &gt; 15 and Fields.Score_Liquor &lt; 24,1,0))" Format="{0:#.}" Name="textBox40">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.74999942436224cm" Height="0.400000349680569cm" Left="16.8828143064988cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Liquor &gt; 23 and Fields.Score_Liquor &lt; 32,1,0))" Format="{0:#.}" Name="textBox39">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="1.3487966866529cm" Height="0.399799699788892cm" Left="28.0006027571193cm" Top="0cm" Value="= Avg(Fields.Score_Total)" Format="{0:#.}" Name="textBox44">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.950002125193519cm" Height="0.399799699788892cm" Left="27.0504007698981cm" Top="0cm" Value="= Avg(Fields.Score_Infusion)" Format="{0:#.}" Name="textBox45">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.950001065422964cm" Height="0.399799699788892cm" Left="26.1002020124538cm" Top="0cm" Value="= Avg(Fields.Score_Liquor)" Format="{0:#.}" Name="textBox46">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.945552577589383cm" Height="0.399799699788892cm" Left="25.1544490429515cm" Top="0cm" Value="= Avg(Fields.Score_Appearance)" Format="{0:#.}" Name="textBox47">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999377270299cm" Height="0.400000349680569cm" Left="16.1326146406797cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Liquor &gt; 31 and Fields.Score_Liquor &lt; 41,1,0))" Format="{0:#.}" Name="textBox38">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999416877565cm" Height="0.399800103511008cm" Left="22.6332141175568cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Infusion &gt; 3 and Fields.Score_Infusion &lt; 6,1,0))" Format="{0:#.}" Name="textBox43">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999435188282cm" Height="0.399800103511008cm" Left="21.8830144517378cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Infusion &gt; 5 and Fields.Score_Infusion &lt; 8,1,0))" Format="{0:#.}" Name="textBox42">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999395581016cm" Height="0.399800103511008cm" Left="21.1328147859188cm" Top="0cm" Value="= Sum(IIF(Fields.Score_Infusion &gt; 7 and Fields.Score_Infusion &lt; 11,1,0))" Format="{0:#.}" Name="textBox41">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="2.74940013885498cm" Height="0.400000349680569cm" Left="13.3830134928978cm" Top="0cm" Value="" Format="{0}" Name="textBox51">
+              <Style VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="False" />
+              </Style>
+            </TextBox>
+            <TextBox Width="2.74940013885498cm" Height="0.400000349680569cm" Left="18.3832136381368cm" Top="0cm" Value="" Format="{0}" Name="textBox52">
+              <Style VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="False" />
+              </Style>
+            </TextBox>
+            <TextBox Width="1.77083492279053cm" Height="0.39979889234466cm" Left="23.3834137833758cm" Top="0cm" Value="" Format="{0}" Name="textBox53">
+              <Style VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="False" />
+              </Style>
+            </TextBox>
+            <TextBox Width="4.13251203764166cm" Height="0.4cm" Left="0.00010012308478013cm" Top="0cm" Value="" Name="textBox55">
+              <Style VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="False" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.750001261631613cm" Height="0.400000349680569cm" Left="30.0997995015041cm" Top="0cm" Value="= SUM(IIF(Fields.Score_Total &lt; 81 and Fields.Score_Total &gt; 60,&#xD;&#xA;1,0))" Format="{0}" Name="textBox49">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.749999116857871cm" Height="0.400000349680569cm" Left="29.3495998356851cm" Top="0cm" Value="= SUM(IIF(Fields.Score_Total &lt; 101 and Fields.Score_Total &gt; 80,&#xD;&#xA;1,0))" Format="{0}" Name="textBox50">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+            <TextBox Width="0.750000474447397cm" Height="0.400000349680569cm" Left="30.8499991673231cm" Top="0cm" Value="= SUM(IIF(Fields.Score_Total &lt; 61 and Fields.Score_Total &gt; 40,&#xD;&#xA;1,0))" Format="{0}" Name="textBox48">
+              <Style TextAlign="Center" VerticalAlign="Middle">
+                <BorderStyle Top="Solid" Bottom="Solid" Left="Solid" Right="Solid" />
+                <BorderColor Top="Black" Bottom="Black" Left="Black" Right="Black" />
+                <BorderWidth Top="1pt" Bottom="1pt" Left="1pt" Right="1pt" />
+                <Font Size="8pt" Bold="True" />
+              </Style>
+            </TextBox>
+          </Items>
+        </GroupFooterSection>
+      </GroupFooter>
+      <Groupings>
+        <Grouping Expression="= Fields.NamaMerk" />
+      </Groupings>
+    </Group>
+  </Groups>
+  <ReportParameters>
+    <ReportParameter Name="HDR_UjiMutuId">
+      <Value>
+        <String></String>
+      </Value>
+    </ReportParameter>
+  </ReportParameters>
+</Report>

@@ -7,12 +7,15 @@ using System.Web;
 
 namespace Ptpn8.PerjanjianKerjasama.Models
 {
-    [Table("PK_InputPicKerjasama")]
+    [Table("PK_InputPICKerjasama")]
     public class InputPicKerjasama
     {
         public Guid InputPicKerjasamaId { get; set; }
-        public Guid InputKerjasamaKebunId { get; set; }
-        public Guid nik { get; set; }
-        public Decimal TahunBuku { get; set; }
+        public Guid InputKerjasamaKebun_HDRId { get; set; }
+        public DateTime TanggalAlokasiPIC { get; set; }
+        public DateTime TanggalPermohonan { get; set; }
+        public string NIK { get; set; }
+        public string Nama { get; set; }
+        public string UserName { get; set; }
     }
 }

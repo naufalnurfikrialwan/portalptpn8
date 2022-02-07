@@ -2751,6 +2751,7 @@
     <Content Include="Views\Home\PerjanjianKerjasama.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_InputKerjasamaKebun.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\a.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\ddlPICKerjasama.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

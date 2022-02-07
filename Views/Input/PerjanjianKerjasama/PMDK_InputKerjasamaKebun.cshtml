@@ -209,6 +209,7 @@
                                         {
                                             model.Id(p => p.InputKerjasamaKebun_DTLId);
                                             model.Field(f => f.Lampiran).Editable(false);
+                                            model.Field(f => f.StatusDokumen).Editable(false);
                                         })
                                         .Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
                                         .Create(create => create.Action("detailCreate", "Input").Data("filterdetailCreate").Type(HttpVerbs.Post))

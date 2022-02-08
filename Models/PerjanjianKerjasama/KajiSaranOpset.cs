@@ -16,6 +16,7 @@ namespace Ptpn8.PerjanjianKerjasama.Models
         public Guid UploadSaranKajianAkuntansiId { get; set; }
         public Decimal TahunBuku { get; set; }
         public Decimal TestGit { get; set; }
+        public Decimal TestGit2 { get; set; }
 
     }
 }

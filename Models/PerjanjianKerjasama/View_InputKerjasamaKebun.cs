@@ -35,6 +35,10 @@ namespace Ptpn8.PerjanjianKerjasama.Models
         public string Lampiran { get; set; } = "";
         public string Nama_File { get; set; } = "";
         public string StatusDokumen { get; set; } = "";
+        public bool VerifikasiPermohonan { get; set; } = false;
+        public bool KirimOperasional1 { get; set; } = false;
+        public bool KirimOperasional2 { get; set; } = false;
+        public bool KirimAkuntansiKeuangan { get; set; } = false;
 
     }
 }

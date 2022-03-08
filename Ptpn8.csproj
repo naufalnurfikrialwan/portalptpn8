@@ -1231,6 +1231,7 @@
     <Compile Include="Models\PerjanjianKerjasama\View_InputPicKerjasama.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_Invoice.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_KajiSaranOpset.cs" />
+    <Compile Include="Models\PerjanjianKerjasama\View_LihatFileKajian.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_Mitra.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_PerjanjianKerjasama.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_SuratIzinKuasa.cs" />
@@ -2754,6 +2755,13 @@
     <Content Include="Views\Shared\EditorTemplates\ddlPICKerjasama.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_InputPIC.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadSaranKajianOperasional.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_KajianBagian.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_KajianBagian2.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_KajianBagian3.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_KajianOpset.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_LihatJadwalSurvey.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadHasilSurvey.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_VerifikasiSuratPermohonan.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

@@ -32,6 +32,10 @@ namespace Ptpn8.PerjanjianKerjasama.Models
         public Guid InputKerjasamaKebun_DTLId { get; set; }
         public Guid InputKerjasamaKebun_HDRId { get; set; }       
         public string Lampiran { get; set; }
-        public string Nama_File { get; set; }      
+        public string Nama_File { get; set; }
+        public bool VerifikasiPermohonan { get; set; }
+        public bool KirimOperasional1 { get; set; }
+        public bool KirimOperasional2 { get; set; }
+        public bool KirimAkuntansiKeuangan { get; set; }
     }
 }

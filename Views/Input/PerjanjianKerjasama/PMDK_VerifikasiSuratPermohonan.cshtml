@@ -1,0 +1,919 @@
+﻿@**@
+
+
+<script src="@Url.Content("~/ReportViewer/js/print.min.js")"></script>
+<script src="~/Scripts/PDFObject.js"></script>
+<script src="@Url.Content("~/ReportViewer/js/telerikReportViewer-10.2.16.725.js")"></script>
+<script src="~/Scripts/jquery.maskedinput.js"></script>
+<img id="progress" src="~/Content/Images/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%; " />
+@(
+                // All deferred initialization statements will be rendered here
+                Html.TelerikReporting().DeferredScripts()
+)
+
+
+@*header*@
+<div id="_header" style="font-size:10px;" ng-app="__header">
+    <div class="k-content" ng-controller="MyCtrl">
+    </div>
+</div>
+
+@*detail*@
+<div id="_detail" class="_detail">
+    @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
+                .Items(tabstrip =>
+                {
+                    tabstrip.Add().Text("1. Upload Dokumen").Selected(true)
+                        .Content(@<text>
+                            <p style="font-weight:700;color:green;text-align:center">Verifikasi Dokumen</p>
+                            @(Html.Kendo()
+                            .Grid<Ptpn8.PerjanjianKerjasama.Models.View_VerifikasiPermohonan>(Guid.Empty.ToString())
+                            .Name("grdDetail")
+                            .Columns(g =>
+                            {
+                                g.Bound(i => i.VerifikasiPermohonanId).Width(50).Hidden();
+                                g.Bound(i => i.InputKerjasamaKebun_HDRId).Width(50).Hidden();
+                                g.Bound(i => i.Verifikasi).Width(80).ClientTemplate("<input id='#=VerifikasiPermohonanId#' type='checkbox' onclick='handleClick(this)'>");
+                                g.Bound(i => i.TanggalVerifikasi).Title("Tgl. Verifikasi").Width(110).Format("{0:dd-MM-yyyy}");
+                                g.Group(i => i
+                                    .Title("Data Mitra")
+                                    .Columns(c =>
+                                    {
+                                        c.Bound(q => q.NamaKebun).Width(130).Title("Kebun");
+                                        c.Bound(q => q.NomorPermohonan).Width(120).Title("No. Permohonan");
+                                        c.Bound(q => q.TanggalPermohonan).Width(120).Format("{0:dd-MM-yyyy}").Title("Tgl. Permohonan");
+                                        c.Bound(q => q.NamaMitra).Width(150).Title("Nama Mitra");
+                                        c.Bound(q => q.AlamatMitra).Width(200).Title("Alamat Mitra");
+                                        c.Bound(q => q.EmailMitra).Width(120).Title("Email Mitra");
+                                        c.Bound(q => q.NomorTelepon).Width(100).Title("Telepon");
+
+                                    })
+                                );
+                                g.Command(command =>
+                                {
+                                    command.Custom("Search").Text(" Lihat Dokumen").Click("cekDokumen")
+                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                }).Width(150);
+                            })
+                            .ToolBar(toolbar =>
+                            {
+                                toolbar.Excel();
+                                toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                            })
+                            .AutoBind(true)
+                            .Navigatable()
+                            .Resizable(resizeable => resizeable.Columns(true))
+                            .Scrollable()
+                            .Sortable()
+                            .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                                    
+                            .HtmlAttributes(new { style = "Height: 450px" })
+
+                            .Events(e =>
+                            {
+                                e.Change("grdOnChange");
+                                e.Edit("grdOnEdit");
+
+
+                            })
+                            .DataSource(o => o
+                                .Ajax()
+                                .ServerOperation(false)
+                                .Sort(s => s.Add(x => x.TanggalPermohonan))
+
+                                .Batch(true)
+                                .Model(model =>
+                                {
+                                    model.Id(p => p.VerifikasiPermohonanId);
+                                    model.Field(f => f.NomorPermohonan).Editable(false);
+                                    model.Field(f => f.TanggalPermohonan).Editable(false);
+                                    model.Field(f => f.NamaMitra).Editable(false);
+                                    model.Field(f => f.AlamatMitra).Editable(false);
+                                    model.Field(f => f.EmailMitra).Editable(false);
+                                    model.Field(f => f.NomorTelepon).Editable(false);
+                                })
+                                .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                .Create(create => create.Action("detailCreate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                .Update(update => update.Action("detailUpdate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                )
+                            )
+                        </text>);
+                            
+                
+            })
+    )
+</div>
+
+@*footer*@
+<div id="_footer">
+</div>
+
+<div id="printWindow" contextmenu="Print" title="Print" class="print">
+    <div id="reportViewer">
+        @(Html.TelerikReporting().ReportViewer()
+                            // Each report viewer must have an id - it will be used by the initialization script
+                            // to find the element and initialize the report viewer.
+                            .Id("reportViewer")
+                            // The URL of the service which will serve reports.
+                            // The URL corresponds to the name of the controller class (ReportsController).
+                            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                            .ServiceUrl(Url.Content("/api/reports/"))
+                            // The URL for custom report vie    wer template. The template can be edited -
+                            // new functionalities can be added and unneeded ones can be removed.
+                            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                            //
+                            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                            .ReportSource(new UriReportSource() { Uri = "../Reports/eFakturPajak/ExportFakturPajakPendapatanLain.trdx" })
+                            // Specifies whether the viewer is in interactive or print preview mode.
+                            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                            .ViewMode(ViewMode.Interactive)
+                            // Sets the scale mode of the viewer.
+                            // Three modes exist currently:
+                            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                            // Specific - Uses the scale to zoom in and out the report.
+                            .ScaleMode(ScaleMode.Specific)
+                            // Zoom in and out the report using the scale
+                            // 1.0 is equal to 100%, i.e. the original size of the report
+                            .Scale(1.0)
+                            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                            .PersistSession(false)
+                            // Sets the print mode of the viewer.
+                            .PrintMode(PrintMode.AutoSelect)
+        )
+    </div>
+</div>
+<div id="modalWindow" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yes" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="no" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="cekdokumenWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">RINCIAN DOKUMEN</div>
+            </td>
+        </tr>
+    </table>
+
+    <div id="_detailNik" class="_detailNik">
+        @(Html.Kendo()
+            .Grid<Ptpn8.PerjanjianKerjasama.Models.View_InputKerjasamaKebun_DTL>
+    (Guid.Empty.ToString())
+    .Name("grdDetail1")
+    .Columns(g =>
+    {
+        g.Bound(i => i.InputKerjasamaKebun_HDRId).Width(50).Hidden();
+        g.Bound(i => i.InputKerjasamaKebun_DTLId).Width(50).Hidden();
+        g.Bound(i => i.Lampiran).Width(250).Title("Lampiran");
+        g.Bound(i => i.VerifikasiPermohonan).Width(150).Title("Verifikasi Dokumen").ClientTemplate("<input id='#=InputKerjasamaKebun_DTLId#' type='checkbox' #= VerifikasiPermohonan ? checked='checked' :'' # onclick='handleClickDokumen(this)'/>");
+        g.Group(i => i
+        .Title("Kirim Dokumen")
+        .Columns(c =>
+        {
+            c.Bound(q => q.KirimOperasional1).Width(150).Title("Operasional Teh dan Antan").ClientTemplate("<input id='#=InputKerjasamaKebun_DTLId#' type='checkbox' #= KirimOperasional1 ? checked='checked' :'' # onclick='handleClickKirimOps1(this)'/>");
+            c.Bound(q => q.KirimOperasional2).Width(150).Title("Operasional Sawit dan Karet").ClientTemplate("<input id='#=InputKerjasamaKebun_DTLId#' type='checkbox' #= KirimOperasional2 ? checked='checked' :'' # onclick='handleClickKirimOps2(this)'/>");
+            c.Bound(q => q.KirimAkuntansiKeuangan).Width(150).Title("Akuntansi dan Keuangan").ClientTemplate("<input id='#=InputKerjasamaKebun_DTLId#' type='checkbox' #= KirimAkuntansiKeuangan ? checked='checked' :'' # onclick='handleClickKirimAkt(this)'/>");
+            c.Bound(q => q.Nama_File).Width(150).Hidden();
+        })
+        );
+        g.Command(command =>
+        {
+            command.Custom("Search").Text(" Lihat File").Click("onButtonClick")
+            .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+
+        }).Width(200);
+        g.Bound(i => i.StatusDokumen).Width(100).Title("Status Dokumen").Hidden();
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData1()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+        toolbar.Excel();
+    })
+    .AutoBind(false)
+    .Resizable(resizeable => resizeable.Columns(true))
+    .Events(e =>
+    {
+        e.DataBound("grdOnDataBound");
+    })
+    .HtmlAttributes(new { style = "Height: 450px" })
+
+    .DataSource(o => o
+    .Ajax()
+    .ServerOperation(false)
+    .Sort(s => s.Add(x => x.Lampiran))
+    .Model(model =>
+    {
+        model.Id(p => p.InputKerjasamaKebun_DTLId);
+        model.Field(f => f.Lampiran).Editable(false);
+    })
+    //.Read(read => read.Action("detailRead", "Input").Data("filterdetailRead").Type(HttpVerbs.Post))
+
+    )
+    )
+</div>
+<div id="konfirmasiDetail" contextmenu="Konfirmasi" title="Konfirmasi" class="konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="25%"></td>
+            <td width="50%"><span style="font-size: x-large ; font-weight: 700;">Hapus Data?</span></td>
+            <td width="25%"></td>
+        </tr>
+        <tr>
+            <td><button id="yesDetail" class="delete k-button">Ya</button></td>
+            <td></td>
+            <td><button id="noDetail" class="edit k-button">Tidak</button></td>
+        </tr>
+    </table>
+</div>
+<div id="errWindow">
+    <table width="100%">
+        <tr>
+            <td width="1%"></td>
+            <td>
+                <span style="font-size: medium; font-weight: 500;">Data Hasil Input Tidak Valid</span>
+                <span style="font-size: medium; font-weight: 500;"><label id="errMsg"></label></span>
+            </td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="ok" class="delete k-button">Perbaiki</button></td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>
+<div id="delWindow">
+    <table width="100%" style="text-align:center">
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data Tidak Dapat Dihapus! Penyebab :</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Data detail masih ada, atau</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td width="1%"></td>
+            <td><span style="font-size: medium; font-weight: 500;">Faktur dengan No PO ini masih ada.</span></td>
+            <td width="1%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="okDel" class="delete k-button">Periksa</button></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="konfirmasiLeaveGrid" title="Konfirmasi">
+    <table width="100%">
+        <tr>
+            <td width="2%"></td>
+            <td><span style="font-size: large ; font-weight: 700;">Data Grid Belum Disimpan! Simpan Data ?</span></td>
+            <td width="2%"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="yesLeaveGrid" class="k-button">Ya</button>
+                <button id="noLeaveGrid" class="k-button">Tidak</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<div id="pdfWindow">
+    <table width="100%" class="hdr">
+        <tr>
+            <td>
+                <div style="text-align:center">PDF Viewer</div>
+            </td>
+        </tr>
+    </table>
+    <div id="testPDFObject" style="height:100%"></div>
+    <table width="100%">
+        <tr>
+            <td></td>
+            <td align="center">
+                <button id="noLeaveGrid" class="k-button">Cancel</button>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+<style>
+    #reportViewer {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 5px;
+        bottom: 5px;
+        overflow: hidden;
+        font-family: Verdana, Arial;
+    }
+</style>
+
+<script>
+    var verifikasiPermohonanId, inputKerjasamaKebun_HDRId;
+    var wndLeaveGrid, wnd, wndDetail, prt, err, del;
+    var model;
+    var headerBaru, detailBaru;
+    var gridStatus;
+    var menuId = 'e2929691-6d15-40e6-aadb-b08d0f11f936';
+
+    $('.k-window.titlebar').css('style', 'display: none');
+    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add");
+
+    $(document).ajaxStart(function () {
+        $("#_header").addClass('disabledbutton');
+        $("#_detail").addClass('disabledbutton');
+        $("#_footer").addClass('disabledbutton');
+        $("#progress").show();
+    }).ajaxStop(function () {
+        $("#progress").hide();
+        $("#_header").removeClass('disabledbutton');
+        $("#_detail").removeClass('disabledbutton');
+        $("#_footer").removeClass('disabledbutton');
+    });
+
+    $(document).ready(function () {
+        wnd = $("#modalWindow").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        wndDetail = $("#konfirmasiDetail").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        err = $("#errWindow").kendoWindow({
+            title: "Error Data",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 300
+        }).data("kendoWindow");
+
+        prt = $("#printWindow").kendoWindow({
+            title: "Print",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 800,
+            height: 500
+        }).data("kendoWindow");
+
+        del = $("#delWindow").kendoWindow({
+            title: "Hapus Header",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+        
+        pdf = $("#pdfWindow").kendoWindow({
+            title: "PDF Viewer",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 550
+        }).data("kendoWindow");
+        
+        cekdokumen = $("#cekdokumenWindow").kendoWindow({
+            title: "Lihat Rincian Dokumen",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 900,
+            height: 490
+        }).data("kendoWindow");
+
+        wndLeaveGrid = $("#konfirmasiLeaveGrid").kendoWindow({
+            title: "Konfirmasi",
+            modal: true,
+            visible: false,
+            resizable: false,
+            width: 400,
+            height: 150
+        }).data("kendoWindow");
+
+        gridStatus = 'belum-ngapa-ngapain';
+
+    });
+
+    angular.module("__header", ["kendo.directives"])
+        .controller("MyCtrl", function ($scope) {
+            $scope.validate = function (event) {
+                event.preventDefault();
+                if ($scope.validator.validate()) {
+                    enableHeader();
+                    $(".k-button-icontext").removeClass("k-state-disabled").addClass("k-grid-add");
+                    $('#_detail').removeClass('disabledbutton');
+                    $("#grdDetail").data("kendoGrid").dataSource.read({
+                    });
+                } else {
+                    $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                    gridDestroy();
+                }
+            }
+        });
+
+    $(window).on("beforeunload", function () {
+        return "Please don't leave me!";
+    });
+
+    $(window).on("unload", function () {
+        hapusPenggunaPortalYangAktif();
+    });
+
+
+    function hapusPenggunaPortalYangAktif() {
+        var url = '/Account/HapusPenggunaPortalYangAktif';
+        return $.ajax({
+            url: url,
+            data: {
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function disableHeader() {
+        $("._key").find('span').addClass('disabledbutton');
+        $("._key").addClass('disabledbutton');
+        $("._nonkey").find('span').addClass('disabledbutton');
+        $("._nonkey").addClass('disabledbutton');
+        $('#btnSubmitHeader').addClass('disabledbutton');
+        $('#btnPrintHeader').addClass('disabledbutton');
+        $('#_detail').addClass('disabledbutton');
+    }
+
+    function enableHeader() {
+        $("._key").find('span').removeClass('disabledbutton');
+        $("._key").removeClass('disabledbutton');
+        $("._nonkey").find('span').removeClass('disabledbutton');
+        $("._nonkey").removeClass('disabledbutton');
+        $('#btnSubmitHeader').removeClass('disabledbutton');
+        $('#btnPrintHeader').removeClass('disabledbutton');
+    }
+
+
+    function openWindow(e) {
+        e.preventDefault();
+        var grid = this;
+        var row = $(e.currentTarget).closest("tr");
+        wndDetail.open().center();
+        $("#yesDetail").click(function () {
+            wndDetail.close();
+            $('#grdDetail').data('kendoGrid').removeRow(row);
+            gridStatus = 'sudah-diapa-apain';
+        });
+        $("#noDetail").click(function () {
+            wndDetail.close();
+        });
+    }
+
+    function openWindowLeaveGrid(e) {
+        e.preventDefault();
+        wndLeaveGrid.open().center();
+        $("#yesLeaveGrid").click(function () {
+            wndLeaveGrid.close();
+            sendData();
+        });
+        $("#noLeaveGrid").click(function () {
+            gridStatus = 'belum-ngapa-ngapain';
+            wndLeaveGrid.close();
+        });
+    }
+
+    function openErrWindow(e) {
+        err.open().center();
+        $("#ok").click(function () {
+            err.close();
+        });
+    }
+
+    function openDelWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function openDelDetailWindow(e) {
+        del.open().center();
+        $("#okDel").click(function () {
+            del.close();
+        });
+    }
+
+    function btnPrintHeaderOnClick() {
+        var viewer = $("#reportViewer").data("telerik_ReportViewer");
+        viewer.reportSource({
+            report: viewer.reportSource().report,
+            parameters: { TahunBuku: $('#TahunBuku').val() }
+        });
+        viewer.refreshReport();
+        prt.open().center();
+    }
+
+    function gridDestroy() {
+        $("#grdDetail").data("kendoGrid").dataSource.read([]);
+    }
+
+    function UploadSuccess(e) {
+        var files = e.files;
+        var filename = files[0].name;
+        var grid = $('#grdDetail').data('kendoGrid');
+        var dataItem = grid.dataSource.get(verifikasiPermohonanId);
+        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+
+        dataItem.dirty = true;
+    }
+
+    function GetByteFromUpload(filename, id) {
+        var url = '/Input/GetByteFromUpload';
+        return $.ajax({
+            url: url,
+            type: 'POST',
+            datatype: 'json',
+            data: {
+                _filename: filename,
+                _id: id,
+                _menuId: menuId
+            }
+        });
+    }
+    /* Grid Buyer */
+
+
+
+    function grdOnChange(e) {
+        var selected = $.map(this.select(), function (item) {
+                return $(item).text();
+            });
+
+            e.preventDefault();
+            var grid = this;
+            var row = $(e.currentTarget).closest("tr");
+            //colIdx = $("td", row).index(row);
+            var data = grid.dataItem(row);
+            var x = grid.select();
+            var r = x.closest("tr");
+            var xx = grid.dataItem(r);
+            inputKerjasamaKebun_HDRId = xx.InputKerjasamaKebun_HDRId;
+
+            $("#tabstrip").data("kendoTabStrip").select(1);
+            //var grid = $('#grdDetail1').data('kendoGrid');
+            //grid.dataSource.read();
+            GetLampiran().done(function (data1) {
+                    if (data1) {
+                        var grd = $('#grdDetail1').data('kendoGrid');
+                        grd.dataSource.data(data1);
+                        //grd.refresh();
+                    }
+                });
+    }
+
+    function grdOnDataBound(e) {
+
+    }
+
+    
+
+    function GetLampiran() {
+        var url = '/Input/GetDataFrom';
+        return $.ajax({
+            url: url,
+            data: {
+                strClassView: 'Ptpn8.PerjanjianKerjasama.Models.View_InputKerjasamaKebun_DTL',
+                scriptSQL: "exec [SPDK_KanpusEF].[dbo].[Read_LampiranDokumen] '" + inputKerjasamaKebun_HDRId + "'",
+                _menuId: menuId
+            },
+            type: 'POST',
+            datatype: 'json'
+        });
+    }
+
+    function grdOnEdit(e) {
+        var model = e.model;
+        this.expandRow(this.tbody.find("tr[data-uid='" + model.uid + "']"));
+        if (model.isNew()) {
+            model.VerifikasiPermohonanId = model.uid;
+        }
+        verifikasiPermohonanId = model.VerifikasiPermohonanId;
+        inputKerjasamaKebun_HDRId = model.InputKerjasamaKebun_HDRId;
+        gridStatus = 'sudah-diapa-apain';
+    }
+
+    function filterRead() {
+        return {
+            _menuId: menuId,
+            _classDetailView: 'Ptpn8.PerjanjianKerjasama.Models.View_VerifikasiPermohonan',
+            _filter: ['Verifikasi', 0]
+        };
+    }
+
+    function sendData() {
+        var grid = $("#grdDetail").data("kendoGrid"),
+            parameterMap = grid.dataSource.transport.parameterMap;
+
+        //get the new and the updated records
+        var currentData = grid.dataSource.data();
+        var updatedRecords = [];
+        var newRecords = [];
+        var spupdated = [];
+
+        for (var i = 0; i < currentData.length; i++) {
+            if (currentData[i].isNew()) {
+                //this record is new
+                newRecords.push(JSON.stringify(currentData[i]));
+            } else if (currentData[i].dirty) {
+                updatedRecords.push(JSON.stringify(currentData[i]));
+                spupdated.push("EXEC [SPDK_KanpusEF].dbo.PK_InsertPermohonanKajian '" + inputKerjasamaKebun_HDRId + "'");
+            }
+        }
+
+        //this records are deleted
+        var deletedRecords = [];
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            deletedRecords.push(JSON.stringify(grid.dataSource._destroyed[i]));
+        }
+
+        var data = {};
+        $.extend(data, parameterMap({ updated: updatedRecords }), parameterMap({ deleted: deletedRecords }), parameterMap({ new: newRecords }),parameterMap({ spupdated: spupdated }), parameterMap({ mnid: menuId }));
+        _sendData(data).done(function (msg) {
+            if (msg == "Success") {
+                grid.dataSource.read([]);
+                gridStatus = 'belum-ngapa-ngapain';
+            }
+            else {
+                $('#errMsg').text(msg);
+                gridStatus = 'sudah-nyoba-disimpan-tapi-model-masih-salah';
+                openErrWindow();
+            }
+        }).fail(function (x) {
+            $('#errMsg').text(msg);
+            openErrWindow();
+            grid.dataSource.read([]);
+            gridStatus = 'sudah-nyoba-disimpan-tapi-gagal';
+        });
+    }
+
+    function sendData1() {
+        var grid = $("#grdDetail1").data("kendoGrid");
+        var currentData = grid.dataSource.data();
+        var stFail = 0;
+
+        for (var i = 0; i < currentData.length; i++) {
+            if (currentData[i].isNew()) {
+                SimpanData('baru', currentData[i]).done(function (dta) {
+                }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+            } else if (currentData[i].dirty) {
+                SimpanData('edit', currentData[i]).done(function (dta) {
+                }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+            }
+        }
+
+        //this records are deleted
+        var deletedRecords = [];
+        for (var i = 0; i < grid.dataSource._destroyed.length; i++) {
+            SimpanData('hapus', grid.dataSource._destroyed[i]).done(function (dta) {
+            }).fail(function () { stSfail = 1; alert("Ada kesalahan pada data ...");});
+        }
+
+        if (stFail == 0) {
+            alert("Data Sudah Tersimpan...");
+        }
+    }
+
+    function _sendData(data) {
+        return $.ajax({
+            url: "/Input/UpdateCreateDelete",
+            data: data,
+            type: "POST"
+        })
+    }
+
+    function SimpanData(status, dta) {
+
+        var url = '/Input/ExecSQL';
+        var IDD = dta.IDD;
+         
+        var InputKerjasamaKebun_DTLId= dta.InputKerjasamaKebun_DTLId;
+        var VerifikasiPermohonan = dta.VerifikasiPermohonan;
+        var KirimOperasional1 = dta.KirimOperasional1;
+        var KirimOperasional2 = dta.KirimOperasional2;
+        var KirimAkuntansiKeuangan = dta.KirimAkuntansiKeuangan;
+
+        if (status == 'baru') {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec PK_KirimDokumen_ADD '" + InputKerjasamaKebun_DTLId.toString() +
+                        "','" + VerifikasiPermohonan + "','" + KirimOperasional1 + "','" + KirimOperasional2 + "','" + KirimAkuntansiKeuangan + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        } else if (status == 'edit') {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec PK_KirimDokumen_EDIT '" + InputKerjasamaKebun_DTLId.toString() +
+                        "','" + VerifikasiPermohonan + "','" + KirimOperasional1 + "','" + KirimOperasional2 + "','" + KirimAkuntansiKeuangan + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        } else {
+            return $.ajax({
+                url: url,
+                data: {
+                    scriptSQL: "exec PK_KirimDokumen_DEL '" + InputKerjasamaKebun_DTLId.toString() + "'",
+                    _menuId: menuId
+                },
+                type: 'POST',
+                datatype: 'json'
+            });
+
+        }
+    }
+
+    function TahunBukuOnChange(e) {
+        if (gridStatus == 'sudah-nyoba-disimpan-tapi-model-masih-salah' ||
+            gridStatus == 'sudah-diapa-apain') {
+            openWindowLeaveGrid(e);
+        }
+        else {
+            $('#msgInputView').text('');
+            tahunBukuOnChange(e).done(function (data) {
+                if (data) {
+                    $('#NomorInputView').data('kendoDropDownList').dataSource.read().done(function () {
+                        disableHeader();
+                        $(".k-button-icontext").addClass("k-state-disabled").removeClass("k-grid-add"); // edited
+                        gridDestroy();
+                    });
+                }
+                else {
+                    alert("Error! Hubungi Bagian TI")
+                }
+            }).fail(function (x) {
+                alert('Error! Hubungi Bagian TI');
+            });
+        }
+    }
+
+    function onButtonClick(e) {
+    e.preventDefault();
+    var grid = this;
+    var row = $(e.currentTarget).closest("tr");
+
+    var data = grid.dataItem(row);
+    var file = data.Nama_File;
+
+    //window.location.href = "/Content/Images/Document/" + file; //pass the desired url for the view
+    pdf.open().center();
+
+    var options = {
+        pdfOpenParams: {
+            navpanes: 1,
+            toolbar: 0,
+            statusbar: 0,
+            pagemode: 'none',
+            pagemode: "none",
+            page: 1,
+            preventDefault: 1,
+            zoom: "page-width",
+            enableHandToolOnLoad: true
+        } //,
+        //forcePDFJS: true,
+        //PDFJS_URL: "/PDF.js/web/viewer.html"
+    }
+
+
+    PDFObject.embed("/LampiranFileKerjasama/" + file, "#testPDFObject", options)
+
+}
+
+    function handleClick(cb) {
+        var grid = $('#grdDetail').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        inputKerjasamaKebun_HDRId = model.InputKerjasamaKebun_HDRId;
+        
+        //var model = typeof (grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId)) == "undefined" ? grid.dataSource.getByUid(hdr_PermintaanPerjalananDinasKanpusId) : grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId);
+
+        if (cb.checked) {
+            model.Verifikasi = true;
+        }
+        else {
+            model.Verifikasi = false;
+        }
+        model.dirty = true;
+    }
+
+    function handleClickDokumen(cb) {
+        var grid = $('#grdDetail1').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId)) == "undefined" ? grid.dataSource.getByUid(hdr_PermintaanPerjalananDinasKanpusId) : grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId);
+
+        if (cb.checked) {
+            model.VerifikasiPermohonan = true;
+        }
+        else {
+            model.VerifikasiPermohonan = false;
+        }
+        model.dirty = true;
+    }
+
+    function handleClickKirimOps1(cb) {
+        var grid = $('#grdDetail1').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId)) == "undefined" ? grid.dataSource.getByUid(hdr_PermintaanPerjalananDinasKanpusId) : grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId);
+
+        if (cb.checked) {
+            model.KirimOperasional1 = true;
+        }
+        else {
+            model.KirimOperasional1 = false;
+        }
+        model.dirty = true;
+    }
+
+    function handleClickKirimOps2(cb) {
+        var grid = $('#grdDetail1').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId)) == "undefined" ? grid.dataSource.getByUid(hdr_PermintaanPerjalananDinasKanpusId) : grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId);
+
+        if (cb.checked) {
+            model.KirimOperasional2 = true;
+        }
+        else {
+            model.KirimOperasional2 = false;
+        }
+        model.dirty = true;
+    }
+
+    function handleClickKirimAkt(cb) {
+        var grid = $('#grdDetail1').data('kendoGrid');
+        var model = grid.dataItem($(cb).closest("tr"));
+        //var model = typeof (grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId)) == "undefined" ? grid.dataSource.getByUid(hdr_PermintaanPerjalananDinasKanpusId) : grid.dataSource.get(hdr_PermintaanPerjalananDinasKanpusId);
+
+        if (cb.checked) {
+            model.KirimAkuntansiKeuangan = true;
+        }
+        else {
+            model.KirimAkuntansiKeuangan = false;
+        }
+        model.dirty = true;
+    }
+
+function cekDokumen(e) {
+
+    e.preventDefault();
+    var grid = this;
+    var row = $(e.currentTarget).closest("tr");
+    cekdokumen.open().center();
+
+    var data = grid.dataItem(row);
+    inputKerjasamaKebun_HDRId = data.InputKerjasamaKebun_HDRId;
+    GetLampiran().done(function (data1) {
+            if (data1) {
+                var grd = $('#grdDetail1').data('kendoGrid');
+                grd.dataSource.data(data1);
+                //grd.refresh();
+            }
+        });
+}
+</script>
+

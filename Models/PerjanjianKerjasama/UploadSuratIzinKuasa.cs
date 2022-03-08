@@ -12,9 +12,7 @@ namespace Ptpn8.PerjanjianKerjasama.Models
     {
         public Guid UploadSuratIzinKuasaId { get; set; }
         public Guid InputKerjasamaKebunId { get; set; }
-        public int TahunBuku { get; set; }
-        public int NomorInput { get; set; }
-        public String NomorPermohonan { get; set; }
+        public Decimal TahunBuku { get; set; }
         public String File_SuratKuasa { get; set; }
         public String File_SuratIzin { get; set; }
         public String Keterangan { get; set; }

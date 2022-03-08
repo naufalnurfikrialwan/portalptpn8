@@ -11,27 +11,18 @@ namespace Ptpn8.PerjanjianKerjasama.Models
     public class View_VerifikasiPermohonan
     {
         public Guid VerifikasiPermohonanId { get; set; } = Guid.NewGuid();
-        public Guid InputKerjasamaKebunId { get; set; } = Guid.Empty;
+        public Guid InputKerjasamaKebun_HDRId { get; set; } = Guid.Empty;
         public Guid KebunId { get; set; } = Guid.Empty;
-        public Decimal TahunBuku { get; set; } = 0;
-        public String NomorInputView { get; set; } = "";
-        public Boolean Verifikasi { get; set; } = false;
-        public String FileDikirim { get; set; } = "";
-        public Boolean FileDiterimaOperasional { get; set; } = false;
-        public Boolean FileDiterimaAkuntansi { get; set; } = false;
-        public String Keterangan { get; set; } = "";
-        public String NamaKebun { get; set; } = "";
-        public String NamaMitra { get; set; } = "";
-        public String AlamatMitra { get; set; } = "";
-        public String NomorTelepon { get; set; } = "";
-        public string File_SuratPermohonan { get; set; } = "";
-        public string File_Proposal { get; set; } = "";
-        public string File_DaftarNormatif { get; set; } = "";
-        public string File_SuratPernyataan { get; set; } = "";
-        public string File_SuratPengukuhan { get; set; } = "";
-        public string File_Simluhtan { get; set; } = "";
-        public string File_PengantarKebun { get; set; } = "";
-        public string File_SaranPendapatKebun { get; set; } = "";
-        public string File_Bapengukuran { get; set; } = "";
+        public bool Verifikasi { get; set; } = false;
+        [DataType(DataType.Date)]
+        public DateTime TanggalVerifikasi { get; set; } = DateTime.Now;
+        public String UserName { get; set; }
+        public string NamaKebun { get; set; } = "";
+        public string NomorPermohonan { get; set; } = "";
+        public DateTime TanggalPermohonan { get; set; }
+        public string NamaMitra { get; set; } = "";
+        public string AlamatMitra { get; set; } = "";
+        public string EmailMitra { get; set; } = "";
+        public string NomorTelepon { get; set; } = "";
     }
 }

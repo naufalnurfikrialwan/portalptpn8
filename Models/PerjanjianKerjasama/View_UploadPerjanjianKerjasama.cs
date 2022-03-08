@@ -12,9 +12,8 @@ namespace Ptpn8.PerjanjianKerjasama.Models
     {   
         public Guid UploadPerjanjianKerjasamaId { get; set; } = Guid.NewGuid();
         public Guid InputKerjasamaKebunId { get; set; } = Guid.Empty;
-        public int TahunBuku { get; set; } = 0;
-        public int NomorInput { get; set; } = 0;
-        public String NomorPermohonan { get; set; } = "";
+        public Decimal TahunBuku { get; set; } = 0;
+        public String NomorInputView { get; set; } = "";
         public String NomorSuratPerjanjianKerjasama { get; set; } = "";
         public String File_SuratPerjanjianKerjasama { get; set; } = "";
         public String Keterangan { get; set; } = "";

@@ -11,14 +11,19 @@ namespace Ptpn8.PerjanjianKerjasama.Models
     public class VerifikasiPermohonan
     {
         public Guid VerifikasiPermohonanId { get; set; }
-        public Guid InputKerjasamaKebunId { get; set; }
+        public Guid InputKerjasamaKebun_HDRId { get; set; }
         public Guid KebunId { get; set; }
-        public Decimal TahunBuku { get; set; }
-        public Boolean Verifikasi { get; set; }
-        public String Keterangan { get; set; }
-        public String FileDikirim { get; set; }
-        public Boolean FileDiterimaOperasional { get; set; }
-        public Boolean FileDiterimaAkuntansi { get; set; }
+        public bool Verifikasi { get; set; }
+        public DateTime TanggalVerifikasi { get; set; }
+        public String UserName { get; set; }
+        public String NamaKebun { get; set; }
+        public string NomorPermohonan { get; set; } = "";
+        public DateTime TanggalPermohonan { get; set; }
+        public string NamaMitra { get; set; } = "";
+        public string AlamatMitra { get; set; } = "";
+        public string EmailMitra { get; set; } = "";
+        public string NomorTelepon { get; set; } = "";
+
 
     }
 }

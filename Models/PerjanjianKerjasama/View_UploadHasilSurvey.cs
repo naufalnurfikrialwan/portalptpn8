@@ -7,15 +7,34 @@ using System.Web;
 
 namespace Ptpn8.PerjanjianKerjasama.Models
 {
-    
-    public class View_UploadHasilSurvey
+
+    public class View_HDRUploadHasilSurvey
     {
-        public Guid UploadHasilSurveyId { get; set; } = Guid.NewGuid();
-        public Guid InputKerjasamaKebunId { get; set; } = Guid.Empty;
-        public Decimal TahunBuku { get; set; } = 0;
-        public String NomorInputView { get; set; } = "";
-        public String File_BaNegosiasiKompensasi { get; set; } = "";
-        public String File_MemoKajianDanNilaiKompensasi { get; set; } = "";
-        public String Keterangan { get; set; } = "";
+        public Guid HDRUploadHasilSurveyId { get; set; } = Guid.NewGuid();
+        public Guid InputKerjasamaKebun_HDRId { get; set; } = Guid.Empty;
+        public Guid KebunId { get; set; } = Guid.Empty;
+        public Guid WilayahId { get; set; } = Guid.Empty;
+        public string NamaKebun { get; set; } = "";
+        public string JadwalSurvey { get; set; } = "";
+        public string PesertaSurvey { get; set; } = "";
+        public DateTime TanggalInputJadwalSurvey { get; set; } = DateTime.Now;
+        public string NomorPermohonan { get; set; } = "";
+        public DateTime TanggalPermohonan { get; set; } = DateTime.Now;
+        public string NamaMitra { get; set; } = "";
+        public string AlamatMitra { get; set; } = "";
+        public string EmailMitra { get; set; } = "";
+        public string NomorTelepon { get; set; } = "";
+        public string UserName { get; set; } = Ptpn8.Models.CRUDApplicationUser.CRUD.Get1Record(HttpContext.Current.User.Identity.Name).UserName;
+    }
+
+    public class View_DTLUploadHasilSurvey
+    {
+        public Guid DTLUploadHasilSurveyId { get; set; } = Guid.NewGuid();
+        public Guid HDRUploadHasilSurveyId { get; set; } = Guid.Empty;
+        public string NamaLampiran { get; set; } = "";
+        public string NomorLampiran { get; set; } = "";
+        public string NamaFile { get; set; } = "";
+        public string StatusDokumen { get; set; } = "";
+        public DateTime TanggalUpload { get; set; } = DateTime.Now;
     }
 }

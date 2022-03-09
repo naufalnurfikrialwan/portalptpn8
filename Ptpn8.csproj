@@ -2764,6 +2764,7 @@
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_VerifikasiSuratPermohonan.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadSuratIzinKuasa.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_SuratIzinKuasa.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadPerjanjianKerjasama.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

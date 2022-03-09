@@ -2762,6 +2762,7 @@
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_LihatJadwalSurvey.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadHasilSurvey.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_VerifikasiSuratPermohonan.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadSuratIzinKuasa.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

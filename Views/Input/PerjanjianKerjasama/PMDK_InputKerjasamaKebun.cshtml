@@ -183,8 +183,7 @@
                                         })
                                     .ToolBar(toolbar =>
                                     {
-                                        toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>" +
-                                            "<a class='k-button' style='background-color: red; color: white; font-size:small;' onclick='hapusSeluruh()' href='#'></span><span class='k-font-icon k-i-trash'></span>Hapus Semua Baris</a>");
+                                        toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
                                         toolbar.Excel();
                                     })
                                     .AutoBind(false)
@@ -230,37 +229,37 @@
 <div id="printWindow" contextmenu="Print" title="Print" class="print">
     <div id="reportViewer">
         @(Html.TelerikReporting().ReportViewer()
-                                            // Each report viewer must have an id - it will be used by the initialization script
-                                            // to find the element and initialize the report viewer.
-                                            .Id("reportViewer")
-                                            // The URL of the service which will serve reports.
-                                            // The URL corresponds to the name of the controller class (ReportsController).
-                                            // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
-                                            .ServiceUrl(Url.Content("/api/reports/"))
-                                            // The URL for custom report vie    wer template. The template can be edited -
-                                            // new functionalities can be added and unneeded ones can be removed.
-                                            // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
-                                            //
-                                            // Strongly typed ReportSource - TypeReportSource or UriReportSource.
-                                            .ReportSource(new UriReportSource() { Uri = "../Reports/Remise/RemiseKanpus.trdx" })
-                                            // Specifies whether the viewer is in interactive or print preview mode.
-                                            // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
-                                            // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
-                                            .ViewMode(ViewMode.Interactive)
-                                            // Sets the scale mode of the viewer.
-                                            // Three modes exist currently:
-                                            // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
-                                            // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
-                                            // Specific - Uses the scale to zoom in and out the report.
-                                            .ScaleMode(ScaleMode.Specific)
-                                            // Zoom in and out the report using the scale
-                                            // 1.0 is equal to 100%, i.e. the original size of the report
-                                            .Scale(1.0)
-                                            // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
-                                            // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
-                                            .PersistSession(false)
-                                            // Sets the print mode of the viewer.
-                                            .PrintMode(PrintMode.ForcePDFPlugin)
+                                // Each report viewer must have an id - it will be used by the initialization script
+                                // to find the element and initialize the report viewer.
+                                .Id("reportViewer")
+                                // The URL of the service which will serve reports.
+                                // The URL corresponds to the name of the controller class (ReportsController).
+                                // For more information on how to configure the service please check http://www.telerik.com/help/reporting/telerik-reporting-rest-conception.html.
+                                .ServiceUrl(Url.Content("/api/reports/"))
+                                // The URL for custom report vie    wer template. The template can be edited -
+                                // new functionalities can be added and unneeded ones can be removed.
+                                // For more information please check http://www.telerik.com/help/reporting/html5-report-viewer-templates.html.
+                                //
+                                // Strongly typed ReportSource - TypeReportSource or UriReportSource.
+                                .ReportSource(new UriReportSource() { Uri = "../Reports/Remise/RemiseKanpus.trdx" })
+                                // Specifies whether the viewer is in interactive or print preview mode.
+                                // PrintPreview - Displays the paginated report as if it is printed on paper. Interactivity is not enabled.
+                                // Interactive - Displays the report in its original width and height with no paging. Additionally interactivity is enabled.
+                                .ViewMode(ViewMode.Interactive)
+                                // Sets the scale mode of the viewer.
+                                // Three modes exist currently:
+                                // FitPage - The whole report will fit on the page (will zoom in or out), regardless of its width and height.
+                                // FitPageWidth - The report will be zoomed in or out so that the width of the screen and the width of the report match.
+                                // Specific - Uses the scale to zoom in and out the report.
+                                .ScaleMode(ScaleMode.Specific)
+                                // Zoom in and out the report using the scale
+                                // 1.0 is equal to 100%, i.e. the original size of the report
+                                .Scale(1.0)
+                                // Sets whether the viewer’s client session to be persisted between the page’s refreshes(ex. postback).
+                                // The session is stored in the browser’s sessionStorage and is available for the duration of the page session.
+                                .PersistSession(false)
+                                // Sets the print mode of the viewer.
+                                .PrintMode(PrintMode.ForcePDFPlugin)
         )
     </div>
 </div>
@@ -1006,13 +1005,17 @@ function sendData() {
     var currentData = grid.dataSource.data();
     var updatedRecords = [];
     var newRecords = [];
+    var spupdated = [];
+    var spnew = [];
 
     for (var i = 0; i < currentData.length; i++) {
         if (currentData[i].isNew()) {
             //this record is new
             newRecords.push(JSON.stringify(currentData[i]));
+            spnew.push("EXEC [SPDK_KanpusEF].dbo.PK_InsertKeOpset '" + inputKerjasamaKebun_HDRId + "'");
         } else if (currentData[i].dirty) {
             updatedRecords.push(JSON.stringify(currentData[i]));
+            spupdated.push("EXEC [SPDK_KanpusEF].dbo.PK_InsertKeOpset '" + inputKerjasamaKebun_HDRId + "'");
         }
     }
 
@@ -1023,7 +1026,7 @@ function sendData() {
     }
 
     var data = {};
-    $.extend(data, parameterMap({ updated: updatedRecords }), parameterMap({ deleted: deletedRecords }), parameterMap({ new: newRecords }), parameterMap({ mnid: menuId }));
+    $.extend(data, parameterMap({ updated: updatedRecords }), parameterMap({ deleted: deletedRecords }), parameterMap({ new: newRecords }),parameterMap({ spnew: spnew }),parameterMap({ spupdated: spupdated }), parameterMap({ mnid: menuId }));
     _sendData(data).done(function (msg) {
         if (msg == "Success") {
             grid.dataSource.read([]);

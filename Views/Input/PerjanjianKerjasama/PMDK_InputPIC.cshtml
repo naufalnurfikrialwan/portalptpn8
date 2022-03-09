@@ -23,86 +23,87 @@
     @(Html.Kendo().TabStrip().Name("tabstrip").Animation(animation => animation.Open(effect => effect.Fade(FadeDirection.In)))
                 .Items(tabstrip =>
                 {
-                    tabstrip.Add().Text("1. Upload Dokumen").Selected(true)
+                    tabstrip.Add().Text("1. Sign PIC").Selected(true)
                         .Content(@<text>
                             <p style="font-weight:700;color:green;text-align:center">SIGN PIC</p>
                             @(Html.Kendo()
-                                                    .Grid<Ptpn8.PerjanjianKerjasama.Models.View_InputPicKerjasama>(Guid.Empty.ToString())
-                                                    .Name("grdDetail")
-                                                    .Columns(g =>
-                                                    {
-                                                        g.Bound(i => i.InputPicKerjasamaId).Width(50).Hidden();
-                                                        g.Bound(i => i.InputKerjasamaKebun_HDRId).Width(50).Hidden();
-                                                        g.Group(i => i
-                                                            .Title("Pilih PIC")
-                                                            .Columns(c =>
-                                                            {
-                                                                c.Bound(q => q.NIK).Width(150).Hidden();
-                                                                c.Bound(q => q.Nama).Width(150).Title("Nama PIC");
-                                                                c.Bound(q => q.TanggalAlokasiPIC).Title("Tgl. Alokasi PIC").Width(120).Format("{0:dd-MM-yyyy}");
-                                                            })
-                                                        );
-                                                        g.Group(i => i
-                                                            .Title("Data Mitra")
-                                                            .Columns(c =>
-                                                            {
-                                                                c.Bound(q => q.NomorPermohonan).Width(150).Title("No. Permohonan");
-                                                                c.Bound(q => q.TanggalPermohonan).Width(120).Format("{0:dd-MM-yyyy}").Title("Tgl. Permohonan");
-                                                                c.Bound(q => q.NamaMitra).Width(150).Title("Nama Mitra");
-                                                                c.Bound(q => q.AlamatMitra).Width(200).Title("Alamat Mitra");
-                                                                c.Bound(q => q.EmailMitra).Width(150).Title("Email Mitra");
-                                                                c.Bound(q => q.NomorTelepon).Width(150).Title("No. Telepon").Hidden();
+                            .Grid<Ptpn8.PerjanjianKerjasama.Models.View_InputPicKerjasama>(Guid.Empty.ToString())
+                            .Name("grdDetail")
+                            .Columns(g =>
+                            {
+                                g.Bound(i => i.InputPicKerjasamaId).Width(50).Hidden();
+                                g.Bound(i => i.InputKerjasamaKebun_HDRId).Width(50).Hidden();
+                                g.Group(i => i
+                                    .Title("Pilih PIC")
+                                    .Columns(c =>
+                                    {
+                                        c.Bound(q => q.NIK).Width(150).Hidden();
+                                        c.Bound(q => q.Nama).Width(150).Title("Nama PIC");
+                                        c.Bound(q => q.TanggalAlokasiPIC).Title("Tgl. Alokasi PIC").Width(120).Format("{0:dd-MM-yyyy}");
+                                    })
+                                );
+                                g.Group(i => i
+                                    .Title("Data Mitra")
+                                    .Columns(c =>
+                                    {
+                                        c.Bound(q => q.NamaKebun).Width(120).Title("Kebun");
+                                        c.Bound(q => q.NomorPermohonan).Width(150).Title("No. Permohonan");
+                                        c.Bound(q => q.TanggalPermohonan).Width(120).Format("{0:dd-MM-yyyy}").Title("Tgl. Permohonan");
+                                        c.Bound(q => q.NamaMitra).Width(150).Title("Nama Mitra");
+                                        c.Bound(q => q.AlamatMitra).Width(200).Title("Alamat Mitra");
+                                        c.Bound(q => q.EmailMitra).Width(150).Title("Email Mitra");
+                                        c.Bound(q => q.NomorTelepon).Width(150).Title("No. Telepon");
 
-                                                            })
-                                                        );
-                                                        g.Command(command =>
-                                                        {
-                                                            command.Custom("Search").Text(" Lihat Dokumen").Click("cekDokumen")
-                                                               .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
-                                                        }).Width(200);
-                                                    })
-                                                    .ToolBar(toolbar =>
-                                                    {
-                                                        toolbar.Excel();
-                                                        toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
-                                                    })
-                                                    .AutoBind(true)
-                                                    .Navigatable()
-                                                    .Resizable(resizeable => resizeable.Columns(true))
-                                                    .Scrollable()
-                                                    .Sortable()
-                                                    .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
+                                    })
+                                );
+                                g.Command(command =>
+                                {
+                                    command.Custom("Search").Text(" Lihat Dokumen").Click("cekDokumen")
+                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                }).Width(200);
+                            })
+                            .ToolBar(toolbar =>
+                            {
+                                toolbar.Excel();
+                                toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
+                            })
+                            .AutoBind(true)
+                            .Navigatable()
+                            .Resizable(resizeable => resizeable.Columns(true))
+                            .Scrollable()
+                            .Sortable()
+                            .Editable(editable => { editable.Mode(GridEditMode.InCell); editable.DisplayDeleteConfirmation(false); })
                                                     
-                                                    .HtmlAttributes(new { style = "Height: 450px" })
+                            .HtmlAttributes(new { style = "Height: 450px" })
 
-                                                    .Events(e =>
-                                                    {
-                                                        e.Change("grdOnChange");
-                                                        e.Edit("grdOnEdit");
+                            .Events(e =>
+                            {
+                                e.Change("grdOnChange");
+                                e.Edit("grdOnEdit");
 
 
-                                                    })
-                                                    .DataSource(o => o
-                                                        .Ajax()
-                                                        .ServerOperation(false)
-                                                        .Sort(s => s.Add(x => x.TanggalPermohonan))
+                            })
+                            .DataSource(o => o
+                                .Ajax()
+                                .ServerOperation(false)
+                                .Sort(s => s.Add(x => x.TanggalPermohonan))
 
-                                                        .Batch(true)
-                                                        .Model(model =>
-                                                        {
-                                                            model.Id(p => p.InputPicKerjasamaId);
-                                                            model.Field(f => f.NomorPermohonan).Editable(false);
-                                                            model.Field(f => f.TanggalPermohonan).Editable(false);
-                                                            model.Field(f => f.NamaMitra).Editable(false);
-                                                            model.Field(f => f.AlamatMitra).Editable(false);
-                                                            model.Field(f => f.EmailMitra).Editable(false);
-                                                            model.Field(f => f.NomorTelepon).Editable(false);
-                                                        })
-                                                        .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
-                                                        .Create(create => create.Action("detailCreate", "Input").Data("filterRead").Type(HttpVerbs.Post))
-                                                        .Update(update => update.Action("detailUpdate", "Input").Data("filterRead").Type(HttpVerbs.Post))
-                                                        .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterRead").Type(HttpVerbs.Post))
-                                                        )
+                                .Batch(true)
+                                .Model(model =>
+                                {
+                                    model.Id(p => p.InputPicKerjasamaId);
+                                    model.Field(f => f.NomorPermohonan).Editable(false);
+                                    model.Field(f => f.TanggalPermohonan).Editable(false);
+                                    model.Field(f => f.NamaMitra).Editable(false);
+                                    model.Field(f => f.AlamatMitra).Editable(false);
+                                    model.Field(f => f.EmailMitra).Editable(false);
+                                    model.Field(f => f.NomorTelepon).Editable(false);
+                                })
+                                .Read(read => read.Action("detailRead", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                .Create(create => create.Action("detailCreate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                .Update(update => update.Action("detailUpdate", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                .Destroy(destroy => destroy.Action("detailDestroy", "Input").Data("filterRead").Type(HttpVerbs.Post))
+                                )
                             )
                         </text>);
                             
@@ -624,6 +625,7 @@
             model.InputPicKerjasamaId = model.uid;
         }
         inputPicKerjasamaId = model.InputPicKerjasamaId;
+        inputKerjasamaKebun_HDRId = model.InputKerjasamaKebun_HDRId;
         gridStatus = 'sudah-diapa-apain';
     }
 
@@ -643,6 +645,7 @@
         var currentData = grid.dataSource.data();
         var updatedRecords = [];
         var newRecords = [];
+        var spupdated = [];
 
         for (var i = 0; i < currentData.length; i++) {
             if (currentData[i].isNew()) {
@@ -650,6 +653,7 @@
                 newRecords.push(JSON.stringify(currentData[i]));
             } else if (currentData[i].dirty) {
                 updatedRecords.push(JSON.stringify(currentData[i]));
+                spupdated.push("EXEC [SPDK_KanpusEF].dbo.PK_InsertKeVerifikasiPIC '" + inputKerjasamaKebun_HDRId + "'");
             }
         }
 
@@ -660,7 +664,7 @@
         }
 
         var data = {};
-        $.extend(data, parameterMap({ updated: updatedRecords }), parameterMap({ deleted: deletedRecords }), parameterMap({ new: newRecords }), parameterMap({ mnid: menuId }));
+        $.extend(data, parameterMap({ updated: updatedRecords }), parameterMap({ deleted: deletedRecords }), parameterMap({ new: newRecords }),parameterMap({ spupdated: spupdated }), parameterMap({ mnid: menuId }));
         _sendData(data).done(function (msg) {
             if (msg == "Success") {
                 grid.dataSource.read([]);

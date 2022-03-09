@@ -438,7 +438,7 @@
     var model;
     var headerBaru, detailBaru,tahun,bulan,bagianId,dTLUploadSuratIzinKuasaId;
     var gridStatus;
-    var menuId = 'e2929691-6d15-40e6-aadb-b08d0f11f939';
+    var menuId = 'e2929691-6d15-40e6-aadb-b08d0f11f940';
     var usrName = "@HttpContext.Current.User.Identity.Name";
 
     $('.k-window.titlebar').css('style', 'display: none');
@@ -802,13 +802,14 @@
         var DTLUploadSuratIzinKuasaId= dta.DTLUploadSuratIzinKuasaId;
 
         var NomorLampiran = dta.NomorLampiran;
+        var NamaFile = dta.NamaFile;
 
         if (status == 'baru') {
             return $.ajax({
                 url: url,
                 data: {
                     scriptSQL: "exec PK_UploadSuratIzinKuasa_Edit '" + DTLUploadSuratIzinKuasaId.toString() +
-                        "','" + NomorLampiran + "'",
+                        "','" + NomorLampiran + "','" + NamaFile + "'",
                     _menuId: menuId
                 },
                 type: 'POST',
@@ -820,7 +821,7 @@
                 url: url,
                 data: {
                     scriptSQL: "exec PK_UploadSuratIzinKuasa_Edit '" + DTLUploadSuratIzinKuasaId.toString() +
-                        "','" + NomorLampiran + "'",
+                        "','" + NomorLampiran + "','" + NamaFile + "'",
                     _menuId: menuId
                 },
                 type: 'POST',

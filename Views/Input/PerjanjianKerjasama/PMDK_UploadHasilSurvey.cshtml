@@ -150,6 +150,8 @@
                                                         {
                                                             command.Custom("Search").Text(" Upload Dokumen").Click("cekDokumen")
                                                                 .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
+                                                            command.Custom("Delete").Text(" Hapus Baris").Click("openWindow")
+                                                                .HtmlAttributes(new { @class = "k-button k-font-icon k-i-trash", style = "font-size: small; background-color: red; color: white; height: 20px;" });
                                                         }).Width(170);
                                                     })
                                             .ToolBar(toolbar =>
@@ -276,7 +278,7 @@
                         g.Bound(i => i.HDRUploadHasilSurveyId).Width(50).Hidden();
                         g.Bound(i => i.NamaLampiran).Width(150).Title("Nama Lampiran");
                         g.Bound(i => i.NomorLampiran).Width(150).Title("Nomor Surat");
-                        
+                        g.Bound(i => i.NamaFile).Width(150).Hidden();
                         g.Command(command =>
                         {
                             command.Custom("Upload").Text(" Upload File").Click("uploadData")
@@ -285,7 +287,7 @@
                                         .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
 
                         }).Width(200);
-                        g.Bound(i => i.StatusDokumen).Width(100).Title("Status Dokumen");
+                        g.Bound(i => i.StatusDokumen).Width(100).Title("Status Dokumen").ClientTemplate("#= WarnaKolom(StatusDokumen,NamaFile) #");
                     })
                     .ToolBar(toolbar =>
                     {
@@ -802,13 +804,14 @@
         var DTLUploadHasilSurveyId= dta.DTLUploadHasilSurveyId;
 
         var NomorLampiran = dta.NomorLampiran;
+        var NamaFile = dta.NamaFile;
 
         if (status == 'baru') {
             return $.ajax({
                 url: url,
                 data: {
                     scriptSQL: "exec PK_UploadHasilSurvey_Edit '" + DTLUploadHasilSurveyId.toString() +
-                        "','" + NomorLampiran + "'",
+                        "','" + NomorLampiran + "','" + NamaFile + "'",
                     _menuId: menuId
                 },
                 type: 'POST',
@@ -820,7 +823,7 @@
                 url: url,
                 data: {
                     scriptSQL: "exec PK_UploadHasilSurvey_Edit '" + DTLUploadHasilSurveyId.toString() +
-                        "','" + NomorLampiran + "'",
+                        "','" + NomorLampiran + "','" + NamaFile + "'",
                     _menuId: menuId
                 },
                 type: 'POST',
@@ -879,7 +882,7 @@
     var row = $(e.currentTarget).closest("tr");
 
     var data = grid.dataItem(row);
-    var file = data.Nama_File;
+    var file = data.NamaFile;
 
     //window.location.href = "/Content/Images/Document/" + file; //pass the desired url for the view
     pdf.open().center();
@@ -961,7 +964,7 @@ function onButtonClick1(e) {
     var row = $(e.currentTarget).closest("tr");
 
     var data = grid.dataItem(row);
-    var file = data.File_Kajian;
+    var file = data.NamaFile;
 
     //window.location.href = "/Content/Images/Document/" + file; //pass the desired url for the view
     pdf.open().center();
@@ -992,7 +995,7 @@ function uplOnSuccess(e) {
     var grid = $('#grdDetail1').data('kendoGrid');
     var dataItem = typeof (grid.dataSource.get(dTLUploadHasilSurveyId)) == "undefined" ? grid.dataSource.getByUid(dTLUploadHasilSurveyId) : grid.dataSource.get(dTLUploadHasilSurveyId);
     //dataItem.NamaFilePDF_Minat = e.files[0].name;
-    dataItem.File_Kajian = inputKerjasamaKebun_HDRId+ "_" +dTLUploadHasilSurveyId + ".pdf";
+    dataItem.NamaFile = inputKerjasamaKebun_HDRId+ "_" +dTLUploadHasilSurveyId + ".pdf";
     dataItem.dirty = true;
     grid.refresh();
 }

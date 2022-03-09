@@ -140,7 +140,7 @@
                                                     {
                                                         c.Bound(q => q.JadwalSurvey).Width(150).Title("Jadwal Survey");
                                                         c.Bound(q => q.PesertaSurvey).Width(180).Title("Peserta");
-                                                        c.Bound(q => q.TanggalInpoutJadwalSurvey).Title("Tgl. Alokasi PIC").Width(120).Format("{0:dd-MM-yyyy}").Hidden();
+                                                        c.Bound(q => q.TanggalInputJadwalSurvey).Title("Tgl. Alokasi PIC").Width(120).Format("{0:dd-MM-yyyy}").Hidden();
                                                     })
                                                 );
                                                 g.Group(i => i
@@ -158,11 +158,7 @@
                                                     })
                                                 );
                                             })
-                                            .ToolBar(toolbar =>
-                                            {
-                                                toolbar.Excel();
-                                                toolbar.Template("<a class='k-button' style='background-color: green; color: white; font-size:small;' onclick='sendData()' href='#'></span><span class='k-font-icon k-i-restore'></span>Simpan</a>");
-                                            })
+                                            
                                             .AutoBind(false)
                                             .Navigatable()
                                             .Resizable(resizeable => resizeable.Columns(true))

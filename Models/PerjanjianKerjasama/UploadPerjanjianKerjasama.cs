@@ -24,5 +24,6 @@ namespace Ptpn8.PerjanjianKerjasama.Models
         public string EmailMitra { get; set; } = "";
         public string NomorTelepon { get; set; } = "";
         public string UserName { get; set; }
+        public bool Verifikasi { get; set; }
     }
 }

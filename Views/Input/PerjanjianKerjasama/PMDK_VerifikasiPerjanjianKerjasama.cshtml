@@ -124,7 +124,7 @@
                 {
                     tabstrip.Add().Text("1. Sign PIC").Selected(true)
                         .Content(@<text>
-                            <p style="font-weight:700;color:green;text-align:center">UPLOAD SURAT PERJANJIAN KERJASAMA</p>
+                            <p style="font-weight:700;color:green;text-align:center">VERIFIKASI SURAT PERJANJIAN KERJASAMA</p>
                             @(Html.Kendo()
                             .Grid<Ptpn8.PerjanjianKerjasama.Models.View_UploadPerjanjianKerjasama>(Guid.Empty.ToString())
                             .Name("grdDetail")
@@ -132,17 +132,17 @@
                             {
                                 g.Bound(i => i.UploadPerjanjianKerjasamaId).Width(50).Hidden();
                                 g.Bound(i => i.InputKerjasamaKebun_HDRId).Width(50).Hidden();
-                                g.Bound(i => i.Verifikasi).Width(50).Hidden();
-                                g.Bound(i => i.NomorPerjanjianKerjasama).Width(120).Title("No. PerjanjianKerjasama");
+
+                                g.Bound(i => i.NomorPerjanjianKerjasama).Width(120).Title("No. Perjanjian Kerjasama");
                                 g.Command(command2 =>
                                 {
-                                    command2.Custom("Upload").Text("Upload PKS").Click("uploadData")
-                                        .HtmlAttributes(new { @class = "k-button k-font-icon k-i-redo", style = "font-size: small; background-color: green; color: white; height: 20px;" });
+                             
                                     command2.Custom("Search2").Text("Lihat PKS").Click("onButtonClick1")
                                         .HtmlAttributes(new { @class = "k-button k-font-icon k-i-search", style = "font-size: small; background-color: blue; color: white; height: 20px;" });
 
                                 }).Width(150);
                                 g.Bound(i => i.StatusDokumen).Width(100).Title("Status Dokumen").ClientTemplate("#= WarnaKolom(StatusDokumen,File_PerjanjianKerjasama) #");
+                                g.Bound(i => i.Verifikasi).Width(100).Title("Status Verifikasi").ClientTemplate("<input id='#=UploadPerjanjianKerjasamaId#' type='checkbox' onclick='handleClick(this)'>"); ;
                                 g.Group(i => i
                                     .Title("Data Mitra")
                                     .Columns(c =>
@@ -157,8 +157,8 @@
 
                                     })
                                 );
-                                
-                                
+
+
                             })
                             .ToolBar(toolbar =>
                             {
@@ -190,9 +190,11 @@
                                 .Model(model =>
                                 {
                                     model.Id(p => p.UploadPerjanjianKerjasamaId);
+                                    model.Field(f => f.StatusDokumen).Editable(false);
+                                    model.Field(f => f.NomorPerjanjianKerjasama).Editable(false);
                                     model.Field(f => f.NomorPermohonan).Editable(false);
-                                    model.Field(f => f.TanggalPermohonan).Editable(false);
                                     model.Field(f => f.NamaKebun).Editable(false);
+                                    model.Field(f => f.TanggalPermohonan).Editable(false);
                                     model.Field(f => f.NamaMitra).Editable(false);
                                     model.Field(f => f.AlamatMitra).Editable(false);
                                     model.Field(f => f.EmailMitra).Editable(false);
@@ -389,7 +391,7 @@
     var model;
     var headerBaru, detailBaru,tahun,bulan,bagianId;
     var gridStatus;
-    var menuId = 'bd8974d7-879c-4059-bcc5-302c78a0dca9';
+    var menuId = 'e2929691-6d15-40e6-aadb-b08d0f11f941';
     var usrName = "@HttpContext.Current.User.Identity.Name";
 
     $('.k-window.titlebar').css('style', 'display: none');

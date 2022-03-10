@@ -124,7 +124,7 @@
                         {
                             tabstrip.Add().Text("1. Sign PIC").Selected(true)
                                 .Content(@<text>
-                                    <p style="font-weight:700;color:green;text-align:center">UPLOAD HASIL SURVEY</p>
+                                    <p style="font-weight:700;color:green;text-align:center">UPLOAD INVOICE</p>
                                     @(Html.Kendo()
                                             .Grid<Ptpn8.PerjanjianKerjasama.Models.View_HDRUploadInvoice>(Guid.Empty.ToString())
                                             .Name("grdDetail")
@@ -437,7 +437,7 @@
     var model;
     var headerBaru, detailBaru,tahun,bulan,bagianId,dTLUploadInvoiceId;
     var gridStatus;
-    var menuId = 'e2929691-6d15-40e6-aadb-b08d0f11f939';
+    var menuId = '17bafbb5-a7c0-4500-9483-0df9d608c0ca';
     var usrName = "@HttpContext.Current.User.Identity.Name";
 
     $('.k-window.titlebar').css('style', 'display: none');

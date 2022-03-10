@@ -1243,7 +1243,6 @@
     <Compile Include="Models\PerjanjianKerjasama\View_UploadSaranKajianOpset.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_UploadSuratIzinKuasa.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_VerifikasiHasilSurvey.cs" />
-    <Compile Include="Models\PerjanjianKerjasama\View_VerifikasiPerjanjianKerjasama.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_VerifikasiPermohonan.cs" />
     <Compile Include="Models\Ptpn8dbContext.cs" />
     <Compile Include="Models\RiwayatAkses.cs" />

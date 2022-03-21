@@ -1205,7 +1205,7 @@
     <Compile Include="Models\PerjanjianKerjasama\CekDokumenPermohonanOperasional.cs" />
     <Compile Include="Models\PerjanjianKerjasama\ChartDashboard_PerjanjianKerjasama.cs" />
     <Compile Include="Models\PerjanjianKerjasama\Dashboard_PerjanjianKerjasama.cs" />
-    <Compile Include="Models\PerjanjianKerjasama\Invoice.cs" />
+    <Compile Include="Models\PerjanjianKerjasama\UploadInvoice.cs" />
     <Compile Include="Models\PerjanjianKerjasama\InputJadwalSurvey.cs" />
     <Compile Include="Models\PerjanjianKerjasama\InputKerjasamaKebun.cs" />
     <Compile Include="Models\PerjanjianKerjasama\InputPicKerjasama.cs" />
@@ -1222,14 +1222,13 @@
     <Compile Include="Models\PerjanjianKerjasama\UploadSaranKajianOpset.cs" />
     <Compile Include="Models\PerjanjianKerjasama\UploadSuratIzinKuasa.cs" />
     <Compile Include="Models\PerjanjianKerjasama\VerifikasiHasilSurvey.cs" />
-    <Compile Include="Models\PerjanjianKerjasama\VerifikasiPerjanjianKerjasama.cs" />
     <Compile Include="Models\PerjanjianKerjasama\VerifikasiPermohonan.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_CekDokumenPermohonanAkuntansi.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_CekDokumenPermohonanOperasional.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_InputJadwalSurvey.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_InputKerjasamaKebun.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_InputPicKerjasama.cs" />
-    <Compile Include="Models\PerjanjianKerjasama\View_Invoice.cs" />
+    <Compile Include="Models\PerjanjianKerjasama\View_UploadInvoice.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_KajiSaranOpset.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_LihatFileKajian.cs" />
     <Compile Include="Models\PerjanjianKerjasama\View_Mitra.cs" />
@@ -2765,6 +2764,7 @@
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_SuratIzinKuasa.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadPerjanjianKerjasama.cshtml" />
     <Content Include="Views\Input\PerjanjianKerjasama\PMDK_VerifikasiPerjanjianKerjasama.cshtml" />
+    <Content Include="Views\Input\PerjanjianKerjasama\PMDK_UploadInvoice.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
